@@ -12,13 +12,15 @@
 <br />
 
 ## :octocat: Project Description
-The redpill project aims to assist reverse tcp shells in post-exploration tasks. Often in redteam engagements we need<br />
-to use unconventional ways to access target system, such as reverse tcp shells (<b><i>not metasploit</i></b>) in order to bypass the<br />
-defenses implemented by the system administrator. After the first stage was successful compleated we face another<br />
-type of problems: "I have (shell) access to the target system, and now what can I do with it?" (post-exploitation)<br />
+The redpill project aims to assist reverse tcp shells in post-exploration tasks. Often in redteam engagements we<br />
+need to use unconventional ways to access target system, such as reverse tcp shells (<b><i>not metasploit</i></b>)<br />
+in order to bypass the defenses implemented by the system administrator. After the first stage was successful<br />
+compleated we face another type of problems: "I have (shell) access to the target system, and now what can I<br />
+do with it?" (post-exploitation)<br />
 
-This project consists of several PowerShell scripts that perform different post-exploitation functions and the main script<br />
-<b><i>redpill.ps1</i></b> that is main work its to download/config/execute the PS scripts (user selection) contained in this repository.<br />
+This project consists of several PowerShell scripts that perform different post-exploitation functions and the<br />
+main script <b><i>redpill.ps1</i></b> that is main work its to download/config/execute the PS scripts contained<br />
+in this repository.<br />
 
 The goal is to have a similar meterpreter experience in our reverse tcp shell prompt (meterpreter similar options)<br />
 
