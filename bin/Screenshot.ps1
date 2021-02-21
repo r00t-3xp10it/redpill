@@ -64,8 +64,9 @@ If($Delay -lt '1' -or $Delay -gt '180'){$Delay = '1'} ## Screenshots delay time 
 
         Add-type -AssemblyName System.Drawing
         Start-Sleep -Milliseconds 200
+        $RawDataName = -join (((48..57)+(65..90)+(97..122)) * 80 |Get-Random -Count 4 |%{[char]$_})
         Add-Type -AssemblyName System.Windows.Forms
-        $FileName = "$Env:TMP\Capture-" + "$(get-date -f yyyy-MM-dd_HHmmss).png" -Join ''
+        $FileName = "$Env:TMP\Capture-"+"$RawDataName.png"
         $WindowsForm = [System.Windows.Forms.SystemInformation]::VirtualScreen
         $TopCorner = $WindowsForm.Top
         $LeftCorner = $WindowsForm.Left
