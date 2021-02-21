@@ -1,6 +1,3 @@
-## WARNING: THIS PROJECT ITS ON BETA STAGE
-
-<br />
 
 ![wikibanner](https://user-images.githubusercontent.com/23490060/107761196-e0a29880-6d22-11eb-9dfc-35028c9463f6.png)
 
@@ -216,6 +213,8 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 
 ![geolocation](https://user-images.githubusercontent.com/23490060/107866747-c7593380-6e6b-11eb-8e38-9ef3acdb3c01.png)<br /><br />
 ![pingverbose](https://user-images.githubusercontent.com/23490060/107841656-87834500-6db4-11eb-953c-22e2322577b6.png)
+![eopmodule](https://user-images.githubusercontent.com/23490060/108617459-78347500-740e-11eb-8cce-90994c2e048a.png)
+
 
 <br />
 
