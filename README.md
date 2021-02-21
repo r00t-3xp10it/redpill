@@ -104,7 +104,7 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 
 1º - Download CmdLet from GitHub repository to <b><i>'Local Disk'</i></b>
 
-        PS C:\> iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/master/redpill.ps1 -OutFile redpill.ps1
+        PS C:\> iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/redpill.ps1 -OutFile redpill.ps1
 
 <br />
 
@@ -193,7 +193,7 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 <details>
 <summary>To Manual download the CmdLet for Local Tests, execute:</summary><br />
 
-        PS C:\> iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/master/redpill.ps1 -OutFile redpill.ps1
+        PS C:\> iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/redpill.ps1 -OutFile redpill.ps1
 
 </details>
 
