@@ -13,10 +13,9 @@
 
 ## :octocat: Project Description
 The redpill project aims to assist reverse tcp shells in post-exploration tasks. Often in redteam engagements we<br />
-need to use unconventional ways to access target system, such as reverse tcp shells (<b><i>not metasploit</i></b>)<br />
-in order to bypass the defenses implemented by the system administrator. After the first stage was successful<br />
-compleated we face another type of problems: "I have (shell) access to the target system, and now what can I<br />
-do with it?" (post-exploitation)<br />
+need to use unconventional ways to access target system, such as reverse tcp shells (<b><i>not metasploit in order</i></b>)<br />
+to bypass the defenses implemented by the system administrator. After the first stage was successful compleated<br />
+we face another type of problems: "I have (shell) access to the target system, and now what can I do with it?"<br />
 
 This project consists of several PowerShell scripts that perform different post-exploitation functions and the<br />
 main script <b><i>redpill.ps1</i></b> that is main work its to download/config/execute the PS scripts contained<br />
