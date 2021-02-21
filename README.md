@@ -205,11 +205,11 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 
 ## :octocat: Video Tutorials
 
-<br />
+<br /><br />
 
 ## :octocat: Acknowledgments
 
-|Name|Function|OS Flavor|
+|hax0r|Function|OS Flavor|
 |---|---|---|
 |<b><i>@youhacker55|For All the help Debugging this cmdlet (Testing BETA version)|Windows 7 x64bits</b>|
 |<b><i>@0xyg3n|For All the help Debugging this cmdlet (Testing BETA version)|Windows 10 x64bits</b>|
