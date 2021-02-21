@@ -18,7 +18,7 @@ to bypass the defenses implemented by the system administrator. After the first 
 we face another type of problems: "I have (shell) access to the target system, and now what can I do with it?"<br />
 
 This project consists of several PowerShell scripts that perform different post-exploitation functions and the<br />
-main script <b><i>redpill.ps1</i></b> that is main work its to download/config/exe thescripts contained in this repository.<br />
+main script <b><i>redpill.ps1</i></b> that is main work its to download/config/exe the scripts contained in this repository.<br />
 
 The goal is to have a similar meterpreter experience in our reverse tcp shell prompt (meterpreter similar options)<br />
 
@@ -26,9 +26,9 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 
 |Folder Name|Description|Notes|
 |---|---|---|
-|Bin|Contains redpill main PS modules|Sysinfo \| GetConnections \| Persiste \| Keylogger \| etc.|
+|Bin|Contains redpill main modules|Sysinfo \| GetConnections \| Persiste \| Keylogger \| etc.|
 |Bypass|Contains redpill bypass scripts|Manual Download/Execution required|
-|modules|Contains redpill PS modules|Sherlock \| CredsPhish \| Webserver \| StartWebServer \| etc.|
+|modules|Contains redpill modules|Sherlock \| CredsPhish \| Webserver \| StartWebServer \| etc.|
 |Utils|Contains BAT \| PS1 scripts| Manual execution required|
 
 <br />
