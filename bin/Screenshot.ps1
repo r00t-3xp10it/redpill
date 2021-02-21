@@ -74,7 +74,6 @@ If($Delay -lt '1' -or $Delay -gt '180'){$Delay = '1'} ## Screenshots delay time 
         }
 
         $bounds = [System.Windows.Forms.Screen]::AllScreens.Bounds
-        Write-Host "[+] Screen resolution is $($bounds.Width) x $($bounds.Height)"
         $bounds = [Drawing.Rectangle]::FromLTRB(0, 0,  $bounds.Width, $bounds.Height)
         $bmp = New-Object Drawing.Bitmap $bounds.width, $bounds.height
         $graphics = [Drawing.Graphics]::FromImage($bmp)
