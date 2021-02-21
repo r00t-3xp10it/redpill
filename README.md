@@ -39,8 +39,8 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 <br />
 
      This cmdlet belongs to the structure of venom v1.0.17.8 as a post-exploitation module.
-     venom amsi evasion agents automatically uploads this CmdLet to %TMP% directory to be easily
-     accessible in our reverse tcp shell ( shell prompt ).
+     venom amsi evasion agents automatically uploads this CmdLet to %TMP% directory to be
+     easily accessible in our reverse tcp shell ( shell prompt ).
 
 <br />
 
@@ -98,10 +98,11 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 
 <br />
 
-     This cmdlet belongs to the structure of venom v1.0.17.8 as a post-exploitation module. venom amsi evasion agents
-     automatically uploads this CmdLet to %TMP% directory to be easily accessible in our reverse tcp shell ( shell ).
+     This cmdlet belongs to the structure of venom v1.0.17.8 as a post-exploitation module.
+     venom amsi evasion agents automatically uploads this CmdLet to %TMP% directory to be
+     easily accessible in our reverse tcp shell ( shell ).
 
-          ==> 'But this section describes how to test this Cmdlet Locally without exploiting the target host'. <==
+     ==> 'But this section describes how to test this Cmdlet Locally without exploiting the target host'. <==
 
 <br />
 
@@ -161,8 +162,8 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 <br />
 
      This cmdlet belongs to the structure of venom v1.0.17.8 as a post-exploitation module.
-     venom amsi evasion agents automatically uploads this CmdLet to %TMP% directory to be easily
-     accessible in our reverse tcp shell ( shell prompt ).
+     venom amsi evasion agents automatically uploads this CmdLet to %TMP% directory to be
+     easily accessible in our reverse tcp shell ( shell prompt ).
 
 <br />
 
