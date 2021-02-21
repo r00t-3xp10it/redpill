@@ -38,14 +38,15 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 
 <br />
 
-     This cmdlet belongs to the structure of venom v1.0.17.8 as a post-exploitation module. venom amsi evasion agents
-     automatically uploads this CmdLet to %TMP% directory to be easily accessible in our reverse tcp shell ( shell ).
+     This cmdlet belongs to the structure of venom v1.0.17.8 as a post-exploitation module.
+     venom amsi evasion agents automatically uploads this CmdLet to %TMP% directory to be easily
+     accessible in our reverse tcp shell ( shell prompt ).
 
 <br />
 
 <i>To List All Parameters Available, execute in powershell prompt:</i>
 
-     PS C:\> .\redpill.ps1 -Help Parameters
+     .\redpill.ps1 -Help Parameters
 
 <br />
 
@@ -99,19 +100,20 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 
      This cmdlet belongs to the structure of venom v1.0.17.8 as a post-exploitation module. venom amsi evasion agents
      automatically uploads this CmdLet to %TMP% directory to be easily accessible in our reverse tcp shell ( shell ).
+
           ==> 'But this section describes how to test this Cmdlet Locally without exploiting the target host'. <==
 
 <br />
 
 1º - Download CmdLet from GitHub repository to <b><i>'Local Disk'</i></b>
 
-        PS C:\> iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/redpill.ps1 -OutFile redpill.ps1
+     iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/redpill.ps1 -OutFile redpill.ps1
 
 <br />
 
 2º - Set Powershell Execution Policy to <b><i>'UnRestricted'</i></b>
 
-     PS C:\> Set-ExecutionPolicy UnRestricted -Scope CurrentUser
+     Set-ExecutionPolicy UnRestricted -Scope CurrentUser
 
 ![ste](https://user-images.githubusercontent.com/23490060/106375669-f2308b80-6385-11eb-8cff-947178c52915.png)
 
@@ -119,7 +121,7 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 
 3º -  Browse to <b><i>'redpill.ps1'</i></b> storage directory
 
-     PS C:\> cd C:\Users\pedro\Desktop
+     cd C:\Users\pedro\Desktop
 
 ![redpillpath](https://user-images.githubusercontent.com/23490060/107781146-76e4b780-6d3f-11eb-9a41-de1163086c70.png)
 
@@ -127,7 +129,7 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 
 4º - Access CmdLet Help Menu {All Parameters}
 
-     PS C:\> .\redpill.ps1 -Help Parameters
+     .\redpill.ps1 -Help Parameters
 
 ![menu](https://user-images.githubusercontent.com/23490060/107781666-0c804700-6d40-11eb-9fbc-4826705534e5.png)
 
@@ -158,8 +160,9 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 
 <br />
 
-     This cmdlet belongs to the structure of venom v1.0.17.8 as a post-exploitation module. venom amsi evasion agents
-     automatically uploads this CmdLet to %TMP% directory to be easily accessible in our reverse tcp shell ( shell ).
+     This cmdlet belongs to the structure of venom v1.0.17.8 as a post-exploitation module.
+     venom amsi evasion agents automatically uploads this CmdLet to %TMP% directory to be easily
+     accessible in our reverse tcp shell ( shell prompt ).
 
 <br />
 
@@ -194,7 +197,7 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 <details>
 <summary>To Manual download the CmdLet for Local Tests, execute:</summary><br />
 
-        PS C:\> iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/redpill.ps1 -OutFile redpill.ps1
+     iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/redpill.ps1 -OutFile redpill.ps1
 
 </details>
 
@@ -210,10 +213,10 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 |---|---|---|
 |<b><i>@youhacker55|For All the help Debugging this cmdlet (Testing BETA version)|Windows 7 x64bits</b>|
 |<b><i>@0xyg3n|For All the help Debugging this cmdlet (Testing BETA version)|Windows 10 x64bits</b>|
-|<b><i>@Shanty_Damayanti|For All the help Debugging this cmdlet (amsi string detection bypasses)|Windows 10 x64bits</b>|
+|<b><i>@Shanty_Damayanti|Debugging this cmdlet (amsi string detection bypasses)|Windows 10 x64bits</b>|
 
 ![geolocation](https://user-images.githubusercontent.com/23490060/107866747-c7593380-6e6b-11eb-8e38-9ef3acdb3c01.png)<br /><br />
-![pingverbose](https://user-images.githubusercontent.com/23490060/107841656-87834500-6db4-11eb-953c-22e2322577b6.png)
+![pingverbose](https://user-images.githubusercontent.com/23490060/107841656-87834500-6db4-11eb-953c-22e2322577b6.png)<br /><br />
 ![eopmodule](https://user-images.githubusercontent.com/23490060/108617459-78347500-740e-11eb-8cce-90994c2e048a.png)
 
 
