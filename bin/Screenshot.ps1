@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Author: @r00t-3xp10it
    Helper - Capture remote desktop screenshot(s)
@@ -54,22 +54,29 @@ If($Delay -lt '1' -or $Delay -gt '180'){$Delay = '1'} ## Screenshots delay time 
     Remove-Item -Path "$Env:TMP\MyTable.log" -Force
 
 
+    If(-not(Test-Path "$Env:TMP")){
+        New-Item "$Env:TMP" -ItemType Directory -Force
+    }
+
+
     ## Loop Function to take more than one screenshot.
     For($num = 1 ; $num -le $Screenshot ; $num++){
 
-        $OutPutPath = "$Env:TMP"
-        $Dep = -join (((48..57)+(65..90)+(97..122)) * 80 |Get-Random -Count 5 |%{[char]$_})
-        $FileName = "$Env:TMP\Capture-"+"$Dep.png"
-        If(-not(Test-Path "$OutPutPath")){New-Item $OutPutPath -ItemType Directory -Force}
-        Add-Type -AssemblyName System.Windows.Forms
-        Add-type -AssemblyName System.Drawing
-        $ASLR = [System.Windows.Forms.SystemInformation]::VirtualScreen
-        $Height = $ASLR.Height;$Width = $ASLR.Width
-        $Top = $ASLR.Top;$Left = $ASLR.Left
-        $Console = New-Object System.Drawing.Bitmap $Width, $Height
-        $AMD = [System.Drawing.Graphics]::FromImage($Console)
-        $AMD.CopyFromScreen($Left, $Top, 0, 0, $Console.Size)
-        $Console.Save($FileName) 
+        $Oculta = "System.D" + "rawing" -Join ''
+        $Matriarce = "System.W" + "indow" + ".Forms" -Join ''
+        Start-Sleep -Milliseconds 200
+        Add-type -AssemblyName $Oculta
+        Add-Type -AssemblyName $Matriarce
+        $FileName = "$Env:TMP\Capture-" + "$(get-date -f yyyy-MM-dd_HHmmss).png" -Join ''
+        $WindowsForm = [System.Windows.Forms.SystemInformation]::VirtualScreen
+        $TopCorner = $WindowsForm.Top
+        $LeftCorner = $WindowsForm.Left
+        $HeightSize = $WindowsForm.Height
+        $WidthSize = $WindowsForm.Width
+        $Bitmap = New-Object System.Drawing.Bitmap $WidthSize, $HeightSize
+        $Graphics = [System.Drawing.Graphics]::FromImage($Bitmap)
+        $Graphics.CopyFromScreen($Left, $Top, 0, 0, $Bitmap.Size)
+        $Bitmap.Save($FileName) 
 
         Write-Host "$num - Saved: $FileName" -ForegroundColor Yellow
         Start-Sleep -Seconds $Delay; ## 2 seconds delay between screenshots (default value)
