@@ -5,6 +5,7 @@
 [![Stage](https://img.shields.io/badge/Release-Beta-orange.svg)]()
 [![Build](https://img.shields.io/badge/Supported_OS-Windows-orange.svg)]()
 ![licence](https://img.shields.io/badge/license-GPLv3-brightgreen.svg)
+![Last Commit](https://img.shields.io/github/last-commit/r00t-3xp10it/redpill)
 ![Open issues](https://img.shields.io/bitbucket/issues/r00t-3xp10it/redpill)
 
 <br />
