@@ -13,7 +13,7 @@
 
 ## :octocat: Project Description
 The redpill project aims to assist reverse tcp shells in post-exploration tasks. Often in redteam engagements we<br />
-need to use unconventional ways to access target system, such as reverse tcp shells (<b><i>not metasploit in order</i></b>)<br />
+need to use unconventional ways to access target system, such as reverse tcp shells (<b><i>not metasploit</i></b>) in order<br />
 to bypass the defenses implemented by the system administrator. After the first stage was successful compleated<br />
 we face another type of problems: <b><i>"I have (shell) access to the target system, and now what can I do with it?"</i></b><br />
 
