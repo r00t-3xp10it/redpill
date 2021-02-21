@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    CmdLet to assiste reverse tcp shells in post-exploitation
 
