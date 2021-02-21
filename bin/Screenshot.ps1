@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
    Author: @r00t-3xp10it
    Helper - Capture remote desktop screenshot(s)
@@ -78,7 +78,7 @@ If($Delay -lt '1' -or $Delay -gt '180'){$Delay = '1'} ## Screenshots delay time 
             $graphics.Dispose()
             $bmp.Dispose()
 
-        echo "[+] $num - saved: $Path"
+        echo "[+] $num - saved: ($Path"
         Start-Sleep -Seconds $Delay; ## 2 seconds delay between screenshots (default value)
     }
     Write-Host "";Start-Sleep -Seconds 1
