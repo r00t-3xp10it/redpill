@@ -62,22 +62,28 @@ If($Delay -lt '1' -or $Delay -gt '180'){$Delay = '1'} ## Screenshots delay time 
     ## Loop Function to take more than one screenshot.
     For($num = 1 ; $num -le $Screenshot ; $num++){
 
-        Add-type -AssemblyName System.Drawing
-        Start-Sleep -Milliseconds 200
-        $RawDataName = -join (((48..57)+(65..90)+(97..122)) * 80 |Get-Random -Count 4 |%{[char]$_})
-        Add-Type -AssemblyName System.Windows.Forms
-        $FileName = "$Env:TMP\Capture-"+"$RawDataName.png"
-        $WindowsForm = [System.Windows.Forms.SystemInformation]::VirtualScreen
-        $TopCorner = $WindowsForm.Top
-        $LeftCorner = $WindowsForm.Left
-        $HeightSize = $WindowsForm.Height
-        $WidthSize = $WindowsForm.Width
-        $Bitmap = New-Object System.Drawing.Bitmap $WidthSize, $HeightSize
-        $Graphics = [System.Drawing.Graphics]::FromImage($Bitmap)
-        $Graphics.CopyFromScreen($Left, $Top, 0, 0, $Bitmap.Size)
-        $Bitmap.Save($FileName) 
+        ## Random Screenshot FileName Generation
+        $Rand = -join (((48..57)+(65..90)+(97..122)) * 80 |Get-Random -Count 7 |%{[char]$_})
+        $Path = "$Env:TMP\SHot-" + "$Rand.png"
+	
+        [Reflection.Assembly]::LoadWithPartialName("System.Drawing")|Out-Null
+        [Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")|Out-Null
 
-        echo "$num - Saved: $FileName"
+        If(-Not [Environment]::UserInteractive){
+            Write-Host "[-] WARNING process is not interactive your screen capture will likely fail!" -ForeGroundColor Red -BackGroundColor Black
+        }
+
+        $bounds = [System.Windows.Forms.Screen]::AllScreens.Bounds
+        Write-Host "[+] Screen resolution is $($bounds.Width) x $($bounds.Height)"
+        $bounds = [Drawing.Rectangle]::FromLTRB(0, 0,  $bounds.Width, $bounds.Height)
+        $bmp = New-Object Drawing.Bitmap $bounds.width, $bounds.height
+        $graphics = [Drawing.Graphics]::FromImage($bmp)
+        $graphics.CopyFromScreen($bounds.Location, [Drawing.Point]::Empty, $bounds.size)
+            $bmp.Save($Path)
+            $graphics.Dispose()
+            $bmp.Dispose()
+
+        echo "[+] $num - saved: $($Path)"
         Start-Sleep -Seconds $Delay; ## 2 seconds delay between screenshots (default value)
     }
     Write-Host "";Start-Sleep -Seconds 1
