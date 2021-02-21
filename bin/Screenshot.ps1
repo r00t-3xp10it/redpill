@@ -62,11 +62,9 @@ If($Delay -lt '1' -or $Delay -gt '180'){$Delay = '1'} ## Screenshots delay time 
     ## Loop Function to take more than one screenshot.
     For($num = 1 ; $num -le $Screenshot ; $num++){
 
-        $Oculta = "System.D" + "rawing" -Join ''
-        $Matriarce = "System.W" + "indow" + ".Forms" -Join ''
+        Add-type -AssemblyName System.Drawing
         Start-Sleep -Milliseconds 200
-        Add-type -AssemblyName $Oculta
-        Add-Type -AssemblyName $Matriarce
+        Add-Type -AssemblyName System.Windows.Forms
         $FileName = "$Env:TMP\Capture-" + "$(get-date -f yyyy-MM-dd_HHmmss).png" -Join ''
         $WindowsForm = [System.Windows.Forms.SystemInformation]::VirtualScreen
         $TopCorner = $WindowsForm.Top
@@ -78,7 +76,7 @@ If($Delay -lt '1' -or $Delay -gt '180'){$Delay = '1'} ## Screenshots delay time 
         $Graphics.CopyFromScreen($Left, $Top, 0, 0, $Bitmap.Size)
         $Bitmap.Save($FileName) 
 
-        Write-Host "$num - Saved: $FileName" -ForegroundColor Yellow
+        echo "$num - Saved: $FileName"
         Start-Sleep -Seconds $Delay; ## 2 seconds delay between screenshots (default value)
     }
     Write-Host "";Start-Sleep -Seconds 1
