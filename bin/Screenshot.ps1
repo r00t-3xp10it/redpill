@@ -33,8 +33,6 @@
 
 
 Write-Host ""
-## Disable Powershell Command Logging for current session.
-Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 If($Screenshot -gt 0){
 $Limmit = $Screenshot+1 ## The number of screenshots to be taken
 If($Delay -lt '1' -or $Delay -gt '180'){$Delay = '1'} ## Screenshots delay time max\min value accepted
