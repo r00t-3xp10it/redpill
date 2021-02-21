@@ -102,7 +102,7 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
      venom amsi evasion agents automatically uploads this CmdLet to %TMP% directory to be
      easily accessible in our reverse tcp shell ( shell ).
 
-     ==> 'But this section describes how to test this Cmdlet Locally without exploiting the target host'. <==
+     'this section describes how to test this Cmdlet Locally without exploiting target host'
 
 <br />
 
