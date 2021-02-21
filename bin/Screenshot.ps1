@@ -64,7 +64,7 @@ If($Delay -lt '1' -or $Delay -gt '180'){$Delay = '1'} ## Screenshots delay time 
 
         ## Random Screenshot FileName Generation
         $Rand = -join (((48..57)+(65..90)+(97..122)) * 80 |Get-Random -Count 7 |%{[char]$_})
-        $Path = "$Env:TMP\SHot-"+"$Rand.png"
+        $Path = "$Env:TMP\SHot-$Rand.png"
 	
         [Reflection.Assembly]::LoadWithPartialName("System.Drawing")|Out-Null
         [Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")|Out-Null
