@@ -53,11 +53,9 @@ If($Delay -lt '1' -or $Delay -gt '180'){$Delay = '1'} ## Screenshots delay time 
     Get-Content -Path "$Env:TMP\MyTable.log"
     Remove-Item -Path "$Env:TMP\MyTable.log" -Force
 
-
     If(-not(Test-Path "$Env:TMP")){
         New-Item "$Env:TMP" -ItemType Directory -Force
     }
-
 
     ## Loop Function to take more than one screenshot.
     For($num = 1 ; $num -le $Screenshot ; $num++){
@@ -82,7 +80,7 @@ If($Delay -lt '1' -or $Delay -gt '180'){$Delay = '1'} ## Screenshots delay time 
             $graphics.Dispose()
             $bmp.Dispose()
 
-        echo "[+] $num - saved: $($Path)"
+        echo "[+] $num - saved: $Path"
         Start-Sleep -Seconds $Delay; ## 2 seconds delay between screenshots (default value)
     }
     Write-Host "";Start-Sleep -Seconds 1
