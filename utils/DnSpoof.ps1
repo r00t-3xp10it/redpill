@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Redirect Domain Names to our Phishing IP address (dns spoof)
 
@@ -9,12 +9,13 @@
    PS cmdlet Dev version: v1.0.1
    
 .DESCRIPTION
-   fff
+   Redirect Domain Names to our Phishing IP address
+   Remark: This module its deprecated
 
 .NOTES
    Required Dependencies: Administrator privileges on shell
-   Remark: This will never work if the server uses CDN or virtual hosts.
-   This only applies on servers with dedicated IPs.
+   Remark: This will never work if the server uses CDN or virtual
+   hosts. This only applies on servers with dedicated IPs.
 
 .Parameter DnSpoof
    Accepts Enum, Redirect and Clear @arguments
@@ -43,11 +44,6 @@
 .EXAMPLE
    PS C:\> .\DnSpoof.ps1 -DnSpoof Redirect -Domain "www.facebook.com" -ToIPaddr "192.168.1.72"
    Backup original hosts file and redirect Domain Name www.facebook.com To IPaddress 192.168.1.72
-
-.EXAMPLE
-   PS C:\> .\DnSpoof.ps1 -DnSpoof Redirect -Domain "www.facebook.com" -ToIPaddr "192.168.1.72" -Force True
-   Backup original hosts file and redirect Domain Name www.facebook.com To IPaddress 192.168.1.72
-   and Bypasses administrator privileges required to change dns cache using ComputerDfaults EOP.
 
 .EXAMPLE
    PS C:\> .\DnSpoof.ps1 -DnSpoof Clear
@@ -86,8 +82,7 @@
    [string]$FileHosts="$Env:WINDIR\System32\drivers\etc\hosts",
    [string]$ToIPaddr="216.58.215.131", ## www.google.pt
    [string]$Domain="www.facebook.com",
-   [string]$DnSpoof="false",
-   [string]$Force="false"
+   [string]$DnSpoof="false"
 )
 
 
