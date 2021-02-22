@@ -82,7 +82,7 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
     ## Get Public Ip addr GeoLocation
     Write-Host "${NameDomain}\${Env:USERNAME}: GeoLocation" -ForegroundColor Green
     Write-Host "------------------------------";Start-Sleep -Seconds 1
-    $PublicAddr = (Invoke-WebRequest -uri "https://api.ipify.org/").Content
+    $PublicAddr = (curl ifconfig.me).Content
     $GeoLocation = (curl "https://ipapi.co/$PublicAddr/json/" -EA SilentlyContinue).RawContent|
         findstr /C:"city" /C:"region" /C:"country_" /C:"latitude" /C:"longitude"|
         findstr /V "iso3 tld calling area population region_code country_code"
