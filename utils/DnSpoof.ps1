@@ -29,10 +29,6 @@
 .Parameter ToIPaddr
    Accepts the Phishing IP Address to redirect Domain name
 
-.Parameter Force
-   Bypasses admin privileges required to change dns cache
-   using ComputerDefaults escalation of privileges technic.
-
 .EXAMPLE
    PS C:\> Get-Help .\DnSpoof.ps1 -full
    Access this cmdlet comment based help
