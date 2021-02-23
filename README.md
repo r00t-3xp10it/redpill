@@ -2,7 +2,7 @@
 ![wikibanner](https://user-images.githubusercontent.com/23490060/107761196-e0a29880-6d22-11eb-9dfc-35028c9463f6.png)
 
 [![Version](https://img.shields.io/badge/redpill-1.2.5-brightgreen.svg?maxAge=259200)]()
-[![Stage](https://img.shields.io/badge/Release-Beta-orange.svg)]()
+[![Stage](https://img.shields.io/badge/Release-Stable-brightgreen.svg)]()
 [![Build](https://img.shields.io/badge/Supported_OS-Windows-orange.svg)]()
 ![licence](https://img.shields.io/badge/license-GPLv3-brightgreen.svg)
 ![Last Commit](https://img.shields.io/github/last-commit/r00t-3xp10it/redpill)
