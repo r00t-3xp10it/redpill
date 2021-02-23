@@ -103,7 +103,7 @@ If($MetaData -ne "false"){
 
            ## Read $MetaData description
            Get-ChildItem -Path "$MetaData" -Recurse -EA SilentlyContinue |
-               Where-Object { $_.VersionInfo.InternalName -Match ".${Extension}" } |
+               Where-Object { $_.Name -Match ".${Extension}" } |
                Format-List -Property Name,CreationTime,LastAccessTime,VersionInfo >> $Env:TMP\gdfttdo.log
 
       }Else{

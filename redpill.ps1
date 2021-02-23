@@ -1524,7 +1524,7 @@ If($MetaData -ne "false"){
 
    ## Download MetaData.ps1 from my GitHub
    If(-not(Test-Path -Path "$Env:TMP\MetaData.ps1")){## Download MetaData.ps1 from my GitHub repository
-      Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/MetaData.ps1 -Destination $Env:TMP\FileMace.ps1 -ErrorAction SilentlyContinue|Out-Null
+      Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/MetaData.ps1 -Destination $Env:TMP\MetaData.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\MetaData.ps1" -EA SilentlyContinue).length/1KB)
       If($SizeDump -lt 4){## Corrupted download detected => DefaultFileSize: 4,18359375/KB
