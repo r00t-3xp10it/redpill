@@ -1484,36 +1484,42 @@ If($MetaData -ne "false"){
    <#
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - Display file \ appl description (metadata)
+      Helper - Display file \ application description (metadata)
+   
+   .DESCRIPTION
+      Display file \ application description (metadata)
 
    .NOTES
-      -Extension [ exe ] parameter its used to recursive search starting in -FilePath
+      -Extension [ exe ] parameter its used to recursive search starting in -MetaData
       directory for standalone executables (exe) and display is property descriptions.
 
    .EXAMPLE
-      PS C:\> .\MetaData.ps1 -MetaData "$Env:USERPROFILE\Desktop\CommandCam.exe"
-      Display CommandCam.exe stand alone executable file description (metadata)
+      PS C:\> powershell -File redpill.ps1 -MetaData "$Env:USERPROFILE\Desktop\CommandCam.exe"
+      Display CommandCam.exe standalone executable file description (metadata)
 
    .EXAMPLE
-      PS C:\> .\MetaData.ps1 -MetaData "$Env:USERPROFILE\Desktop" -Extension ".exe"
-      Search for .exe files recursive and display is property description
+      PS C:\> powershell -File redpill.ps1 -MetaData "$Env:USERPROFILE\Desktop" -Extension "exe"
+      Search for [ exe ] recursive starting in -MetaData [ dir ] and display descriptions
 
    .OUTPUTS
       FileMetadata
       ------------
-      VersionInfo : File:             C:\Users\pedro\Desktop\CommandCam.exe
-                    InternalName:     CommandCam.exe
-                    OriginalFilename: CommandCam.exe
-                    FileVersion:      0.0.2.8
-                    FileDescription:  meterpeter WebCamSnap
-                    Product:          meterpeter WebCamSnap
-                    ProductVersion:   1.0.2.8
-                    Debug:            False
-                    Patched:          False
-                    PreRelease:       False
-                    PrivateBuild:     True
-                    SpecialBuild:     False
-                    Language:         Idioma neutro
+      Name           : CommandCam.exe
+      CreationTime   : 23/02/2021 18:31:55
+      LastAccessTime : 23/02/2021 18:31:55
+      VersionInfo    : File:             C:\Users\pedro\Desktop\CommandCam.exe
+                       InternalName:     CommandCam.exe
+                       OriginalFilename: CommandCam.exe
+                       FileVersion:      0.0.2.8
+                       FileDescription:  meterpeter WebCamSnap
+                       Product:          meterpeter WebCamSnap
+                       ProductVersion:   1.0.2.8
+                       Debug:            False
+                       Patched:          False
+                       PreRelease:       False
+                       PrivateBuild:     True
+                       SpecialBuild:     False
+                       Language:         Idioma neutro
    #>
 
    ## Download MetaData.ps1 from my GitHub
@@ -1521,7 +1527,7 @@ If($MetaData -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/MetaData.ps1 -Destination $Env:TMP\FileMace.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\MetaData.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 4){## Corrupted download detected => DefaultFileSize: 4,6552734375/KB
+      If($SizeDump -lt 4){## Corrupted download detected => DefaultFileSize: 4,18359375/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\MetaData.ps1"){Remove-Item -Path "$Env:TMP\MetaData.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -2592,36 +2598,42 @@ $HelpParameters = @"
    <#!Help.
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - Display file \ appl description (metadata)
+      Helper - Display file \ application description (metadata)
+   
+   .DESCRIPTION
+      Display file \ application description (metadata)
 
    .NOTES
-      -Extension [ exe ] parameter its used to recursive search starting in -FilePath
+      -Extension [ exe ] parameter its used to recursive search starting in -MetaData
       directory for standalone executables (exe) and display is property descriptions.
 
    .EXAMPLE
-      PS C:\> .\MetaData.ps1 -MetaData "`$Env:USERPROFILE\Desktop\CommandCam.exe"
-      Display CommandCam.exe stand alone executable file description (metadata)
+      PS C:\> powershell -File redpill.ps1 -MetaData "`$Env:USERPROFILE\Desktop\CommandCam.exe"
+      Display CommandCam.exe standalone executable file description (metadata)
 
    .EXAMPLE
-      PS C:\> .\MetaData.ps1 -MetaData "`$Env:USERPROFILE\Desktop" -Extension ".exe"
-      Search for .exe files recursive and display is property description
+      PS C:\> powershell -File redpill.ps1 -MetaData "`$Env:USERPROFILE\Desktop" -Extension "exe"
+      Search for [ exe ] recursive starting in -MetaData [ dir ] and display descriptions
 
    .OUTPUTS
       FileMetadata
       ------------
-      VersionInfo : File:             C:\Users\pedro\Desktop\CommandCam.exe
-                    InternalName:     CommandCam.exe
-                    OriginalFilename: CommandCam.exe
-                    FileVersion:      0.0.2.8
-                    FileDescription:  meterpeter WebCamSnap
-                    Product:          meterpeter WebCamSnap
-                    ProductVersion:   1.0.2.8
-                    Debug:            False
-                    Patched:          False
-                    PreRelease:       False
-                    PrivateBuild:     True
-                    SpecialBuild:     False
-                    Language:         Idioma neutro
+      Name           : CommandCam.exe
+      CreationTime   : 23/02/2021 18:31:55
+      LastAccessTime : 23/02/2021 18:31:55
+      VersionInfo    : File:             C:\Users\pedro\Desktop\CommandCam.exe
+                       InternalName:     CommandCam.exe
+                       OriginalFilename: CommandCam.exe
+                       FileVersion:      0.0.2.8
+                       FileDescription:  meterpeter WebCamSnap
+                       Product:          meterpeter WebCamSnap
+                       ProductVersion:   1.0.2.8
+                       Debug:            False
+                       Patched:          False
+                       PreRelease:       False
+                       PrivateBuild:     True
+                       SpecialBuild:     False
+                       Language:         Idioma neutro
    #>!bye..
 
 "@;
