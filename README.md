@@ -75,6 +75,7 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 |-Persiste| $Env:TMP\Script.ps1 |Persiste script.ps1 on every startup {BeaconHome}|
 |-CleanTracks| Clear \| Paranoid |Clean disk artifacts left behind {clean system tracks}|
 |-FileMace| $Env:TMP\test.txt |Change File Mace {CreationTime,LastAccessTime,LastWriteTime}|
+|-MetaData| $Env:TMP\test.exe |Display files \ applications description (metadata)|
 |-MsgBox| "Hello World." |Spawns "Hello World." msgBox on local host {wscriptComObject}|
 |-SpeakPrank| "Hello World." |Make remote host speak user input sentence {prank}|
 |-NetTrace| Enum |Agressive Enumeration with the help of netsh {native}|
