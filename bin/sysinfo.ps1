@@ -44,12 +44,14 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
 
     ## Local Function Variable declarations
     $ConsoleId = (Get-Process -PID $PID).Id
+    $PsNumber = $PSVersionTable.PSVersion.ToString()
     $IsVirtualMachine = (Get-MpComputerStatus).IsVirtualMachine
     $System = (Get-CimInstance -ClassName CIM_OperatingSystem).Caption
     $Version = (Get-CimInstance -ClassName CIM_OperatingSystem).Version
     $NameDomain = (Get-CimInstance -ClassName CIM_OperatingSystem).CSName
     $SystemDir = (Get-CimInstance -ClassName CIM_OperatingSystem).SystemDirectory
     $Architecture = (Get-CimInstance -ClassName CIM_OperatingSystem).OSArchitecture
+    $RawParse = $PsNumber.Split('.')[-1];$PsNumber = $PsNumber -replace ".${RawParse}",""
     $IsClientAdmin = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
     $UserAgentString = Get-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\internet settings" -Name 'User Agent' -ErrorAction SilentlyContinue|Select-Object -ExpandProperty 'User Agent'
     If($IsClientAdmin){$ShellPrivs = "Admin"}Else{$ShellPrivs = "UserLand"}
@@ -72,6 +74,7 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
     Write-Host "ConsolePid        : $ConsoleId"
     Write-Host "IsVirtualMachine  : $IsVirtualMachine"
     Write-Host "Architecture      : $Architecture"
+    Write-Host "PSVersion         : $PsNumber"
     Write-Host "OSVersion         : $Version"
     Write-Host "IPAddress         : $Address" -ForegroundColor Yellow
     Write-Host "System32          : $SystemDir"
