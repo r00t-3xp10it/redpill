@@ -103,15 +103,26 @@ If($MetaData -ne "false"){
 
            ## Read $MetaData description
            Get-ChildItem -Path "$MetaData" -Recurse -EA SilentlyContinue |
-               Where-Object { $_.Name -Match "[.${Extension}]$" } |
+               Where-Object { $_.PSIsContainer -ieq $False -and $_.Name -Match "(.${Extension})$" } |
                Format-List -Property Name,CreationTime,LastAccessTime,VersionInfo >> $Env:TMP\gdfttdo.log
 
+           $CheckContents = Get-Content -Path "$Env:TMP\gdfttdo.log" -EA SilentlyContinue
+           If(-not($CheckContents -Match "(.${Extension})$")){
+               echo "[error] None files found under: $MetaData`n" >> $Env:TMP\gdfttdo.log              
+           }
+           
       }Else{
 
           ## Read $MetaData description
           Get-ItemProperty -Path "$MetaData" -EA SilentlyContinue |
               Format-List -Property Name,CreationTime,LastAccessTime,VersionInfo >> $Env:TMP\gdfttdo.log 
 
+          $FileExt = $MetaData.Split('.')[-1]
+          $CheckContents = Get-Content -Path "$Env:TMP\gdfttdo.log" -EA SilentlyContinue
+          If(-not($CheckContents -Match "(.${FileExt})$")){
+              echo "[error] None files found under: $MetaData`n" >> $Env:TMP\gdfttdo.log              
+          }
+          
       }
 
    }Else{
@@ -125,4 +136,5 @@ If($MetaData -ne "false"){
    # Strip Empty Lines from output ( where-object {} )
    Get-Content -Path "$Env:TMP\gdfttdo.log" | Where-Object { $_ -ne "" }
    Remove-Item -Path "$Env:TMP\gdfttdo.log" -Force
+   Write-Host ""
 }
