@@ -80,7 +80,7 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 |-MsgBox| "Hello World." |Spawns "Hello World." msgBox on local host {wscriptComObject}|
 |-SpeakPrank| "Hello World." |Make remote host speak user input sentence {prank}|
 |-NetTrace| Enum |Agressive Enumeration with the help of netsh {native}|
-|-PingSweep| Enum |Enumerate Active IP Address and open ports on Local Lan|
+|-PingSweep| Enum \| Verbose |Enumerate Active IP Address and open ports on Local Lan|
 
 <br />
 
