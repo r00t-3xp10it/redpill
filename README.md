@@ -2,7 +2,7 @@
 ![wikibanner](https://user-images.githubusercontent.com/23490060/107761196-e0a29880-6d22-11eb-9dfc-35028c9463f6.png)
 
 [![Version](https://img.shields.io/badge/redpill-1.2.5-brightgreen.svg?maxAge=259200)]()
-[![Stage](https://img.shields.io/badge/Release-Stable-brightgreen.svg)]()
+[![Stage](https://img.shields.io/badge/Release-Beta-orange.svg)]()
 [![Build](https://img.shields.io/badge/Supported_OS-Windows-orange.svg)]()
 ![licence](https://img.shields.io/badge/license-GPLv3-brightgreen.svg)
 ![Last Commit](https://img.shields.io/github/last-commit/r00t-3xp10it/redpill)
@@ -76,6 +76,7 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 |-CleanTracks| Clear \| Paranoid |Clean disk artifacts left behind {clean system tracks}|
 |-FileMace| $Env:TMP\test.txt |Change File Mace {CreationTime,LastAccessTime,LastWriteTime}|
 |-MetaData| $Env:TMP\test.exe |Display files \ applications description (metadata)|
+|-PEHollow| $Env:TMP\test.exe |PE Process Hollowing {impersonate explorer.exe as parent}|
 |-MsgBox| "Hello World." |Spawns "Hello World." msgBox on local host {wscriptComObject}|
 |-SpeakPrank| "Hello World." |Make remote host speak user input sentence {prank}|
 |-NetTrace| Enum |Agressive Enumeration with the help of netsh {native}|

