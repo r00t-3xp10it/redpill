@@ -70,6 +70,9 @@
 )
 
 
+## Disable Powershell Command Logging for current session.
+Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
+
 If($UserGroup -ieq "false"){
     ## Get Group Name (BUILTIN\users) in diferent languages
     # NOTE: England, Portugal, France, Germany, Indonesia, Holland, Romania, Croacia
