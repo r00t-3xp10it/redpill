@@ -1879,21 +1879,21 @@ if($AppLocker -ieq "Enum"){
 
    <#
    .SYNOPSIS
-      Enumerate AppLocker Directorys with weak permissions
+      Enumerate directorys with weak permissions (bypass applocker)
 
    .Parameter FolderRigths
-      Accepts permissions: Read, Write, FullControll
+      Accepts permissions: Modify, Write, FullControll
 
    .Parameter UserGroup
       Accepts GroupNames: Everyone, BUILTIN\Users, NT AUTHORITY\INTERACTIVE
 
    .EXAMPLE
       PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -UserGroup "BUILTIN\Users" -FolderRigths "Write"
-      Enumerate AppLocker directorys with 'Write' permissions on 'BUILTIN\Users' Group
+      Enumerate directorys with 'Write' permissions on 'BUILTIN\Users' Group Name
 
    .EXAMPLE
       PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -UserGroup "Everyone" -FolderRigths "FullControl"
-      Enumerate AppLocker directorys with 'FullControl' permissions on 'Everyone' Group
+      Enumerate directorys with 'FullControl' permissions on 'Everyone' Group Name
 
    .OUTPUTS
       AppLocker Weak Directory permissions
@@ -1915,7 +1915,7 @@ if($AppLocker -ieq "Enum"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/AppLocker.ps1 -Destination $Env:TMP\AppLocker.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\AppLocker.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 5){## Corrupted download detected => DefaultFileSize: 5,1123046875/KB
+      If($SizeDump -lt 5){## Corrupted download detected => DefaultFileSize: 5,2236328125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\AppLocker.ps1"){Remove-Item -Path "$Env:TMP\AppLocker.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -2964,21 +2964,21 @@ $HelpParameters = @"
 
    <#!Help.
    .SYNOPSIS
-      Enumerate AppLocker Directorys with weak permissions
+      Enumerate directorys with weak permissions (bypass applocker)
 
    .Parameter FolderRigths
-      Accepts permissions: Read, Write, FullControll
+      Accepts permissions: Modify, Write, FullControll
 
    .Parameter UserGroup
       Accepts GroupNames: Everyone, BUILTIN\Users, NT AUTHORITY\INTERACTIVE
 
    .EXAMPLE
       PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -UserGroup "BUILTIN\Users" -FolderRigths "Write"
-      Enumerate AppLocker directorys with 'Write' permissions on 'BUILTIN\Users' Group
+      Enumerate directorys with 'Write' permissions on 'BUILTIN\Users' Group Name
 
    .EXAMPLE
       PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -UserGroup "Everyone" -FolderRigths "FullControl"
-      Enumerate AppLocker directorys with 'FullControl' permissions on 'Everyone' Group
+      Enumerate directorys with 'FullControl' permissions on 'Everyone' Group Name
 
    .OUTPUTS
       AppLocker Weak Directory permissions
