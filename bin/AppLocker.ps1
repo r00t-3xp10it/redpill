@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-   Enumerate AppLocker Directorys with weak permissions
+   Enumerate Directorys with weak permissions (bypass applocker)
 
    Author: @r00t-3xp10it
    Tested Under: Windows 10 (18363) x64 bits
@@ -8,11 +8,26 @@
    Optional Dependencies: none
    PS cmdlet Dev version: v1.0.1
 
+.NOTES
+   AppLocker.ps1 by default uses 'BUILTIN\Users' Group Name
+   to search for directorys with 'Write' access on Disk.
+
+   Search locations:
+   $Env:WINDIR\Temp
+   $Env:WINDIR\Tasks
+   $Env:WINDIR\tracing
+   $Env:SYSTEMDRIVE\Temp
+   $Env:SYSTEMDRIVE\Users\Public
+   $Env:WINDIR\System32\Tasks_Migrated
+   $Env:WINDIR\System32\Microsoft\Crypto\RSA\MachineKeys
+   $Env:WINDIR\SysWOW64\Tasks\Microsoft\Windows\SyncCenter
+   $Env:WINDIR\System32\Tasks\Microsoft\Windows\SyncCenter
+
 .Parameter FolderRigths
-   Accepts permissions: Read, Write, FullControll
+   Accepts permissions: Read, Write, FullControll, etc
 
 .Parameter UserGroup
-   Accepts GroupNames: Everyone, BUILTIN\Users, NT AUTHORITY\INTERACTIVE
+   Accepts GroupNames: Everyone, BUILTIN\Users, NT AUTHORITY\INTERACTIVE, etc
 
 .EXAMPLE
    PS C:\> Get-Help .\AppLocker.ps1 -full
@@ -42,6 +57,11 @@
    FolderPath        : C:\WINDOWS\tracing
    FileSystemRights  : Write
    IdentityReference : BUILTIN\Utilizadores
+
+.LINK
+   https://github.com/r00t-3xp10it/redpill
+   https://github.com/r00t-3xp10it/redpill/blob/main/bin/AppLocker.ps1
+   https://www.hacking-tutorial.com/hacking-tutorial/how-to-bypass-windows-applocker/#sthash.S5HpWGRZ.dpbs
 #>
 
 
@@ -49,13 +69,13 @@
 [CmdletBinding(PositionalBinding=$false)] param(
    [string]$FolderRigths="Write",
    [string]$UserGroup="false",
-   [string]$success="false"
+   [string]$Success="false"
 )
 
 
 If($UserGroup -ieq "false"){
     ## Get Group Name (BUILTIN\users) in diferent languages
-    # NOTE: England, Portugal, France, Germany, Indonesia, Holland, Romania, Croacia 
+    # NOTE: England, Portugal, France, Germany, Indonesia, Holland, Romania, Croacia
     $FindGroupUser = whoami /groups|findstr /C:"BUILTIN\Users" /C:"BUILTIN\Utilizadores" /C:"BUILTIN\Utilisateurs" /C:"BUILTIN\Benutzer" /C:"BUILTIN\Pengguna" /C:"BUILTIN\Gebruikers" /C:"BUILTIN\Utilizatori" /C:"BUILTIN\Korisnici"|Select-Object -First 1
     $SplitStringUser = $FindGroupUser -split(" ");$GroupNameUsers = $SplitStringUser[0] -replace ' ',''
 }
@@ -79,7 +99,7 @@ Start-Sleep -Seconds 1
 
 
 ## AppLocker Directorys to search recursive:
-$dAtAbAsEList = Get-Item -Path "$Env:WINDIR\Tasks","$Env:WINDIR\Temp","$Env:WINDIR\System32\Microsoft\Crypto\RSA\MachineKeys","$Env:WINDIR\System32\Tasks\Microsoft\Windows\SyncCenter","$Env:WINDIR\System32\Tasks_Migrated","$Env:WINDIR\tracing","C:\Users\Public" -EA SilentlyContinue|Where-Object { $_.PSIsContainer }|Select-Object -ExpandProperty FullName
+$dAtAbAsEList = Get-Item -Path "$Env:WINDIR\Temp","$Env:WINDIR\Tasks","$Env:WINDIR\tracing","$Env:SYSTEMDRIVE\Temp","$Env:SYSTEMDRIVE\Users\Public","$Env:WINDIR\System32\Tasks_Migrated","$Env:WINDIR\System32\Microsoft\Crypto\RSA\MachineKeys","$Env:WINDIR\SysWOW64\Tasks\Microsoft\Windows\SyncCenter","$Env:WINDIR\System32\Tasks\Microsoft\Windows\SyncCenter" -EA SilentlyContinue|Where-Object { $_.PSIsContainer }|Select-Object -ExpandProperty FullName
 ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (Paths)
     (Get-Acl "$Token" -EA SilentlyContinue).Access|Where-Object {
     $CleanOutput = $_.FileSystemRights -Match "$FolderRigths" -and $_.IdentityReference -Match "$UserGroup" ## <-- In my system the IdentityReference is: 'Todos'
@@ -88,17 +108,17 @@ ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (Paths)
             Write-Host "FolderPath        : $Token" -ForegroundColor Green
             Write-Host "FileSystemRights  : $FolderRigths"
             Write-Host "IdentityReference : $RawUserGroup"
-            $success = $True
+            $Success = $True
         }
     }## End of Get-Acl loop
 }## End of ForEach loop
 
 
-If($success -ne $True){
-    echo "[error] None directorys found with: $FolderRigths" > $Env:TMP\werre.log
+If($Success -ne $True){
+    echo "[error] None dir found with: '$FolderRigths' permissions!" > $Env:TMP\werre.log
     Get-Content -Path "$Env:TMP\werre.log"
     Remove-Item -Path "$Env:TMP\werre.log" -Force
 }Else{
-    Write-Host "`n[$Count] AppLocker directorys found with weak permissions!" -ForegroundColor Green -BackgroundColor Black
+    Write-Host "`n`n[$Count] Directorys found with weak permissions!" -ForegroundColor Green -BackgroundColor Black
 }
 Write-Host ""
