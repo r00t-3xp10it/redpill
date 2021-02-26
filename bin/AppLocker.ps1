@@ -37,11 +37,11 @@
 
 .EXAMPLE
    PS C:\> .\AppLocker.ps1 -UserGroup "BUILTIN\Users" -FolderRigths "Write"
-   Enumerate AppLocker directorys with 'Write' permissions on 'BUILTIN\Users' Group
+   Enumerate directorys with 'Write' permissions on 'BUILTIN\Users' Group Name
 
 .EXAMPLE
    PS C:\> .\AppLocker.ps1 -UserGroup "Everyone" -FolderRigths "FullControl"
-   Enumerate AppLocker directorys with 'FullControl' permissions on 'Everyone' Group
+   Enumerate directorys with 'FullControl' permissions on 'Everyone' Group Name
 
 .INPUTS
    None. You cannot pipe objects into AppLocker.ps1
@@ -83,14 +83,15 @@ If($UserGroup -ieq "false"){
 }
 
 If($UserGroup -Match '\\'){
-    $RawUserGroup = $UserGroup
-    $UserGroup = $UserGroup -replace '\\','\\'
+    $RawUserGroup = $UserGroup ## BUILTIN\Users
+    $UserGroup = $UserGroup -replace '\\','\\' ## BUILTIN\\Users
 }ElseIf($GroupNameUsers -Match '\\'){
-    $RawUserGroup = $GroupNameUsers
-    $UserGroup = $GroupNameUsers -replace '\\','\\'   
-}Else{
-    $RawUserGroup = $UserGroup
+    $RawUserGroup = $GroupNameUsers ## BUILTIN\Users
+    $UserGroup = $GroupNameUsers -replace '\\','\\' ## BUILTIN\\Users
+}Else{## Example: Everyone Group Name
+    $RawUserGroup = $UserGroup ## BUILTIN\Users
 }
+
  
 ## Build Output Table
 echo "`nAppLocker Weak Directory permissions" > $Env:TMP\qwerty.log
@@ -100,7 +101,7 @@ Remove-Item -Path "$Env:TMP\qwerty.log" -Force
 Start-Sleep -Seconds 1
 
 
-## AppLocker Directorys to search recursive:
+## Bypass AppLocker directorys to search recursive:
 $dAtAbAsEList = Get-Item -Path "$Env:WINDIR\System32\spool\drivers\color","$Env:WINDIR\Registration\CRMLog","$Env:WINDIR\Temp","$Env:WINDIR\Tasks","$Env:WINDIR\tracing","$Env:SYSTEMDRIVE\Temp","$Env:SYSTEMDRIVE\Users\Public","$Env:WINDIR\System32\Tasks_Migrated","$Env:WINDIR\System32\Microsoft\Crypto\RSA\MachineKeys","$Env:WINDIR\SysWOW64\Tasks\Microsoft\Windows\SyncCenter","$Env:WINDIR\System32\Tasks\Microsoft\Windows\SyncCenter" -EA SilentlyContinue|Where-Object { $_.PSIsContainer }|Select-Object -ExpandProperty FullName
 ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (Paths)
     (Get-Acl "$Token" -EA SilentlyContinue).Access|Where-Object {
