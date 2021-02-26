@@ -1,6 +1,6 @@
-<#
+﻿<#
 .SYNOPSIS
-   Enumerate directorys with weak permissions (bypass applocker)
+   Enumerate Directorys with weak permissions (bypass applocker)
 
    Author: @r00t-3xp10it
    Tested Under: Windows 10 (18363) x64 bits
