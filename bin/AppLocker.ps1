@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Enumerate Directorys with weak permissions (bypass applocker)
 
@@ -18,13 +18,15 @@
    $Env:WINDIR\tracing
    $Env:SYSTEMDRIVE\Temp
    $Env:SYSTEMDRIVE\Users\Public
+   $Env:WINDIR\Registration\CRMLog
    $Env:WINDIR\System32\Tasks_Migrated
+   $Env:WINDIR\System32\spool\drivers\color
    $Env:WINDIR\System32\Microsoft\Crypto\RSA\MachineKeys
    $Env:WINDIR\SysWOW64\Tasks\Microsoft\Windows\SyncCenter
    $Env:WINDIR\System32\Tasks\Microsoft\Windows\SyncCenter
 
 .Parameter FolderRigths
-   Accepts permissions: Read, Write, FullControll, etc
+   Accepts permissions: Modify, Write, FullControll, etc
 
 .Parameter UserGroup
    Accepts GroupNames: Everyone, BUILTIN\Users, NT AUTHORITY\INTERACTIVE, etc
@@ -54,7 +56,7 @@
    IdentityReference : BUILTIN\Utilizadores
 
    VulnId            : 2::ACL (Mitre T1222)
-   FolderPath        : C:\WINDOWS\tracing
+   FolderPath        : C:\WINDOWS\System32\Microsoft\Crypto\RSA\MachineKeys
    FileSystemRights  : Write
    IdentityReference : BUILTIN\Utilizadores
 
@@ -99,7 +101,7 @@ Start-Sleep -Seconds 1
 
 
 ## AppLocker Directorys to search recursive:
-$dAtAbAsEList = Get-Item -Path "$Env:WINDIR\Temp","$Env:WINDIR\Tasks","$Env:WINDIR\tracing","$Env:SYSTEMDRIVE\Temp","$Env:SYSTEMDRIVE\Users\Public","$Env:WINDIR\System32\Tasks_Migrated","$Env:WINDIR\System32\Microsoft\Crypto\RSA\MachineKeys","$Env:WINDIR\SysWOW64\Tasks\Microsoft\Windows\SyncCenter","$Env:WINDIR\System32\Tasks\Microsoft\Windows\SyncCenter" -EA SilentlyContinue|Where-Object { $_.PSIsContainer }|Select-Object -ExpandProperty FullName
+$dAtAbAsEList = Get-Item -Path "$Env:WINDIR\System32\spool\drivers\color","$Env:WINDIR\Registration\CRMLog","$Env:WINDIR\Temp","$Env:WINDIR\Tasks","$Env:WINDIR\tracing","$Env:SYSTEMDRIVE\Temp","$Env:SYSTEMDRIVE\Users\Public","$Env:WINDIR\System32\Tasks_Migrated","$Env:WINDIR\System32\Microsoft\Crypto\RSA\MachineKeys","$Env:WINDIR\SysWOW64\Tasks\Microsoft\Windows\SyncCenter","$Env:WINDIR\System32\Tasks\Microsoft\Windows\SyncCenter" -EA SilentlyContinue|Where-Object { $_.PSIsContainer }|Select-Object -ExpandProperty FullName
 ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (Paths)
     (Get-Acl "$Token" -EA SilentlyContinue).Access|Where-Object {
     $CleanOutput = $_.FileSystemRights -Match "$FolderRigths" -and $_.IdentityReference -Match "$UserGroup" ## <-- In my system the IdentityReference is: 'Todos'
