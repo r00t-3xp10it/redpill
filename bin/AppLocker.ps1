@@ -47,8 +47,8 @@
    None. You cannot pipe objects into AppLocker.ps1
 
 .OUTPUTS
-   AppLocker Weak Directory permissions
-   ------------------------------------
+   AppLocker - Weak Directory permissions
+   --------------------------------------
 
    VulnId            : 1::ACL (Mitre T1222)
    FolderPath        : C:\WINDOWS\tracing
