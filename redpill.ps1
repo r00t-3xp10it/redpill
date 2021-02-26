@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    CmdLet to assiste reverse tcp shells in post-exploitation
 
@@ -1905,7 +1905,7 @@ if($AppLocker -ieq "Enum"){
       IdentityReference : BUILTIN\Utilizadores
 
       VulnId            : 2::ACL (Mitre T1222)
-      FolderPath        : C:\WINDOWS\tracing
+      FolderPath        : C:\WINDOWS\System32\Microsoft\Crypto\RSA\MachineKeys
       FileSystemRights  : Write
       IdentityReference : BUILTIN\Utilizadores
    #>
@@ -2964,7 +2964,7 @@ $HelpParameters = @"
 
    <#!Help.
    .SYNOPSIS
-      Enumerate AppLocker Directorys with weak permissions
+      Enumerate Directorys with weak permissions (applocker)
 
    .Parameter FolderRigths
       Accepts permissions: Read, Write, FullControll
@@ -2990,7 +2990,7 @@ $HelpParameters = @"
       IdentityReference : BUILTIN\Utilizadores
 
       VulnId            : 2::ACL (Mitre T1222)
-      FolderPath        : C:\WINDOWS\tracing
+      FolderPath        : C:\WINDOWS\System32\Microsoft\Crypto\RSA\MachineKeys
       FileSystemRights  : Write
       IdentityReference : BUILTIN\Utilizadores
    #>!bye..
