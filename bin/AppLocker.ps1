@@ -84,7 +84,7 @@ If($UserGroup -Match '\\'){
     $RawUserGroup = $GroupNameUsers ## BUILTIN\Users
     $UserGroup = $GroupNameUsers -replace '\\','\\' ## BUILTIN\\Users
 }Else{## Example: Everyone Group Name
-    $RawUserGroup = $UserGroup ## BUILTIN\Users
+    $RawUserGroup = $UserGroup ## Everyone
 }
 
  
