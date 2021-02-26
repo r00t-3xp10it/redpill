@@ -72,6 +72,11 @@
 
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
+## Set default values in case user skip it
+If(-not($FolderRigths) -or $FolderRigths -ieq "false"){
+    $FolderRigths = "Write"
+}
+
 
 If($UserGroup -ieq "false"){
     ## Get Group Name (BUILTIN\users) in diferent languages
