@@ -2964,7 +2964,8 @@ $HelpParameters = @"
 
    <#!Help.
    .SYNOPSIS
-      Enumerate directorys with weak permissions (bypass applocker)
+      Author: @r00t-3xp10it
+      Helper - Enumerate directorys with weak permissions (bypass applocker)
 
    .Parameter FolderRigths
       Accepts permissions: Modify, Write, FullControll
