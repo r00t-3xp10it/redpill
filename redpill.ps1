@@ -2974,8 +2974,12 @@ $HelpParameters = @"
       Accepts GroupNames: Everyone, BUILTIN\Users, NT AUTHORITY\INTERACTIVE
 
    .EXAMPLE
-      PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -UserGroup "BUILTIN\Users" -FolderRigths "Write"
-      Enumerate directorys with 'Write' permissions on 'BUILTIN\Users' Group Name
+      PS C:\> Powershell -File redpill.ps1 -AppLocker Enum 
+      Enumerate directorys with 'Write' permissions on 'BUILTIN\Users' Group Name (default)
+
+   .EXAMPLE
+      PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -UserGroup "Everyone" -FolderRigths "Write"
+      Enumerate directorys with 'Write' permissions on 'Everyone' Group Name
 
    .EXAMPLE
       PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -UserGroup "Everyone" -FolderRigths "FullControl"
