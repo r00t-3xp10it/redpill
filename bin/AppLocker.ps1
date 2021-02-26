@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-   Enumerate Directorys with weak permissions (bypass applocker)
+   Enumerate directorys with weak permissions (bypass applocker)
 
    Author: @r00t-3xp10it
    Tested Under: Windows 10 (18363) x64 bits
@@ -59,11 +59,6 @@
    FolderPath        : C:\WINDOWS\System32\Microsoft\Crypto\RSA\MachineKeys
    FileSystemRights  : Write
    IdentityReference : BUILTIN\Utilizadores
-
-.LINK
-   https://github.com/r00t-3xp10it/redpill
-   https://github.com/r00t-3xp10it/redpill/blob/main/bin/AppLocker.ps1
-   https://www.hacking-tutorial.com/hacking-tutorial/how-to-bypass-windows-applocker/#sthash.S5HpWGRZ.dpbs
 #>
 
 
