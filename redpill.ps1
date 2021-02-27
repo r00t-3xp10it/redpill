@@ -1884,20 +1884,20 @@ if($AppLocker -ieq "Enum"){
    .Parameter FolderRigths
       Accepts permissions: Modify, Write, FullControll
 
-   .Parameter UserGroup
+   .Parameter GroupName
       Accepts GroupNames: Everyone, BUILTIN\Users, NT AUTHORITY\INTERACTIVE
 
    .EXAMPLE
-      PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -UserGroup "BUILTIN\Users" -FolderRigths "Write"
-      Enumerate directorys with 'Write' permissions on 'BUILTIN\Users' Group Name
+      PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -GroupName "BUILTIN\Users" -FolderRigths "Write"
+      Enumerate directorys owned by 'BUILTIN\Users' GroupName with 'Write' permissions
 
    .EXAMPLE
-      PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -UserGroup "Everyone" -FolderRigths "FullControl"
-      Enumerate directorys with 'FullControl' permissions on 'Everyone' Group Name
+      PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -GroupName "Everyone" -FolderRigths "FullControl"
+      Enumerate directorys owned by 'Everyone' GroupName with 'FullControl' permissions
 
    .OUTPUTS
-      AppLocker Weak Directory permissions
-      ------------------------------------
+      AppLocker - Weak Directory permissions
+      --------------------------------------
 
       VulnId            : 1::ACL (Mitre T1222)
       FolderPath        : C:\WINDOWS\tracing
@@ -1915,7 +1915,7 @@ if($AppLocker -ieq "Enum"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/AppLocker.ps1 -Destination $Env:TMP\AppLocker.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\AppLocker.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 5){## Corrupted download detected => DefaultFileSize: 5,2236328125/KB
+      If($SizeDump -lt 5){## Corrupted download detected => DefaultFileSize: 5,60546875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\AppLocker.ps1"){Remove-Item -Path "$Env:TMP\AppLocker.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -1923,7 +1923,7 @@ if($AppLocker -ieq "Enum"){
    }
 
    ## Run auxiliary module
-   powershell -File "$Env:TMP\AppLocker.ps1" -UserGroup "$UserGroup" -FolderRigths "$FolderRigths"
+   powershell -File "$Env:TMP\AppLocker.ps1" -GroupName "$UserGroup" -FolderRigths "$FolderRigths"
 
    ## Clean Old files left behind
    If(Test-Path -Path "$Env:TMP\AppLocker.ps1"){Remove-Item -Path "$Env:TMP\AppLocker.ps1" -Force}
@@ -2970,24 +2970,24 @@ $HelpParameters = @"
    .Parameter FolderRigths
       Accepts permissions: Modify, Write, FullControll
 
-   .Parameter UserGroup
+   .Parameter GroupName
       Accepts GroupNames: Everyone, BUILTIN\Users, NT AUTHORITY\INTERACTIVE
 
    .EXAMPLE
       PS C:\> Powershell -File redpill.ps1 -AppLocker Enum 
-      Enumerate directorys with 'Write' permissions on 'BUILTIN\Users' Group Name (default)
+      Enumerate directorys owned by 'BUILTIN\Users' GroupName with 'Write' permissions (default)
 
    .EXAMPLE
-      PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -UserGroup "Everyone" -FolderRigths "Write"
-      Enumerate directorys with 'Write' permissions on 'Everyone' Group Name
+      PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -GroupName "Everyone" -FolderRigths "Write"
+      Enumerate directorys owned by 'Everyone' GroupName with 'Write' permissions
 
    .EXAMPLE
-      PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -UserGroup "Everyone" -FolderRigths "FullControl"
-      Enumerate directorys with 'FullControl' permissions on 'Everyone' Group Name
+      PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -GroupName "Everyone" -FolderRigths "FullControl"
+      Enumerate directorys owned by 'Everyone' GroupName with 'FullControl' permissions
 
    .OUTPUTS
-      AppLocker Weak Directory permissions
-      ------------------------------------
+      AppLocker - Weak Directory permissions
+      --------------------------------------
 
       VulnId            : 1::ACL (Mitre T1222)
       FolderPath        : C:\WINDOWS\tracing
