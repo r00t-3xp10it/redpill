@@ -8,6 +8,9 @@
    GitHub repository into remote host %TMP% directory,
    And identify install browsers and run enum modules.
 
+.Parameter GetBrowsers
+   Accepts Enum and Verbose @arguments
+
 .EXAMPLE
    PS C:\> Get-Help .\EnumBrowsers.ps1 -full
    Access this cmdlet comment based help

@@ -12,6 +12,12 @@
 .NOTES
    Required Dependencies: psr.exe {native}
 
+.Parameter Mouselogger
+   Accepts Start @argument
+
+.Parameter Timmer
+   Accepts the capture time (in seconds) 
+
 .EXAMPLE
    PS C:\> .\Mouselogger.ps1 -Mouselogger Start
    Capture Screenshots of Mouse Clicks for 10 secs {default}

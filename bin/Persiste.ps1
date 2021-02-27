@@ -14,6 +14,12 @@
    to manual check the status of wscript process (BeaconHome function)
    Remark: Payload supported extensions: ps1|exe|py|vbs
 
+.Parameter Persiste
+   Accepts Stop (persistence) or the absoluct \ relative path of payload
+
+.Parameter BeaconTime
+   Accepts the beacon home int value (in seconds)
+
 .EXAMPLE
    PS C:\> Get-Help .\Persiste.ps1 -full
    Access this cmdlet comment based help

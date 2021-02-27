@@ -8,6 +8,12 @@
    only the 'Enum' @arg IF used -ProcessName parameter
    then cmdlet 'kill' or 'enum' the sellected processName.
 
+.Parameter GetProcess
+   Accepts Enum and Kill @arguments
+
+.Parameter ProcessName
+   Accepts the Process Name to enumerate or to kill
+
 .EXAMPLE
    PS C:\> Get-Help .\GetProcess.ps1 -full
    Access this cmdlet comment based help

@@ -9,6 +9,9 @@
    PSCommandLogging, AntiVirusDefinitions, AntiSpywearDefinitions,
    UACsettings, WorkingDirectoryDACL, BehaviorMonitorEnabled, Etc..
 
+.Parameter Sysinfo
+  Accepts Enum and Verbose @arguments
+
 .EXAMPLE
    PS C:\> Get-Help .\SysInfo.ps1 -full
    Access this cmdlet comment based help

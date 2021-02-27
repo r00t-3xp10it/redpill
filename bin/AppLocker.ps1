@@ -59,13 +59,13 @@
 
    VulnId            : 1::ACL (Mitre T1222)
    FolderPath        : C:\WINDOWS\tracing
-   FileSystemRights  : Write
    IdentityReference : BUILTIN\Utilizadores
+   FileSystemRights  : Write
 
    VulnId            : 2::ACL (Mitre T1222)
    FolderPath        : C:\WINDOWS\System32\Microsoft\Crypto\RSA\MachineKeys
-   FileSystemRights  : Write
    IdentityReference : BUILTIN\Utilizadores
+   FileSystemRights  : Write
 #>
 
 
@@ -119,8 +119,8 @@ ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (Paths)
         If($CleanOutput){$Count++ ##  Write the Table 'IF' found any vulnerable permissions
             Write-Host "`nVulnId            : ${Count}::ACL (Mitre T1222)"
             Write-Host "FolderPath        : $Token" -ForegroundColor Green
-            Write-Host "FileSystemRights  : $FolderRigths"
             Write-Host "IdentityReference : $RawUserGroup"
+            Write-Host "FileSystemRights  : $FolderRigths"
             $Success = $True
         }
     }## End of Get-Acl loop

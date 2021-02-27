@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
    Redirect Domain Names to our Phishing IP address (dns spoof)
 
@@ -34,15 +34,15 @@
    Access this cmdlet comment based help
 
 .EXAMPLE
-   PS C:\> .\DnSpoof.ps1 -DnSpoof Enum
+   PS C:\> .\DnsSpoof.ps1 -DnSpoof Enum
    Display hosts file content (dns resolver)
 
 .EXAMPLE
-   PS C:\> .\DnSpoof.ps1 -DnSpoof Redirect -Domain "www.facebook.com" -ToIPaddr "192.168.1.72"
+   PS C:\> .\DnSpoof.ps1 -DnsSpoof Redirect -Domain "www.facebook.com" -ToIPaddr "192.168.1.72"
    Backup original hosts file and redirect Domain Name www.facebook.com To IPaddress 192.168.1.72
 
 .EXAMPLE
-   PS C:\> .\DnSpoof.ps1 -DnSpoof Clear
+   PS C:\> .\DnSpoof.ps1 -DnsSpoof Clear
    Revert hosts file to is original state before DnSpoof changes.
 
 .INPUTS
@@ -78,11 +78,11 @@
    [string]$FileHosts="$Env:WINDIR\System32\drivers\etc\hosts",
    [string]$ToIPaddr="216.58.215.131", ## www.google.pt
    [string]$Domain="www.facebook.com",
-   [string]$DnSpoof="false"
+   [string]$DnsSpoof="false"
 )
 
 
-If($DnSpoof -ieq "Enum"){
+If($DnsSpoof -ieq "Enum"){
 
    <#
    .SYNOPSIS
@@ -90,7 +90,7 @@ If($DnSpoof -ieq "Enum"){
       Helper - Display hosts file content (dns resolver)
 
    .EXAMPLE
-      PS C:\> .\DnSpoof.ps1 -DnSpoof Enum
+      PS C:\> .\DnSpoof.ps1 -DnsSpoof Enum
       Display hosts file content (dns resolver)
    #>
 
@@ -107,7 +107,7 @@ If($DnSpoof -ieq "Enum"){
 }
 
 
-If($DnSpoof -ieq "Redirect"){
+If($DnsSpoof -ieq "Redirect"){
 
    <#
    .SYNOPSIS
@@ -119,7 +119,7 @@ If($DnSpoof -ieq "Redirect"){
       the domain Name to NOT be resolved through dns cache.
 
    .EXAMPLE
-      PS C:\> .\DnSpoof.ps1 -DnSpoof Redirect -Domain "www.facebook.com" -ToIPaddr "192.168.1.72"
+      PS C:\> .\DnSpoof.ps1 -DnsSpoof Redirect -Domain "www.facebook.com" -ToIPaddr "192.168.1.72"
       Backup original hosts file and redirect Domain Name www.facebook.com To IP address 192.168.1.72
    #>
 
@@ -160,22 +160,16 @@ If($DnSpoof -ieq "Redirect"){
 }
 
 
-If($DnSpoof -ieq "Clear"){
+If($DnsSpoof -ieq "Clear"){
 
    <#
    .SYNOPSIS
       Author: @r00t-3xp10it
       Helper - Revert hosts file to is original state before DnSpoof changes.
 
-   .NOTES
-      fff
-
    .EXAMPLE
-      PS C:\> .\DnSpoof.ps1 -DnSpoof Clear
+      PS C:\> .\DnSpoof.ps1 -DnsSpoof Clear
       Revert hosts file to is original state before DnSpoof changes
-
-   .OUTPUTS
-      fffff
    #>
 
    ## Revert dns cache to default settings

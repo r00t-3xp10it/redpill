@@ -7,6 +7,12 @@
    This module can be used to take only one screenshot
    or to spy target user activity using -Delay parameter.
 
+.Parameter Screenshot
+   Accepts the number of captures to be taken
+
+.Parameter Delay
+   Accepts the int value delay between captures (in seconds)
+
 .EXAMPLE
    PS C:\> Get-Help .\Screenshot.ps1 -full
    Access this cmdlet comment based help

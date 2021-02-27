@@ -10,6 +10,12 @@
 .NOTES
    Required Dependencies: netsh {native}
 
+.Parameter WifiPasswords
+   Accepts Dump and ZipDump @arguments
+
+.Parameter Storage
+   Accepts the absoluct \ relative path where to store capture
+
 .EXAMPLE
    PS C:\> Get-Help .\WifiPasswords.ps1 -full
    Access this cmdlet comment based help

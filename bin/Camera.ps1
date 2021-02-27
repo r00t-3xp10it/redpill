@@ -10,6 +10,9 @@
   In that case them PS version 2 will be used to execute
   our binary file and bypass AV amsi detection.
 
+.Parameter Camera
+   Accepts Enum and Snap @arguments
+
 .EXAMPLE
    PS C:\> Get-Help .\Camera.ps1 -full
    Access this cmdlet comment based help

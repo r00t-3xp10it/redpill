@@ -2,6 +2,12 @@
 .SYNOPSIS
    Author: @r00t-3xp10it
    Helper - Enumerate remote host DNS cache entrys
+
+.DESCRIPTION
+   Module to enumerate dns entrys or to clear dns cache
+
+.Parameter GetDnsCache
+   Accepts Enum and Clear @arguments
       
 .EXAMPLE
    PS C:\> Get-Help .\GetDnsCache.ps1 -full

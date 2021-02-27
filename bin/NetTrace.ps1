@@ -8,6 +8,12 @@
    Remark: Administrator privilges required on shell
    Remark: Dump will be saved under %TMP%\NetTrace.cab {default}
       
+.Parameter NetTrace
+   Accepts Enum @argument
+
+.Parameter Storage
+   Accepts the absoluct \ relative path where to store capture
+
 .EXAMPLE
    PS C:\> Get-Help .\NetTrace.ps1 -full
    Access this cmdlet comment based help

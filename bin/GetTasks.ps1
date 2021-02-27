@@ -12,6 +12,18 @@
    Remark: Module parameters are auto-set {default}
    Remark: Tasks have the default duration of 9 hours.
 
+.Parameter GetTasks
+   Accepts Enum, Create and Delete @arguments
+
+.Parameter TaskName
+   Accepts the Task Name to query, create or to kill
+
+.Parameter Interval
+   Accepts the interval time (in minuts) to start task
+
+.Parameter Exec
+   Accepts the cmdline string to be executed by the task
+
 .EXAMPLE
    PS C:\> Get-Help .\GetTasks.ps1 -full
    Access this cmdlet comment based help

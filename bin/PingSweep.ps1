@@ -17,6 +17,12 @@
    the Verbose @Argument its used to scan for open ports and
    resolve ip addr Dns-NameHost to better identify the device.
 
+.Parameter PingSweep
+   Accepts Enum and Verbose @arguments
+
+.Parameter Range
+   Accepts the ip address range int value (from 1 to 255)
+
 .EXAMPLE
    PS C:\> .\PingSweep.ps1 -PingSweep Enum
    Enumerate All active IP Address on Local Lan {range 1..255}

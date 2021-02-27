@@ -8,6 +8,12 @@
    The Clear @argument requires Administrator privs
    on shell to be abble to 'Clear' Eventvwr entrys.
 
+.Parameter GetLogs
+   Accepts Enum, Verbose and Clear @arguments
+
+.Parameter NewEst
+   Accepts how mutch event logs to display int value
+
 .EXAMPLE
    PS C:\> Get-Help .\GetLogs.ps1 -full
    Access this cmdlet comment based help

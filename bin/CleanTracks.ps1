@@ -4,13 +4,14 @@
    Helper - Clean Temp\Logs\Script artifacts
 
 .DESCRIPTION
-   Module to clean artifacts that migth lead
-   forensic investigatores to attacker steps.
-   It deletes lnk, db, log, tmp files, recent
-   folder, Prefetch, and registry locations.
+   Module to clean artifacts that migth lead forensic investigatores to attacker steps.
+   It deletes lnk, db, log, tmp files, recent folder, Prefetch, and registry locations.
 
 .NOTES
    Required Dependencies: cmd|regedit {native}
+
+.Parameter CleanTracks
+   Accepts Clear or Paranoid @arguments
 
 .EXAMPLE
    PS C:\> Get-Help .\CleanTracks.ps1 -full
@@ -21,12 +22,12 @@
 
 .EXAMPLE
    PS C:\> .\CleanTracks.ps1 -CleanTracks Paranoid
-   Remark: Paranoid @arg deletes @MyMeterpreter aux scripts
+   Remark: Paranoid @arg deletes @redpill aux scripts
 
 .OUTPUTS
    Function    Date     DataBaseEntrys ModifiedRegKeys ScriptsCleaned
    --------    ----     -------------- --------------- --------------
-   CleanTracks 22:17:29 20             3               2
+   CleanTracks 22:17:29 21             4               3
 #>
 
 
@@ -98,12 +99,12 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 
      ## Loop truth Array Lists
      $DateNow = Get-Date -Format 'HH:mm:ss'
-     If($CleanTracks -ieq "Clear"){$ModRegKey = "3"
+     If($CleanTracks -ieq "Clear"){$ModRegKey = "4"
          ForEach($Item in $ClearList){
              cmd /R $Item
              $Count++
          }
-     }ElseIf($CleanTracks -ieq "Paranoid"){$ModRegKey = "4"
+     }ElseIf($CleanTracks -ieq "Paranoid"){$ModRegKey = "5"
          ForEach($Item in $ParanoidList){
              cmd /R $Item
              $Count++

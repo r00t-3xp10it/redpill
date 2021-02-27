@@ -16,6 +16,12 @@
    from 'C:\Windows\System32' and the reset of 'HKLM:\..\Control\lsa' registry key.
    REG ADD "HKLM\System\CurrentControlSet\Control\lsa" /v "notification packages" /t REG_MULTI_SZ /d scecli /f
 
+.Parameter GetPasswords
+   Accepts Enum and Dump @arguments
+
+.Parameter StartDir
+   Accepts the absoluct \ relative path for the recursive function
+
 .EXAMPLE
    PS C:\> Get-Help .\GetPasswords.ps1 -full
    Access this cmdlet comment based help
@@ -26,7 +32,7 @@
 
 .EXAMPLE
    PS C:\> .\GetPasswords.ps1 -GetPasswords Enum -StartDir `$Env:USERPROFILE
-   Search recursive for creds in store\regedit\disk {txt\xml\logs} starting in -StartDir directory
+   Search recursive for creds in store\regedit\disk {txt\xml\logs} starting in -StartDir [ dir ]
 
 .EXAMPLE
    PS C:\> .\GetPasswords.ps1 -GetPasswords Dump

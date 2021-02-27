@@ -7,6 +7,9 @@
    Enumerates ESTABLISHED TCP connections and retrieves the
    ProcessName associated from the connection PID identifier
 
+.Parameter GetConnections
+   Accepts Enum and Verbose @arguments
+
 .EXAMPLE
    PS C:\> Get-Help .\GetConnections.ps1 -full
    Access this cmdlet comment based help
