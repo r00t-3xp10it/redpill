@@ -167,6 +167,7 @@ $ListParameters = @"
   -SpeakPrank       "Hello World."       Make remote host speak user input sentence {prank}
   -PingSweep        Enum|Verbose         Enumerate active IP Addr (and ports) of Local Lan
   -NetTrace         Enum                 Agressive sytem enumeration with netsh {native}
+  -DnsSpoof         Enum|Redirect|Clear  Redirect Domain Names to our Phishing IP address
 
 "@;
 echo $ListParameters > $Env:TMP\mytable.mt
