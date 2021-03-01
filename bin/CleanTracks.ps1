@@ -54,6 +54,7 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
         "DEL /q /f /s %userprofile%\*.tmp",
         "DEL /q /f /s %windir%\Prefetch\*.*",
         "DEL /q /f /s %appdata%\Microsoft\Windows\Recent\*.*",
+        "DEL /q /f /s %appdata%\Microsoft\Windows\Cookies\*.*",
         'REG DELETE "HKCU\Software\Microsoft\Internet Explorer\TypedURLs" /f',
         'REG DELETE "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU" /f',
         'REG DELETE "HKCU\Software\Microsoft\Windows\CurrentVersion\Search\RecentApps" /f',
