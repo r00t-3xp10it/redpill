@@ -37,6 +37,14 @@
 )
 
 
+$Address = (## Get Local IpAddress
+    Get-NetIPConfiguration|Where-Object {
+        $_.IPv4DefaultGateway -ne $null -and
+        $_.NetAdapter.status -ne "Disconnected"
+    }
+).IPv4Address.IPAddress
+
+
 Write-Host ""
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
@@ -51,7 +59,7 @@ If($StartWebServer -ieq "Python" -or $StartWebServer -ieq "Powershell"){
 
          ## Check downloaded file integrity
          $SizeDump = ((Get-Item -Path "$Env:TMP\webserver.ps1" -EA SilentlyContinue).length/1KB)
-         If($SizeDump -lt 45){## Corrupted download detected => DefaultFileSize: 45,998046875/KB
+         If($SizeDump -lt 42){## Corrupted download detected => DefaultFileSize: 42,1943359375/KB
              Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
              If(Test-Path -Path "$Env:TMP\webserver.ps1"){Remove-Item -Path "$Env:TMP\webserver.ps1" -Force}
          }Else{

