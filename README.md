@@ -59,7 +59,7 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 |-GetProcess| Enum \| Kill |Enumerate OR Kill Remote Host Running Process(s)|
 |-GetTasks| Enum \| Create \| Delete |Enumerate\Create\Delete Remote Host Running Tasks|
 |-GetLogs| Enum \| Verbose \| Clear |Enumerate eventvwr logs OR Clear All event logs|
-|-GetBrowsers| Enum \| Verbose |Enumerate Installed Browsers and Versions OR Verbose|
+|-GetBrowsers| Enum \| Verbose \| Creds |Enumerate Installed Browsers and Versions OR Verbose|
 |-Screenshot| 1 |Capture 1 Desktop Screenshot and Store it on %TMP%|
 |-Camera| Enum \| Snap |Enum computer webcams OR capture default webcam snapshot|
 |-StartWebServer| Python \| Powershell |Downloads webserver to %TMP% and executes the WebServer|
