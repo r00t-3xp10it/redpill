@@ -1,7 +1,12 @@
 ﻿<#
 .SYNOPSIS
-   Author: @r00t-3xp10it
-   Helper - Enumerate/Kill running process
+   Enumerate/Kill running process
+
+   Author: r00t-3xp10it
+   Tested Under: Windows 10 (18363) x64 bits
+   Required Dependencies: none
+   Optional Dependencies: none
+   PS cmdlet Dev version: v1.0.1
 
 .DESCRIPTION
    This CmdLet enumerates 'All' running process if used
@@ -9,7 +14,7 @@
    then cmdlet 'kill' or 'enum' the sellected processName.
 
 .Parameter GetProcess
-   Accepts Enum and Kill @arguments
+   Accepts arguments: Enum and Kill
 
 .Parameter ProcessName
    Accepts the Process Name to enumerate or to kill

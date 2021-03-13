@@ -1,7 +1,12 @@
 ﻿<#
 .SYNOPSIS
-   Author: @r00t-3xp10it
-   Helper - Enumerate\Create\Delete running tasks
+   Enumerate\Create\Delete running tasks
+
+   Author: r00t-3xp10it
+   Tested Under: Windows 10 (18363) x64 bits
+   Required Dependencies: none
+   Optional Dependencies: none
+   PS cmdlet Dev version: v1.0.1
 
 .DESCRIPTION
    This module enumerates remote host running tasks
@@ -13,7 +18,7 @@
    Remark: Tasks have the default duration of 9 hours.
 
 .Parameter GetTasks
-   Accepts Enum, Create and Delete @arguments
+   Accepts arguments: Enum, Create and Delete
 
 .Parameter TaskName
    Accepts the Task Name to query, create or to kill

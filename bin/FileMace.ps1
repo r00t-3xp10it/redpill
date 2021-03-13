@@ -1,7 +1,12 @@
 ﻿<#
 .SYNOPSIS
-   Author: @r00t-3xp10it
    Change file mace time {timestamp}
+
+   Author: r00t-3xp10it
+   Tested Under: Windows 10 (18363) x64 bits
+   Required Dependencies: none
+   Optional Dependencies: none
+   PS cmdlet Dev version: v1.0.1
 
 .DESCRIPTION
    This module changes the follow mace propertys:
@@ -19,7 +24,7 @@
 
 .EXAMPLE
    PS C:\> .\FileMace.ps1 -FileMace $Env:TMP\test.txt
-   Changes sellected file mace using MyMeterprter default -Date "date-format"
+   Changes sellected file mace using FileMace default -Date "date-format"
 
 .EXAMPLE
    PS C:\> .\FileMace.ps1 -FileMace $Env:TMP\test.txt -Date "08 March 1999 19:19:19"

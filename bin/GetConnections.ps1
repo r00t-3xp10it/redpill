@@ -1,14 +1,19 @@
 ﻿<#
 .SYNOPSIS
-   Author: @r00t-3xp10it
-   Helper - Gets a list of ESTABLISHED connections (TCP)
+   Gets a list of ESTABLISHED connections (TCP)
+
+   Author: r00t-3xp10it
+   Tested Under: Windows 10 (18363) x64 bits
+   Required Dependencies: none
+   Optional Dependencies: none
+   PS cmdlet Dev version: v1.0.1
    
 .DESCRIPTION
    Enumerates ESTABLISHED TCP connections and retrieves the
    ProcessName associated from the connection PID identifier
 
 .Parameter GetConnections
-   Accepts Enum and Verbose @arguments
+   Accepts arguments: Enum and Verbose
 
 .EXAMPLE
    PS C:\> Get-Help .\GetConnections.ps1 -full

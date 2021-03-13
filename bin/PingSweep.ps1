@@ -1,7 +1,12 @@
 ﻿<#
 .SYNOPSIS
-   Author: @r00t-3xp10it
-   Helper - Enumerate active IP Address {Local Lan}
+   Enumerate active IP Address {Local Lan}
+
+   Author: r00t-3xp10it
+   Tested Under: Windows 10 (18363) x64 bits
+   Required Dependencies: none
+   Optional Dependencies: none
+   PS cmdlet Dev version: v1.0.1
 
 .DESCRIPTION
    Module to enumerate active IP address of Local Lan
@@ -18,7 +23,7 @@
    resolve ip addr Dns-NameHost to better identify the device.
 
 .Parameter PingSweep
-   Accepts Enum and Verbose @arguments
+   Accepts arguments: Enum and Verbose
 
 .Parameter Range
    Accepts the ip address range int value (from 1 to 255)

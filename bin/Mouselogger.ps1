@@ -1,7 +1,12 @@
 ﻿<#
 .SYNOPSIS
-   Author: @r00t-3xp10it
-   Helper - Capture screenshots of MouseClicks for 'xx' Seconds
+   Capture screenshots of MouseClicks for 'xx' Seconds
+
+   Author: r00t-3xp10it
+   Tested Under: Windows 10 (18363) x64 bits
+   Required Dependencies: none
+   Optional Dependencies: none
+   PS cmdlet Dev version: v1.0.1
 
 .DESCRIPTION
    This script allow users to Capture Screenshots of 'MouseClicks'
@@ -13,7 +18,7 @@
    Required Dependencies: psr.exe {native}
 
 .Parameter Mouselogger
-   Accepts Start @argument
+   Accepts argument: Start
 
 .Parameter Timmer
    Accepts the capture time (in seconds) 

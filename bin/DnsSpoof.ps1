@@ -18,7 +18,7 @@
    virtual hosts This only applies on servers with dedicated IPs.
 
 .Parameter DnSpoof
-   Accepts Enum, Redirect and Clear @arguments
+   Accepts arguments: Enum, Redirect and Clear
 
 .Parameter FileHosts
    Accepts the hosts file absoluct path (optional setting)

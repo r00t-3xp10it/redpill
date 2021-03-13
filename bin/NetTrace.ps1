@@ -1,7 +1,12 @@
 ﻿<#
 .SYNOPSIS
-   Author: @r00t-3xp10it
    Agressive sytem enumeration with netsh
+
+   Author: r00t-3xp10it
+   Tested Under: Windows 10 (18363) x64 bits
+   Required Dependencies: none
+   Optional Dependencies: none
+   PS cmdlet Dev version: v1.0.1
 
 .NOTES
    Required Dependencies: netsh {native}
@@ -9,7 +14,7 @@
    Remark: Dump will be saved under %TMP%\NetTrace.cab {default}
       
 .Parameter NetTrace
-   Accepts Enum @argument
+   Accepts argument: Enum
 
 .Parameter Storage
    Accepts the absoluct \ relative path where to store capture

@@ -1,7 +1,12 @@
 ﻿<#
 .SYNOPSIS
-   Author: @r00t-3xp10it
-   Helper - Persiste scripts using StartUp folder
+   Persiste scripts using StartUp folder
+
+   Author: r00t-3xp10it
+   Tested Under: Windows 10 (18363) x64 bits
+   Required Dependencies: none
+   Optional Dependencies: BitsTransfer
+   PS cmdlet Dev version: v1.0.1
 
 .DESCRIPTION
    This persistence module beacons home in sellected intervals defined

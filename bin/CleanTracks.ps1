@@ -1,7 +1,12 @@
 ﻿<#
 .SYNOPSIS
-   Author: @r00t-3xp10it
-   Helper - Clean Temp\Logs\Script artifacts
+   Clean Temp\Logs\Script artifacts left behind
+
+   Author: r00t-3xp10it
+   Tested Under: Windows 10 (18363) x64 bits
+   Required Dependencies: none
+   Optional Dependencies: none
+   PS cmdlet Dev version: v1.0.1
 
 .DESCRIPTION
    Module to clean artifacts that migth lead forensic investigatores to attacker steps.
@@ -11,7 +16,7 @@
    Required Dependencies: cmd|regedit {native}
 
 .Parameter CleanTracks
-   Accepts Clear or Paranoid @arguments
+   Accepts arguments: Clear and Paranoid
 
 .EXAMPLE
    PS C:\> Get-Help .\CleanTracks.ps1 -full
@@ -19,6 +24,7 @@
 
 .EXAMPLE
    PS C:\> .\CleanTracks.ps1 -CleanTracks Clear
+   Clean Temp\Logs\Script artifacts left behind
 
 .EXAMPLE
    PS C:\> .\CleanTracks.ps1 -CleanTracks Paranoid

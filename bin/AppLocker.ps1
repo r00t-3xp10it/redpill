@@ -32,7 +32,7 @@
    $Env:WINDIR\System32\Tasks\Microsoft\Windows\SyncCenter
 
 .Parameter WhoAmi
-   Accepts argument: Groups {List available Group Names}.
+   Accepts arguments: Groups (List available Group Names).
 
 .Parameter FolderRigths
    Accepts permissions: Modify, Write, FullControll, etc.

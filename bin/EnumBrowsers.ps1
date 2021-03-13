@@ -5,7 +5,7 @@
    Author: @r00t-3xp10it
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: none
-   Optional Dependencies: none
+   Optional Dependencies: BitsTransfer
    PS cmdlet Dev version: v1.0.2
 
 .NOTES
@@ -14,7 +14,7 @@
    to identify install browsers and run enum modules.
 
 .Parameter GetBrowsers
-   Accepts Enum Verbose and Creds @arguments
+   Accepts arguments: Enum, Verbose and Creds
 
 .EXAMPLE
    PS C:\> Get-Help .\EnumBrowsers.ps1 -full

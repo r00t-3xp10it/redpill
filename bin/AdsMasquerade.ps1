@@ -19,7 +19,7 @@
    Remark: Payload.[extension] + legit.txt must be on the same dir.
 
 .Parameter ADS
-   Accepts Enum, Create, Exec and Clear @arguments
+   Accepts arguments: Enum, Create, Exec and Clear
 
 .Parameter StreamData
    Accepts the absolute \ relative path of Payload. [Bat | ps1 | txt | exe]

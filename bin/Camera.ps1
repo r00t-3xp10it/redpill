@@ -1,17 +1,22 @@
 ﻿<#
 .SYNOPSIS
-   Author: @tedburke|@r00t-3xp10it
-   Helper - List computer cameras or capture camera screenshot
+   List computer webcams or capture camera snapshot
+
+   Author: r00t-3xp10it
+   Tested Under: Windows 10 (18363) x64 bits
+   Required Dependencies: none
+   Optional Dependencies: BitsTransfer
+   PS cmdlet Dev version: v1.0.1
 
 .NOTES
-  Remark: WebCam turns the ligth ON taking snapshots.
+  Remark: WebCam turns the ligth 'ON' taking snapshots.
   Using -Camera Snap @argument migth trigger AV detection
   Unless target system has powershell version 2 available.
   In that case them PS version 2 will be used to execute
   our binary file and bypass AV amsi detection.
 
 .Parameter Camera
-   Accepts Enum and Snap @arguments
+   Accepts arguments: Enum and Snap
 
 .EXAMPLE
    PS C:\> Get-Help .\Camera.ps1 -full

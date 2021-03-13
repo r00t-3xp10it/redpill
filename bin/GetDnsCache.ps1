@@ -1,13 +1,18 @@
 ﻿<#
 .SYNOPSIS
-   Author: @r00t-3xp10it
-   Helper - Enumerate remote host DNS cache entrys
+   Enumerate remote host DNS cache entrys
+
+   Author: r00t-3xp10it
+   Tested Under: Windows 10 (18363) x64 bits
+   Required Dependencies: none
+   Optional Dependencies: none
+   PS cmdlet Dev version: v1.0.1
 
 .DESCRIPTION
    Module to enumerate dns entrys or to clear dns cache
 
 .Parameter GetDnsCache
-   Accepts Enum and Clear @arguments
+   Accepts arguments: Enum and Clear
       
 .EXAMPLE
    PS C:\> Get-Help .\GetDnsCache.ps1 -full

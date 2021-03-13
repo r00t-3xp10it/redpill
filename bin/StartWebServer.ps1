@@ -1,13 +1,24 @@
 ﻿<#
 .SYNOPSIS
+   Start Local HTTP WebServer (Background)
+
    Author: @MarkusScholtes|@r00t-3xp10it
-   Helper - Start Local HTTP WebServer (Background)
+   Tested Under: Windows 10 (18363) x64 bits
+   Required Dependencies: none
+   Optional Dependencies: BitsTransfer
+   PS cmdlet Dev version: v1.0.1
 
 .NOTES
    Access WebServer: http://<RHOST>:8080/
    This module download's webserver.ps1 or Start-WebServer.ps1
    to remote host %TMP% and executes it on an hidden terminal prompt
    to allow users to silent browse/read/download files from remote host.
+
+.Parameter StartWebServer
+   Accepts arguments: Python and Powershell
+
+.Parameter SPort
+   Accepts webserver port number (default: 8080)
 
 .EXAMPLE
    PS C:\> .\StartWebServer.ps1 -StartWebServer Python

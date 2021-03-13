@@ -1,7 +1,12 @@
 ﻿<#
 .SYNOPSIS
-   Author: @r00t-3xp10it
-   Helper - Dump All SSID Wifi passwords
+   Dump All SSID Wifi passwords
+
+   Author: r00t-3xp10it
+   Tested Under: Windows 10 (18363) x64 bits
+   Required Dependencies: none
+   Optional Dependencies: none
+   PS cmdlet Dev version: v1.0.1
 
 .DESCRIPTION
    Module to dump SSID Wifi passwords into terminal windows
@@ -11,7 +16,7 @@
    Required Dependencies: netsh {native}
 
 .Parameter WifiPasswords
-   Accepts Dump and ZipDump @arguments
+   Accepts arguments: Dump and ZipDump
 
 .Parameter Storage
    Accepts the absoluct \ relative path where to store capture

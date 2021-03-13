@@ -1,7 +1,12 @@
 ﻿<#
 .SYNOPSIS
-   Author: @r00t-3xp10it
-   Helper - Enumerate eventvwr logs OR Clear All event logs
+   Enumerate eventvwr logs OR Clear All event logs
+
+   Author: r00t-3xp10it
+   Tested Under: Windows 10 (18363) x64 bits
+   Required Dependencies: none
+   Optional Dependencies: none
+   PS cmdlet Dev version: v1.0.1
 
 .NOTES
    Required Dependencies: wevtutil {native}
@@ -9,7 +14,7 @@
    on shell to be abble to 'Clear' Eventvwr entrys.
 
 .Parameter GetLogs
-   Accepts Enum, Verbose and Clear @arguments
+   Accepts arguments: Enum, Verbose and Clear
 
 .Parameter NewEst
    Accepts how mutch event logs to display int value

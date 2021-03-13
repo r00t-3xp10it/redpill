@@ -17,7 +17,7 @@
    REG ADD "HKLM\System\CurrentControlSet\Control\lsa" /v "notification packages" /t REG_MULTI_SZ /d scecli /f
 
 .Parameter GetPasswords
-   Accepts Enum and Dump @arguments
+   Accepts arguments: Enum and Dump
 
 .Parameter StartDir
    Accepts the absoluct \ relative path for the recursive function

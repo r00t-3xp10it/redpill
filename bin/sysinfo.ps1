@@ -1,7 +1,12 @@
 ﻿<#
 .SYNOPSIS
-   Author: @r00t-3xp10it
-   Helper - Enumerates remote host basic system info
+   Enumerates remote host basic system info
+
+   Author: r00t-3xp10it
+   Tested Under: Windows 10 (18363) x64 bits
+   Required Dependencies: none
+   Optional Dependencies: BitsTransfer
+   PS cmdlet Dev version: v1.3.7
 
 .NOTES
    System info: IpAddress, OsVersion, OsFlavor, OsArchitecture,
@@ -10,7 +15,7 @@
    UACsettings, WorkingDirectoryDACL, BehaviorMonitorEnabled, Etc..
 
 .Parameter Sysinfo
-  Accepts Enum and Verbose @arguments
+  Accepts arguments: Enum and Verbose
 
 .EXAMPLE
    PS C:\> Get-Help .\SysInfo.ps1 -full
