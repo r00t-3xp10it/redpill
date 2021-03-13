@@ -3,11 +3,11 @@
    Find missing software patchs for privilege escalation (windows).
 
    Author: @_RastaMouse (Deprecated)
-   Update: @r00t-3xp10it (v1.3.4)
+   Update: @r00t-3xp10it (v1.3.5)
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.3.4
+   PS cmdlet Dev version: v1.3.5
 
 .DESCRIPTION
    Cmdlet to find missing software patchs for privilege escalation (windows).
@@ -62,12 +62,12 @@
 .EXAMPLE
    PS C:\> Get-Paths Modify
    SYNTAX: Get-Paths <FileSystemRigths>
-   Get-Paths 1º arg accepts Everyone:(FileSystemRigths) value.
+   Get-Paths 1º @arg accepts Everyone:(FileSystemRigths) value.
 
 .EXAMPLE
    PS C:\> Get-Paths FullControl BUILTIN\Users
    SYNTAX: Get-Paths <FileSystemRigths> <IdentityReference>
-   Get-Paths 2º arg accepts the Group Name (Everyone|BUILTIN\Users)
+   Get-Paths 2º @arg accepts the Group Name (Everyone|BUILTIN\Users)
 
 .EXAMPLE
    PS C:\> Get-RegPaths
@@ -133,11 +133,11 @@
 
 ## Var declarations
 $CveDataBaseId = "25"        ## 25 CVE's entrys available ($dATAbASE)
-$CmdletVersion = "v1.3.4"    ## Sherlock CmdLet develop version number
+$CmdletVersion = "v1.3.5"    ## Sherlock CmdLet develop version number
 $CVEdataBase = "13/01/2021"  ## Global $dATAbASE (CVE) last update date
 $Global:ExploitTable = $null ## Global Output DataTable
 $ProcessArchitecture = $env:PROCESSOR_ARCHITECTURE
-$OSVersion = (Get-WmiObject Win32_OperatingSystem).version
+$OSVersion = (Get-CimInstance Win32_OperatingSystem).version
 $host.UI.RawUI.WindowTitle = "@Sherlock $CmdletVersion {SSA@RedTeam}"
 $IsClientAdmin = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
 
@@ -333,11 +333,11 @@ function Get-Paths {
    .EXAMPLE
       PS C:\> Get-Paths Modify
       SYNTAX: Get-Paths <FileSystemRigths>
-      Get-Paths 1º arg accepts Everyone:(FileSystemRigths) value.
+      Get-Paths 1ï¿½ arg accepts Everyone:(FileSystemRigths) value.
 
    .EXAMPLE
       PS C:\> Get-Paths FullControl BUILTIN\Users
-      Get-Paths 2º arg accepts the Group Name (Everyone|BUILTIN\Users)
+      Get-Paths 2ï¿½ arg accepts the Group Name (Everyone|BUILTIN\Users)
       REMARK: Use double quotes if Group Name contains any empty spaces in Name
    #>
 
@@ -709,7 +709,7 @@ $KBDataEntrys = "null"
 
    ## Variable declarations
    $MajorVersion = [int]$OSVersion.split(".")[0]
-   $CPUArchitecture = (Get-WmiObject Win32_OperatingSystem).OSArchitecture
+   $CPUArchitecture = (Get-CimInstance Win32_OperatingSystem).OSArchitecture
 
    ## Number of KB's entrys (db)
    If($MajorVersion -eq "vista"){
@@ -725,8 +725,8 @@ $KBDataEntrys = "null"
       $KBDataEntrys = "44"        ## Credits: @TroyDTaylor (fully patch)
       $KB_dataBase = "06/01/2021" ## KB entrys database last update date
    }ElseIf($MajorVersion -eq '10' -and $CPUArchitecture -eq "64 bits"){
-      $KBDataEntrys = "19"        ## Credits: @r00t-3xp10it (fully patch)
-      $KB_dataBase = "13/01/2021" ## KB entrys database last update date
+      $KBDataEntrys = "15"        ## Credits: @r00t-3xp10it (fully patch)
+      $KB_dataBase = "12/03/2021" ## KB entrys database last update date
    }
 
    ## Create Data Table for output
@@ -755,11 +755,10 @@ $KBDataEntrys = "null"
    If($MajorVersion -eq 10){## Windows 10
       If($CPUArchitecture -eq "64 bits" -or $ProcessArchitecture -eq "AMD64"){
          $dATAbASE = @(## Windows 10 x64 bits
-            "KB4586878","KB4497165","KB4515383","KB4516115",
-            "KB4517245","KB4521863","KB4524569","KB4528759",
-            "KB4535680","KB4537759","KB4538674","KB4541338",
-            "KB4552152","KB4559309","KB4560959","KB4561600",
-            "KB4580325","KB4598479","KB4598229"#"KB3245007", ## Fake KB entry for debug
+            "KB4515383","KB4521863","KB4524569","KB4528759",
+            "KB4535680","KB4538674","KB4541338","KB4552152",
+            "KB4560959","KB4580325","KB4598479","KB4601395",
+            "KB5000908","KB5000808" #"KB3245007" ## Fake KB entry for debug
          )
       }Else{## Windows 10 x32 bits
          $dATAbASE = "Not supported under W$MajorVersion ($CPUArchitecture) architecture"

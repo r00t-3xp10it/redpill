@@ -48,6 +48,7 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
     ## Local Function Variable declarations
     $ConsoleId = (Get-Process -PID $PID).Id
     $PsNumber = $PSVersionTable.PSVersion.ToString()
+    $PSExecPolicy = Get-ExecutionPolicy -Scope CurrentUser
     $IsVirtualMachine = (Get-MpComputerStatus).IsVirtualMachine
     $System = (Get-CimInstance -ClassName CIM_OperatingSystem).Caption
     $Version = (Get-CimInstance -ClassName CIM_OperatingSystem).Version
@@ -78,6 +79,7 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
     Write-Host "IsVirtualMachine  : $IsVirtualMachine"
     Write-Host "Architecture      : $Architecture"
     Write-Host "PSVersion         : $PsNumber"
+    Write-Host "PSExecPolicy      : $PSExecPolicy"
     Write-Host "OSVersion         : $Version"
     Write-Host "IPAddress         : $Address" -ForegroundColor Yellow
     Write-Host "System32          : $SystemDir"

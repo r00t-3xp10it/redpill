@@ -6,7 +6,7 @@
    Tested Under: Windows 10 - Build 18363
    Required Dependencies: python (http.server)
    Optional Dependencies: Curl|BitsTransfer
-   PS cmdlet Dev version: v1.18
+   PS cmdlet Dev version: v1.19
 
 .DESCRIPTION
    This cmdlet has written to assist venom amsi evasion reverse tcp shell's (agents)
@@ -157,7 +157,7 @@
 )
 
 $HiddeMsgBox = $False
-$CmdletVersion = "v1.18"
+$CmdletVersion = "v1.19"
 $Initial_Path = (pwd).Path
 $Server_hostName = (hostname)
 $Server_Working_Dir = "$SPath"

