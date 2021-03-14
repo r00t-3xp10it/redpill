@@ -264,7 +264,7 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
         Write-Host "`n"
         ## Checks for Firewall { -StartWebServer [python] } rule existence
         Get-NetFirewallRule|Where-Object {## Rules to filter {DisplayName|Description}
-            $_.DisplayName -ieq "python.exe" -and $_.Description -Match 'venom'
+            $_.DisplayName -ieq "Start-WebServer" -and $_.Description -Match 'venom'
         }|Format-Table Action,Enabled,Profile,Description > $Env:TMP\ksjjhav.log
 
         $CheckLog = Get-Content -Path "$Env:TMP\ksjjhav.log" -EA SilentlyContinue
