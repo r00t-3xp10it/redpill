@@ -65,7 +65,7 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 |-StartWebServer| Python \| Powershell |Downloads webserver to %TMP% and executes the WebServer|
 |-Keylogger| Start \| Stop |Start OR Stop recording remote host keystrokes|
 |-MouseLogger| Start |Capture Screenshots of Mouse Clicks for 10 seconds|
-|-PhishCreds| Start |Promp current user for a valid credential and leak captures|
+|-PhishCreds| Start \| Brute |Promp current user for a valid credential and leak captures|
 |-GetPasswords| Enum \| Dump |Enumerate passwords of diferent locations {Store\|Regedit\|Disk}|
 |-WifiPasswords| Dump \| ZipDump |Enum Available SSIDs OR ZipDump All Wifi passwords|
 |-EOP| Enum \| Verbose |Find Missing Software Patchs for Privilege Escalation|

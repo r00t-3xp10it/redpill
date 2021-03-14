@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.1
+   PS cmdlet Dev version: v1.0.2
 
 .DESCRIPTION
    This module enumerates remote host running tasks
@@ -35,18 +35,19 @@
 
 .EXAMPLE
    PS C:\> .\GetTasks.ps1 -GetTasks Enum
-   Enumerate running tasks
+   Enumerate ALL running tasks
 
 .EXAMPLE
    PS C:\> .\GetTasks.ps1 -GetTasks Create
-   Use module default settings to create the demo task
+   Use module default settings to create one demonstration task
 
 .EXAMPLE
-   PS C:\> .\GetTasks.ps1 -GetTasks Delete -TaskName mytask
-   Deletes mytask taskname
+   PS C:\> .\GetTasks.ps1 -GetTasks Create -TaskName RedPillTask -Interval 10 -Exec "cmd /c start calc.exe"
+   Creates taskname 'RedPillTask' that executes 'calc.exe' with 10 minuts of interval until PC restart
 
 .EXAMPLE
-   PS C:\> .\GetTasks.ps1 -GetTasks Create -TaskName mytask -Interval 10 -Exec "cmd /c start calc.exe"
+   PS C:\> .\GetTasks.ps1 -GetTasks Delete -TaskName RedPillTask
+   Deletes 'RedPillTask' taskname
 
 .OUTPUTS
    TaskName                                 Next Run Time          Status
@@ -58,10 +59,10 @@
 
 
 [CmdletBinding(PositionalBinding=$false)] param(
-   [string]$TaskName="MyMeterpreter",
+   [string]$TaskName="RedPillTask",
    [string]$GetTasks="false",
    [string]$Exec="false",
-   [int]$Interval='10'
+   [int]$Interval='1'
 )
 
 

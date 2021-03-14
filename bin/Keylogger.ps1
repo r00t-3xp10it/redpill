@@ -14,7 +14,7 @@
    its deleted or is process {void.exe} its stoped.
 
 .Parameter Keylogger
-   Accepts Start and Stop @arguments
+   Accepts arguments: Start and Stop
 
 .EXAMPLE
    PS C:\> .\Keylogger.ps1 -Keylogger Start

