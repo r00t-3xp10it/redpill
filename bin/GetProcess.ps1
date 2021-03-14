@@ -1,20 +1,23 @@
 ﻿<#
 .SYNOPSIS
-   Enumerate/Kill running process
+   Enumerate/Kill running process\tokens
 
    Author: r00t-3xp10it
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.1
+   PS cmdlet Dev version: v1.0.2
 
 .DESCRIPTION
    This CmdLet enumerates 'All' running process if used
-   only the 'Enum' @arg IF used -ProcessName parameter
-   then cmdlet 'kill' or 'enum' the sellected processName.
+   only the 'Enum' @arg IF used the -ProcessName parameter
+   then cmdlet 'Kill' or 'Enum' the sellected process Name.
+
+.NOTES
+   Remark: Token @argument requires Administrator privs
 
 .Parameter GetProcess
-   Accepts arguments: Enum and Kill
+   Accepts arguments: Enum, Kill and Tokens
 
 .Parameter ProcessName
    Accepts the Process Name to enumerate or to kill
@@ -34,6 +37,10 @@
 .EXAMPLE
    PC C:\> .\GetProcess.ps1 -GetProcess Kill -ProcessName firefox.exe
    Kill Remote Host firefox.exe Running Process
+
+.EXAMPLE
+   PC C:\> .\GetProcess.ps1 -GetProcess Tokens
+   Enum ALL user process tokens and queries them for details
 
 .OUTPUTS
    Id              : 5684
@@ -56,17 +63,32 @@
 
 
 Write-Host ""
-If($GetProcess -ieq "Enum" -or $GetProcess -ieq "Kill"){
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 
-    ## Syntax Examples
-    Write-Host "Syntax Examples" -ForegroundColor Green
-    Write-Host "Example: .\redpill.ps1 -GetProcess Enum"
-    Write-Host "Example: .\redpill.ps1 -GetProcess Enum -ProcessName notepad.exe"
-    Write-Host "Example: .\redpill.ps1 -GetProcess Kill -ProcessName notepad.exe`n"
-    Start-Sleep -Seconds 2
+If($GetProcess -ieq "Tokens"){
+   ## Download Get-OSTokenInformation.ps1 from my GitHub
+   If(-not(Test-Path -Path "$Env:TMP\Get-OSTokenInformation.ps1")){## Download Get-OSTokenInformation.ps1 from my GitHub repository
+      Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/modules/Get-OSTokenInformation.ps1 -Destination $Env:TMP\Get-OSTokenInformation.ps1 -ErrorAction SilentlyContinue|Out-Null
+      ## Check downloaded file integrity => FileSizeKBytes
+      $SizeDump = ((Get-Item -Path "$Env:TMP\Get-OSTokenInformation.ps1" -EA SilentlyContinue).length/1KB)
+      If($SizeDump -lt 27){## Corrupted download detected => DefaultFileSize: 27,5166015625/KB
+         Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
+         If(Test-Path -Path "$Env:TMP\Get-OSTokenInformation.ps1"){Remove-Item -Path "$Env:TMP\Get-OSTokenInformation.ps1" -Force}
+         Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
+      }   
+   }
 
+   ## Run auxiliary module
+   Import-Module -Name "$Env:TMP\Get-OSTokenInformation.ps1" -Force
+   Get-OSTokenInformation -Brief -Verbose
+
+   ## Clean Old files left behind
+   If(Test-Path -Path "$Env:TMP\Get-OSTokenInformation.ps1"){Remove-Item -Path "$Env:TMP\Get-OSTokenInformation.ps1" -Force}
+   exit ## Exit @GetProcess
+}
+
+If($GetProcess -ieq "Enum" -or $GetProcess -ieq "Kill"){
 
     If($GetProcess -ieq "Enum" -and $ProcessName -ieq "false"){## Enumerate ALL running process(s)
         Write-Host "$Remote_hostName Running Process" -ForegroundColor Green

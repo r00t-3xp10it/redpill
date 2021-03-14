@@ -56,7 +56,7 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 |-GetConnections| Enum \| Verbose |Enumerate Remote Host Active TCP Connections|
 |-GetDnsCache| Enum \| Clear |Enumerate\Clear remote host DNS cache entrys|
 |-GetInstalled| Enum |Enumerate Remote Host Applications Installed|
-|-GetProcess| Enum \| Kill |Enumerate OR Kill Remote Host Running Process(s)|
+|-GetProcess| Enum \| Kill \| Tokens |Enumerate OR Kill Remote Host Running Process(s)|
 |-GetTasks| Enum \| Create \| Delete |Enumerate\Create\Delete Remote Host Running Tasks|
 |-GetLogs| Enum \| Verbose \| Clear |Enumerate eventvwr logs OR Clear All event logs|
 |-GetBrowsers| Enum \| Verbose \| Creds |Enumerate Installed Browsers and Versions OR Verbose|

