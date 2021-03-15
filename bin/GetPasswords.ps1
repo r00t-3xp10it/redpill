@@ -110,7 +110,8 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
         }
 
         ## List Stored Passwords {in Text\Xml\Log Files}
-        Write-Host "`nScanning txt\xml\log for stored creds!" -ForegroundColor Green
+        Write-Host "`nStartDirectory: $StartDir" -ForeGroundColor Yellow
+        Write-Host "Scanning txt\xml\log for stored creds!" -ForegroundColor Green
         If(-not(Test-Path -Path "$StartDir")){## User Input directory not found
             Write-Host "[error] -StartDir '$StartDir' not found!" -ForegroundColor Red -BackGroundColor Black
         }Else{## -StartDir User Input directory found

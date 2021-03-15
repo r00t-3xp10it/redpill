@@ -72,7 +72,7 @@ If($GetProcess -ieq "Tokens"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/modules/Get-OSTokenInformation.ps1 -Destination $Env:TMP\Get-OSTokenInformation.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\Get-OSTokenInformation.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 27){## Corrupted download detected => DefaultFileSize: 27,5166015625/KB
+      If($SizeDump -lt 26){## Corrupted download detected => DefaultFileSize: 26,314453125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\Get-OSTokenInformation.ps1"){Remove-Item -Path "$Env:TMP\Get-OSTokenInformation.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
