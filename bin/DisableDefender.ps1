@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: admin privileges
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.1
+   PS cmdlet Dev version: v1.0.2
 
 .DESCRIPTION
    This CmdLet Query, Stops, Start Anti-Virus Windows Defender
@@ -43,7 +43,7 @@
 
 .EXAMPLE
    PS C:\> .\DisableDefender.ps1 -Action Stop -Delay 3
-   Give some time (sec) to update the service state (default: 3)
+   Give some time (sec) to update the service state (default: 2)
 
 .INPUTS
    None. You cannot pipe objects into DisableDefender.ps1
@@ -62,7 +62,7 @@
 [CmdletBinding(PositionalBinding=$false)] param(
    [string]$ServiceName="WinDefend",
    [string]$Action="Query",
-   [int]$Delay='3' ## Delay time (sec) for service update
+   [int]$Delay='2' ## Delay time (sec) for service update
 )
 
 
@@ -95,32 +95,47 @@ If($Action -ieq "Query"){## Query Windows Defender state
       StartType        : Automatic
       CanStop          : True
       CurrentStatus    : Running
-      Exploitable?     : yes : running under admin privs!
+      IsExploitable?   : True  => running under Admin privs!
       ManualQuery      : Get-Service -Name WinDefend
    #>
 
    ## Local function variable declarations
+   $State = Get-Service -Name "$ServiceName" -EA SilentlyContinue
    $stype = (Get-Service $ServiceName -EA SilentlyContinue).StartType
    $CurrStats = (Get-Service $ServiceName -EA SilentlyContinue).Status
    $StopType = (Get-Service $ServiceName -EA SilentlyContinue).CanStop
-   If($IsClientAdmin -ieq "True"){## Query for exploitation state
+   If(-not($State)){## Service Name NOT found
 
-       $Exploitable = "yes : running under admin privs!"
+      ## Asign the same value to multiple variables
+      $stype = $StopType = $CurrStats = "`$null"
+      $State = "not found!"
 
-   }Else{## not exploitable under shell current privileges!
+   }Else{## Service Name found
 
-       $Exploitable = "no : admin privs required!"
+      $State = "$ServiceName"
+
+   }
+
+   ## Query for module exploitation state
+   If($IsClientAdmin -ieq "True"){## Administrator privileges
+
+       $Exploitable = "True  => running under Admin privs!"
+
+   }Else{## NOT exploitable under current shell privileges!
+
+       $Exploitable = "False => Admin privileges required!"
 
    }
 
    ## Build Output Table
+   If($State -ieq "not found!"){$Exploitable = "`$null"}
    Write-Host "`nDisable Windows Defender Service" -ForegroundColor Green
    Write-Host "--------------------------------";Start-Sleep -Seconds 1
-   echo "ServiceName      : $ServiceName" > $Env:TMP\qwerty.log
+   echo "ServiceName      : $State" > $Env:TMP\qwerty.log
    echo "StartType        : $stype" >> $Env:TMP\qwerty.log
    echo "CanStop          : $StopType" >> $Env:TMP\qwerty.log
    echo "CurrentStatus    : $CurrStats" >> $Env:TMP\qwerty.log
-   echo "Exploitable?     : $Exploitable" >> $Env:TMP\qwerty.log
+   echo "IsExploitable?   : $Exploitable" >> $Env:TMP\qwerty.log
    echo "ManualQuery      : Get-Service -Name $ServiceName" >> $Env:TMP\qwerty.log
    echo "" >> $Env:TMP\qwerty.log
    Get-Content -Path "$Env:TMP\qwerty.log"

