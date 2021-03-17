@@ -83,6 +83,7 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 |-NetTrace| Enum |Agressive Enumeration with the help of netsh {native}|
 |-PingSweep| Enum \| Verbose |Enumerate Active IP Address and open ports on Local Lan|
 |-DnsSpoof| Enum \| Redirect \| Clear | Redirect Domain Names to our Phishing IP address|
+|-DisableAV| Query \| Start \| Stop | Disable Windows Defender Service (WinDefend)|
 
 <br />
 

