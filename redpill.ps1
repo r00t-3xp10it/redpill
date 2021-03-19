@@ -1439,11 +1439,11 @@ If($BruteZip -ne "false"){
       Start-Sleep -Seconds 1
    }
 
-   ## Download passwords.txt from @josh-newton github repository
+   ## Download passwords.txt from my github repository
    If(-not(Test-Path -Path "$PassList")){## Check if password list exists
       $PassFile = $PassList.Split('\\')[-1]
       Write-Host "[+] Downloading $PassFile (BITS)"
-      Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/josh-newton/python-zip-cracker/master/passwords.txt -Destination $PassList -ErrorAction SilentlyContinue|Out-Null
+      Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/passwords.txt -Destination $PassList -ErrorAction SilentlyContinue|Out-Null
    }Else{## User Input dicionary
       $PassFile = $PassList.Split('\\')[-1]
       Write-Host "[i] dicionary $PassFile found!"
@@ -1454,8 +1454,8 @@ If($BruteZip -ne "false"){
    If(-not($PasFileStatus -ieq $True)){
       ## Check for file download integrity (fail/corrupted downloads)
       $CheckInt = Get-Content -Path "$PassList" -EA SilentlyContinue
-      $SizeDump = ((Get-Item -Path "$PassList" -EA SilentlyContinue).length/1KB) ## default => 4002,8544921875/KB
-      If(-not(Test-Path -Path "$PassList") -or $SizeDump -lt 4002 -or $CheckInt -iMatch '^(<!DOCTYPE html)'){
+      $SizeDump = ((Get-Item -Path "$PassList" -EA SilentlyContinue).length/1KB) ## default => 7,865234375/KB
+      If(-not(Test-Path -Path "$PassList") -or $SizeDump -lt 7 -or $CheckInt -iMatch '^(<!DOCTYPE html)'){
          ## Fail to download password list using BitsTransfer OR the downloaded file is corrupted
          Write-Host "[abort] fail to download password list using BitsTransfer (BITS)" -ForeGroundColor Red -BackGroundColor Black
          If(Test-Path -Path "$PassList"){Remove-Item -Path "$PassList" -Force}
