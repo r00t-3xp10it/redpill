@@ -228,4 +228,28 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 
 <br />
 
+<p align="center">
+  <a href="https://github.com/r00t-3xp10it//github-readme-stats">
+    <img
+      align="center"
+      height="165"
+      src="https://github-readme-stats.vercel.app/api?username=r00t-3xp10it&count_private=true&show_icons=true&custom_title=Github%20Status&hide=issues&theme=radical"
+    />
+  </a>
+</p>
+
+
+<br />
+
+
+<p align="center">
+  <a href="https://github.com/r00t-3xp10it//github-readme-stats">
+    <img
+      align="center"
+      height="295"
+      src="https://github-readme-stats.vercel.app/api/top-langs/?username=r00t-3xp10it&langs_count=10&layout=compact&theme=radical"
+    />
+  </a>
+</p>
+
 ## SuspiciousShellActivity - RedTeam @2021
