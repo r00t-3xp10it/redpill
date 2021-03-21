@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
    Enumerate Directorys with weak permissions (bypass applocker)
 
