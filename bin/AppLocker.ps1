@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Enumerate Directorys with weak permissions (bypass applocker)
 
@@ -55,6 +55,7 @@
    PS C:\> .\AppLocker.ps1 -TestBat TestBypass
    Test for AppLocker Batch Script Execution Restriction bypass
 
+.EXAMPLE
    PS C:\> .\AppLocker.ps1 -TestBat "$Env:TMP\applock.bat"
    Execute applock.bat through text format bypass tecnic
 
@@ -93,7 +94,6 @@
    [string]$WhoAmi="false"
 )
 
-
 $Banner = @"
 
              * Reverse TCP Shell Auxiliary Powershell Module *
@@ -105,7 +105,6 @@ $Banner = @"
 
       
 "@;
-
 
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
