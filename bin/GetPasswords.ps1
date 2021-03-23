@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.3
+   PS cmdlet Dev version: v1.0.4
 
 .DESCRIPTION
    -GetPasswords [ Enum ] searchs creds in store\regedit\disk diferent locations.
@@ -135,11 +135,11 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
          
            ForEach($Item in $dAtAbAsEList){## Search in $dAtAbAsEList for login strings
               Get-Content -Path "$Item" -EA SilentlyContinue -Force|
-              findstr /I /C:"user:" /I /C:"pass:" /I /C:"username:" /I /C:"pwd:" /I /C:"passw:" /I /C:"password:" /I /C:"login:" /I /C:"logon:" >> $Env:TMP\passwd.txt
+              Select-String "user:","pass:","username:","pwd:","passw:","password:","login:","logon:" >> $Env:TMP\passwd.txt
            }
 
            $ChekCreds = Get-Content -Path "$Env:TMP\passwd.txt" -EA SilentlyContinue|
-               findstr /I /C:"user:" /I /C:"pass:" /I /C:"username:" /I /C:"pwd:" /I /C:"passw:" /I /C:"password:" /I /C:"login:" /I /C:"logon:"|
+               Select-String -pattern "user:","pass:","username:","pwd:","passw:","password:","login:","logon:"|
                findstr /V "if self.username:"|findstr /V "#"|? {$_.trim() -ne ""}
            If($ChekCreds -ieq $null){## None credentials found
               Write-Host "[error] None credentials found under $StartDir!" -ForegroundColor Red -BackgroundColor Black
