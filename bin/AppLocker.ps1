@@ -351,7 +351,7 @@ If($TestBat -Match '\\'){
    Copy-Item -Path "$TestBat" -Destination "$RawFullPath" -EA SilentlyContinue -Force
 
    cd $StripPath
-   Write-Host "[i] trying to execute $Bypassext text file"
+   Write-Host "[i] trying to execute $Bypassext text file" -ForeGroundColor Yellow
    Start-Sleep -Seconds 1;Write-Host "[+] script output:`n`n"
    ## Nice trick to be abble to execute cmd stdin { < } on PS
    Start-Sleep -Seconds 1;cmd.exe /c "cmd.exe /K < $Bypassext"
