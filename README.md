@@ -84,6 +84,7 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 |-PingSweep| Enum \| Verbose |Enumerate Active IP Address and open ports on Local Lan|
 |-DnsSpoof| Enum \| Redirect \| Clear | Redirect Domain Names to our Phishing IP address|
 |-DisableAV| Query \| Start \| Stop | Disable Windows Defender Service (WinDefend)|
+|-HiddenUser| Query \| Create \| Delete |  Query \ Create \ Delete Hidden User Accounts|
 
 <br />
 
@@ -250,6 +251,10 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
       src="https://github-readme-stats.vercel.app/api/top-langs/?username=r00t-3xp10it&langs_count=10&layout=compact&theme=radical"
     />
   </a>
+</p>
+
+<p align="center">
+ <img src="https://visitor-badge.laobi.icu/badge?page_id=r00t-3xp10it" alt="visitor badge" style="vertical-align:top; margin:4px">
 </p>
 
 ## SuspiciousShellActivity - RedTeam @2021

