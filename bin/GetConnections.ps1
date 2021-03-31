@@ -49,7 +49,6 @@
 
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
-
 If($GetConnections -ieq "Enum"){## Quick TCP enumeration
 
    <#
@@ -72,9 +71,11 @@ If($GetConnections -ieq "Enum"){## Quick TCP enumeration
       192.168.1.72     55274 40.67.254.36         443          3708
    #>
 
-   Write-Host "`n"
-   Get-NetTCPConnection | Where-Object {
-      $_.State -ieq "Established" -and $_.LocalAddress -NotMatch ":" -and $_.LocalAddress -NotMatch "127.0.0.1" 
+   Write-Host "`n`n"
+   ## CmdLine To Display TCP listenning connections also!
+   # $_.State -ieq "Established" -or $_.State -ieq "Listen"
+   Get-NetTCPConnection | Where-Object {## Filter stdout outputs { search established and exclude IPV6 + localhost }
+      $_.State -ieq "Established" -and $_.LocalAddress -NotMatch ":" -and $_.LocalAddress -NotMatch "127.0.0.1" -and $_.LocalAddress -NotMatch "0.0.0.0"
       }| Select-Object LocalAddress,LocalPort,RemoteAddress,RemotePort,OwningProcess | Format-Table
 }   
 
@@ -121,7 +122,7 @@ If($GetConnections -ieq "Verbose"){## Verbose module
    echo $parsedata
 
    Write-Host "" ## List of ProcessName + PID associated to $Tcplist
-   $PidList = netstat -ano|findstr "ESTABLISHED LISTENING"|findstr /V "[ UDP 0.0.0.0:0"
+   $PidList = netstat -ano|findstr "ESTABLISHED LISTENING"|findstr /V "[ UDP 0.0.0.0:0 127.0.0.1"
    ForEach($Item in $PidList){## Loop truth ESTABLISHED connections
       echo $Item.split()[-1] >> test.log
    }
@@ -130,6 +131,6 @@ If($GetConnections -ieq "Verbose"){## Verbose module
 
    ## ESTABLISHED Connections PID (Id) Loop
    ForEach($Token in $PPid){
-      Get-Process -PID $Token
+      Get-Process -PID $Token -EA SilentlyContinue
    }
 }
