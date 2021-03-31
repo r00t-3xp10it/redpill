@@ -142,7 +142,7 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 
         ## Clear ALL event Logs
         Write-Host "[i] Administrator Privileges: True" -ForegroundColor Yellow
-        Write-Host "[+] Cleaning $Remote_hostName\$Env:USERNAME Eventvwr logs ...`n" -ForeGroundColor Green
+        Write-Host "[+] Cleaning $Env:COMPUTERNAME\$Env:USERNAME Eventvwr logs ...`n" -ForeGroundColor Green
         wevtutil el|Foreach-Object {wevtutil cl "$_"}
     }
     Write-Host "";Start-Sleep -Seconds 1

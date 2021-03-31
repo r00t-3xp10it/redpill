@@ -158,6 +158,15 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 
 ![wifidump](https://user-images.githubusercontent.com/23490060/107768059-c7531980-6d2d-11eb-9f2a-2e2f2e649f56.png)
 
+<br />
+
+6º - Running <b><i>[ -sysinfo ] [ Enum ]</i></b> Module 
+
+     Syntax : .\redpill.ps1 [ -Parameter Name ] [ @argument ]
+     Example: .\redpill.ps1 -sysinfo Enum
+
+![geolocation](https://user-images.githubusercontent.com/23490060/107866747-c7593380-6e6b-11eb-8e38-9ef3acdb3c01.png)
+
 </details>
 
 <br />
