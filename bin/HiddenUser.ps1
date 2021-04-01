@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: administrator privileges
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.4
+   PS cmdlet Dev version: v1.0.5
 
 .DESCRIPTION
    This CmdLet Querys, Creates or Deletes windows hidden accounts.
@@ -37,8 +37,8 @@
 
 .EXAMPLE
    PS C:\> .\HiddenUser.ps1 -Action Verbose
-   Enumerate ALL Account's present in local system and
-   List All Account's owned by 'Adminstrators' Group Name
+   Enumerate ALL Account's present in local system
+   and List All Account's of 'Adminstrators' Group Name
 
 .EXAMPLE
    PS C:\> .\HiddenUser.ps1 -Action Create -UserName "pedro"
@@ -71,7 +71,6 @@
    False   DefaultAccount                                                        False
     True   pedro              20/03/2021 01:50:09 01/03/2021 19:53:46             True
    False   WDAGUtilityAccount                     01/03/2021 18:58:42             True
-
 #>
 
 
@@ -79,7 +78,7 @@
 [CmdletBinding(PositionalBinding=$false)] param(
    [string]$UserName="false",
    [string]$Password="false",
-   [string]$Action="Query"
+   [string]$Action="Verbose"
 )
 
 
@@ -102,8 +101,8 @@ If($Action -ieq "Query" -or $Action -ieq "Verbose"){
 
    .EXAMPLE
       PS C:\> .\HiddenUser.ps1 -Action Verbose
-      Enumerate ALL Account's present in local system and
-      List All Account's owned by 'Adminstrators' Group Name
+      Enumerate ALL Account's present in local system
+      and List All Account's of 'Adminstrators' Group Name
 
    .EXAMPLE
       PS C:\> .\HiddenUser.ps1 -Action Query -UserName "SSAredTeam"
@@ -148,7 +147,11 @@ If($Action -ieq "Query" -or $Action -ieq "Verbose"){
 
       }Else{## Account Name NOT found
 
-         Write-Host "`n`n[error] '$UserName' Account Not found in $Env:COMPUTERNAME!`n`n" -ForegroundColor Red -BackgroundColor Black
+         ## [error] Display ALL User Accounts
+         Get-LocalUser * -EA SilentlyContinue |
+            Select-Object Enabled,Name,LastLogon,PasswordLastSet,PasswordRequired | Format-Table   
+         Write-Host "[error] '$UserName' Account Not found in $Env:COMPUTERNAME system!`n`n" -ForegroundColor Red -BackgroundColor Black
+         exit ## Exit @HiddenUser
 
       }
 
@@ -179,7 +182,6 @@ If($Action -ieq "Query" -or $Action -ieq "Verbose"){
       Enabled Name       LastLogon PasswordLastSet     PasswordRequired
       ------- ----       --------- ---------------     ----------------
         False SSAredTeam           25/03/2021 18:51:28             True
-
    #>
 
    Write-Host ""
@@ -202,11 +204,11 @@ If($Action -ieq "Query" -or $Action -ieq "Verbose"){
    ## Make sure user account to create does NOT exist
    $CheckAccount = Get-LocalUser $UserName -EA SilentlyContinue
    If($CheckAccount){## [error] User Account found!
-   
-      Write-Host "`n`n[error] $UserName Account allready exists in $Env:COMPUTERNAME!`n`n" -ForegroundColor Red -BackgroundColor Black
-      ## Display ALL User Accounts available
+
+      ## [error] Display ALL User Accounts
       Get-LocalUser * -EA SilentlyContinue |
-         Select-Object Enabled,Name,LastLogon,PasswordLastSet,PasswordRequired | Format-Table
+         Select-Object Enabled,Name,LastLogon,PasswordLastSet,PasswordRequired | Format-Table   
+      Write-Host "[error] '$UserName' Account allready exists in $Env:COMPUTERNAME system!`n`n" -ForegroundColor Red -BackgroundColor Black
       exit ## Exit @HiddenUser
       
    }
@@ -219,7 +221,7 @@ If($Action -ieq "Query" -or $Action -ieq "Verbose"){
    }Else{## Account with password access
 
       ## $SecurePassword = $Password | ConvertTo-SecureString -AsPlainText -Force
-      ## New-LocalUser "$UserName" -Password $SecurePassword|Out-Null
+      # New-LocalUser "$UserName" -Password $SecurePassword|Out-Null
       net user $UserName $Password /add|Out-Null
    
    }
@@ -236,18 +238,19 @@ If($Action -ieq "Query" -or $Action -ieq "Verbose"){
 
       }
       
-   }Else{## Admin Group Name NOT found!
+   }Else{## [error] Admin Group Name NOT found!
 
-      Write-Host "`n`n[error] fail to add '$UserName' account to '$AdminGroupName' Group!`n`n" -ForegroundColor Red -BackgroundColor Black
+      Write-Host "`n`n[error] Not found '$AdminGroupName' Group Name!`n`n" -ForegroundColor Red -BackgroundColor Black
 
    }
 
-   ## Allow RDP multiple connections
+   ## Allow account RDP multiple connections
    reg add "hklm\system\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /t REG_DWORD /d 0 /f|Out-Null
    reg add "hklm\system\CurrentControlSet\Control\Terminal Server" /v "AllowTSConnections" /t REG_DWORD /d 0x1 /f|Out-Null
 
    ## De-Activate account { hidden }
-   net user $UserName /active:no|Out-Null
+   # [cmd] net user $UserName /active:no|Out-Null
+   Disable-LocalUser -Name "$UserName"|Out-Null
    Get-LocalUser $UserName -EA SilentlyContinue |
       Select-Object Enabled,Name,LastLogon,PasswordLastSet,PasswordRequired | Format-Table
 
@@ -275,7 +278,6 @@ If($Action -ieq "Query" -or $Action -ieq "Verbose"){
       False   DefaultAccount                                                        False
        True   pedro              20/03/2021 01:50:09 01/03/2021 19:53:46             True
       False   WDAGUtilityAccount                     01/03/2021 18:58:42             True
-
    #>
 
    Write-Host ""
@@ -308,22 +310,23 @@ If($Action -ieq "Query" -or $Action -ieq "Verbose"){
    $CheckAccount = Get-LocalUser $UserName -EA SilentlyContinue
    If($CheckAccount){## Account Name found
    
-      Remove-LocalUser -Name "$UserName"|Out-Null
       ## [cmd] net user $UserName /DELETE|Out-Null
+      Remove-LocalUser -Name "$UserName"|Out-Null
 
-      ## Delete RDP user access
+      ## Delete account RDP user access
       reg delete "hklm\system\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /f|Out-Null
       reg delete "hklm\system\CurrentControlSet\Control\Terminal Server" /v "AllowTSConnections" /f|Out-Null
 
       ## Build Output Table
-      Get-LocalUser * | Select-Object Enabled,Name,LastLogon,PasswordLastSet,PasswordRequired | Format-Table
-         
-   }Else{## Account Name NOT found
-   
-      Write-Host "`n`n[error] '$UserName' Account Not found in $Env:COMPUTERNAME!`n`n" -ForegroundColor Red -BackgroundColor Black
-      ## Display ALL User Accounts available
       Get-LocalUser * -EA SilentlyContinue |
          Select-Object Enabled,Name,LastLogon,PasswordLastSet,PasswordRequired | Format-Table
+         
+   }Else{## [error] Account Name NOT found
+   
+      ## [error] Display ALL User Accounts available
+      Get-LocalUser * -EA SilentlyContinue |
+         Select-Object Enabled,Name,LastLogon,PasswordLastSet,PasswordRequired | Format-Table   
+      Write-Host "[error] '$UserName' Account Not found in $Env:COMPUTERNAME system!`n`n" -ForegroundColor Red -BackgroundColor Black
       exit ## Exit @HiddenUser
       
    }
@@ -363,20 +366,33 @@ If($Action -ieq "Query" -or $Action -ieq "Verbose"){
       
    }
 
-   ## Config account visibility state
-   If($Action -ieq "Visible"){$cmdline = "yes"}Else{$cmdline = "no"}
-
    ## Make sure user account to manipulate exists before go any further
    $CheckAccount = Get-LocalUser $UserName -EA SilentlyContinue
    If($CheckAccount){## Account Name found
    
-      net user $UserName /active:${cmdline}|Out-Null
-      Get-LocalUser $UserName |
+      ## Config account visibility state
+      If($Action -ieq "Visible"){
+
+         ## [cmd] net user $UserName /active:yes|Out-Null
+         Enable-LocalUser -Name "$UserName"|Out-Null
+
+      }ElseIf($Action -ieq "Hidden"){
+
+         ## [cmd] net user $UserName /active:no|Out-Null
+         Disable-LocalUser -Name "$UserName"|Out-Null
+
+      }
+
+      ## Build OutPut Table
+      Get-LocalUser $UserName -EA SilentlyContinue |
          Select-Object Enabled,Name,LastLogon,PasswordLastSet,PasswordRequired | Format-Table
          
-   }Else{## Account Name NOT found
-   
-      Write-Host "`n`n[error] '$UserName' Account Not found in $Env:COMPUTERNAME!" -ForegroundColor Red -BackgroundColor Black
+   }Else{## [error] Account Name NOT found
+
+      ## [error] Display ALL User Accounts
+      Get-LocalUser * -EA SilentlyContinue |
+         Select-Object Enabled,Name,LastLogon,PasswordLastSet,PasswordRequired | Format-Table   
+      Write-Host "[error] '$UserName' Account Not found in $Env:COMPUTERNAME system!`n`n" -ForegroundColor Red -BackgroundColor Black
       exit ## Exit @HiddenUser
    }
 
