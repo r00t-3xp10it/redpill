@@ -36,7 +36,7 @@
    Enumerate ALL Account's present on local system
 
 .EXAMPLE
-   PS C:\> .\HiddenUser.ps1 -Action VerboseQuery
+   PS C:\> .\HiddenUser.ps1 -Action Verbose
    Enumerate ALL Account's present in local system and
    List All Account's owned by 'Adminstrators' Group Name
 
