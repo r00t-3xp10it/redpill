@@ -19,7 +19,7 @@
    And desktop will allow multiple RDP connections { AllowTSConnections }
 
 .Parameter Action
-   Accepts arguments: Query, Create, Delete, Visible, Hidden
+   Accepts arguments: Query, Verbose, Create, Delete, Visible, Hidden
 
 .Parameter UserName
    Accepts the User Account Name (default: SSAredTeam)
@@ -34,6 +34,11 @@
 .EXAMPLE
    PS C:\> .\HiddenUser.ps1 -Action Query
    Enumerate ALL Account's present on local system
+
+.EXAMPLE
+   PS C:\> .\HiddenUser.ps1 -Action VerboseQuery
+   Enumerate ALL Account's present in local system and
+   List All Account's owned by 'Adminstrators' Group Name
 
 .EXAMPLE
    PS C:\> .\HiddenUser.ps1 -Action Create -UserName "pedro"
@@ -80,7 +85,7 @@
 
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
-If($Action -ieq "Query"){
+If($Action -ieq "Query" -or $Action -ieq "Verbose"){
 
    <#
    .SYNOPSIS
@@ -94,6 +99,11 @@ If($Action -ieq "Query"){
    .EXAMPLE
       PS C:\> .\HiddenUser.ps1 -Action Query
       Enumerate ALL Account's present in local system
+
+   .EXAMPLE
+      PS C:\> .\HiddenUser.ps1 -Action Verbose
+      Enumerate ALL Account's present in local system and
+      List All Account's owned by 'Adminstrators' Group Name
 
    .EXAMPLE
       PS C:\> .\HiddenUser.ps1 -Action Query -UserName "SSAredTeam"
@@ -117,6 +127,11 @@ If($Action -ieq "Query"){
       Get-LocalUser $UserName -EA SilentlyContinue |
          Select-Object Enabled,Name,LastLogon,PasswordLastSet,PasswordRequired | Format-Table
 
+      If($Action -ieq "Verbose"){## Display Accounts owned by 'Administrators' Group
+         $AdminGroupName = (Get-LocalGroup | Select-Object -First 1).Name
+         Get-LocalGroupMember -Group $AdminGroupName | Select-object Name,SID,PrincipalSource
+      }
+
    }Else{## Display Detailed Information about the sellected account
    
       ## Make sure user account exists before go any further
@@ -125,6 +140,11 @@ If($Action -ieq "Query"){
 
          Get-LocalUser $UserName -EA SilentlyContinue |
             Select-Object Enabled,Name,LastLogon,PasswordLastSet,PasswordRequired | Format-Table
+
+         If($Action -ieq "Verbose"){## Display Accounts owned by 'Administrators' Group
+            $AdminGroupName = (Get-LocalGroup | Select-Object -First 1).Name
+            Get-LocalGroupMember -Group $AdminGroupName | Select-object Name,SID,PrincipalSource
+         }
 
       }Else{## Account Name NOT found
 
