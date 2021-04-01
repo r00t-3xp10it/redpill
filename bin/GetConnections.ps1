@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.2
+   PS cmdlet Dev version: v1.0.3
    
 .DESCRIPTION
    Enumerates ESTABLISHED TCP connections and retrieves the
@@ -122,8 +122,7 @@ If($GetConnections -ieq "Verbose"){## Verbose module
    echo $parsedata
 
    Write-Host "" ## List of ProcessName + PID associated to $Tcplist
-   $PidList = netstat -ano|findstr "ESTABLISHED LISTENING"|findstr /V "[ UDP 0.0.0.0:0 127.0.0.1"
-   ForEach($Item in $PidList){## Loop truth ESTABLISHED connections
+   ForEach($Item in $TcpList){## Loop truth ESTABLISHED connections
       echo $Item.split()[-1] >> test.log
    }
    $PPid = Get-Content -Path "test.log"
