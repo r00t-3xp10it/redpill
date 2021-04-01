@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: administrator privileges
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.3
+   PS cmdlet Dev version: v1.0.4
 
 .DESCRIPTION
    This CmdLet Querys, Creates or Deletes windows hidden accounts.
@@ -204,6 +204,9 @@ If($Action -ieq "Query" -or $Action -ieq "Verbose"){
    If($CheckAccount){## [error] User Account found!
    
       Write-Host "`n`n[error] $UserName Account allready exists in $Env:COMPUTERNAME!`n`n" -ForegroundColor Red -BackgroundColor Black
+      ## Display ALL User Accounts available
+      Get-LocalUser * -EA SilentlyContinue |
+         Select-Object Enabled,Name,LastLogon,PasswordLastSet,PasswordRequired | Format-Table
       exit ## Exit @HiddenUser
       
    }
@@ -235,7 +238,7 @@ If($Action -ieq "Query" -or $Action -ieq "Verbose"){
       
    }Else{## Admin Group Name NOT found!
 
-      Write-Host "`n`n[error] fail to add '$UserName' account to 'Administrators' Group!`n`n" -ForegroundColor Red -BackgroundColor Black
+      Write-Host "`n`n[error] fail to add '$UserName' account to '$AdminGroupName' Group!`n`n" -ForegroundColor Red -BackgroundColor Black
 
    }
 
@@ -318,6 +321,9 @@ If($Action -ieq "Query" -or $Action -ieq "Verbose"){
    }Else{## Account Name NOT found
    
       Write-Host "`n`n[error] '$UserName' Account Not found in $Env:COMPUTERNAME!`n`n" -ForegroundColor Red -BackgroundColor Black
+      ## Display ALL User Accounts available
+      Get-LocalUser * -EA SilentlyContinue |
+         Select-Object Enabled,Name,LastLogon,PasswordLastSet,PasswordRequired | Format-Table
       exit ## Exit @HiddenUser
       
    }
