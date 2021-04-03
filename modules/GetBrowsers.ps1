@@ -5,7 +5,7 @@
   Author: r00t-3xp10it (SSA RedTeam @2020)
   Required Dependencies: (iexplore|msedge), Firefox, Chrome
   Optional Dependencies: mozlz4-win32.exe, DarkRCovery.exe
-  PS Script Dev Version: v1.19
+  PS Script Dev Version: v1.20
 
 .DESCRIPTION
    Standalone Powershell script to leak Installed browsers information sutch as: Home Page,
@@ -80,7 +80,7 @@ $mpset = $False
 $param1 = $args[0] # User Inputs [Arguments]
 $param2 = $args[1] # User Inputs [Arguments]
 $IPATH = pwd|Select-Object -ExpandProperty Path
-$host.UI.RawUI.WindowTitle = " @GetBrowsers v1.19"
+$host.UI.RawUI.WindowTitle = " @GetBrowsers v1.20"
 ## Auto-Set @Args in case of User empty inputs (Set LogFile Path).
 If(-not($param2)){$LogFilePath = "$env:TMP"}else{If($param2 -match '^[0-9]'){$LogFilePath = "$env:TMP";$param2 = $param2}else{$LogFilePath = "$param2";$mpset = $True}}
 If(-not($param1)){
@@ -223,7 +223,7 @@ function BROWSER_RECON {
     echo "-------   -------   ------   -------         ----------" >> $LogFilePath\BrowserEnum.log
     echo "IE        $IEfound  $iStatus   $IEVersion    $id" >> $LogFilePath\BrowserEnum.log
     echo "CHROME    $CHfound  $cStatus   $Chrome_App   $cd" >> $LogFilePath\BrowserEnum.log
-    echo "FIREFOX   $FFfound  $fStatus   $ParsingData          $fd" >> $LogFilePath\BrowserEnum.log
+    echo "FIREFOX   $FFfound  $fStatus   $ParsingData            $fd" >> $LogFilePath\BrowserEnum.log
     ## Get-NetAdapter { Interfaces Available }
     $Interfaces = Get-NetAdapter|Select-Object Status,InterfaceDescription -ErrorAction SilentlyContinue
     If($Interfaces){echo "`n" $Interfaces >> $LogFilePath\BrowserEnum.log}
