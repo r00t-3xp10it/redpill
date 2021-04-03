@@ -137,12 +137,15 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
         $AntispywareEnabled = (Get-MpComputerStatus).AntispywareEnabled
         $DisableScriptScanning = (Get-MpPreference).DisableScriptScanning
         $SignatureScheduleTime = (Get-MpPreference).SignatureScheduleTime
+        $DisableArchiveScanning = (Get-MpPreference).DisableArchiveScanning
         $BehaviorMonitorEnabled = (Get-MpComputerStatus).BehaviorMonitorEnabled
         $RealTimeProtectionEnabled = (Get-MpComputerStatus).RealTimeProtectionEnabled
         $AllowedApplications = (Get-MpPreference).ControlledFolderAccessAllowedApplications
         $AntivirusSignatureLastUpdated = (Get-MpComputerStatus).AntivirusSignatureLastUpdated
         $AntispywareSignatureLastUpdated = (Get-MpComputerStatus).AntispywareSignatureLastUpdated
         $AntiVirusProduct = (Get-CimInstance -Namespace root/SecurityCenter2 -ClassName AntivirusProduct).DisplayName
+        $ScanScheduleTime = Get-MpPreference | Select-Object ScanScheduleTime | findstr /V "ScanScheduleTime ---" | Where-Object { $_ -ne "" }
+        $ScanScheduleQuickScanTime = Get-MpPreference | Select-Object ScanScheduleQuickScanTime | findstr /V "ScanScheduleQuickScanTime ---" | Where-Object { $_ -ne "" }
 
         <#
         .NOTES
@@ -223,6 +226,11 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
     Write-Host "AntivirusSignatureLastUpdated   : $AntivirusSignatureLastUpdated"
     Write-Host "AntispywareSignatureLastUpdated : $AntispywareSignatureLastUpdated"
     Write-Host "PowerShellCommandLogging        : $PSLoggingSession"  -ForegroundColor Yellow
+    Write-Host "DisableArchiveScanning          : $DisableArchiveScanning"
+    Write-Host "ScanScheduleTime                : $ScanScheduleTime"
+    Write-Host "ScanScheduleQuickScanTime       : $ScanScheduleQuickScanTime"
+    
+
 
     ## Loop truth $AllowedApplications
     # Make sure the var declaration is not empty
