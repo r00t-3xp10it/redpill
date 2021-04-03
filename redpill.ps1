@@ -2194,8 +2194,8 @@ If($HiddenUser -ne "false"){
       The new created user account will be added to 'administrators' Group Name
       And desktop will allow multiple RDP connections if set -EnableRDP [ True ]
 
-   .Parameter Action
-      Accepts argument: Query, Create, Delete, Visible, Hidden
+   .Parameter HiddenUser
+      Accepts arguments: Query, Create, Delete, Visible, Hidden
 
    .Parameter UserName
       Accepts the User Account Name (default: SSAredTeam)
@@ -2207,31 +2207,31 @@ If($HiddenUser -ne "false"){
       Accepts arguments: True and False (default: False)
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Query
+      PS C:\> powershell -File redpill.ps1 -HiddenUser Query
       Enumerate ALL Account's present in local system
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Create -UserName "SSAredTeam"
+      PS C:\> powershell -File redpill.ps1 -HiddenUser Create -UserName "SSAredTeam"
       Creates 'SSAredTeam' hidden account without password access and 'Adminitrator' privs
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Create -UserName "SSAredTeam" -Password "mys3cr3tp4ss"
+      PS C:\> powershell -File redpill.ps1 -HiddenUser Create -UserName "SSAredTeam" -Password "mys3cr3tp4ss"
       Creates 'SSAredTeam' hidden account with password 'mys3cr3tp4ss' and 'Adminitrator' privs
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Create -UserName "SSAredTeam" -Password "mys3cr3tp4ss" -EnableRDP True
+      PS C:\> powershell -File redpill.ps1 -HiddenUser Create -UserName "SSAredTeam" -Password "mys3cr3tp4ss" -EnableRDP True
       Create 'SSAredTeam' Hidden User Account with 'mys3cr3tp4ss' login password and enables multiple RDP connections.
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Visible -UserName "SSAredTeam"
+      PS C:\> powershell -File redpill.ps1 -HiddenUser Visible -UserName "SSAredTeam"
       Makes 'SSAredTeam' User Account visible on logon screen
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Hidden -UserName "SSAredTeam"
+      PS C:\> powershell -File redpill.ps1 -HiddenUser Hidden -UserName "SSAredTeam"
       Makes 'SSAredTeam' User Account Hidden on logon screen (default)
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Delete -UserName "SSAredTeam"
+      PS C:\> powershell -File redpill.ps1 -HiddenUser Delete -UserName "SSAredTeam"
       Deletes 'SSAredTeam' hidden account
 
    .OUTPUTS
@@ -3664,8 +3664,8 @@ $HelpParameters = @"
       The new created user account will be added to 'administrators' Group Name
       And desktop will allow multiple RDP connections if set -EnableRDP [ True ]
 
-   .Parameter Action
-      Accepts argument: Query, Create, Delete, Visible, Hidden
+   .Parameter HiddenUser
+      Accepts arguments: Query, Create, Delete, Visible, Hidden
 
    .Parameter UserName
       Accepts the User Account Name (default: SSAredTeam)
@@ -3677,31 +3677,31 @@ $HelpParameters = @"
       Accepts arguments: True and False (default: False)
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Query
+      PS C:\> powershell -File redpill.ps1 -HiddenUser Query
       Enumerate ALL Account's present in local system
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Create -UserName "SSAredTeam"
+      PS C:\> powershell -File redpill.ps1 -HiddenUser Create -UserName "SSAredTeam"
       Creates 'SSAredTeam' hidden account without password access and 'Adminitrator' privs
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Create -UserName "SSAredTeam" -Password "mys3cr3tp4ss"
+      PS C:\> powershell -File redpill.ps1 -HiddenUser Create -UserName "SSAredTeam" -Password "mys3cr3tp4ss"
       Creates 'SSAredTeam' hidden account with password 'mys3cr3tp4ss' and 'Adminitrator' privs
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Create -UserName "SSAredTeam" -Password "mys3cr3tp4ss" -EnableRDP True
+      PS C:\> powershell -File redpill.ps1 -HiddenUser Create -UserName "SSAredTeam" -Password "mys3cr3tp4ss" -EnableRDP True
       Create 'SSAredTeam' Hidden User Account with 'mys3cr3tp4ss' login password and enables multiple RDP connections.
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Visible -UserName "SSAredTeam"
+      PS C:\> powershell -File redpill.ps1 -HiddenUser Visible -UserName "SSAredTeam"
       Makes 'SSAredTeam' User Account visible on logon screen
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Hidden -UserName "SSAredTeam"
+      PS C:\> powershell -File redpill.ps1 -HiddenUser Hidden -UserName "SSAredTeam"
       Makes 'SSAredTeam' User Account Hidden on logon screen (default)
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Delete -UserName "SSAredTeam"
+      PS C:\> powershell -File redpill.ps1 -HiddenUser Delete -UserName "SSAredTeam"
       Deletes 'SSAredTeam' hidden account
 
    .OUTPUTS
