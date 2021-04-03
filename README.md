@@ -46,7 +46,9 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 
 <i>To List All Parameters Available, execute in powershell prompt:</i>
 
-     .\redpill.ps1 -Help Parameters
+```powershell
+.\redpill.ps1 -Help Parameters
+```
 
 <br />
 
@@ -90,8 +92,10 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 
 <i>To Display Detailed information about each parameter execute:</i>
 
-     Syntax : .\redpill.ps1 -Help [ Parameter Name ]
-     Example: .\redpill.ps1 -Help WifiPasswords
+```powershell
+Syntax : .\redpill.ps1 -Help [ Parameter Name ]
+Example: .\redpill.ps1 -Help WifiPasswords
+```
 
 ![Parametershelp](https://user-images.githubusercontent.com/23490060/107767610-1e0c2380-6d2d-11eb-946e-ce4988087dca.png)
 
@@ -114,13 +118,17 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 
 1º - Download CmdLet from GitHub repository to <b><i>'Local Disk'</i></b>
 
-    iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/redpill.ps1 -OutFile redpill.ps1
+```powershell
+iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/redpill.ps1 -OutFile redpill.ps1
+```
 
 <br />
 
 2º - Set Powershell Execution Policy to <b><i>'UnRestricted'</i></b>
 
-     Set-ExecutionPolicy UnRestricted -Scope CurrentUser
+```powershell
+Set-ExecutionPolicy UnRestricted -Scope CurrentUser
+```
 
 ![ste](https://user-images.githubusercontent.com/23490060/106375669-f2308b80-6385-11eb-8cff-947178c52915.png)
 
@@ -136,7 +144,9 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 
 4º - Access CmdLet Help Menu {All Parameters}
 
-     .\redpill.ps1 -Help Parameters
+```powershell
+.\redpill.ps1 -Help Parameters
+```
 
 ![menu](https://user-images.githubusercontent.com/23490060/107781666-0c804700-6d40-11eb-9fbc-4826705534e5.png)
 
@@ -144,8 +154,10 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 
 5º - Access <b><i>[ -WifiPasswords ]</i></b> Detailed Parameter Help
 
-     Syntax : .\redpill.ps1 -Help [ Parameter Name ]
-     Example: .\redpill.ps1 -Help WifiPasswords
+```powershell
+Syntax : .\redpill.ps1 -Help [ Parameter Name ]
+Example: .\redpill.ps1 -Help WifiPasswords
+```
 
 ![Parametershelp](https://user-images.githubusercontent.com/23490060/107767610-1e0c2380-6d2d-11eb-946e-ce4988087dca.png)
 
@@ -153,17 +165,21 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 
 6º - Running <b><i>[ -WifiPasswords ] [ Dump ]</i></b> Module 
 
-     Syntax : .\redpill.ps1 [ -Parameter Name ] [ @argument ]
-     Example: .\redpill.ps1 -WifiPasswords Dump
+```powershell
+Syntax : .\redpill.ps1 [ -Parameter Name ] [ @argument ]
+Example: .\redpill.ps1 -WifiPasswords Dump
+```
 
 ![wifidump](https://user-images.githubusercontent.com/23490060/107768059-c7531980-6d2d-11eb-9f2a-2e2f2e649f56.png)
 
 <br />
 
-6º - Running <b><i>[ -sysinfo ] [ Enum ]</i></b> Module 
+7º - Running <b><i>[ -sysinfo ] [ Enum ]</i></b> Module 
 
-     Syntax : .\redpill.ps1 [ -Parameter Name ] [ @argument ]
-     Example: .\redpill.ps1 -sysinfo Enum
+```powershell
+Syntax : .\redpill.ps1 [ -Parameter Name ] [ @argument ]
+Example: .\redpill.ps1 -sysinfo Enum
+```
 
 ![geolocation](https://user-images.githubusercontent.com/23490060/107866747-c7593380-6e6b-11eb-8e38-9ef3acdb3c01.png)
 
@@ -213,7 +229,9 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 <details>
 <summary>To Manual download the CmdLet for Local Tests, execute:</summary><br />
 
-    iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/redpill.ps1 -OutFile redpill.ps1
+```powershell
+iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/redpill.ps1 -OutFile redpill.ps1
+```
 
 </details>
 
