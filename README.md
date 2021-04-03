@@ -93,7 +93,7 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 <i>To Display Detailed information about each parameter execute:</i>
 
 ```powershell
-Syntax : .\redpill.ps1 -Help [ Parameter Name ]
+Syntax : .\redpill.ps1 -Help [ -Parameter Name ]
 Example: .\redpill.ps1 -Help WifiPasswords
 ```
 
@@ -136,7 +136,9 @@ Set-ExecutionPolicy UnRestricted -Scope CurrentUser
 
 3º -  Browse to <b><i>'redpill.ps1'</i></b> storage directory
 
-     cd C:\Users\pedro\Desktop
+```powershell
+cd C:\Users\pedro\Desktop
+```
 
 ![redpillpath](https://user-images.githubusercontent.com/23490060/107781146-76e4b780-6d3f-11eb-9a41-de1163086c70.png)
 
@@ -155,7 +157,7 @@ Set-ExecutionPolicy UnRestricted -Scope CurrentUser
 5º - Access <b><i>[ -WifiPasswords ]</i></b> Detailed Parameter Help
 
 ```powershell
-Syntax : .\redpill.ps1 -Help [ Parameter Name ]
+Syntax : .\redpill.ps1 -Help [ -Parameter Name ]
 Example: .\redpill.ps1 -Help WifiPasswords
 ```
 
@@ -200,7 +202,9 @@ Example: .\redpill.ps1 -sysinfo Enum
 
 1º - execute in reverse tcp shell prompt
 
-    [SKYNET] C:\Users\pedro\AppData\Local\Temp> powershell -File redpill.ps1 -Help Parameters
+```cmd
+[SKYNET] C:\Users\pedro\AppData\Local\Temp> powershell -File redpill.ps1 -Help Parameters
+```
 
 <br />
 
@@ -210,7 +214,9 @@ Example: .\redpill.ps1 -sysinfo Enum
 
 2º - Access <b><i>[ -WifiPasswords ]</i></b> Detailed Parameter Help
 
-     [SKYNET] C:\Users\pedro\AppData\Local\Temp> powershell -File redpill.ps1 -Help WifiPasswords
+```cmd
+[SKYNET] C:\Users\pedro\AppData\Local\Temp> powershell -File redpill.ps1 -Help WifiPasswords
+```
 
 ![Parametershelp](https://user-images.githubusercontent.com/23490060/107767610-1e0c2380-6d2d-11eb-946e-ce4988087dca.png)
 
@@ -218,7 +224,9 @@ Example: .\redpill.ps1 -sysinfo Enum
 
 3º - Running <b><i>[ -WifiPasswords ] [ Dump ]</i></b> Module 
 
-     [SKYNET] C:\Users\pedro\AppData\Local\Temp> powershell -File redpill.ps1 -WifiPasswords Dump
+```cmd
+[SKYNET] C:\Users\pedro\AppData\Local\Temp> powershell -File redpill.ps1 -WifiPasswords Dump
+```
 
 ![wifidump](https://user-images.githubusercontent.com/23490060/107768059-c7531980-6d2d-11eb-9f2a-2e2f2e649f56.png)
 
