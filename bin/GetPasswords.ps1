@@ -6,7 +6,7 @@
    Author: @mubix|@r00t-3xp10it
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: Invoke-WebRequest|BitsTransfer
-   Optional Dependencies: BCDstore.msc|perfmon.msc|
+   Optional Dependencies: BCDstore.msc|perfmon.msc|DecryptAutoLogon.msc
    PS cmdlet Dev version: v2.2.6
 
 .DESCRIPTION
