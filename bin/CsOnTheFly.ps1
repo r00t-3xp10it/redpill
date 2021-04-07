@@ -88,11 +88,15 @@ $ORIGINALURL = $null
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $Working_Directory = pwd|Select-Object -ExpandProperty Path
 
-## [ Compiled StandAlone Executable Icon ]
-# Attacker needs to copy is own icon.ico to @CsOnTheFly.ps1
-# working directory and rename it as 'myicon.ico' if you
-# wish to use your own standalone executable icon file!
-$IconFile = "$Working_Directory\" + "myicon.ico" -Join ''
+
+## * [ Compiled StandAlone Executable Icon ] *
+# Attacker needs to copy is own icon.ico to -OutFile [ dir ]
+# and rename it as 'myicon.ico' if you wish to use your own
+# icon on the compiled standalone executable binary.exe or
+# else this cmdlet downloads redpill.ico to add to binary.exe
+$RaOuPath = $OutFile.Split('\\')[-1]                 ## Installer.exe
+$StrInput = $OutFile -replace "$RaOuPath",""         ## C:\Users\pedro\AppData\Local\Temp\
+$IconFile = "$StrInput" + "myicon.ico" -Join ''      ## C:\Users\pedro\AppData\Local\Temp\myicon.ico
 
 
 ## Creates demonstration CS script in the case
