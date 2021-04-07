@@ -79,7 +79,7 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 |-AppLocker| Enum \| WhoAmi \| TestBat |Enumerate AppLocker Directorys with weak permissions|
 |-FileMace| $Env:TMP\test.txt |Change File Mace {CreationTime,LastAccessTime,LastWriteTime}|
 |-MetaData| $Env:TMP\test.exe |Display files \ applications description (metadata)|
-|-PEHollow| $Env:TMP\test.exe |PE Process Hollowing {impersonate explorer.exe as parent}|
+|-PEHollow| GetSystem \| $Env:TMP\test.exe | Process Hollowing {impersonate explorer.exe as parent}|
 |-MsgBox| "Hello World." |Spawns "Hello World." msgBox on local host {wscriptComObject}|
 |-SpeakPrank| "Hello World." |Make remote host speak user input sentence {prank}|
 |-NetTrace| Enum |Agressive Enumeration with the help of netsh {native}|
@@ -87,6 +87,7 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 |-DnsSpoof| Enum \| Redirect \| Clear | Redirect Domain Names to our Phishing IP address|
 |-DisableAV| Query \| Start \| Stop | Disable Windows Defender Service (WinDefend)|
 |-HiddenUser| Query \| Create \| Delete |  Query \ Create \ Delete Hidden User Accounts|
+|-CsOnTheFly| Compile \| Execute | Download \ Compile (to exe) and Execute CS scripts|
 
 <br />
 
