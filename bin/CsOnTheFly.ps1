@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: Microsoft.NET {native}
    Optional Dependencies: BitsTransfer {native}
-   PS cmdlet Dev version: v1.0.4
+   PS cmdlet Dev version: v1.0.5
 
 .DESCRIPTION
    This CmdLet downloads\compiles script.cs (To exe) and executes the binary.
@@ -65,6 +65,7 @@
    NETCompiler   : C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe
    Uri           : C:\Users\pedro\AppData\Local\Temp\SpawnPowershell.cs
    OutFile       : C:\Users\pedro\AppData\Local\Temp\Installer.exe
+   Action        : Execute
    ApplIcon?     : False
    Compiled?     : True
 
@@ -94,9 +95,9 @@ $Working_Directory = pwd|Select-Object -ExpandProperty Path
 # and rename it as 'myicon.ico' if you wish to use your own
 # icon on the compiled standalone executable binary.exe or
 # else this cmdlet downloads redpill.ico to add to binary.exe
-$RaOuPath = $OutFile.Split('\\')[-1]                 ## Installer.exe
-$StrInput = $OutFile -replace "$RaOuPath",""         ## C:\Users\pedro\AppData\Local\Temp\
-$IconFile = "$StrInput" + "myicon.ico" -Join ''      ## C:\Users\pedro\AppData\Local\Temp\myicon.ico
+$RaOuPath = $OutFile.Split('\\')[-1]                       ## Installer.exe
+$StrInput = $OutFile -replace "$RaOuPath",""               ## C:\Users\pedro\AppData\Local\Temp\
+$IconFile = "$StrInput" + "myicon.ico" -Join ''            ## C:\Users\pedro\AppData\Local\Temp\myicon.ico
 
 
 ## Creates demonstration CS script in the case
@@ -147,6 +148,7 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
       NETCompiler   : C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe
       Uri           : https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/SpawnPowershell.cs
       OutFile       : C:\Users\pedro\AppData\Local\Temp\Intaller.exe
+      Action        : Execute
       ApplIcon?     : False
       Compiled?     : True
 
@@ -282,12 +284,14 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
    $mytable.Columns.Add("NETCompiler")|Out-Null
    $mytable.Columns.Add("Uri")|Out-Null
    $mytable.Columns.Add("OutFile")|Out-Null
+   $mytable.Columns.Add("Action")|Out-Null
    $mytable.Columns.Add("ApplIcon?")|Out-Null
    $mytable.Columns.Add("Compiled?")|Out-Null
    $mytable.Rows.Add("$GetNetVersion",
                      "$LocalCSPath",
                      "$Uri",          ## <- Accepts: ( http:// | C:\windows | calc.cs ) Path's
                      "$OutFile",
+                     "$Action",
                      "$IconSet",
                      "$CompileState")|Out-Null
 
