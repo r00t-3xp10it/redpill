@@ -64,7 +64,7 @@ $Working_Directory = pwd|Select-Object -ExpandProperty Path
 
 If($GetPasswords -ieq "Enum"){
 
-   Write-Host "`nDumping ${Env:COMPUTERNAME}\${Env:USERNAME} SAM hashs!" -ForeGroundColor Green
+   Write-Host "`n`nDumping ${Env:COMPUTERNAME}\${Env:USERNAME} SAM hashs!" -ForeGroundColor Green
    Write-Host "-------------------------------";Start-Sleep -Seconds 1
    ## This function requires Admin privileges to dump SAM hashs
    $IsClientAdmin = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")

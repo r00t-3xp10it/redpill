@@ -2432,7 +2432,7 @@ If($CsOnTheFly -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/CsOnTheFly.ps1 -Destination $Env:TMP\CsOnTheFly.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\CsOnTheFly.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 13){## Corrupted download detected => DefaultFileSize: 13,857421875/KB
+      If($SizeDump -lt 16){## Corrupted download detected => DefaultFileSize: 16,9375/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\CsOnTheFly.ps1"){Remove-Item -Path "$Env:TMP\CsOnTheFly.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -3863,7 +3863,7 @@ $HelpParameters = @"
 
 "@;
 Write-Host "$HelpParameters"
-}ElseIf($Help -ieq "CsOnTheFly"){
+}ElseIf($Help -ieq "CsOnTheFly" -or $Help -ieq "Uri" -or $Help -ieq "OutFile"){
 $HelpParameters = @"
 
    <#!Help.
@@ -3875,10 +3875,11 @@ $HelpParameters = @"
       This CmdLet downloads\compiles script.cs (To exe) and executes the binary.
 
    .NOTES
-      Required dependencies: BitsTransfer {native}
-      This CmdLet allows users to Download script.cs from user input -URI [ URL ]
-      into -OutFile [ absoluct\path\filename.exe ] directory OR simple to compile
-      an Local script.cs into a standalone executable before execute him.
+      Required dependencies: BitsTransfer {native} | Microsoft.NET {native}
+      This cmdlet allow users to download CS scripts from network [ -Uri http://Script.cs ]
+      Or simple to compile an Local CS script into a standalone executable and execute him!
+      Remark: Compiling CS scripts using this module will not bypass in any way AV detection.
+      Remark: Modify compiled binary.exe file description if -OutFile [ Absoluct Path ].
 
    .Parameter CsOnTheFly
       Accepts arguments: Compile, Execute (default: Execute)
@@ -3887,7 +3888,7 @@ $HelpParameters = @"
       Script.cs URL to be downloaded OR Local script.cs absoluct \ relative path
 
    .Parameter OutFile
-      Standalone executable name plus is absoluct \ relative path
+      Standalone executable to be created name plus is absoluct \ relative path
 
    .Parameter IconSet
       Accepts arguments: True or False (default: False)
@@ -3898,8 +3899,8 @@ $HelpParameters = @"
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -CsOnTheFly Execute -IconSet True
-      Create demonstration script.cs \ compile it to binary.exe add
-      redpill icon to standalone executable compiled and execute him!
+      Create demonstration script.cs \ compile it to binary.exe and add
+      redpill icon.ico to compiled standalone executable and execute him!
       Remark: Adding a icon to our executable migth trigger AV detection!
 
    .EXAMPLE
@@ -3913,7 +3914,7 @@ $HelpParameters = @"
    .EXAMPLE
       PS C:\> .\redpill.ps1 -CsOnTheFly Execute -Uri "https://raw.github.com/../calc.cs" -OutFile "`$Env:TMP\out.exe"
       Downloads -Uri [ URL ] compiles the cs script into an standalone executable and executes the resulting binary.
-      Remark: Downloading script.CS from network (https://) will mandatory download it to %tmp% directory!
+      Remark: Downloading script.CS from network (https://) will mandatory download them to %tmp% directory!
 
    .OUTPUTS
       Compiling SpawnPowershell.cs On-The-Fly!
@@ -3926,9 +3927,9 @@ $HelpParameters = @"
       ApplIcon?     : False
       Compiled?     : True
 
-      Directory                         Name          CreationTime       
-      ---------                         ----          ------------       
-      C:\Users\pedro\AppData\Local\Temp Installer.exe 06/04/2021 15:55:40
+      Directory                         Name          Length CreationTime       
+      ---------                         ----          ------ ------------       
+      C:\Users\pedro\AppData\Local\Temp Installer.exe   4096 06/04/2021 15:55:40
    #>!bye..
 
 "@;
