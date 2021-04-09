@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: Microsoft.NET {native}
    Optional Dependencies: BitsTransfer {native}
-   PS cmdlet Dev version: v1.2.6
+   PS cmdlet Dev version: v1.3.6
 
 .DESCRIPTION
    This CmdLet downloads\compiles script.cs (To exe) and executes the binary.
@@ -32,6 +32,9 @@
 .Parameter FileDescription
    The Compiled standalone executable file description
 
+.Parameter Obfuscate
+   Obfuscate the Compiled Executable (default: False)
+
 .EXAMPLE
    PS C:\> Get-Help .\CsOnTheFly.ps1 -full
    Access this cmdlet comment based help
@@ -52,6 +55,10 @@
 .EXAMPLE
    PS C:\> .\CsOnTheFly.ps1 -Action Execute -Uri "calc.cs" -OutFile "out.exe"
    Compiles Local -Uri [ calc.cs ] into an standalone executable and execute it.
+
+.EXAMPLE
+   PS C:\> .\CsOnTheFly.ps1 -Action Execute -Uri "calc.cs" -OutFile "out.exe" -Obfuscate True
+   Compiles Local -Uri [ calc.cs ] into an standalone executable, obfuscate and execute binary.
 
 .EXAMPLE
    PS C:\> .\CsOnTheFly.ps1 -Action Execute -Uri "https://raw.github.com/../calc.cs" -OutFile "$Env:TMP\out.exe"
@@ -84,6 +91,7 @@
    [string]$FileDescription="@redpill CS Compiled Executable",
    [string]$Uri="$Env:TMP\SpawnPowershell.cs",
    [string]$OutFile="$Env:TMP\Installer.exe",
+   [string]$Obfuscate="False",
    [string]$Action="Execute",
    [string]$IconSet="False"
 )
@@ -285,7 +293,7 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
       Helper - Change Standalone executable description!
 
    .NOTES
-      Required dependencies: Bits-Transfer
+      Required dependencies: BitsTransfer
       Required dependencies: verpatch.exe
 
    .OUTPUTS
@@ -311,6 +319,58 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
    }Else{## [error] fail to download verpatch.exe!
    
       Write-Host "[error] fail to download verpatch.exe!" -ForegroundColor Red -BackgroundColor Black
+
+   }
+
+   
+   If($Obfuscate -ieq "True"){
+
+      <#
+      .SYNOPSIS
+         Author: @mkaring|@r00t-3xp10it 
+         Helper - Obfuscate NET binary sourcecode
+
+      .NOTES
+         Required dependencies: Confuser.CLI.exe {auto-download}
+
+      .EXAMPLE
+         PS C:\> .\CsOnTheFly.ps1 -Action Execute -Uri "$Env:TMP\script.cs" -OutFile "$Env:TMP\Installer.exe" -Obfuscate True
+      #>
+
+      If(-not($OutFile -Match '\\')){
+         $BinaryName = $OutFile
+         $ZipDirectory = $Working_Directory
+      }Else{## Payload absoluct path sellected!
+         $BinaryName = $OutFile.Split('\\')[-1]
+         $ZipDirectory = $OutFile -replace "\\$BinaryName",""
+      }
+
+      If(-not(Test-Path -Path "$ZipDirectory\ConfuserEx.zip" -ErrorAction SilentlyContinue)){## Download ConfuserEx from my github!
+         Start-BitsTransfer -priority foreground -Source "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/ConfuserEx.zip" -Destination "$ZipDirectory\ConfuserEx.zip" -ErrorAction SilentlyContinue|Out-Null
+      }
+
+      If(Test-Path -Path "$ZipDirectory\ConfuserEx.zip" -ErrorAction SilentlyContinue){
+         cd $ZipDirectory;tar.exe -x -f ConfuserEx.zip
+         Start-Process -WindowStyle Hidden -filepath "Confuser.CLI.exe" -ArgumentList "-noPause `"$BinaryName`" -out `"Obfuscated.exe`""
+         If(-not(Test-Path -Path "$ZipDirectory\Obfuscated.exe" -ErrorAction SilentlyContinue)){
+
+            Write-Host "[error] fail to obfuscate '${BinaryName}' NET binary!" -ForegroundColor Red -BackgroundColor Black
+            Stop-Process -Name "Confuser.CLI" -ErrorAction SilentlyContinue -Force|Out-Null
+
+         }Else{## Binary successfully obfuscated!
+
+            Move-Item -Path "Obfuscated.exe" -Destination "$BinaryName" -EA SilentlyContinue -Force
+
+         }
+
+      }
+
+      cd $Working_Directory
+      ## Delete all artifacts left behind!
+      Remove-Item -Path "$ZipDirectory\*.dll" -ErrorAction SilentlyContinue -Force
+      Remove-Item -Path "$ZipDirectory\*.config" -ErrorAction SilentlyContinue -Force
+      Remove-Item -Path "$ZipDirectory\Confuser.CLI.exe" -ErrorAction SilentlyContinue -Force
+      Remove-Item -Path "$ZipDirectory\ConfuserEx.zip" -ErrorAction SilentlyContinue -Force
 
    }
 
