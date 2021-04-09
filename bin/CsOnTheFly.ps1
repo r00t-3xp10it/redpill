@@ -12,18 +12,19 @@
    This CmdLet downloads\compiles script.cs (To exe) and executes the binary.
 
 .NOTES
-   This cmdlet allow users to download CS scripts from network [ -Uri http://Script.cs ]
+   This cmdlet allow users to download CS scripts from network [ -Uri http://script.cs ]
    Or simple to compile an Local CS script into a standalone executable and execute him!
-   Remark: Compiling CS scripts using this module will not bypass in any way AV detection.
+   Remark: Compiling CS scripts using this module will NOT bypass in any way AV detection.
+   Remark: URL's must be in RAW format [ https://raw.githubusercontent.com/../script.cs ]
 
 .Parameter Action
    Accepts arguments: Compile, Execute (default: Execute)
 
 .Parameter Uri
-   Script.cs URL to be downloaded OR Local script.cs absoluct \ relative path
+   URL of Script.cs to be downloaded OR Local script.cs absoluct \ relative path
 
 .Parameter OutFile
-   Standalone executable to be created name plus is absoluct \ relative path
+   Standalone executable name to be created plus is absoluct \ relative path
 
 .Parameter IconSet
    Accepts arguments: True or False (default: False)
@@ -43,7 +44,6 @@
    PS C:\> .\CsOnTheFly.ps1 -Action Execute -IconSet True
    Create demonstration script.cs \ compile it to binary.exe and add
    redpill icon.ico to compiled standalone executable and execute him!
-   Remark: Adding a icon to our executable migth trigger AV detection!
 
 .EXAMPLE
    PS C:\> .\CsOnTheFly.ps1 -Action Compile -Uri "calc.cs" -OutFile "out.exe"
@@ -56,7 +56,7 @@
 .EXAMPLE
    PS C:\> .\CsOnTheFly.ps1 -Action Execute -Uri "https://raw.github.com/../calc.cs" -OutFile "$Env:TMP\out.exe"
    Downloads -Uri [ URL ] compiles the cs script into an standalone executable and executes the resulting binary.
-   Remark: Downloading script.CS from network (https://) will mandatory download them to %tmp% directory!
+   Remark: Downloading script.CS from network (https://raw.) will mandatory download them to %tmp% directory!
 
 .INPUTS
    None. You cannot pipe objects into CsOnTheFly.ps1
@@ -175,6 +175,13 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
          Write-Host "[error] Bad Uri input: This module only compiles .CS scripts!" -ForegroundColor Red -BackgroundColor Black
          Write-Host "[error] Uri: $Uri`n`n" -ForegroundColor Yellow
          exit ## Exit @CsOnTheFly
+      }
+
+     If(-not($Uri -iMatch '/raw/' -or $Uri -iMatch 'raw.')){## Make sure we are downloading from RAW URL format!
+        Write-Host "[error] Bad Uri input: This module only accepts 'raw' URL formats!" -ForegroundColor Red -BackgroundColor Black
+        Write-Host "[:url:] https://raw.githubusercontent.com/../script.cs" -ForegroundColor Yellow
+        Write-Host "[:url:] https://pastebin.com/raw/../script.cs`n" -ForegroundColor Yellow
+        exit ## Exit @CsOnTheFly
       }
 
       ## Use BitsTransfer to download our script.CS to %tmp% location!

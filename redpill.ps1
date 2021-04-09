@@ -2432,7 +2432,7 @@ If($CsOnTheFly -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/CsOnTheFly.ps1 -Destination $Env:TMP\CsOnTheFly.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\CsOnTheFly.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 16){## Corrupted download detected => DefaultFileSize: 16,9375/KB
+      If($SizeDump -lt 17){## Corrupted download detected => DefaultFileSize: 17,4384765625/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\CsOnTheFly.ps1"){Remove-Item -Path "$Env:TMP\CsOnTheFly.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -3876,19 +3876,19 @@ $HelpParameters = @"
 
    .NOTES
       Required dependencies: BitsTransfer {native} | Microsoft.NET {native}
-      This cmdlet allow users to download CS scripts from network [ -Uri http://Script.cs ]
+      This cmdlet allow users to download CS scripts from network [ -Uri http://script.cs ]
       Or simple to compile an Local CS script into a standalone executable and execute him!
-      Remark: Compiling CS scripts using this module will not bypass in any way AV detection.
-      Remark: Modify compiled binary.exe file description if -OutFile [ Absoluct Path ].
+      Remark: Compiling CS scripts using this module will NOT bypass in any way AV detection.
+      Remark: URL's must be in RAW format [ https://raw.githubusercontent.com/../script.cs ]
 
    .Parameter CsOnTheFly
       Accepts arguments: Compile, Execute (default: Execute)
 
    .Parameter Uri
-      Script.cs URL to be downloaded OR Local script.cs absoluct \ relative path
+      URL of Script.cs to be downloaded OR Local script.cs absoluct \ relative path
 
    .Parameter OutFile
-      Standalone executable to be created name plus is absoluct \ relative path
+      Standalone executable name to be created plus is absoluct \ relative path
 
    .Parameter IconSet
       Accepts arguments: True or False (default: False)
@@ -3901,7 +3901,6 @@ $HelpParameters = @"
       PS C:\> powershell -File redpill.ps1 -CsOnTheFly Execute -IconSet True
       Create demonstration script.cs \ compile it to binary.exe and add
       redpill icon.ico to compiled standalone executable and execute him!
-      Remark: Adding a icon to our executable migth trigger AV detection!
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -CsOnTheFly Compile -Uri "calc.cs" -OutFile "out.exe"
@@ -3914,18 +3913,19 @@ $HelpParameters = @"
    .EXAMPLE
       PS C:\> .\redpill.ps1 -CsOnTheFly Execute -Uri "https://raw.github.com/../calc.cs" -OutFile "`$Env:TMP\out.exe"
       Downloads -Uri [ URL ] compiles the cs script into an standalone executable and executes the resulting binary.
-      Remark: Downloading script.CS from network (https://) will mandatory download them to %tmp% directory!
+      Remark: Downloading script.CS from network (https://raw.) will mandatory download them to %tmp% directory!
 
    .OUTPUTS
       Compiling SpawnPowershell.cs On-The-Fly!
       ----------------------------------------
-      Microsoft.NET : 4.8.03752
-      NETCompiler   : C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe
-      Uri           : https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/SpawnPowershell.cs
-      OutFile       : C:\Users\pedro\AppData\Local\Temp\Installer.exe
-      Action        : Execute
-      ApplIcon?     : False
-      Compiled?     : True
+      Microsoft.NET   : 4.8.03752
+      NETCompiler     : C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe
+      Uri             : https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/SpawnPowershell.cs
+      OutFile         : C:\Users\pedro\AppData\Local\Temp\Installer.exe
+      FileDescription : @redpill CS Compiled Executable
+      Action          : Execute
+      ApplIcon?       : False
+      Compiled?       : True
 
       Directory                         Name          Length CreationTime       
       ---------                         ----          ------ ------------       
