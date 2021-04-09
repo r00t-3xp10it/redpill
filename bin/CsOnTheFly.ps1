@@ -98,7 +98,7 @@
 
 
 $ORIGINALURL = $null
-$cmdletversion = "1.2.6"
+$cmdletversion = "1.3.6"
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $Working_Directory = pwd|Select-Object -ExpandProperty Path
@@ -157,23 +157,10 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
       PS C:\> .\CsOnTheFly.ps1 -Action Execute -Uri "calc.cs" -OutFile "out.exe" -FileDescription "myapplication"
 
    .EXAMPLE
+      PS C:\> .\CsOnTheFly.ps1 -Action Execute -Uri "$Env:TMP\calc.cs" -OutFile "$Env:TMP\out.exe" -Obfuscate True
+
+   .EXAMPLE
       PS C:\> .\CsOnTheFly.ps1 -Action Execute -Uri "https://raw.github.com/../calc.cs" -OutFile "$Env:TMP\out.exe"
-
-   .OUTPUTS
-      Compiling SpawnPowershell.cs On-The-Fly!
-      ----------------------------------------
-      Microsoft.NET   : 4.8.03752
-      NETCompiler     : C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe
-      Uri             : https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/SpawnPowershell.cs
-      OutFile         : C:\Users\pedro\AppData\Local\Temp\Intaller.exe
-      FileDescription : @redpill CS Compiled Executable
-      Action          : Execute
-      ApplIcon?       : False
-      Compiled?       : True
-
-      Directory                         Name          Length CreationTime       
-      ---------                         ----          ------ ------------       
-      C:\Users\pedro\AppData\Local\Temp Installer.exe   4096 06/04/2021 15:55:40
    #>
 
 
@@ -332,6 +319,8 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
 
       .NOTES
          Required dependencies: Confuser.CLI.exe {auto-download}
+         Remark: ConfuserEx sometimes fail to obfuscate C# sourcecode
+         but this function will NOT brake the compiled executable if fail!
 
       .EXAMPLE
          PS C:\> .\CsOnTheFly.ps1 -Action Execute -Uri "$Env:TMP\script.cs" -OutFile "$Env:TMP\Installer.exe" -Obfuscate True
@@ -349,7 +338,7 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
          Start-BitsTransfer -priority foreground -Source "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/ConfuserEx.zip" -Destination "$ZipDirectory\ConfuserEx.zip" -ErrorAction SilentlyContinue|Out-Null
       }
 
-      If(Test-Path -Path "$ZipDirectory\ConfuserEx.zip" -ErrorAction SilentlyContinue){
+      If(Test-Path -Path "$ZipDirectory\ConfuserEx.zip" -EA SilentlyContinue){
          cd $ZipDirectory;tar.exe -x -f ConfuserEx.zip
          Start-Process -WindowStyle Hidden -filepath "Confuser.CLI.exe" -ArgumentList "-noPause `"$BinaryName`" -out `"Obfuscated.exe`""
          If(-not(Test-Path -Path "$ZipDirectory\Obfuscated.exe" -ErrorAction SilentlyContinue)){
