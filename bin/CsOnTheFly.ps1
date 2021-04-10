@@ -349,23 +349,25 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
 
       If(Test-Path -Path "$ZipDirectory\ConfuserEx.zip" -EA SilentlyContinue){
 
-         cd $ZipDirectory;tar.exe -x -f ConfuserEx.zip
+         cd $ZipDirectory;tar.exe -x -f ConfuserEx.zip|Out-Null
+         Write-Host "[info:] Obfuscating '$BinaryName' .NET application!" -ForegroundColor Yellow
+         Copy-Item -Path "$ZipDirectory\$BinaryName" -Destination "$ZipDirectory\ConfuserEx\$BinaryName" -EA SilentlyContinue -Force|Out-Null
 
+         cd ConfuserEx
          If($Debugging -ieq "True"){## [debug] Obfuscating .NET applications!
 
-            Write-Host "[info:] Obfuscating '$BinaryName' .NET application!" -ForegroundColor Yellow
-            Write-Host "----------------------------------------------------"
-            Start-Sleep -Seconds 1;cmd /R Confuser.CLI.exe "$BinaryName" -out "Obfuscated.exe"
+            Write-Host "----------------------------------------------------";Start-Sleep -Seconds 1
+            powershell -C .\Confuser.CLI.exe -noPause "$BinaryName" -out "Obfuscated.exe"
             Write-Host "----------------------------------------------------"
 
          }Else{## [default] Obfuscating .NET applications!
-
-            Start-Process -WindowStyle Hidden -filepath "Confuser.CLI.exe" -ArgumentList "-noPause `"$BinaryName`" -out `"Obfuscated.exe`""
+            
+            Start-Process -filepath "Confuser.CLI.exe" -ArgumentList "-noPause `"$BinaryName`" -out `"Obfuscated.exe`"" > loooo.log
 
          }
 
          ## Make sure ConfuserEx has obfuscated the compiled application!
-         If(-not(Test-Path -Path "$ZipDirectory\Obfuscated.exe" -ErrorAction SilentlyContinue)){
+         If(-not(Test-Path -Path "$ZipDirectory\ConfuserEx\Obfuscated.exe" -ErrorAction SilentlyContinue)){
 
             Write-Host "[error] ConfuserEx: fail to obfuscate '${BinaryName}' appl!" -ForegroundColor Red -BackgroundColor Black
             ## Remark: Next cmdline stops Confuser.CLI.exe background process if it have fail on is task (hang)!
@@ -373,18 +375,17 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
 
          }Else{## Binary successfully obfuscated!
 
-            Move-Item -Path "Obfuscated.exe" -Destination "$BinaryName" -EA SilentlyContinue -Force
+            Move-Item -Path "$ZipDirectory\ConfuserEx\Obfuscated.exe" -Destination "${ZipDirectory}\${BinaryName}" -EA SilentlyContinue -Force
 
          }
 
       }
 
       cd $Working_Directory
-      ## Delete all artifacts left behind!
-      Remove-Item -Path "$ZipDirectory\*.dll" -ErrorAction SilentlyContinue -Force
-      Remove-Item -Path "$ZipDirectory\*.config" -ErrorAction SilentlyContinue -Force
-      Remove-Item -Path "$ZipDirectory\Confuser.CLI.exe" -ErrorAction SilentlyContinue -Force
-      Remove-Item -Path "$ZipDirectory\ConfuserEx.zip" -ErrorAction SilentlyContinue -Force
+      ## Delete all artifacts left behind by this function!
+      # Remark: Script.CS and Compiled.exe will remain after cleanning offcourse!
+      Remove-Item -Path "$ZipDirectory\ConfuserEx.zip" -EA SilentlyContinue -Force
+      Remove-Item -Path "$ZipDirectory\ConfuserEx" -Recurse -EA SilentlyContinue -Force
 
    }
 
