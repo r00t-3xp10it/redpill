@@ -362,7 +362,7 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
 
          }Else{## [default] Obfuscating .NET applications!
             
-            Start-Process -filepath "Confuser.CLI.exe" -ArgumentList "-noPause `"$BinaryName`" -out `"Obfuscated.exe`"" > loooo.log
+            Start-Process -filepath "Confuser.CLI.exe" -ArgumentList "-noPause `"$BinaryName`" -out `"Obfuscated.exe`""
 
          }
 
