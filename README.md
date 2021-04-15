@@ -88,6 +88,7 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 |-DisableAV| Query \| Start \| Stop | Disable Windows Defender Service (WinDefend)|
 |-HiddenUser| Query \| Create \| Delete |  Query \ Create \ Delete Hidden User Accounts|
 |-CsOnTheFly| Compile \| Execute | Download \ Compile (to exe) and Execute CS scripts|
+|-CookieHijack| Edge\|Chrome Cookie Hijacking tool|
 
 <br />
 

