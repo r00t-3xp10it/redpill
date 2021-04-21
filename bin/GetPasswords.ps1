@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: Invoke-WebRequest|BitsTransfer
    Optional Dependencies: BCDstore.msc|perfmon.msc|DecryptAutoLogon.msc
-   PS cmdlet Dev version: v2.2.6
+   PS cmdlet Dev version: v2.2.7
 
 .DESCRIPTION
    -GetPasswords [ Enum ] search creds in wstore\reg\disk diferent locations.
@@ -200,8 +200,7 @@ If($GetPasswords -ieq "Enum"){
    Write-Host "-------------------------------------";Start-Sleep -Seconds 1
    $PSHistory = "$Env:APPDATA\Microsoft\Windows\" + "PowerShell\PSReadLine\ConsoleHost_History.txt" -Join ''
    $Credentials = Get-Content -Path "$PSHistory" -EA SilentlyContinue |
-      findstr /I /C:"user:" /I /C:"pass:" /I /C:"username:" /I /C:"pwd:" /I /C:"passw:" /I /C:"password:" /I /C:"login:" /I /C:"logon:"
-
+      Select-String -Pattern "user:","pass:","username:","pwd:","passw:","password:","login:","logon:","cpassword=","username=","user name=","password=","pass=","pwd=","passw=","login=","logon="
    If(-not($Credentials) -or $Credentials -eq $null){## Make sure we have any creds returned
 
       Write-Host "[error] None Credentials found under ConsoleHost_History!" -ForegroundColor Red -BackgroundColor Black
