@@ -440,7 +440,7 @@ If($Action -ieq "Compile" -or $Action -ieq "Execute"){
    If($Action -ieq "Execute"){
    
       ## Execute the compiled binary!
-      Start-Process -WindowStyle Hidden -FilePath "$OutFile" -EA SilentlyContinue|Out-Null
+      Start-Process -FilePath "$OutFile" -EA SilentlyContinue|Out-Null
    
    }
 

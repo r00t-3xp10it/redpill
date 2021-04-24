@@ -3,7 +3,7 @@
    UAC bypass|EOP by dll reflection! (cmstp.exe)
 
    Author: @_zc00l|@r00t-3xp10it
-   Tested Under: Windows 10 (18363) x64 bits
+   Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: Reflection.Assembly {native}
    Optional Dependencies: none
    PS cmdlet Dev version: v1.3.4

