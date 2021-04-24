@@ -8,4 +8,3 @@
 |vbs2exe.exe|Convert vbscripts to to standalone executables {exe}|Manual execution|
 |SpawnPowershell.cs|Auxiliary module of -CsOnTheFly parameter|.\redpill.ps1 -CsOnTheFly Execute -Uri https://|
 |ConfuserEx.zip|Auxiliary module of -CsOnTheFly parameter|.\redpill.ps1 -CsOnTheFly Execute -Obfuscate True|
-|Compiled.exe|Auxiliary module of -GetPasswords parameter|\redpill.ps1 -GetPasswords Enum|
