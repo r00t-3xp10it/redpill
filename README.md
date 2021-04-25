@@ -250,7 +250,8 @@ iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/redpill.ps1
 
 ## :octocat: Video Tutorials
 
-https://drive.google.com/file/d/1iryAhz-ryJWMz8-MNqKm1WffLYS6nhT0/view?usp=sharing
+[PhishCreds (Start|Brute)]: https://drive.google.com/file/d/1m1M4rp24QGYftv9JPnp5Kj_zs8YFhz3_/view?usp=sharing <br />
+[ sysinfo|GetPasswords|UacMe]: https://drive.google.com/file/d/1iryAhz-ryJWMz8-MNqKm1WffLYS6nhT0/view?usp=sharing
 
 <br /><br />
 
