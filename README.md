@@ -253,7 +253,7 @@ iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/redpill.ps1
 Demonstration - [This tutorial uses: sysinfo, GetPasswords, UacMe modules](https://drive.google.com/file/d/1iryAhz-ryJWMz8-MNqKm1WffLYS6nhT0/view?usp=sharing)<br />
 MouseLogger - [Capture Screenshots of 'MouseClicks' with the help of psr.exe](https://drive.google.com/file/d/1k3DrsDEc6nOd7RHm-25nw0q6oD_aGxjg/view?usp=sharing)<br />
 PhishCreds - [Phish for login credentials OR Brute Force user account password](https://drive.google.com/file/d/1m1M4rp24QGYftv9JPnp5Kj_zs8YFhz3_/view?usp=sharing)<br />
-FileMace - [Change File TimeStomp {CreationTime, LastAccessTime, LastWriteTime}](https://drive.google.com/file/d/10tR3hu_pS9tJiTImJTkraXozEEgAezwx/view?usp=sharing)<br />
+FileMace - [Change File TimeStamp {CreationTime, LastAccessTime, LastWriteTime}](https://drive.google.com/file/d/10tR3hu_pS9tJiTImJTkraXozEEgAezwx/view?usp=sharing)<br />
 CsOnTheFly - [Download (from url), Auto-Compile and Execute CS scripts On-The-Fly!](https://drive.google.com/file/d/1L4Qj0eK4QMbC6yBFlUVJQyi0NEoe25Ug/view?usp=sharing)
 
 <br /><br />
