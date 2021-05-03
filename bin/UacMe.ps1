@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: Reflection.Assembly {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.3.4
+   PS cmdlet Dev version: v1.3.5
 
 .DESCRIPTION 
    This CmdLet creates\compiles Source.CS into Trigger.dll and performs UAC bypass
@@ -34,10 +34,6 @@
    PS C:\> .\UacMe.ps1 -Action Bypass -Execute "regedit.exe"
    Spawns regedit without uac asking for execution confirmation
 
-.EXAMPLE
-   PS C:\> .\UacMe.ps1 -Action Elevate -Execute "cmd.exe"
-   Local spawns an cmd prompt with administrator privileges! 
-   
 .EXAMPLE
    PS C:\> .\UacMe.ps1 -Action Elevate -Execute "powershell.exe"
    Local spawns an powershell prompt with administrator privileges!
@@ -139,7 +135,7 @@ exit")
 
 
    ## Build Output Table
-   Write-Host "`n`nBypass UAC execution confirmation!"
+   Write-Host "`n`nBypass UAC execution confirmation!" -ForeGroundColor Green
    Write-Host "----------------------------------"
 
    ## Write Source.bat script into %tmp% directory!
@@ -564,7 +560,7 @@ If($Action -ieq "Clean"){
    Start-Sleep -Seconds 1
 
    If(-not($MyList -ieq $null)){
-      Write-Host "List of artifacts deleted!"
+      Write-Host "List of artifacts deleted!" -ForeGroundColor Yellow
       Write-Host "--------------------------"
       Write-Host "$MyList"
    }

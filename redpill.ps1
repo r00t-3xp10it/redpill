@@ -551,7 +551,7 @@ If($GetTasks -ieq "Enum" -or $GetTasks -ieq "Create" -or $GetTasks -ieq "Delete"
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetTasks.ps1 -Destination $Env:TMP\GetTasks.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetTasks.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 3){## Corrupted download detected => DefaultFileSize: 3,4892578125/KB
+      If($SizeDump -lt 3){## Corrupted download detected => DefaultFileSize: 3,6884765625/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetTasks.ps1"){Remove-Item -Path "$Env:TMP\GetTasks.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -1259,7 +1259,7 @@ If($EOP -ieq "Verbose" -or $EOP -ieq "Enum"){
 
    ## Check for file download integrity (fail/corrupted downloads)
    $CheckInt = Get-Content -Path "$Env:TMP\sherlock.ps1" -EA SilentlyContinue
-   $SizeDump = ((Get-Item -Path "$Env:TMP\sherlock.ps1" -EA SilentlyContinue).length/1KB) ## Default => 84,7734375KB
+   $SizeDump = ((Get-Item -Path "$Env:TMP\sherlock.ps1" -EA SilentlyContinue).length/1KB) ## Default => 84,6005859375/KB
    If(-not(Test-Path -Path "$Env:TMP\sherlock.ps1") -or $SizeDump -lt 84 -or $CheckInt -iMatch '^(<!DOCTYPE html)'){
       ## Fail to download Sherlock.ps1 using BitsTransfer OR the downloaded file is corrupted
       Write-Host "[abort] fail to download Sherlock.ps1 using BitsTransfer (BITS)" -ForeGroundColor Red -BackGroundColor Black
@@ -2048,7 +2048,7 @@ if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi" -or $AppLocker -ieq "Test
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/AppLocker.ps1 -Destination $Env:TMP\AppLocker.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\AppLocker.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 18){## Corrupted download detected => DefaultFileSize: 18,201171875/KB
+      If($SizeDump -lt 18){## Corrupted download detected => DefaultFileSize: 18,6171875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\AppLocker.ps1"){Remove-Item -Path "$Env:TMP\AppLocker.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -2616,7 +2616,7 @@ If($UacMe -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/UacMe.ps1 -Destination $Env:TMP\UacMe.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\UacMe.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 22){## Corrupted download detected => DefaultFileSize: 22,4541015625/KB
+      If($SizeDump -lt 22){## Corrupted download detected => DefaultFileSize: 22,392578125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\UacMe.ps1"){Remove-Item -Path "$Env:TMP\UacMe.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill

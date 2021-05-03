@@ -48,7 +48,7 @@ If($FileMace -ne "false"){
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 
-    Write-Host "[+] Change File Mace propertys" -ForegroundColor Green
+    Write-Host "Change $FileMace Mace propertys" -ForegroundColor Green
     Start-Sleep -Seconds 1
     ## Make sure that the inputed file exists
     If(-not(Test-Path -Path "$FileMace" -EA SilentlyContinue)){

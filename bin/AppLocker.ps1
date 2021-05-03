@@ -9,7 +9,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.2.6
+   PS cmdlet Dev version: v1.2.8
 
 .DESCRIPTION
    Applocker.ps1 module searchs in pre-defined directorys in %WINDIR%
@@ -26,6 +26,10 @@
    $Env:WINDIR\Tasks
    $Env:WINDIR\tracing
    $Env:SYSTEMDRIVE\Temp
+   $Env:WINDIR\System32\Logs
+   $Env:WINDIR\System32\CatRoot
+   $Env:WINDIR\System32\drivers
+   $Env:WINDIR\System32\LogFiles
    $Env:SYSTEMDRIVE\Users\Public
    $Env:WINDIR\Registration\CRMLog
    $Env:WINDIR\System32\Tasks_Migrated
@@ -366,6 +370,8 @@ If($GroupName -ieq "false"){
     # NOTE: England, Portugal, France, Germany, Indonesia, Holland, Romania, Croacia
     $FindGroupUser = whoami /groups|findstr /C:"BUILTIN\Users" /C:"BUILTIN\Utilizadores" /C:"BUILTIN\Utilisateurs" /C:"BUILTIN\Benutzer" /C:"BUILTIN\Pengguna" /C:"BUILTIN\Gebruikers" /C:"BUILTIN\Utilizatori" /C:"BUILTIN\Korisnici"|Select-Object -First 1
     $SplitStringUser = $FindGroupUser -split(" ");$GroupNameUsers = $SplitStringUser[0] -replace ' ',''
+}ElseIf($GroupName -ieq "$Env:USERNAME" -or $GroupName -ieq "$Env:COMPUTERNAME"){
+    $GroupNameUsers = "${Env:COMPUTERNAME}\${Env:USERNAME}" ## Uses Domain\user groupname if selected 'username' or 'domainname'
 }
 
 If($GroupName -Match '\\'){
@@ -380,19 +386,18 @@ If($GroupName -Match '\\'){
 
  
 ## Build Output Table
-echo "`nAppLocker - Weak Directory permissions" > $Env:TMP\qwerty.log
-echo "--------------------------------------" >> $Env:TMP\qwerty.log
-Get-Content -Path "$Env:TMP\qwerty.log"
-Remove-Item -Path "$Env:TMP\qwerty.log" -Force
+Write-Host ""
+Write-Host "AppLocker - Weak Directory permissions" -ForegroundColor Green
+Write-Host "--------------------------------------"
 Start-Sleep -Seconds 1
 
 
 [int]$Count = 0
-## Bypass AppLocker directorys to search recursive:
-$dAtAbAsEList = Get-Item -Path "$Env:WINDIR\System32\spool\drivers\color","$Env:WINDIR\Registration\CRMLog","$Env:WINDIR\Tasks","$Env:WINDIR\tracing","$Env:SYSTEMDRIVE\Temp","$Env:SYSTEMDRIVE\Users\Public","$Env:WINDIR\System32\Tasks_Migrated","$Env:WINDIR\System32\Microsoft\Crypto\RSA\MachineKeys","$Env:WINDIR\SysWOW64\Tasks\Microsoft\Windows\SyncCenter","$Env:WINDIR\System32\Tasks\Microsoft\Windows\SyncCenter" -EA SilentlyContinue|Where-Object { $_.PSIsContainer }|Select-Object -ExpandProperty FullName
+## Search recursive for directorys with weak permissions!
+$dAtAbAsEList = Get-Item -Path "$Env:WINDIR\System32\drivers","$Env:WINDIR\System32\Logs","$Env:WINDIR\System32\LogFiles","$Env:WINDIR\System32\CatRoot","$Env:WINDIR\System32\spool\drivers\color","$Env:WINDIR\Registration\CRMLog","$Env:WINDIR\Tasks","$Env:WINDIR\tracing","$Env:SYSTEMDRIVE\Temp","$Env:SYSTEMDRIVE\Users\Public","$Env:WINDIR\System32\Tasks_Migrated","$Env:WINDIR\System32\Microsoft\Crypto\RSA\MachineKeys","$Env:WINDIR\SysWOW64\Tasks\Microsoft\Windows\SyncCenter","$Env:WINDIR\System32\Tasks\Microsoft\Windows\SyncCenter" -EA SilentlyContinue|Where-Object { $_.PSIsContainer }|Select-Object -ExpandProperty FullName
 ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (Paths)
     (Get-Acl "$Token" -EA SilentlyContinue).Access|Where-Object {
-    $CleanOutput = $_.FileSystemRights -Match "$FolderRigths" -and $_.IdentityReference -Match "$GroupName" ## <-- In my system the IdentityReference is: 'Todos'
+    $CleanOutput = $_.AccessControlType -Match 'Allow' -and $_.FileSystemRights -Match "$FolderRigths" -and $_.IdentityReference -Match "$GroupName" ## <-- In my system the IdentityReference is: 'Todos'
         If($CleanOutput){$Count++ ##  Write the Table 'IF' found any vulnerable permissions
             Write-Host "`nVulnId            : ${Count}::ACL (Mitre T1222)"
             Write-Host "FolderPath        : $Token" -ForegroundColor Green

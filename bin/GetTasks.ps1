@@ -91,7 +91,9 @@ If($GetTasks -ieq "Enum" -or $GetTasks -ieq "Create" -or $GetTasks -ieq "Delete"
 
         $Task_duration = "000" + "9" + ":00" ## 9 Hours of Task Duration
         cmd /R schtasks /Create /sc minute /mo "$Interval" /tn "$TaskName" /tr "$Exec" /du "$Task_duration"
-        Write-Host "";schtasks /Query /tn "$TaskName" #/v /fo list
+        $viriato = (schtasks /Query /tn "$TaskName") -replace 'Folder: \\','' #/v /fo list
+        echo $viriato > $Env:TMP\vahja.log;Get-Content -Path "$Env:TMP\vahja.log" -EA SilentlyContinue
+        Remove-Item -Path "$Env:TMP\vahja.log" -EA SilentlyContinue -Force
 
     }ElseIf($GetTasks -ieq "Delete"){## Deletes existing task
 

@@ -74,7 +74,7 @@
    Microsoft.NET   : 4.8.03752
    NETCompiler     : C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe
    Uri             : https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/SpawnPowershell.cs
-   OutFile         : C:\Users\pedro\AppData\Local\Temp\Installer.exe
+   OutFile         : C:\Users\pedro\AppData\Local\Temp\certreq.exe
    FileDescription : @redpill CS Compiled Executable
    Action          : Execute
    ApplIcon?       : False
@@ -82,7 +82,7 @@
 
    Directory                         Name          Length CreationTime       
    ---------                         ----          ------ ------------       
-   C:\Users\pedro\AppData\Local\Temp Installer.exe   4096 06/04/2021 15:55:40
+   C:\Users\pedro\AppData\Local\Temp certreq.exe   4096 06/04/2021 15:55:40
 #>
 
 
@@ -90,7 +90,7 @@
 [CmdletBinding(PositionalBinding=$false)] param(
    [string]$FileDescription="@redpill CS Compiled Executable",
    [string]$Uri="$Env:TMP\SpawnPowershell.cs",
-   [string]$OutFile="$Env:TMP\Installer.exe",
+   [string]$OutFile="$Env:TMP\certreq.exe",
    [string]$Obfuscate="False",
    [string]$Action="Execute",
    [string]$IconSet="False"

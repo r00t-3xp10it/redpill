@@ -4,10 +4,10 @@
 
    Author: @_RastaMouse (Deprecated)
    Update: @r00t-3xp10it (v1.3.5)
-   Tested Under: Windows 10 (18363) x64 bits
+   Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.3.5
+   PS cmdlet Dev version: v1.3.6
 
 .DESCRIPTION
    Cmdlet to find missing software patchs for privilege escalation (windows).
@@ -133,7 +133,7 @@
 
 ## Var declarations
 $CveDataBaseId = "25"        ## 25 CVE's entrys available ($dATAbASE)
-$CmdletVersion = "v1.3.5"    ## Sherlock CmdLet develop version number
+$CmdletVersion = "v1.3.6"    ## Sherlock CmdLet develop version number
 $CVEdataBase = "13/01/2021"  ## Global $dATAbASE (CVE) last update date
 $Global:ExploitTable = $null ## Global Output DataTable
 $ProcessArchitecture = $env:PROCESSOR_ARCHITECTURE
@@ -725,8 +725,8 @@ $KBDataEntrys = "null"
       $KBDataEntrys = "44"        ## Credits: @TroyDTaylor (fully patch)
       $KB_dataBase = "06/01/2021" ## KB entrys database last update date
    }ElseIf($MajorVersion -eq '10' -and $CPUArchitecture -eq "64 bits"){
-      $KBDataEntrys = "15"        ## Credits: @r00t-3xp10it (fully patch)
-      $KB_dataBase = "12/03/2021" ## KB entrys database last update date
+      $KBDataEntrys = "5"        ## Credits: @r00t-3xp10it (fully patch)
+      $KB_dataBase = "25/04/2021" ## KB entrys database last update date
    }
 
    ## Create Data Table for output
@@ -755,10 +755,8 @@ $KBDataEntrys = "null"
    If($MajorVersion -eq 10){## Windows 10
       If($CPUArchitecture -eq "64 bits" -or $ProcessArchitecture -eq "AMD64"){
          $dATAbASE = @(## Windows 10 x64 bits
-            "KB4515383","KB4521863","KB4524569","KB4528759",
-            "KB4535680","KB4538674","KB4541338","KB4552152",
-            "KB4560959","KB4580325","KB4598479","KB4601395",
-            "KB5000908","KB5000808" #"KB3245007" ## Fake KB entry for debug
+            "KB4601050","KB4562830","KB4580325","KB5001330",
+            "KB5001405"
          )
       }Else{## Windows 10 x32 bits
          $dATAbASE = "Not supported under W$MajorVersion ($CPUArchitecture) architecture"
