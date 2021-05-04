@@ -145,7 +145,7 @@ If($WhoAmi -ieq "Groups"){
       NT AUTHORITY\Autenticação da Conta em... S-1-5-64-36                                   http://schemas.microsoft.com/ws/2008/06/identity/claims/groupsid
    #>
 
-   Write-Host ""
+   Write-Host "`n"
    ## Display available Groups
    $tableLayout = @{Expression={((New-Object System.Security.Principal.SecurityIdentifier($_.Value)).Translate([System.Security.Principal.NTAccount])).Value};Label="Group Name";Width=40},@{Expression={$_.Value};Label="Group SID";Width=45},@{Expression={$_.Type};Label="Group Type";Width=75}
    ([Security.Principal.WindowsIdentity]::GetCurrent()).Claims | FT $tableLayout
@@ -334,14 +334,16 @@ If($TestBat -Match '\\'){
    $StripPath = $TestBat -replace "\\$RawName","" ## C:\Users\pedro\Coding
 
    ## Build Output Table
+   Write-Host "$Banner" -ForegroundColor Blue
    Write-Host "`n`nAppLocker – Executing $RawName script" -ForegroundColor Green
    Write-Host "----------------------------------------";Start-Sleep -Seconds 1
    ## Make sure the user input file exists
    If(Test-Path -Path "$TestBat" -EA SilentlyContinue){
       Write-Host "[+] found: $TestBat";Start-Sleep -Seconds 1
    }Else{## User Input File NOT found!
-      Write-Host "[error] not found: $TestBat`n`n" -ForegroundColor Red -BackgroundColor Black
-      exit ## Exit @AppLocker
+      Write-Host ""
+      Write-Host "[error] not found: $TestBat" -ForegroundColor Red -BackgroundColor Black
+      Write-Host "";exit ## Exit @AppLocker
    }
 
    Write-Host "[i] converting $RawName to $Bypassext";Start-Sleep -Seconds 1
@@ -379,6 +381,7 @@ $mytable = New-Object System.Data.DataTable
 $mytable.Columns.Add("Id")|Out-Null
 $mytable.Columns.Add("DirectoryRights")|Out-Null
 $mytable.Columns.Add("VulnerableDirectory")|Out-Null
+Write-Host "$Banner" -ForegroundColor Blue
 Write-Host ""
 Write-Host "FileSystemRights  : $FolderRigths" -ForegroundColor Yellow
 Write-Host "IdentityReference : $GroupName"
@@ -418,8 +421,9 @@ ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (StoredPaths)
 
 
 If($Success -ne $True){
-    Write-Host "`n`n[error] None dir Owned by '$GroupName' found with '$FolderRigths' permissions!" -ForegroundColor Red -BackgroundColor Black
+    Write-Host ""
+    Write-Host "[error] None dir Owned by '$GroupName' found with '$FolderRigths' permissions!" -ForegroundColor Red -BackgroundColor Black
 }Else{## Display Output Data Table
-    $mytable|Format-Table -AutoSize
+    Write-Host "";$mytable|Format-Table -AutoSize
 }
 Write-Host ""
