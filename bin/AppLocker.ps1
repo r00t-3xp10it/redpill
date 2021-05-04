@@ -404,7 +404,7 @@ ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (StoredPaths)
 
        ## Get each stored directory ($dAtAbAsEList) ACL's
        $CleanOutput = (Get-Acl "$Token" -EA SilentlyContinue).Access | Where-Object { 
-          $_.FileSystemRights -Match "$FolderRigths" -and $_.IdentityReference -Match "$GroupName" 
+          $_.FileSystemRights -iMatch "$FolderRigths" -and $_.IdentityReference -iMatch "$GroupName" 
        }
 
        If($CleanOutput){$Count++ ##  Write the Table 'IF' found any vulnerable permissions
@@ -418,7 +418,7 @@ ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (StoredPaths)
 
     }Catch{## Print dir(s) that does NOT meet the search criteria!
 
-       Write-host "FolderPath        : $Token"
+       Write-host "access_denied     : $Token"
     
     }
 
@@ -427,6 +427,7 @@ ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (StoredPaths)
 
 If($Success -ne $True){
     Write-Host "";Write-Host "[error] None dir Owned by '$GroupName' found with '$FolderRigths' permissions!" -ForegroundColor Red -BackgroundColor Black
+    Write-Host ""
 }Else{## Display Output Data Table
     Write-Host "";$mytable|Format-Table -AutoSize
 }
