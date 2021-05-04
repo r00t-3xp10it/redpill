@@ -95,6 +95,7 @@
 
 $Banner = @"
 
+
              * Reverse TCP Shell Auxiliary Powershell Module *
      _________ __________ _________ _________  o  ____      ____      
     |    _o___)   /_____/|     O   \    _o___)/ \/   /_____/   /_____ 
@@ -201,7 +202,8 @@ If($TestBat -ieq "TestBypass"){
    #>
 
    ## Build Output Table
-   Write-Host "`n`nAppLocker – Testing for Bat execution restrictions" -ForegroundColor Green
+   Write-Host "$Banner" -ForegroundColor Blue
+   Write-Host "AppLocker – Testing for Bat execution restrictions" -ForegroundColor Green
    Write-Host "--------------------------------------------------";Start-Sleep -Seconds 1
    Write-Host "[i] writting applock.bat to %tmp% folder";Start-Sleep -Seconds 1
 
@@ -215,8 +217,8 @@ If($TestBat -ieq "TestBypass"){
    Clear-Host
    If(-not(Test-Path -Path "$Env:TMP\logfile.txt" -EA SilentlyContinue)){
 
-      Write-Host "$Banner" -ForegroundColor Blue
-      Write-Host "`n`n`nAppLocker – Testing for Bat execution restrictions" -ForegroundColor Green
+      Write-Host "`n$Banner" -ForegroundColor Blue
+      Write-Host "AppLocker – Testing for Bat execution restrictions" -ForegroundColor Green
       Write-Host "--------------------------------------------------"
       Write-Host "[i] writting applock.bat to %tmp% folder"
       Write-Host "[i] trying to execute applock.bat script"
@@ -233,8 +235,8 @@ If($TestBat -ieq "TestBypass"){
       If(-not(Test-Path -Path "$Env:TMP\logfile.txt" -EA SilentlyContinue)){
 
          Clear-Host
-         Write-Host "$Banner" -ForegroundColor Blue
-         Write-Host "`n`nAppLocker – Testing for Bat execution restrictions" -ForegroundColor Green
+         Write-Host "`n$Banner" -ForegroundColor Blue
+         Write-Host "AppLocker – Testing for Bat execution restrictions" -ForegroundColor Green
          Write-Host "--------------------------------------------------"
          Write-Host "[i] writting applock.bat to %tmp% folder"
          Write-Host "[i] trying to execute applock.bat script"
@@ -246,8 +248,8 @@ If($TestBat -ieq "TestBypass"){
       }Else{
 
          Clear-Host
-         Write-Host "$Banner" -ForegroundColor Blue
-         Write-Host "`n`nAppLocker – Testing for Bat execution restrictions" -ForegroundColor Green
+         Write-Host "`n$Banner" -ForegroundColor Blue
+         Write-Host "AppLocker – Testing for Bat execution restrictions" -ForegroundColor Green
          Write-Host "--------------------------------------------------"
          Write-Host "[i] writting applock.bat to %tmp% folder"
          Write-Host "[i] trying to execute applock.bat script"
@@ -268,8 +270,8 @@ If($TestBat -ieq "TestBypass"){
    }Else{
 
       Clear-Host
-      Write-Host "$Banner" -ForegroundColor Blue
-      Write-Host "`n`nAppLocker – Testing for Bat execution restrictions" -ForegroundColor Green
+      Write-Host "`n$Banner" -ForegroundColor Blue
+      Write-Host "AppLocker – Testing for Bat execution restrictions" -ForegroundColor Green
       Write-Host "--------------------------------------------------"
       Write-Host "[i] writting applock.bat to %tmp% folder"
       Write-Host "[i] trying to execute applock.bat script"
@@ -335,7 +337,7 @@ If($TestBat -Match '\\'){
 
    ## Build Output Table
    Write-Host "$Banner" -ForegroundColor Blue
-   Write-Host "`n`nAppLocker – Executing $RawName script" -ForegroundColor Green
+   Write-Host "AppLocker – Executing $RawName script" -ForegroundColor Green
    Write-Host "----------------------------------------";Start-Sleep -Seconds 1
    ## Make sure the user input file exists
    If(Test-Path -Path "$TestBat" -EA SilentlyContinue){
@@ -351,12 +353,12 @@ If($TestBat -Match '\\'){
 
    cd $StripPath
    Write-Host "[i] trying to execute $Bypassext text file" -ForeGroundColor Yellow
-   Start-Sleep -Seconds 1;Write-Host "[+] script output:`n`n"
+   Start-Sleep -Seconds 1;Write-Host "[+] script output:`n"
    ## Nice trick to be abble to execute cmd stdin { < } on PS
    Start-Sleep -Seconds 1;cmd.exe /c "cmd.exe /K < $Bypassext"
    cd $Working_Directory ## return to applocker working directory
 
-Write-Host ""
+Write-Host "`n"
 exit ## Exit @AppLocker
 }
 
@@ -371,7 +373,7 @@ If($GroupName -ieq "false"){
     $GroupName = "${Env:COMPUTERNAME}\${Env:USERNAME}" -replace '\\','\\' ## Uses Domain\user groupname if selected 'username' or 'domainname'
 }ElseIf($GroupName -Match '\\'){
     $GroupName = $GroupName -replace '\\','\\'
-}Else{
+}Else{## Group Names without backslash on them!
     $GroupName = $GroupName ## Everyone
 }
 
@@ -381,8 +383,8 @@ $mytable = New-Object System.Data.DataTable
 $mytable.Columns.Add("Id")|Out-Null
 $mytable.Columns.Add("DirectoryRights")|Out-Null
 $mytable.Columns.Add("VulnerableDirectory")|Out-Null
+
 Write-Host "$Banner" -ForegroundColor Blue
-Write-Host ""
 Write-Host "FileSystemRights  : $FolderRigths" -ForegroundColor Yellow
 Write-Host "IdentityReference : $GroupName"
 Write-Host "StartDirectory    : $StartDir`n"
@@ -393,8 +395,9 @@ Start-Sleep -Seconds 1
 
 [int]$Count = 0
 $Success = $False
-## Search recursive for directorys with weak permissions!
-$dAtAbAsEList = (Get-childItem -Path "$StartDir" -Recurse -Force -EA SilentlyContinue | Where-Object { $_.PSIsContainer }).FullName
+## Search recursive for directorys with weak permissions! {Exclude: WinSxS directorys}
+$dAtAbAsEList = (Get-childItem -Path "$StartDir" -Recurse -Force -EA SilentlyContinue | Where-Object { 
+   $_.PSIsContainer -ieq "True" -and $_.FullName -NotMatch 'WinSxS' }).FullName
 ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (StoredPaths)
 
     try{
@@ -409,21 +412,21 @@ ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (StoredPaths)
           Write-Host "FolderPath        : $Token" -ForegroundColor Green
           Write-Host "IdentityReference : $GroupName"
           Write-Host "FileSystemRights  : $FolderRigths`n"
-          $mytable.Rows.Add("$Count","$FolderRigths","$Token")|Out-Null ## <-- Add Full Path to output database
+          $mytable.Rows.Add("$Count","$FolderRigths","$Token")|Out-Null ## <-- populate output table
           $Success = $True
        }
 
-    }Catch{## Print dir(s) that does not meet the search criteria!
+    }Catch{## Print dir(s) that does NOT meet the search criteria!
+
        Write-host "FolderPath        : $Token"
-    }## End of Try{} loop
+    
+    }
 
 }## End of ForEach() loop
 
 
 If($Success -ne $True){
-    Write-Host ""
-    Write-Host "[error] None dir Owned by '$GroupName' found with '$FolderRigths' permissions!" -ForegroundColor Red -BackgroundColor Black
+    Write-Host "";Write-Host "[error] None dir Owned by '$GroupName' found with '$FolderRigths' permissions!" -ForegroundColor Red -BackgroundColor Black
 }Else{## Display Output Data Table
     Write-Host "";$mytable|Format-Table -AutoSize
 }
-Write-Host ""
