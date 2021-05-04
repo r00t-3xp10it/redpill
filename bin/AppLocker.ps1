@@ -6,46 +6,33 @@
    4 - Execute Batch scripts through text format bypass technic
 
    Author: @r00t-3xp10it
-   Tested Under: Windows 10 (18363) x64 bits
+   Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.2.8
+   PS cmdlet Dev version: v1.3.8
 
 .DESCRIPTION
-   Applocker.ps1 module searchs in pre-defined directorys in %WINDIR%
+   Applocker.ps1 module starts search recursive in %WINDIR% directory
    location for folders with weak permissions {Modify,Write,FullControl}
-   that can be used to bypass system AppLocker binary execution policy.
+   that can be used to bypass system AppLocker binary execution policy Or
+   to execute batch scripts converted to text format if blocked by applock!
 
 .NOTES
-   AppLocker.ps1 by Default uses 'BUILTIN\Users' Group Name
-   to search for directorys with 'Write' access on %WINDIR%
-   This module also allow users to sellect a diferent Group
-   Name or diferent folder permission rigths to search for.
-
-   Search locations:
-   $Env:WINDIR\Tasks
-   $Env:WINDIR\tracing
-   $Env:SYSTEMDRIVE\Temp
-   $Env:WINDIR\System32\Logs
-   $Env:WINDIR\System32\CatRoot
-   $Env:WINDIR\System32\drivers
-   $Env:WINDIR\System32\LogFiles
-   $Env:SYSTEMDRIVE\Users\Public
-   $Env:WINDIR\Registration\CRMLog
-   $Env:WINDIR\System32\Tasks_Migrated
-   $Env:WINDIR\System32\spool\drivers\color
-   $Env:WINDIR\System32\Microsoft\Crypto\RSA\MachineKeys
-   $Env:WINDIR\SysWOW64\Tasks\Microsoft\Windows\SyncCenter
-   $Env:WINDIR\System32\Tasks\Microsoft\Windows\SyncCenter
+   AppLocker.ps1 by Default uses 'BUILTIN\Users' Group Name to search recursive
+   for directorys with 'Write' access on %WINDIR% tree. This module also allow
+   users to sellect diferent GroupName(s), FolderRigths Or StartDir @arguments!
 
 .Parameter WhoAmi
    Accepts argument: Groups (List available Group Names)
+
+.Parameter StartDir
+   The absoluct path where to start search recursive (default: %windir%)
 
 .Parameter TestBat
    Accepts argument: TestBypass (Test bat exec bypass) Or batch absoluct path
 
 .Parameter FolderRigths
-   Accepts permissions: Modify, Write, FullControll, etc.
+   Accepts permissions: Modify, Write, FullControll, Execute, ReadAndExecute, etc.
 
 .Parameter GroupName
    Accepts GroupNames: Everyone, BUILTIN\Users, NT AUTHORITY\INTERACTIVE, etc.
@@ -60,11 +47,11 @@
 
 .EXAMPLE
    PS C:\> .\AppLocker.ps1 -TestBat TestBypass
-   Test for AppLocker Batch Script Execution Restriction bypass
+   Test for AppLocker Batch Script Execution Restrictions
 
 .EXAMPLE
    PS C:\> .\AppLocker.ps1 -TestBat "$Env:TMP\applock.bat"
-   Execute applock.bat through text format bypass tecnic
+   Execute applock.bat through text format bypass technic!
 
 .EXAMPLE
    PS C:\> .\AppLocker.ps1 -GroupName "BUILTIN\Users" -FolderRigths "Write"
@@ -73,6 +60,10 @@
 .EXAMPLE
    PS C:\> .\AppLocker.ps1 -GroupName "Everyone" -FolderRigths "FullControl"
    Enum directorys owned by 'Everyone' GroupName with 'FullControl' permissions
+
+.EXAMPLE
+   PS C:\> .\AppLocker.ps1 -GroupName "Everyone" -FolderRigths "FullControl" -StartDir "$Env:PROGRAMFILES"
+   Enum directorys owned by 'Everyone' GroupName with 'FullControl' permissions starting in -StartDir [ dir ]
 
 .INPUTS
    None. You cannot pipe objects into AppLocker.ps1
@@ -94,6 +85,7 @@
 
 ## Non-Positional cmdlet named parameters
 [CmdletBinding(PositionalBinding=$false)] param(
+   [string]$StartDir="$Env:WINDIR",
    [string]$FolderRigths="Write",
    [string]$GroupName="false",
    [string]$Success="false",
@@ -161,6 +153,7 @@ If($WhoAmi -ieq "Groups"){
    Start-Sleep -Seconds 1;Write-Host ""
    exit ## Exit @AppLocker
 }
+
 
 If($TestBat -ieq "TestBypass"){
 
@@ -293,6 +286,7 @@ If($TestBat -ieq "TestBypass"){
    Write-Host "";exit ## Exit @AppLocker
 }
 
+
 If($TestBat -Match '\\'){
 
    <#
@@ -365,55 +359,68 @@ Write-Host ""
 exit ## Exit @AppLocker
 }
 
+
 If($GroupName -ieq "false"){
     ## Get Group Name (BUILTIN\users) in diferent languages
-    # NOTE: England, Portugal, France, Germany, Indonesia, Holland, Romania, Croacia
-    $FindGroupUser = whoami /groups|findstr /C:"BUILTIN\Users" /C:"BUILTIN\Utilizadores" /C:"BUILTIN\Utilisateurs" /C:"BUILTIN\Benutzer" /C:"BUILTIN\Pengguna" /C:"BUILTIN\Gebruikers" /C:"BUILTIN\Utilizatori" /C:"BUILTIN\Korisnici"|Select-Object -First 1
-    $SplitStringUser = $FindGroupUser -split(" ");$GroupNameUsers = $SplitStringUser[0] -replace ' ',''
+    # England, Portugal, France, Germany, Indonesia, Holland, Italiano, Romania, Croacia, Bosnia
+    # Checkoslovaquia, Denmark, Spanish, Ireland, Iceland, Luxemburg, servia, Ucrain, swedish.
+    $FindGroupUser = whoami /groups|findstr /C:"BUILTIN\Users" /C:"BUILTIN\Utilizadores" /C:"BUILTIN\Utilisateurs" /C:"BUILTIN\Benutzer" /C:"BUILTIN\Pengguna" /C:"BUILTIN\Gebruikers" /C:"BUILTIN\Utenti" /C:"BUILTIN\Utilizatori" /C:"BUILTIN\Korisnici" /C:"BUILTIN\Uživatelů" /C:"BUILTIN\Brugere" /C:"BUILTIN\Usuarios" /C:"BUILTIN\Úsáideoirí" /C:"BUILTIN\Notendur" /C:"BUILTIN\Benotzer" /C:"BUILTIN\Kорисника" /C:"користувачів" /C:"BUILTIN\Användare"|Select-Object -First 1
+    $SplitStringUser = $FindGroupUser -split(" ");$GroupName = $SplitStringUser[0] -replace ' ','' -replace '\\','\\'
 }ElseIf($GroupName -ieq "$Env:USERNAME" -or $GroupName -ieq "$Env:COMPUTERNAME"){
-    $GroupNameUsers = "${Env:COMPUTERNAME}\${Env:USERNAME}" ## Uses Domain\user groupname if selected 'username' or 'domainname'
+    $GroupName = "${Env:COMPUTERNAME}\${Env:USERNAME}" -replace '\\','\\' ## Uses Domain\user groupname if selected 'username' or 'domainname'
+}ElseIf($GroupName -Match '\\'){
+    $GroupName = $GroupName -replace '\\','\\'
+}Else{
+    $GroupName = $GroupName ## Everyone
 }
 
-If($GroupName -Match '\\'){
-    $RawUserGroup = $GroupName ## BUILTIN\Users
-    $GroupName = $GroupName -replace '\\','\\' ## BUILTIN\\Users
-}ElseIf($GroupNameUsers -Match '\\'){
-    $RawUserGroup = $GroupNameUsers ## BUILTIN\Users
-    $GroupName = $GroupNameUsers -replace '\\','\\' ## BUILTIN\\Users
-}Else{## Example: Everyone Group Name
-    $RawUserGroup = $GroupName ## Everyone
-}
 
- 
 ## Build Output Table
+$mytable = New-Object System.Data.DataTable
+$mytable.Columns.Add("Id")|Out-Null
+$mytable.Columns.Add("DirectoryRights")|Out-Null
+$mytable.Columns.Add("VulnerableDirectory")|Out-Null
 Write-Host ""
+Write-Host "FileSystemRights  : $FolderRigths" -ForegroundColor Yellow
+Write-Host "IdentityReference : $GroupName"
+Write-Host "StartDirectory    : $StartDir`n"
 Write-Host "AppLocker - Weak Directory permissions" -ForegroundColor Green
 Write-Host "--------------------------------------"
 Start-Sleep -Seconds 1
 
 
 [int]$Count = 0
+$Success = $False
 ## Search recursive for directorys with weak permissions!
-$dAtAbAsEList = Get-Item -Path "$Env:WINDIR\System32\drivers","$Env:WINDIR\System32\Logs","$Env:WINDIR\System32\LogFiles","$Env:WINDIR\System32\CatRoot","$Env:WINDIR\System32\spool\drivers\color","$Env:WINDIR\Registration\CRMLog","$Env:WINDIR\Tasks","$Env:WINDIR\tracing","$Env:SYSTEMDRIVE\Temp","$Env:SYSTEMDRIVE\Users\Public","$Env:WINDIR\System32\Tasks_Migrated","$Env:WINDIR\System32\Microsoft\Crypto\RSA\MachineKeys","$Env:WINDIR\SysWOW64\Tasks\Microsoft\Windows\SyncCenter","$Env:WINDIR\System32\Tasks\Microsoft\Windows\SyncCenter" -EA SilentlyContinue|Where-Object { $_.PSIsContainer }|Select-Object -ExpandProperty FullName
-ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (Paths)
-    (Get-Acl "$Token" -EA SilentlyContinue).Access|Where-Object {
-    $CleanOutput = $_.AccessControlType -Match 'Allow' -and $_.FileSystemRights -Match "$FolderRigths" -and $_.IdentityReference -Match "$GroupName" ## <-- In my system the IdentityReference is: 'Todos'
-        If($CleanOutput){$Count++ ##  Write the Table 'IF' found any vulnerable permissions
-            Write-Host "`nVulnId            : ${Count}::ACL (Mitre T1222)"
-            Write-Host "FolderPath        : $Token" -ForegroundColor Green
-            Write-Host "IdentityReference : $RawUserGroup"
-            Write-Host "FileSystemRights  : $FolderRigths"
-            $Success = $True
-        }
-    }## End of Get-Acl loop
-}## End of ForEach loop
+$dAtAbAsEList = (Get-childItem -Path "$StartDir" -Recurse -Force -EA SilentlyContinue | Where-Object { $_.PSIsContainer }).FullName
+ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (StoredPaths)
+
+    try{
+
+       ## Get each stored directory ($dAtAbAsEList) ACL's
+       $CleanOutput = (Get-Acl "$Token" -EA SilentlyContinue).Access | Where-Object { 
+          $_.FileSystemRights -Match "$FolderRigths" -and $_.IdentityReference -Match "$GroupName" 
+       }
+
+       If($CleanOutput){$Count++ ##  Write the Table 'IF' found any vulnerable permissions
+          Write-Host "`nVulnId            : ${Count}::ACL (Mitre T1222)"
+          Write-Host "FolderPath        : $Token" -ForegroundColor Green
+          Write-Host "IdentityReference : $GroupName"
+          Write-Host "FileSystemRights  : $FolderRigths`n"
+          $mytable.Rows.Add("$Count","$FolderRigths","$Token")|Out-Null ## <-- Add Full Path to output database
+          $Success = $True
+       }
+
+    }Catch{## Print dir(s) that does not meet the search criteria!
+       Write-host "FolderPath        : $Token"
+    }## End of Try{} loop
+
+}## End of ForEach() loop
 
 
 If($Success -ne $True){
-    echo "[error] None dir found with: '$FolderRigths' permissions!" > $Env:TMP\werre.log
-    Get-Content -Path "$Env:TMP\werre.log"
-    Remove-Item -Path "$Env:TMP\werre.log" -Force
-}Else{
-    Write-Host "`n`n[$Count] Directorys found with weak permissions!" -ForegroundColor Green -BackgroundColor Black
+    Write-Host "`n`n[error] None dir Owned by '$GroupName' found with '$FolderRigths' permissions!" -ForegroundColor Red -BackgroundColor Black
+}Else{## Display Output Data Table
+    $mytable|Format-Table -AutoSize
 }
 Write-Host ""

