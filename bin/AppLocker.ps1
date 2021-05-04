@@ -129,27 +129,26 @@ If($WhoAmi -ieq "Groups"){
       Enumerate ALL Group Names Available
 
    .OUTPUTS
-      Group Name                                                 Type             SID          Attributes
-      ========================================================== ================ ============ ==================================================
-      Todos                                                      Well-known group S-1-1-0      Mandatory group, Enabled by default, Enabled group
-      NT AUTHORITY\Conta local e membro do grupo Administradores Well-known group S-1-5-114    Group used for deny only
-      BUILTIN\Administradores                                    Alias            S-1-5-32-544 Group used for deny only
-      BUILTIN\Utilizadores                                       Alias            S-1-5-32-545 Mandatory group, Enabled by default, Enabled group
-      BUILTIN\Utilizadores do registo de desempenho              Alias            S-1-5-32-559 Mandatory group, Enabled by default, Enabled group
-      NT AUTHORITY\INTERACTIVE                                   Well-known group S-1-5-4      Mandatory group, Enabled by default, Enabled group
-      INICIO DE SESSAO NA CONSOLA                                Well-known group S-1-2-1      Mandatory group, Enabled by default, Enabled group
-      NT AUTHORITY\Utilizadores Autenticados                     Well-known group S-1-5-11     Mandatory group, Enabled by default, Enabled group
-      NT AUTHORITY\Esta organizacao                              Well-known group S-1-5-15     Mandatory group, Enabled by default, Enabled group
-      NT AUTHORITY\Conta local                                   Well-known group S-1-5-113    Mandatory group, Enabled by default, Enabled group
-      LOCAL                                                      Well-known group S-1-2-0      Mandatory group, Enabled by default, Enabled group
-      NT AUTHORITY\Autenticacao NTLM                             Well-known group S-1-5-64-10  Mandatory group, Enabled by default, Enabled group
+      Group Name                               Group SID                                     Group Type
+      ----------                               ---------                                     ----------
+      SKYNET\pedro                             S-1-5-21-303954997-3777458861-1701234188-1001 http://schemas.microsoft.com/ws/2008/06/identity/claims/primarysid
+      Todos                                    S-1-1-0                                       http://schemas.microsoft.com/ws/2008/06/identity/claims/groupsid
+      NT AUTHORITY\Conta local e membro do ... S-1-5-114                                     http://schemas.xmlsoap.org/ws/2005/05/identity/claims/denyonlysid
+      BUILTIN\Administradores                  S-1-5-32-544                                  http://schemas.xmlsoap.org/ws/2005/05/identity/claims/denyonlysid
+      BUILTIN\Utilizadores                     S-1-5-32-545                                  http://schemas.microsoft.com/ws/2008/06/identity/claims/groupsid
+      NT AUTHORITY\INTERACTIVE                 S-1-5-4                                       http://schemas.microsoft.com/ws/2008/06/identity/claims/groupsid
+      INÍCIO DE SESSÃO NA CONSOLA              S-1-2-1                                       http://schemas.microsoft.com/ws/2008/06/identity/claims/groupsid
+      NT AUTHORITY\Utilizadores Autenticados   S-1-5-11                                      http://schemas.microsoft.com/ws/2008/06/identity/claims/groupsid
+      NT AUTHORITY\Esta organização            S-1-5-15                                      http://schemas.microsoft.com/ws/2008/06/identity/claims/groupsid
+      MicrosoftAccount\pedroubuntu10@gmail.com S-1-11-96-3623454863-58364-18864-266172220... http://schemas.microsoft.com/ws/2008/06/identity/claims/groupsid
+      NT AUTHORITY\Conta local                 S-1-5-113                                     http://schemas.microsoft.com/ws/2008/06/identity/claims/groupsid
+      NT AUTHORITY\Autenticação da Conta em... S-1-5-64-36                                   http://schemas.microsoft.com/ws/2008/06/identity/claims/groupsid
    #>
 
+   Write-Host ""
    ## Display available Groups
-   $ListGroups = whoami /groups|findstr /V "GROUP INFORMATION ----- Label"
-   echo $ListGroups > $Env:TMP\Groups.log
-   Get-Content -Path "$Env:TMP\Groups.log"
-   Remove-Item -Path "$Env:TMP\Groups.log" -Force
+   $tableLayout = @{Expression={((New-Object System.Security.Principal.SecurityIdentifier($_.Value)).Translate([System.Security.Principal.NTAccount])).Value};Label="Group Name";Width=40},@{Expression={$_.Value};Label="Group SID";Width=45},@{Expression={$_.Type};Label="Group Type";Width=75}
+   ([Security.Principal.WindowsIdentity]::GetCurrent()).Claims | FT $tableLayout
    Start-Sleep -Seconds 1;Write-Host ""
    exit ## Exit @AppLocker
 }
