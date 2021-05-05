@@ -395,9 +395,9 @@ Start-Sleep -Seconds 1
 
 [int]$Count = 0
 $Success = $False
-## Search recursive for directorys with weak permissions! {Exclude: WinSxS directorys}
-$dAtAbAsEList = (Get-childItem -Path "$StartDir" -Recurse -Force -EA SilentlyContinue | Where-Object { 
-   $_.PSIsContainer -ieq "True" -and $_.FullName -NotMatch 'WinSxS' }).FullName
+## Search recursive for directorys with weak permissions! {Exclude: WinSxS,assembly directorys}
+$dAtAbAsEList = (Get-childItem -Path "$StartDir" -Recurse -Directory -Force -EA SilentlyContinue | Where-Object { 
+   $_.FullName -iNotMatch 'WinSxS' -and $_.FullName -iNotMatch 'assembly' }).FullName
 ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (StoredPaths)
 
     try{
@@ -426,8 +426,10 @@ ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (StoredPaths)
 
 
 If($Success -ne $True){
-    Write-Host "";Write-Host "[error] None dir Owned by '$GroupName' found with '$FolderRigths' permissions!" -ForegroundColor Red -BackgroundColor Black
+    Write-Host ""
+    Write-Host "[error] None dir Owned by '$GroupName' found with '$FolderRigths' permissions!" -ForegroundColor Red -BackgroundColor Black
     Write-Host ""
 }Else{## Display Output Data Table
-    Write-Host "";$mytable|Format-Table -AutoSize
+    Write-Host ""
+    $mytable|Format-Table -AutoSize
 }
