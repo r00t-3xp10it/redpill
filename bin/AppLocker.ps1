@@ -9,7 +9,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.3.8
+   PS cmdlet Dev version: v1.3.9
 
 .DESCRIPTION
    Applocker.ps1 module starts search recursive in %WINDIR% directory
@@ -32,10 +32,10 @@
    Accepts argument: TestBypass (Test bat exec bypass) Or batch absoluct path
 
 .Parameter FolderRigths
-   Accepts permissions: Modify, Write, FullControll, Execute, ReadAndExecute, etc.
+   Accepts permissions: Modify, Write, FullControll, Execute, ReadAndExecute (default: Write)
 
 .Parameter GroupName
-   Accepts GroupNames: Everyone, BUILTIN\Users, NT AUTHORITY\INTERACTIVE, etc.
+   Accepts GroupNames: Everyone, BUILTIN\Users, NT AUTHORITY\INTERACTIVE, (default: BUILTIN\Users)
 
 .EXAMPLE
    PS C:\> Get-Help .\AppLocker.ps1 -full
@@ -88,7 +88,6 @@
    [string]$StartDir="$Env:WINDIR",
    [string]$FolderRigths="Write",
    [string]$GroupName="false",
-   [string]$Success="false",
    [string]$TestBat="false",
    [string]$WhoAmi="false"
 )
@@ -100,7 +99,7 @@ $Banner = @"
      _________ __________ _________ _________  o  ____      ____      
     |    _o___)   /_____/|     O   \    _o___)/ \/   /_____/   /_____ 
     |___|\____\___\%%%%%'|_________/___|%%%%%'\_/\___\_____\___\_____\   
-          Author: r00t-3xp10it - SSAredTeam @2021 - Version: $CmdletVersion
+          Author: r00t-3xp10it - SSAredTeam @2021 - Version: v1.2.6
             Help: powershell -File redpill.ps1 -Help Parameters
 
       
@@ -374,27 +373,26 @@ If($GroupName -ieq "false"){
 }ElseIf($GroupName -Match '\\'){
     $GroupName = $GroupName -replace '\\','\\'
 }Else{## Group Names without backslash on them!
-    $GroupName = $GroupName ## Everyone
+    $GroupName = $GroupName ## Everyone|Todos
 }
 
 
-## Build Output Table
+## Build 'VulnerableDirectory' Report Table
 $mytable = New-Object System.Data.DataTable
 $mytable.Columns.Add("Id")|Out-Null
-$mytable.Columns.Add("DirectoryRights")|Out-Null
+$mytable.Columns.Add("FileSystemRights")|Out-Null
 $mytable.Columns.Add("VulnerableDirectory")|Out-Null
 
+## Local Function Banner
 Write-Host "$Banner" -ForegroundColor Blue
 Write-Host "FileSystemRights  : $FolderRigths" -ForegroundColor Yellow
 Write-Host "IdentityReference : $GroupName"
-Write-Host "StartDirectory    : $StartDir`n"
+Write-Host "StartOnDirectory  : $StartDir`n"
 Write-Host "AppLocker - Weak Directory permissions" -ForegroundColor Green
 Write-Host "--------------------------------------"
-Start-Sleep -Seconds 1
 
 
 [int]$Count = 0
-$Success = $False
 ## Search recursive for directorys with weak permissions! {Exclude: WinSxS,assembly directorys}
 $dAtAbAsEList = (Get-childItem -Path "$StartDir" -Recurse -Directory -Force -EA SilentlyContinue | Where-Object { 
    $_.FullName -iNotMatch 'WinSxS' -and $_.FullName -iNotMatch 'assembly' }).FullName
@@ -407,16 +405,17 @@ ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (StoredPaths)
           $_.FileSystemRights -iMatch "$FolderRigths" -and $_.IdentityReference -iMatch "$GroupName" 
        }
 
-       If($CleanOutput){$Count++ ##  Write the Table 'IF' found any vulnerable permissions
+       If($CleanOutput){$Count++ ##  Write the Table 'IF' found any vuln permissions
           Write-Host "`nVulnId            : ${Count}::ACL (Mitre T1222)"
           Write-Host "FolderPath        : $Token" -ForegroundColor Green
           Write-Host "IdentityReference : $GroupName"
           Write-Host "FileSystemRights  : $FolderRigths`n"
-          $mytable.Rows.Add("$Count","$FolderRigths","$Token")|Out-Null ## <-- populate output table
-          $Success = $True
+
+          ## += Populate 'VulnerableDirectory' Report Table
+          $mytable.Rows.Add("$Count","$FolderRigths","$Token")|Out-Null
        }
 
-    }Catch{## Print dir(s) that does NOT meet the search criteria!
+    }catch{## [error] Print dir(s) that catch exeptions!
 
        Write-host "access_denied     : $Token"
     
@@ -425,11 +424,10 @@ ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (StoredPaths)
 }## End of ForEach() loop
 
 
-If($Success -ne $True){
-    Write-Host ""
+If($Count -gt 0){
+    ## Display 'VulnerableDirectory' Report Table
+    Write-Host "";$mytable|Format-Table -AutoSize
+}Else{Write-Host ""
     Write-Host "[error] None dir Owned by '$GroupName' found with '$FolderRigths' permissions!" -ForegroundColor Red -BackgroundColor Black
     Write-Host ""
-}Else{## Display Output Data Table
-    Write-Host ""
-    $mytable|Format-Table -AutoSize
 }
