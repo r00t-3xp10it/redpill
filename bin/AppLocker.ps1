@@ -290,7 +290,7 @@ If($TestBat -ieq "TestBypass"){
 }
 
 
-If($TestBat -Match '(.bat)$'){
+If($TestBat -ne "false"){
 
    <#
    .SYNOPSIS
@@ -340,6 +340,12 @@ If($TestBat -Match '(.bat)$'){
    ## Build Output Table
    Write-Host "`nAppLocker – Executing $RawName script" -ForegroundColor Green
    Write-Host "----------------------------------------";Start-Sleep -Seconds 1
+
+   If(-not($TestBat -Match '(.bat)$')){Write-Host "";## Make sure user have imput an batch script!
+      Write-Host "[error] This function only accepts Batch scripts!" -ForegroundColor Red -BackgroundColor Black
+      Write-Host "";exit ## Exit @applocker
+   }
+
    ## Make sure the user input file exists
    If(Test-Path -Path "$TestBat" -EA SilentlyContinue){
       Write-Host "[+] found: $TestBat";Start-Sleep -Seconds 1
