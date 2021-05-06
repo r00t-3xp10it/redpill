@@ -38,7 +38,7 @@
    Accepts permissions: Modify, Write, FullControll, Execute, ReadAndExecute (default: Write)
 
 .Parameter GroupName
-   Accepts GroupNames: Everyone, BUILTIN\Users, NT AUTHORITY\INTERACTIVE, (default: BUILTIN\Users)
+   Accepts GroupNames: Everyone, BUILTIN\Users, NT AUTHORITY\INTERACTIVE (default: BUILTIN\Users)
 
 .EXAMPLE
    PS C:\> Get-Help .\AppLocker.ps1 -full
@@ -370,17 +370,76 @@ exit ## Exit @AppLocker
 }
 
 
+<#
+.SYNOPSIS
+   Author: @r00t-3xp10it
+   Helper - Enumerate Directorys with weak permissions (ACL)
+
+.DESCRIPTION
+   Applocker.ps1 module starts search recursive in %WINDIR% directory
+   location for folders with weak permissions {Modify,Write,FullControl}
+   that can be used to bypass system AppLocker binary execution policy Or
+   to execute batch scripts converted to text format if blocked by applock!
+
+.NOTES
+   AppLocker.ps1 by Default uses 'BUILTIN\Users' Group Name to search recursive
+   for directorys with 'Write' access on %WINDIR% tree. This module also allow
+   users to sellect diferent GroupName(s), FolderRigths Or StartDir @arguments!
+
+.Parameter Verb
+   Accepts argument: True, False (verbose enumeration)
+
+.Parameter StartDir
+   The absoluct path where to start search recursive (default: %windir%)
+
+.Parameter TestBat
+   Accepts argument: TestBypass (Test bat exec bypass) Or batch absoluct path
+
+.Parameter FolderRigths
+   Accepts permissions: Modify, Write, FullControll, Execute, ReadAndExecute (default: Write)
+
+.Parameter GroupName
+   Accepts GroupNames: Everyone, BUILTIN\Users, NT AUTHORITY\INTERACTIVE (default: BUILTIN\Users)
+
+.EXAMPLE
+   PS C:\> .\AppLocker.ps1 -GroupName "BUILTIN\Users" -FolderRigths "Write"
+   Enum directorys owned by 'BUILTIN\Users' GroupName with 'Write' permissions
+
+.EXAMPLE
+   PS C:\> .\AppLocker.ps1 -GroupName "Everyone" -FolderRigths "FullControl" -Verb True
+   Enum directorys owned by 'Everyone' GroupName with 'FullControl' permissions verbosely!
+
+.EXAMPLE
+   PS C:\> .\AppLocker.ps1 -GroupName "Everyone" -FolderRigths "FullControl" -StartDir "$Env:PROGRAMFILES"
+   Enum directorys owned by 'Everyone' GroupName with 'FullControl' permissions starting in -StartDir [ dir ]
+
+.OUTPUTS
+   AppLocker - Weak Directory permissions
+   --------------------------------------
+   VulnId            : 1::ACL (Mitre T1222)
+   FolderPath        : C:\WINDOWS\tracing
+   IdentityReference : BUILTIN\Utilizadores
+   FileSystemRights  : Write
+   IsInHerit?        : False
+
+   VulnId            : 2::ACL (Mitre T1222)
+   FolderPath        : C:\WINDOWS\System32\Microsoft\Crypto\RSA\MachineKeys
+   IdentityReference : BUILTIN\Utilizadores
+   FileSystemRights  : Write
+   IsInHerit?        : True
+#>
+
 If($GroupName -ieq "false"){
     ## Get Group Name (BUILTIN\users) in diferent languages
     # England, Portugal, France, Germany, Indonesia, Holland, Italiano, Romania, Croacia, Bosnia
     # Checkoslovaquia, Denmark, Spanish, Ireland, Iceland, Luxemburg, servia, Ucrain, swedish.
     $FindGroupUser = whoami /groups|findstr /C:"BUILTIN\Users" /C:"BUILTIN\Utilizadores" /C:"BUILTIN\Utilisateurs" /C:"BUILTIN\Benutzer" /C:"BUILTIN\Pengguna" /C:"BUILTIN\Gebruikers" /C:"BUILTIN\Utenti" /C:"BUILTIN\Utilizatori" /C:"BUILTIN\Korisnici" /C:"BUILTIN\Uživatelů" /C:"BUILTIN\Brugere" /C:"BUILTIN\Usuarios" /C:"BUILTIN\Úsáideoirí" /C:"BUILTIN\Notendur" /C:"BUILTIN\Benotzer" /C:"BUILTIN\Kорисника" /C:"користувачів" /C:"BUILTIN\Användare"|Select-Object -First 1
     $SplitStringUser = $FindGroupUser -split(" ");$GroupName = $SplitStringUser[0] -replace ' ','' -replace '\\','\\'
-}ElseIf($GroupName -ieq "$Env:USERNAME" -or $GroupName -ieq "$Env:COMPUTERNAME"){
-    $GroupName = "${Env:COMPUTERNAME}\${Env:USERNAME}" -replace '\\','\\' ## Uses Domain\user groupname if selected 'username' or 'domainname'
-}ElseIf($GroupName -Match '\\'){
+}ElseIf($GroupName -ieq "$Env:USERNAME" -or $GroupName -ieq "$Env:COMPUTERNAME"){## Domain\UserName Group Name selected!
+    $GroupName = "${Env:COMPUTERNAME}\${Env:USERNAME}" -replace '\\','\\'
+}ElseIf($GroupName -Match '\\'){## Group Name with backslash sellected!
     $GroupName = $GroupName -replace '\\','\\'
-}Else{## Group Names without backslash on them!
+}Else{## Group Names without backslash sellected!
     $GroupName = $GroupName ## Everyone|Todos
 }
 
@@ -404,13 +463,13 @@ $mytable.Columns.Add("VulnerableDirectory")|Out-Null
 [int]$Count = 0
 ## Search recursive for directorys with weak permissions! {Exclude: WinSxS,assembly dirs AND .inf|.xml extensions}
 $dAtAbAsEList = (Get-childItem -Path "$StartDir" -Recurse -Directory -Force -EA SilentlyContinue | Where-Object { 
-   $_.FullName -iNotMatch 'WinSxS' -and $_.FullName -iNotMatch 'assembly' -and $_.FullName -NotMatch '(.inf|.xml)$'
+   $_.FullName -iNotMatch 'WinSxS' -and $_.FullName -iNotMatch 'assembly' -and $_.FullName -iNotMatch '(.inf|.xml)$'
 }).FullName
 ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (StoredPaths)
 
     try{
 
-       ## Get each stored directory ($dAtAbAsEList) ACL's
+       ## Get each stored directory ($dAtAbAsEList) ACL's settings!
        $CleanOutput = (Get-Acl "$Token" -EA SilentlyContinue).Access | Where-Object { 
           $_.FileSystemRights -iMatch "$FolderRigths" -and $_.IdentityReference -iMatch "$GroupName" 
        }
