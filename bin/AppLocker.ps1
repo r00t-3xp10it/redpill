@@ -23,7 +23,7 @@
    users to sellect diferent GroupName(s), FolderRigths Or StartDir @arguments!
 
 .Parameter Verb
-   Accepts argument: True, False (verbose enumeration)
+   Accepts arguments: True, False (verbose enumeration)
 
 .Parameter WhoAmi
    Accepts argument: Groups (List available Group Names)
@@ -32,7 +32,7 @@
    The absoluct path where to start search recursive (default: %windir%)
 
 .Parameter TestBat
-   Accepts argument: TestBypass (Test bat exec bypass) Or batch absoluct path
+   Accepts argument: TestBypass (Test bat exec bypass) Or script.bat absoluct path
 
 .Parameter FolderRigths
    Accepts permissions: Modify, Write, FullControll, Execute, ReadAndExecute (default: Write)
@@ -165,7 +165,7 @@ If($TestBat -ieq "TestBypass"){
    <#
    .SYNOPSIS
       Author: r00t-3xp10it
-      Helper - Test AppLocker Batch Execution Restrictions bypass
+      Helper - Test AppLocker Batch Execution Restrictions
 
    .DESCRIPTION
       This function allow attackers to check if batch script execution its beeing blocked
@@ -342,18 +342,25 @@ If($TestBat -ne "false"){
    Write-Host "----------------------------------------";Start-Sleep -Seconds 1
 
    If(-not($TestBat -Match '(.bat)$')){Write-Host "";## Make sure user have imput an batch script!
-      Write-Host "[error] This function only accepts Batch scripts!" -ForegroundColor Red -BackgroundColor Black
+      Write-Host "[error] This function only accepts Batch (bat) scripts!" -ForegroundColor Red -BackgroundColor Black
       Write-Host "";exit ## Exit @applocker
    }
 
+
    ## Make sure the user input file exists
    If(Test-Path -Path "$TestBat" -EA SilentlyContinue){
-      Write-Host "[+] found: $TestBat";Start-Sleep -Seconds 1
+
+      Write-Host "[+] found: $TestBat"
+      Start-Sleep -Seconds 1
+
    }Else{## User Input File NOT found!
+
       Write-Host ""
-      Write-Host "[error] not found: $TestBat" -ForegroundColor Red -BackgroundColor Black
+      Write-Host "[error] Not found: $TestBat" -ForegroundColor Red -BackgroundColor Black
       Write-Host "";exit ## Exit @AppLocker
+
    }
+
 
    Write-Host "[i] converting $RawName to $Bypassext";Start-Sleep -Seconds 1
    Copy-Item -Path "$TestBat" -Destination "$RawFullPath" -EA SilentlyContinue -Force
@@ -361,12 +368,12 @@ If($TestBat -ne "false"){
    If($TestBat -Match '\\'){cd $StripPath} ## Payload absoluct path inputed!
    Write-Host "[i] trying to execute $Bypassext text file" -ForeGroundColor Yellow
    Start-Sleep -Seconds 1;Write-Host "[+] script output:`n"
+
    ## Nice trick to be abble to execute cmd stdin { < } on PS
    Start-Sleep -Seconds 1;cmd.exe /c "cmd.exe /K < $Bypassext"
    cd $Working_Directory ## return to applocker working directory
+   Write-Host "`n";exit ## Exit @AppLocker
 
-Write-Host "`n"
-exit ## Exit @AppLocker
 }
 
 
@@ -387,13 +394,13 @@ exit ## Exit @AppLocker
    users to sellect diferent GroupName(s), FolderRigths Or StartDir @arguments!
 
 .Parameter Verb
-   Accepts argument: True, False (verbose enumeration)
+   Accepts arguments: True, False (verbose enumeration)
 
 .Parameter StartDir
    The absoluct path where to start search recursive (default: %windir%)
 
 .Parameter TestBat
-   Accepts argument: TestBypass (Test bat exec bypass) Or batch absoluct path
+   Accepts argument: TestBypass (Test bat exec bypass) Or script.bat absoluct path
 
 .Parameter FolderRigths
    Accepts permissions: Modify, Write, FullControll, Execute, ReadAndExecute (default: Write)
@@ -429,18 +436,30 @@ exit ## Exit @AppLocker
    IsInHerit?        : True
 #>
 
+
 If($GroupName -ieq "false"){
-    ## Get Group Name (BUILTIN\users) in diferent languages
+
+    ## Get Group Name (BUILTIN\users) in diferent languages!
     # England, Portugal, France, Germany, Indonesia, Holland, Italiano, Romania, Croacia, Bosnia
     # Checkoslovaquia, Denmark, Spanish, Ireland, Iceland, Luxemburg, servia, Ucrain, swedish.
     $FindGroupUser = whoami /groups|findstr /C:"BUILTIN\Users" /C:"BUILTIN\Utilizadores" /C:"BUILTIN\Utilisateurs" /C:"BUILTIN\Benutzer" /C:"BUILTIN\Pengguna" /C:"BUILTIN\Gebruikers" /C:"BUILTIN\Utenti" /C:"BUILTIN\Utilizatori" /C:"BUILTIN\Korisnici" /C:"BUILTIN\Uživatelů" /C:"BUILTIN\Brugere" /C:"BUILTIN\Usuarios" /C:"BUILTIN\Úsáideoirí" /C:"BUILTIN\Notendur" /C:"BUILTIN\Benotzer" /C:"BUILTIN\Kорисника" /C:"користувачів" /C:"BUILTIN\Användare"|Select-Object -First 1
     $SplitStringUser = $FindGroupUser -split(" ");$GroupName = $SplitStringUser[0] -replace ' ','' -replace '\\','\\'
-}ElseIf($GroupName -ieq "$Env:USERNAME" -or $GroupName -ieq "$Env:COMPUTERNAME"){## Domain\UserName Group Name selected!
+
+}ElseIf($GroupName -ieq "$Env:USERNAME" -or $GroupName -ieq "$Env:COMPUTERNAME"){
+
+    ## Domain\UserName Group Name selected by User!
     $GroupName = "${Env:COMPUTERNAME}\${Env:USERNAME}" -replace '\\','\\'
-}ElseIf($GroupName -Match '\\'){## Group Name with backslash sellected!
+
+}ElseIf($GroupName -Match '\\'){
+
+    ## Group Name with backslash sellected!
     $GroupName = $GroupName -replace '\\','\\'
-}Else{## Group Names without backslash sellected!
+
+}Else{
+
+    ## Group Names without backslash sellected!
     $GroupName = $GroupName ## Everyone|Todos
+
 }
 
 
@@ -465,6 +484,7 @@ $mytable.Columns.Add("VulnerableDirectory")|Out-Null
 $dAtAbAsEList = (Get-childItem -Path "$StartDir" -Recurse -Directory -Force -EA SilentlyContinue | Where-Object { 
    $_.FullName -iNotMatch 'WinSxS' -and $_.FullName -iNotMatch 'assembly' -and $_.FullName -iNotMatch '(.inf|.xml)$'
 }).FullName
+
 ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (StoredPaths)
 
     try{
@@ -474,39 +494,50 @@ ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (StoredPaths)
           $_.FileSystemRights -iMatch "$FolderRigths" -and $_.IdentityReference -iMatch "$GroupName" 
        }
 
-       If(-not($CleanOutput)){## Print directorys beeing tested!
+       If(-not($CleanOutput)){
+
+          ## Print current directorys beeing tested!
           Write-Host "getAcl_access     : $Token"
+
        }Else{
-          $Count++ ##  Write the Table 'IF' found any vuln permissions
+
+          $Count++ ##  Count how many interactions!
           $IsInHerit = (Get-Acl "$Token").Access.IsInherited|Select -Last 1
+          ##  Write the Output Table 'IF' found any vulnerable permissions!
           Write-Host "`nVulnId            : ${Count}::ACL (Mitre T1222)"
           Write-Host "FolderPath        : $Token" -ForegroundColor Green
           Write-Host "IdentityReference : $GroupName"
           Write-Host "FileSystemRights  : $FolderRigths"
           Write-Host "IsInHerit?        : $IsInHerit`n"
 
-          ## += Populate 'VulnerableDirectory' Report Table
+          ## += Populate the 'VulnerableDirectory' Report Table
           $mytable.Rows.Add("$Count","$IsInHerit","$FolderRigths","$Token")|Out-Null
-          Start-Sleep -Milliseconds 960 ## Give some time for display!      
+          Start-Sleep -Milliseconds 960 ## Give some time for display!
+                
        }
 
     }catch{## [verbose] Print dir(s) that catch exeptions!
 
        If($verb -ieq "True"){## Verbose enumeration (easter egg)!
           Write-host "access_denied     x [admin] $Token" -ForegroundColor Red
-          Start-Sleep -Milliseconds 570 ## Give some time for display!     
+          Start-Sleep -Milliseconds 570 ## Give some time for display!
        }
     
     }
 
 }## End of ForEach() loop
-
-
 Start-Sleep -Seconds 1
-If($Count -gt 0){Write-Host ""
+
+
+If($Count -gt 0){
+
     ## Display 'VulnerableDirectory' Report Table
-    $mytable|Format-Table -AutoSize
-}Else{Write-Host ""
+    Write-Host "";$mytable|Format-Table -AutoSize
+
+}Else{
+
+    Write-Host ""
     Write-Host "[error] None dir Owned by '$GroupName' found with '$FolderRigths' permissions!" -ForegroundColor Red -BackgroundColor Black
     Write-Host ""
+
 }
