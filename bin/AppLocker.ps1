@@ -9,7 +9,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.3.9
+   PS cmdlet Dev version: v1.3.10
 
 .DESCRIPTION
    Applocker.ps1 module starts search recursive in %WINDIR% directory
@@ -21,6 +21,9 @@
    AppLocker.ps1 by Default uses 'BUILTIN\Users' Group Name to search recursive
    for directorys with 'Write' access on %WINDIR% tree. This module also allow
    users to sellect diferent GroupName(s), FolderRigths Or StartDir @arguments!
+
+.Parameter Verb
+   Accepts argument: True, False (verbose enumeration)
 
 .Parameter WhoAmi
    Accepts argument: Groups (List available Group Names)
@@ -58,8 +61,8 @@
    Enum directorys owned by 'BUILTIN\Users' GroupName with 'Write' permissions
 
 .EXAMPLE
-   PS C:\> .\AppLocker.ps1 -GroupName "Everyone" -FolderRigths "FullControl"
-   Enum directorys owned by 'Everyone' GroupName with 'FullControl' permissions
+   PS C:\> .\AppLocker.ps1 -GroupName "Everyone" -FolderRigths "FullControl" -Verb True
+   Enum directorys owned by 'Everyone' GroupName with 'FullControl' permissions verbosely!
 
 .EXAMPLE
    PS C:\> .\AppLocker.ps1 -GroupName "Everyone" -FolderRigths "FullControl" -StartDir "$Env:PROGRAMFILES"
@@ -75,11 +78,13 @@
    FolderPath        : C:\WINDOWS\tracing
    IdentityReference : BUILTIN\Utilizadores
    FileSystemRights  : Write
+   IsInHerit?        : False
 
    VulnId            : 2::ACL (Mitre T1222)
    FolderPath        : C:\WINDOWS\System32\Microsoft\Crypto\RSA\MachineKeys
    IdentityReference : BUILTIN\Utilizadores
    FileSystemRights  : Write
+   IsInHerit?        : True
 #>
 
 
@@ -89,7 +94,8 @@
    [string]$FolderRigths="Write",
    [string]$GroupName="false",
    [string]$TestBat="false",
-   [string]$WhoAmi="false"
+   [string]$WhoAmi="false",
+   [string]$Verb="false"
 )
 
 $Banner = @"
@@ -99,7 +105,7 @@ $Banner = @"
      _________ __________ _________ _________  o  ____      ____      
     |    _o___)   /_____/|     O   \    _o___)/ \/   /_____/   /_____ 
     |___|\____\___\%%%%%'|_________/___|%%%%%'\_/\___\_____\___\_____\   
-          Author: r00t-3xp10it - SSAredTeam @2021 - Version: v1.2.6
+          Author: r00t-3xp10it - SSAredTeam @2021 - Version: 1.2.6
             Help: powershell -File redpill.ps1 -Help Parameters
 
       
@@ -201,8 +207,7 @@ If($TestBat -ieq "TestBypass"){
    #>
 
    ## Build Output Table
-   Write-Host "$Banner" -ForegroundColor Blue
-   Write-Host "AppLocker – Testing for Bat execution restrictions" -ForegroundColor Green
+   Write-Host "`nAppLocker – Testing for Bat execution restrictions" -ForegroundColor Green
    Write-Host "--------------------------------------------------";Start-Sleep -Seconds 1
    Write-Host "[i] writting applock.bat to %tmp% folder";Start-Sleep -Seconds 1
 
@@ -233,7 +238,6 @@ If($TestBat -ieq "TestBypass"){
       Clear-Host
       If(-not(Test-Path -Path "$Env:TMP\logfile.txt" -EA SilentlyContinue)){
 
-         Clear-Host
          Write-Host "`n$Banner" -ForegroundColor Blue
          Write-Host "AppLocker – Testing for Bat execution restrictions" -ForegroundColor Green
          Write-Host "--------------------------------------------------"
@@ -246,7 +250,6 @@ If($TestBat -ieq "TestBypass"){
 
       }Else{
 
-         Clear-Host
          Write-Host "`n$Banner" -ForegroundColor Blue
          Write-Host "AppLocker – Testing for Bat execution restrictions" -ForegroundColor Green
          Write-Host "--------------------------------------------------"
@@ -287,7 +290,7 @@ If($TestBat -ieq "TestBypass"){
 }
 
 
-If($TestBat -Match '\\'){
+If($TestBat -Match '(.bat)$'){
 
    <#
    .SYNOPSIS
@@ -335,8 +338,7 @@ If($TestBat -Match '\\'){
    $StripPath = $TestBat -replace "\\$RawName","" ## C:\Users\pedro\Coding
 
    ## Build Output Table
-   Write-Host "$Banner" -ForegroundColor Blue
-   Write-Host "AppLocker – Executing $RawName script" -ForegroundColor Green
+   Write-Host "`nAppLocker – Executing $RawName script" -ForegroundColor Green
    Write-Host "----------------------------------------";Start-Sleep -Seconds 1
    ## Make sure the user input file exists
    If(Test-Path -Path "$TestBat" -EA SilentlyContinue){
@@ -350,7 +352,7 @@ If($TestBat -Match '\\'){
    Write-Host "[i] converting $RawName to $Bypassext";Start-Sleep -Seconds 1
    Copy-Item -Path "$TestBat" -Destination "$RawFullPath" -EA SilentlyContinue -Force
 
-   cd $StripPath
+   If($TestBat -Match '\\'){cd $StripPath} ## Payload absoluct path inputed!
    Write-Host "[i] trying to execute $Bypassext text file" -ForeGroundColor Yellow
    Start-Sleep -Seconds 1;Write-Host "[+] script output:`n"
    ## Nice trick to be abble to execute cmd stdin { < } on PS
@@ -377,25 +379,27 @@ If($GroupName -ieq "false"){
 }
 
 
-## Build 'VulnerableDirectory' Report Table
-$mytable = New-Object System.Data.DataTable
-$mytable.Columns.Add("Id")|Out-Null
-$mytable.Columns.Add("FileSystemRights")|Out-Null
-$mytable.Columns.Add("VulnerableDirectory")|Out-Null
-
+Write-Host ""
 ## Local Function Banner
-Write-Host "$Banner" -ForegroundColor Blue
 Write-Host "FileSystemRights  : $FolderRigths" -ForegroundColor Yellow
 Write-Host "IdentityReference : $GroupName"
 Write-Host "StartOnDirectory  : $StartDir`n"
 Write-Host "AppLocker - Weak Directory permissions" -ForegroundColor Green
 Write-Host "--------------------------------------"
 
+## Build 'VulnerableDirectory' Report Table
+$mytable = New-Object System.Data.DataTable
+$mytable.Columns.Add("Id")|Out-Null
+$mytable.Columns.Add("IsInHerit?")|Out-Null
+$mytable.Columns.Add("FileSystemRights")|Out-Null
+$mytable.Columns.Add("VulnerableDirectory")|Out-Null
+
 
 [int]$Count = 0
-## Search recursive for directorys with weak permissions! {Exclude: WinSxS,assembly directorys}
+## Search recursive for directorys with weak permissions! {Exclude: WinSxS,assembly dirs AND .inf|.xml extensions}
 $dAtAbAsEList = (Get-childItem -Path "$StartDir" -Recurse -Directory -Force -EA SilentlyContinue | Where-Object { 
-   $_.FullName -iNotMatch 'WinSxS' -and $_.FullName -iNotMatch 'assembly' }).FullName
+   $_.FullName -iNotMatch 'WinSxS' -and $_.FullName -iNotMatch 'assembly' -and $_.FullName -NotMatch '(.inf|.xml)$'
+}).FullName
 ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (StoredPaths)
 
     try{
@@ -405,28 +409,38 @@ ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (StoredPaths)
           $_.FileSystemRights -iMatch "$FolderRigths" -and $_.IdentityReference -iMatch "$GroupName" 
        }
 
-       If($CleanOutput){$Count++ ##  Write the Table 'IF' found any vuln permissions
+       If(-not($CleanOutput)){## Print directorys beeing tested!
+          Write-Host "getAcl_access     : $Token"
+       }Else{
+          $Count++ ##  Write the Table 'IF' found any vuln permissions
+          $IsInHerit = (Get-Acl "$Token").Access.IsInherited|Select -Last 1
           Write-Host "`nVulnId            : ${Count}::ACL (Mitre T1222)"
           Write-Host "FolderPath        : $Token" -ForegroundColor Green
           Write-Host "IdentityReference : $GroupName"
-          Write-Host "FileSystemRights  : $FolderRigths`n"
+          Write-Host "FileSystemRights  : $FolderRigths"
+          Write-Host "IsInHerit?        : $IsInHerit`n"
 
           ## += Populate 'VulnerableDirectory' Report Table
-          $mytable.Rows.Add("$Count","$FolderRigths","$Token")|Out-Null
+          $mytable.Rows.Add("$Count","$IsInHerit","$FolderRigths","$Token")|Out-Null
+          Start-Sleep -Milliseconds 960 ## Give some time for display!      
        }
 
-    }catch{## [error] Print dir(s) that catch exeptions!
+    }catch{## [verbose] Print dir(s) that catch exeptions!
 
-       Write-host "access_denied     : $Token"
+       If($verb -ieq "True"){## Verbose enumeration (easter egg)!
+          Write-host "access_denied     x [admin] $Token" -ForegroundColor Red
+          Start-Sleep -Milliseconds 570 ## Give some time for display!     
+       }
     
     }
 
 }## End of ForEach() loop
 
 
-If($Count -gt 0){
+Start-Sleep -Seconds 1
+If($Count -gt 0){Write-Host ""
     ## Display 'VulnerableDirectory' Report Table
-    Write-Host "";$mytable|Format-Table -AutoSize
+    $mytable|Format-Table -AutoSize
 }Else{Write-Host ""
     Write-Host "[error] None dir Owned by '$GroupName' found with '$FolderRigths' permissions!" -ForegroundColor Red -BackgroundColor Black
     Write-Host ""
