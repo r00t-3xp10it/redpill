@@ -6,8 +6,9 @@
 [![Build](https://img.shields.io/badge/Supported_OS-Windows-orange.svg)]()
 ![licence](https://img.shields.io/badge/license-GPLv3-brightgreen.svg)
 ![Last Commit](https://img.shields.io/github/last-commit/r00t-3xp10it/redpill)
+![isues](https://img.shields.io/github/issues/r00t-3xp10it/redpill)
 ![Repo Size](https://img.shields.io/github/repo-size/r00t-3xp10it/redpill)
-![Open issues](https://img.shields.io/bitbucket/issues/r00t-3xp10it/redpill)
+![Languages](https://img.shields.io/github/languages/count/r00t-3xp10it/redpill)
 
 <br />
 
