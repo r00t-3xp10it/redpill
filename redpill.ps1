@@ -1994,7 +1994,7 @@ If($PEHollow -ne "false"){
    If(Test-Path -Path "$Env:TMP\Start-Hollow.ps1"){Remove-Item -Path "$Env:TMP\Start-Hollow.ps1" -Force}
 }
 
-if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi" -or $AppLocker -ieq "TestBat" -or $AppLocker -Match '(.bat)$'){
+if($AppLocker -ne "false"){
 
    <#
    .SYNOPSIS
@@ -2071,6 +2071,10 @@ if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi" -or $AppLocker -ieq "Test
        powershell -File "$Env:TMP\AppLocker.ps1" -TestBat Bypass
    }ElseIf($AppLocker -Match '(.bat)$'){
        powershell -File "$Env:TMP\AppLocker.ps1" -TestBat "$AppLocker"
+   }ElseIf($AppLocker -iNotMatch '(.bat)$'){
+      Write-Host "";## Make sure user have imput an batch script!
+      Write-Host "[error] This function only accepts Batch (bat) scripts!" -ForegroundColor Red -BackgroundColor Black
+      Write-Host ""
    }
 
    ## Clean Old files left behind
