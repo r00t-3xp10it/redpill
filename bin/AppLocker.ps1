@@ -32,7 +32,7 @@
    The absoluct path where to start search recursive (default: %windir%)
 
 .Parameter TestBat
-   Accepts argument: TestBypass (Test bat exec bypass) Or script.bat absoluct path
+   Accepts argument: Bypass (Test bat exec bypass) Or script.bat absoluct path
 
 .Parameter FolderRigths
    Accepts permissions: Modify, Write, FullControll, Execute, ReadAndExecute (default: Write)
@@ -49,7 +49,7 @@
    Enumerate ALL Group Names Available on local machine
 
 .EXAMPLE
-   PS C:\> .\AppLocker.ps1 -TestBat TestBypass
+   PS C:\> .\AppLocker.ps1 -TestBat Bypass
    Test for AppLocker Batch Script Execution Restrictions
 
 .EXAMPLE
@@ -124,7 +124,7 @@ If($WhoAmi -ieq "Groups"){
 
    <#
    .SYNOPSIS
-      Author: r00t-3xp10it
+      Author: @r00t-3xp10it
       Helper - Enumerate ALL Group Names Available
 
    .Parameter WhoAmi
@@ -153,18 +153,34 @@ If($WhoAmi -ieq "Groups"){
 
    Write-Host "`n"
    ## Display available Groups
-   $tableLayout = @{Expression={((New-Object System.Security.Principal.SecurityIdentifier($_.Value)).Translate([System.Security.Principal.NTAccount])).Value};Label="Group Name";Width=40},@{Expression={$_.Value};Label="Group SID";Width=45},@{Expression={$_.Type};Label="Group Type";Width=75}
-   ([Security.Principal.WindowsIdentity]::GetCurrent()).Claims | FT $tableLayout
+   $tableLayout = @{Expression={
+      ((New-Object System.Security.Principal.SecurityIdentifier($_.Value)).Translate([System.Security.Principal.NTAccount])).Value
+   }
+      Label="Group Name"
+      Width=45
+   },
+   @{Expression={$_.Value}
+      Label="Group SID"
+      Width=40
+   },
+   @{Expression={$_.Type}
+      Label="Group Type"
+      Width=75
+   }
+
+   ## Build Output Table
+   ([Security.Principal.WindowsIdentity]::GetCurrent()).Claims | Format-Table $tableLayout
    Start-Sleep -Seconds 1;Write-Host ""
    exit ## Exit @AppLocker
+
 }
 
 
-If($TestBat -ieq "TestBypass"){
+If($TestBat -ieq "Bypass"){
 
    <#
    .SYNOPSIS
-      Author: r00t-3xp10it
+      Author: @r00t-3xp10it
       Helper - Test AppLocker Batch Execution Restrictions
 
    .DESCRIPTION
@@ -175,10 +191,10 @@ If($TestBat -ieq "TestBypass"){
       This CmdLet creates $Env:TMP\logfile.txt to check the batch execution status.
 
    .Parameter TestBat
-      Accepts argument: TestBypass
+      Accepts argument: Bypass
 
    .EXAMPLE
-      PS C:\> .\AppLocker.ps1 -TestBat TestBypass
+      PS C:\> .\AppLocker.ps1 -TestBat Bypass
       Test for AppLocker Batch Script Execution Restrictions
 
    .OUTPUTS
@@ -294,7 +310,7 @@ If($TestBat -ne "false"){
 
    <#
    .SYNOPSIS
-      Author: r00t-3xp10it
+      Author: @r00t-3xp10it
       Helper - Execute Batch scripts through text format bypass technic
 
    .DESCRIPTION
@@ -399,9 +415,6 @@ If($TestBat -ne "false"){
 .Parameter StartDir
    The absoluct path where to start search recursive (default: %windir%)
 
-.Parameter TestBat
-   Accepts argument: TestBypass (Test bat exec bypass) Or script.bat absoluct path
-
 .Parameter FolderRigths
    Accepts permissions: Modify, Write, FullControll, Execute, ReadAndExecute (default: Write)
 
@@ -474,13 +487,13 @@ Write-Host "--------------------------------------"
 ## Build 'VulnerableDirectory' Report Table
 $mytable = New-Object System.Data.DataTable
 $mytable.Columns.Add("Id")|Out-Null
-$mytable.Columns.Add("IsInHerit?")|Out-Null
-$mytable.Columns.Add("FileSystemRights")|Out-Null
+$mytable.Columns.Add("IsInHerit")|Out-Null
+$mytable.Columns.Add("FolderRights")|Out-Null
 $mytable.Columns.Add("VulnerableDirectory")|Out-Null
 
 
 [int]$Count = 0
-## Search recursive for directorys with weak permissions! {Exclude: WinSxS,assembly dirs AND .inf|.xml extensions}
+## Search recursive for directorys with weak permissions! {Exclude: WinSxS,assembly dirs and inf|xml extensions}
 $dAtAbAsEList = (Get-childItem -Path "$StartDir" -Recurse -Directory -Force -EA SilentlyContinue | Where-Object { 
    $_.FullName -iNotMatch 'WinSxS' -and $_.FullName -iNotMatch 'assembly' -and $_.FullName -iNotMatch '(.inf|.xml)$'
 }).FullName
@@ -512,7 +525,7 @@ ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (StoredPaths)
 
           ## += Populate the 'VulnerableDirectory' Report Table
           $mytable.Rows.Add("$Count","$IsInHerit","$FolderRigths","$Token")|Out-Null
-          Start-Sleep -Milliseconds 960 ## Give some time for display!
+          Start-Sleep -Milliseconds 980 ## Give some time for display!
                 
        }
 
@@ -520,13 +533,14 @@ ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (StoredPaths)
 
        If($verb -ieq "True"){## Verbose enumeration (easter egg)!
           Write-host "access_denied     x [admin] $Token" -ForegroundColor Red
-          Start-Sleep -Milliseconds 570 ## Give some time for display!
+          Start-Sleep -Milliseconds 580 ## Give some time for display!
        }
     
     }
 
 }## End of ForEach() loop
-Start-Sleep -Seconds 1
+Write-Host "query_finish! ..." -ForegroundColor Yellow
+Start-Sleep -Milliseconds 1400 ## Give some time for display!
 
 
 If($Count -gt 0){

@@ -2005,7 +2005,7 @@ if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi" -or $AppLocker -ieq "Test
       Accepts arguments: Enum, WhoAmi and TestBat
 
    .Parameter FolderRigths
-      Accepts permissions: Modify, Write, FullControll
+      Accepts permissions: Modify, Write, FullControll, ReadAndExecute
 
    .Parameter GroupName
       Accepts GroupNames: Everyone, BUILTIN\Users, NT AUTHORITY\INTERACTIVE
@@ -2049,7 +2049,7 @@ if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi" -or $AppLocker -ieq "Test
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/AppLocker.ps1 -Destination $Env:TMP\AppLocker.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\AppLocker.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 22){## Corrupted download detected => DefaultFileSize: 22,7216796875/KB
+      If($SizeDump -lt 22){## Corrupted download detected => DefaultFileSize: 22,8046875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\AppLocker.ps1"){Remove-Item -Path "$Env:TMP\AppLocker.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -2068,7 +2068,7 @@ if($AppLocker -ieq "Enum" -or $AppLocker -ieq "WhoAmi" -or $AppLocker -ieq "Test
        }
 
    }ElseIf($AppLocker -ieq "TestBat"){
-       powershell -File "$Env:TMP\AppLocker.ps1" -TestBat TestBypass
+       powershell -File "$Env:TMP\AppLocker.ps1" -TestBat Bypass
    }ElseIf($AppLocker -Match '(.bat)$'){
        powershell -File "$Env:TMP\AppLocker.ps1" -TestBat "$AppLocker"
    }
