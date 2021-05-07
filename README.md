@@ -10,7 +10,6 @@
 ![Repo Size](https://img.shields.io/github/repo-size/r00t-3xp10it/redpill)
 ![topLanguages](https://img.shields.io/github/languages/top/r00t-3xp10it/redpill)
 
-
 <br />
 
 ## :octocat: Project Description
