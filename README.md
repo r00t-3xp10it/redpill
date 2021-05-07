@@ -8,8 +8,12 @@
 ![Last Commit](https://img.shields.io/github/last-commit/r00t-3xp10it/redpill)
 ![isues](https://img.shields.io/github/issues/r00t-3xp10it/redpill)
 ![Repo Size](https://img.shields.io/github/repo-size/r00t-3xp10it/redpill)
+
 ![topLanguages](https://img.shields.io/github/languages/top/r00t-3xp10it/redpill)
-![followers](https://img.shields.io/github/followers/r00t-3xp10it?style=social)
+![followers](https://img.shields.io/github/followers/r00t-3xp10it)
+![forks](https://img.shields.io/github/forks/r00t-3xp10it/redpill)
+![stars](https://img.shields.io/github/stars/r00t-3xp10it/redpill)
+![watchers](https://img.shields.io/github/watchers/r00t-3xp10it/redpill)
 
 <br />
 
