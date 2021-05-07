@@ -9,7 +9,7 @@
 ![isues](https://img.shields.io/github/issues/r00t-3xp10it/redpill)
 ![Repo Size](https://img.shields.io/github/repo-size/r00t-3xp10it/redpill)
 ![topLanguages](https://img.shields.io/github/languages/top/r00t-3xp10it/redpill)
-![forks](https://img.shields.io/github/forks/r00t-3xp10it/redpill?style=social)
+![followers](https://img.shields.io/github/followers/r00t-3xp10it?style=social)
 
 <br />
 
