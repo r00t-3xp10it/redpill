@@ -546,17 +546,17 @@ Start-Sleep -Milliseconds 1400 ## Give some time for display!
 If($Count -gt 0){
 
     ## Display 'VulnerableDirectory' Report Table
-    Write-Host "";$mytable|Format-Table -AutoSize|Out-File "$Env:TMP\fsdsii.log" -Force
-    $readContents = Get-Content -Path "$Env:TMP\fsdsii.log" -EA SilentlyContinue
-    ## Delete empty spaces in the begging of string!
-    $parseData = $readContents -replace '^( --)','--'
+    $mytable | Format-Table -AutoSize | Out-File "$Env:TMP\fsdsii.log" -Force
+    $readContents = Get-Content -Path "$Env:TMP\fsdsii.log" | Select-Object -Skip 3
     Remove-Item -Path "$Env:TMP\fsdsii.log" -Force
 
+    Write-Host "`nId IsInHerit FolderRights VulnerableDirectory"
+    Write-Host "-- --------- ------------ -------------------"
     ## Colorise DataTable Strings! { vuln directorys }
-    echo $parseData | Out-String -Stream | ForEach-Object {
-       $fgArg = If($_ -iMatch '\\'){
+    echo $readContents | Out-String -Stream | ForEach-Object {
+       $fgArg = If($_ -iMatch 'False'){
           @{ 'ForegroundColor' = 'Green' }
-       }Elseif($_ -iMatch '\\'){
+       }ElseIf($_ -Match '\\'){
           @{ 'ForegroundColor' = 'DarkGreen' }
        }
        Write-Host @fgArg $_
