@@ -2,20 +2,27 @@
 .SYNOPSIS
    Enumerates remote host basic system info
 
-   Author: r00t-3xp10it
-   Tested Under: Windows 10 (18363) x64 bits
+   Author: @r00t-3xp10it
+   Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: none
-   Optional Dependencies: BitsTransfer
-   PS cmdlet Dev version: v1.3.7
+   Optional Dependencies: curl, icacls
+   PS cmdlet Dev version: v1.4.8
 
-.NOTES
+.DESCRIPTION
    System info: IpAddress, OsVersion, OsFlavor, OsArchitecture,
    WorkingDirectory, CurrentShellPrivileges, ListAllDrivesAvailable
    PSCommandLogging, AntiVirusDefinitions, AntiSpywearDefinitions,
    UACsettings, WorkingDirectoryDACL, BehaviorMonitorEnabled, Etc..
 
+.NOTES
+   Optional dependencies: curl (geolocation) icacls (file permissions)
+   -HideMyAss "True" - Its used to hide the public ip address display!
+
 .Parameter Sysinfo
-  Accepts arguments: Enum and Verbose
+  Accepts arguments: Enum, Verbose (default: Enum)
+
+.Parameter HideMyAss
+  Accepts arguments: True, False (default: False)
 
 .EXAMPLE
    PS C:\> Get-Help .\SysInfo.ps1 -full
@@ -26,12 +33,30 @@
    Remote Host Quick Enumeration Module
 
 .EXAMPLE
+   PS C:\> .\SysInfo.ps1 -SysInfo Enum -HideMyAss True
+   Remote Host Quick Enumeration Module (hide public ip addr)
+
+.EXAMPLE
    PS C:\> .\SysInfo.ps1 -SysInfo Verbose
    Remote Host Detailed Enumeration Module
+
+.OUTPUTS
+   PublicIP    city  region country  capital latitude longitude
+   --------    ----  ------ -------  ------- -------- ---------
+   3.382.13.77 Alges Lisbon Portugal Lisbon  38.7019  -9.2243
+
+   Proto LocalAddress  LocalPort RemoteAdress    RemotePort ProcessName PID
+   ----- ------------- --------- --------------- ---------- ----------- ---
+   TCP   192.168.1.72  55062     35.165.138.131  443        firefox     8904
+   TCP   192.168.1.72  55102     140.82.112.25   443        firefox     8904
+   TCP   192.168.1.72  55846     51.138.106.75   443        svchost     1636
+   TCP   192.168.1.72  55847     34.117.59.81    80         powershell  1808
+   TCP   192.168.1.72  60406     20.54.37.64     443        svchost     8352
 #>
 
 
 [CmdletBinding(PositionalBinding=$false)] param(
+   [string]$HideMyAss="false",
    [string]$SysInfo="false"
 )
 
@@ -83,7 +108,7 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
     Write-Host "ConsolePid        : $ConsoleId"
     Write-Host "IsVirtualMachine  : $IsVirtualMachine"
     Write-Host "Architecture      : $Architecture"
-    Write-Host "PSVersion         : $PsNumber"
+    Write-Host "PSVersion         : $PsNumber" -ForegroundColor Yellow
     Write-Host "PSExecPolicy      : $PSExecPolicy"
     Write-Host "OSVersion         : $Version"
     Write-Host "IPAddress         : $Address" -ForegroundColor Yellow
@@ -92,31 +117,98 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
     Write-Host "CmdLetWorkingDir  : $Working_Directory" -ForegroundColor Yellow
     Write-Host "User-Agent        : $UserAgentString`n`n"
 
+
     ## Get Public Ip addr GeoLocation
-    Write-Host "${NameDomain}\${Env:USERNAME}: GeoLocation" -ForegroundColor Green
-    Write-Host "------------------------------";Start-Sleep -Seconds 1
+    # Build GeoLocation DataTable!
+    $geotable = New-Object System.Data.DataTable
+    $geotable.Columns.Add("PublicIP")|Out-Null
+    $geotable.Columns.Add("city")|Out-Null
+    $geotable.Columns.Add("region")|Out-Null
+    $geotable.Columns.Add("country")|Out-Null
+    $geotable.Columns.Add("capital")|Out-Null
+    $geotable.Columns.Add("latitude")|Out-Null
+    $geotable.Columns.Add("longitude")|Out-Null
+
     $PublicAddr = (curl ifconfig.me).Content
-    $GeoLocation = (curl "https://ipapi.co/$PublicAddr/json/" -EA SilentlyContinue).RawContent|
-        findstr /C:"city" /C:"region" /C:"country_" /C:"latitude" /C:"longitude"|
-        findstr /V "iso3 tld calling area population region_code country_code"
-    ## Parsing data to build output Table
-    $GeoDat = $GeoLocation -replace '"','' -replace ',','' -replace '(^\s+|\s+$)',''
-    $hggscd = $GeoDat -replace 'city:','city              :' -replace 'region:','region            :'
-    $rsddse = $hggscd -replace 'country_name:','country_name      :' -replace 'latitude:','latitude          :'
-    $ParseTcpData = $rsddse -replace 'longitude:','longitude         :' -replace 'country_capital:','country_capital   :'
-    If($GeoDat){## Ip Addr Geo Location found
-        echo "public_addr       : $PublicAddr" >> $Env:TMP\hsns.log
-        echo $ParseTcpData >> $Env:TMP\hsns.log
-        Get-Content -Path "$Env:TMP\hsns.log"
-        Remove-Item -Path "$Env:TMP\hsns.log" -Force
-        Write-Host ""
+    If($HideMyAss -ieq "False"){
+       $ExternalAd = "$PublicAddr"
+    }Else{## Hidde public Ip Address Display!
+       $ExternalAd = "********"
     }
 
-    ## Get ALL drives available
-    Get-PsDrive -PsProvider filesystem|Select-Object Name,Root,CurrentLocation,Used,Free|Format-Table -AutoSize
+    $GeoLocation = (curl "https://ipapi.co/$PublicAddr/json/" -EA SilentlyContinue).RawContent|
+       findstr /C:"city" /C:"region" /C:"country_" /C:"latitude" /C:"longitude"|
+       findstr /V "iso3 tld calling area population region_code country_code"
 
-    ## Get User Accounts
-    Get-LocalUser|Select-Object Name,Enabled,PasswordRequired,UserMayChangePassword -EA SilentlyContinue|Format-Table -AutoSize
+    $GeoDate = $GeoLocation -replace '"','' -replace ',','' -replace '(^\s+|\s+$)',''
+    $Moreati = $Geodate -replace '(city: |region: |country_name: |country_capital: |latitude: |longitude: )',''
+       
+       $city = $Moreati[0] -join ''   ## city
+       $regi = $Moreati[1] -join ''   ## region
+       $cnam = $Moreati[2] -join ''   ## country_name
+       $ccap = $Moreati[3] -join ''   ## country_capital
+       $lati = $Moreati[4] -join ''   ## latitude
+       $long = $Moreati[5] -join ''   ## longitude
+
+    ## Adding values to DataTable!
+    $geotable.Rows.Add("$ExternalAd", ## PublicIP
+                       "$city",       ## city
+                       "$regi",       ## region
+                       "$cnam",       ## country_name
+                       "$ccap",       ## country_capital
+                       "$lati",       ## latitude
+                       "$long"        ## longitude
+     )|Out-Null
+     ## Display DataTable!
+     $geotable|Format-Table -AutoSize
+
+
+     ## Enumerate ESTABLISHED TCP connections!
+     # Build TCP connections DataTable!
+     $tcptable = New-Object System.Data.DataTable
+     $tcptable.Columns.Add("Proto")|Out-Null
+     $tcptable.Columns.Add("LocalAddress ")|Out-Null
+     $tcptable.Columns.Add("LocalPort")|Out-Null
+     $tcptable.Columns.Add("RemoteAdress   ")|Out-Null
+     $tcptable.Columns.Add("RemotePort")|Out-Null
+     $tcptable.Columns.Add("ProcessName")|Out-Null
+     $tcptable.Columns.Add("PID")|Out-Null
+
+     ## Get a list of ESTABLISHED TCP connections! { Exclude UDP|IPV6|LocalHost protocols }
+     $TcpList = netstat -ano|findstr /I /C:"ESTABLISHED"|findstr /V "[ UDP 0.0.0.0:0 127.0.0.1"
+
+     ForEach($Item in $TcpList){## Loop trougth all $TcpList Items!
+
+        $Protocol = $Item.Split()[2]        ## Protocol
+        $AddrPort = $Item.Split()[6]        ## LocalAddress + port
+        $LocalHos = $AddrPort.Split(':')[0] ## LocalAddress
+        $LocalPor = $AddrPort.Split(':')[1] ## LocalPort
+        $Remoteal = $Item.Split()[11]       ## RemoteAddress + port
+        $Remotead = $Remoteal.Split(':')[0] ## RemoteAddress
+        $Remotepo = $Remoteal.Split(':')[1] ## RemotePort
+        $ProcPPID = $Item.Split()[-1]       ## Process PID
+
+           try{## Get each process name Tag by is PID identifier! {silent}
+              $ProcName = (Get-Process -PID "$ProcPPID" -EA SilentlyContinue).ProcessName
+           }catch{} ## Catch exeptions - Do Nothing!
+
+        ## Adding values to DataTable!
+        $tcptable.Rows.Add("$Protocol",  ## Protocol
+                          "$LocalHos",  ## LocalAddress
+                          "$LocalPor",  ## LocalPort
+                          "$Remotead",  ## RemoteAddress
+                          "$Remotepo",  ## RemotePort
+                          "$ProcName",  ## ProcessName
+                          "$ProcPPID"   ## PID
+         )|Out-Null
+
+     }## End of 'ForEach()' loop function!
+     ## Diplay TCP connections DataTable!
+     $tcptable|Format-Table -AutoSize
+
+
+    ## Get ALL User Accounts
+    Get-LocalUser | Select-Object Name,Enabled,PasswordRequired,UserMayChangePassword,PasswordLastSet -EA SilentlyContinue | Format-Table -AutoSize
 
 
     If($SysInfo -ieq "Verbose"){## Detailed Enumeration function
@@ -140,7 +232,6 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
         $DisableArchiveScanning = (Get-MpPreference).DisableArchiveScanning
         $BehaviorMonitorEnabled = (Get-MpComputerStatus).BehaviorMonitorEnabled
         $RealTimeProtectionEnabled = (Get-MpComputerStatus).RealTimeProtectionEnabled
-        $AllowedApplications = (Get-MpPreference).ControlledFolderAccessAllowedApplications
         $AntivirusSignatureLastUpdated = (Get-MpComputerStatus).AntivirusSignatureLastUpdated
         $AntispywareSignatureLastUpdated = (Get-MpComputerStatus).AntispywareSignatureLastUpdated
         $AntiVirusProduct = (Get-CimInstance -Namespace root/SecurityCenter2 -ClassName AntivirusProduct).DisplayName
@@ -229,26 +320,17 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
     Write-Host "DisableArchiveScanning          : $DisableArchiveScanning"
     Write-Host "ScanScheduleTime                : $ScanScheduleTime"
     Write-Host "ScanScheduleQuickScanTime       : $ScanScheduleQuickScanTime"
-    
 
-
-    ## Loop truth $AllowedApplications
-    # Make sure the var declaration is not empty
-    If(-not($AllowedApplications -ieq $null)){
-        ForEach($Token in $AllowedApplications){
-            Write-Host "AllowedApplications             : $Token"
-        }
-    }
 
     ## Built Output Table
-    Write-Host "`n`nAV: Credential Guard Status" -ForegroundColor Green
+    Write-Host "`n`nAV: Credential Guard Status"
     Write-Host "------------------------------";Start-Sleep -Seconds 1
     write-host "Name        : Credential Guard"
     write-host "Status      : $Status" -ForegroundColor Yellow
-    write-host "Description : $Description"
+    write-host "Description : $Description`n"
 
     ## Enumerate active SMB shares
-    Write-Host "`n`nSMB: Enumerating shares" -ForegroundColor Green
+    Write-Host "`nSMB: Enumerating shares"
     Write-Host "------------------------------";Start-Sleep -Seconds 1
     Get-SmbShare -EA SilentlyContinue|Select-Object Name,Path,Description|Format-Table
     If(-not($?)){## Make sure we have any results back
@@ -256,7 +338,7 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
     }
 
     ## Enumerate NetBIOS Local Names
-    Write-Host "`n`nNetBIOS: Names       Type        Status"  -ForegroundColor Green
+    Write-Host "`n`nNetBIOS: Names       Type        Status"
     Write-Host "-------------------------------------------"
     nbtstat -n|Select-String -Pattern "<??>" >> $Env:TMP\NBNT.mt
     $NetBiosData = Get-Content -Path "$Env:TMP\NBNT.mt"|findstr "<"
@@ -270,35 +352,24 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
         }
 
         Write-Host "`n"
-        ## Checks for Firewall { -StartWebServer [python] } rule existence
-        Get-NetFirewallRule|Where-Object {## Rules to filter {DisplayName|Description}
-            $_.DisplayName -ieq "Start-WebServer" -and $_.Description -Match 'venom'
+        ## Checks for Firewall rules
+        Get-NetFirewallRule | Where-Object {
+           $_.DisplayName -iMatch '(Microsoft|Powershell|python|Firefox|Chrome|Start-WebServer)' -and $_.Profile -iNotMatch '(Private|Domain)' -and $_.Description -NotMatch '(@|mDNS)' -and $_.Description -ne $null
         }|Format-Table Action,Enabled,Profile,Description > $Env:TMP\ksjjhav.log
-
         $CheckLog = Get-Content -Path "$Env:TMP\ksjjhav.log" -EA SilentlyContinue
         Remove-Item -Path "$Env:TMP\ksjjhav.log" -Force
         If($CheckLog -ne $null){## StartWebServer rule found
-            Write-Host "StartWebServer: firewall rule"  -ForegroundColor Green
-            Write-Host "-----------------------------"
+            Write-Host "Get Firewall rules"
+            Write-Host "------------------"
             echo $CheckLog
         }
 
         ## @Webserver Working dir ACL Description
-        Write-Host "DCALC: CmdLet Working Directory" -ForegroundColor Green
+        Write-Host "DCALC: CmdLet Working Directory"
         Write-Host "-------------------------------";Start-Sleep -Seconds 1
         $GetACLDescription = icacls "$Working_Directory"|findstr /V "processing"
         echo $GetACLDescription > $Env:TMP\ACl.log;Get-Content -Path "$Env:TMP\ACL.log"
         Remove-Item -Path "$Env:TMP\ACl.log" -Force
-
-        ## Recently typed "run" commands
-        Write-Host "`nRUNMRU: Recently 'run' commands" -ForegroundColor Green
-        Write-Host "-------------------------------";Start-Sleep -Seconds 1
-        $GETMRUList = reg query HKCU\software\microsoft\windows\currentversion\explorer\runmru|findstr /V "(Default)"|findstr /V "MRUList"
-        If(-not($GETMRUList -Match "REG_SZ")){## Make sure $GETMRUList variable its not empty
-            Write-Host "[error] None RunMru registry entrys found!" -ForegroundColor Red -BackgroundColor Black
-        }Else{## RunMru registry entrys found
-            $GETMRUList -replace '\\1','' -replace 'REG_SZ','' -replace 'HKEY_CURRENT_USER\\software\\microsoft\\windows\\currentversion\\explorer\\runmru',''|? {$_.trim() -ne ""}
-        }
 
       ## TobeContinued ..
     }
