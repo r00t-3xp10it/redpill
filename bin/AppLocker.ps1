@@ -554,7 +554,11 @@ If($Count -gt 0){
 
     ## Colorise DataTable Strings! { vuln directorys }
     echo $parseData | Out-String -Stream | ForEach-Object {
-       $fgArg = If($_ -iMatch '\\'){ @{ 'ForegroundColor' = 'Green' } }Else{ @{} }
+       $fgArg = If($_ -iMatch '\\'){
+          @{ 'ForegroundColor' = 'Green' }
+       }Elseif($_ -iMatch '\\'){
+          @{ 'ForegroundColor' = 'DarkGreen' }
+       }
        Write-Host @fgArg $_
     }
 
