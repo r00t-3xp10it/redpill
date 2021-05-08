@@ -98,6 +98,7 @@
    [string]$HiddenUser="false",
    [string]$DisableAV="false",
    [string]$EnableRDP="false",
+   [string]$HideMyAss="false",
    [string]$ToIPaddr="false",
    [string]$DnsSpoof="false",
    [string]$IconSet="False",
@@ -203,15 +204,29 @@ If($Sysinfo -ieq "Enum" -or $Sysinfo -ieq "Verbose"){
       Author: @r00t-3xp10it
       Helper - Enumerates remote host basic system info
 
-   .NOTES
+   .DESCRIPTION
       System info: IpAddress, OsVersion, OsFlavor, OsArchitecture,
       WorkingDirectory, CurrentShellPrivileges, ListAllDrivesAvailable
       PSCommandLogging, AntiVirusDefinitions, AntiSpywearDefinitions,
       UACsettings, WorkingDirectoryDACL, BehaviorMonitorEnabled, Etc..
 
+   .NOTES
+      Optional dependencies: curl (geolocation) icacls (file permissions)
+      -HideMyAss "True" - Its used to hide the public ip address display!
+
+   .Parameter Sysinfo
+      Accepts arguments: Enum, Verbose (default: Enum)
+
+   .Parameter HideMyAss
+      Accepts argument: True, False (default: False)
+
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -SysInfo Enum
       Remote Host Quick Enumeration Module
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -SysInfo Enum -HideMyAss True
+      Remote Host Quick Enumeration Module (hide public ip addr displays)
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -SysInfo Verbose
@@ -223,7 +238,7 @@ If($Sysinfo -ieq "Enum" -or $Sysinfo -ieq "Verbose"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/sysinfo.ps1 -Destination $Env:TMP\Sysinfo.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\Sysinfo.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 15){## Corrupted download detected => DefaultFileSize: 15,7666015625/KB
+      If($SizeDump -lt 18){## Corrupted download detected => DefaultFileSize: 18,2353515625/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\Sysinfo.ps1"){Remove-Item -Path "$Env:TMP\Sysinfo.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -232,9 +247,9 @@ If($Sysinfo -ieq "Enum" -or $Sysinfo -ieq "Verbose"){
 
    ## Run auxiliary module
    If($Sysinfo -ieq "Enum"){
-      powershell -File "$Env:TMP\sysinfo.ps1" -SysInfo Enum
+      powershell -File "$Env:TMP\sysinfo.ps1" -SysInfo Enum -HideMyAss "$HideMyAss"
    }ElseIf($Sysinfo -ieq "Verbose"){
-      powershell -File "$Env:TMP\sysinfo.ps1" -SysInfo Verbose
+      powershell -File "$Env:TMP\sysinfo.ps1" -SysInfo Verbose -HideMyAss "$HideMyAss"
    }
 
    ## Clean Old files left behind
@@ -2049,7 +2064,7 @@ if($AppLocker -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/AppLocker.ps1 -Destination $Env:TMP\AppLocker.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\AppLocker.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 22){## Corrupted download detected => DefaultFileSize: 22,8046875/KB
+      If($SizeDump -lt 23){## Corrupted download detected => DefaultFileSize: 23,3154296875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\AppLocker.ps1"){Remove-Item -Path "$Env:TMP\AppLocker.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -2665,16 +2680,40 @@ $HelpParameters = @"
       PSCommandLogging, AntiVirusDefinitions, AntiSpywearDefinitions,
       UACsettings, WorkingDirectoryDACL, BehaviorMonitorEnabled, Etc..
 
-   .Parameter SysInfo
-      Accepts arguments: Enum and Verbose
+   .NOTES
+      Optional dependencies: curl (geolocation) icacls (file permissions)
+      -HideMyAss "True" - Its used to hide the public ip address display!
+
+   .Parameter Sysinfo
+      Accepts arguments: Enum, Verbose (default: Enum)
+
+   .Parameter HideMyAss
+      Accepts arguments: True, False (default: False)
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -SysInfo Enum
       Remote Host Quick Enumeration Module
 
    .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -SysInfo Enum -HideMyAss True
+      Remote Host Quick Enumeration Module (hide public ip addr display)
+
+   .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -SysInfo Verbose
       Remote Host Detailed Enumeration Module
+
+   .OUTPUTS
+      PublicIP    city  region country  capital latitude longitude
+      --------    ----  ------ -------  ------- -------- ---------
+      3.382.13.77 Alges Lisbon Portugal Lisbon  38.7019  -9.2243
+
+      Proto LocalAddress  LocalPort RemoteAdress    RemotePort ProcessName PID
+      ----- ------------- --------- --------------- ---------- ----------- ---
+      TCP   192.168.1.72  55062     35.165.138.131  443        firefox     8904
+      TCP   192.168.1.72  55102     140.82.112.25   443        firefox     8904
+      TCP   192.168.1.72  55846     51.138.106.75   443        svchost     1636
+      TCP   192.168.1.72  55847     34.117.59.81    80         powershell  1808
+      TCP   192.168.1.72  60406     20.54.37.64     443        svchost     8352
    #>!bye..
 
 "@;

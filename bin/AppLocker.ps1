@@ -532,7 +532,7 @@ ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (StoredPaths)
     }catch{## [verbose] Print dir(s) that catch exeptions!
 
        If($verb -ieq "True"){## Verbose enumeration (easter egg)!
-          Write-host "access_denied     x [admin] $Token" -ForegroundColor Red
+          Write-host "access_denied     x [admin] -> $Token" -ForegroundColor Red
           Start-Sleep -Milliseconds 580 ## Give some time for display!
        }
     
@@ -546,7 +546,17 @@ Start-Sleep -Milliseconds 1400 ## Give some time for display!
 If($Count -gt 0){
 
     ## Display 'VulnerableDirectory' Report Table
-    Write-Host "";$mytable|Format-Table -AutoSize
+    Write-Host "";$mytable|Format-Table -AutoSize|Out-File "$Env:TMP\fsdsii.log" -Force
+    $readContents = Get-Content -Path "$Env:TMP\fsdsii.log" -EA SilentlyContinue
+    ## Delete empty spaces in the begging of string!
+    $parseData = $readContents -replace '^( --)','--'
+    Remove-Item -Path "$Env:TMP\fsdsii.log" -Force
+
+    ## Colorise DataTable Strings! { vuln directorys }
+    echo $parseData | Out-String -Stream | ForEach-Object {
+       $fgArg = If($_ -iMatch '\\'){ @{ 'ForegroundColor' = 'Green' } }Else{ @{} }
+       Write-Host @fgArg $_
+    }
 
 }Else{
 
