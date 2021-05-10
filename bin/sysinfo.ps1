@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: none
    Optional Dependencies: curl, icacls
-   PS cmdlet Dev version: v1.4.9
+   PS cmdlet Dev version: v1.4.10
 
 .DESCRIPTION
    System info: IpAddress, OsVersion, OsFlavor, OsArchitecture,
@@ -120,17 +120,17 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
     Write-Host "User-Agent        : $UserAgentString`n`n"
 
 
-    ## Get network adaptor settings!
-    If(-not($HideMyAss -ieq "True")){
-       $Adptortable = Get-NetAdapter -EA SilentlyContinue |
-          Select-Object Status,LinkSpeed,MacAddress,InterfaceName | Format-Table -AutoSize
-    }Else{## Default NetAdaptor enumeration!
-       $Adptortable = Get-NetAdapter -EA SilentlyContinue |
-          Select-Object Status,LinkSpeed,DriverFileName,InterfaceName | Format-Table -AutoSize
+    ## Get network adapter settings!
+    If(-not($HideMyAss -ieq "True")){## Default enumeration!
+       $AdaptTable = Get-NetAdapter -EA SilentlyContinue |
+          Select-Object InterfaceName,Status,LinkSpeed,MacAddress
+    }Else{## Hide mac address sellected by user!
+       $AdaptTable = Get-NetAdapter -EA SilentlyContinue |
+          Select-Object InterfaceName,Status,LinkSpeed,DriverFileName
     }
 
     ## Colorize output DataTable strings!
-    $Adptortable | Out-String -Stream | ForEach-Object {
+    $AdaptTable | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {
        $stringformat = If($_ -iMatch 'Up' -and $_ -iMatch '(\s+Mbps\s+|\s+bps\s+)'){
           @{ 'ForegroundColor' = 'Yellow' } }Else{ @{ 'ForegroundColor' = 'White' } }
        Write-Host @stringformat $_
@@ -239,10 +239,11 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
      }## End of 'ForEach()' loop function!
 
      ## Diplay TCP connections DataTable!
-     # Out-String formats strings containing the port '80' and
-     # 'lsass','System' and 'wininit' process names as yellow foregroundcolor!
+     # Out-String formats strings containing the ports '20,23,80,107,137' and
+     # 'lsass','System', 'wininit' and 'telnet' process names as yellow foregroundcolor!
      $tcptable | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {
-        $stringformat = If($_ -Match '\s+80\s+' -or $_ -iMatch '(\s+lsass\s+|\s+System\s+|\s+wininit\s+)'){
+        $stringformat = If($_ -Match '(\s+20\s+|\s+23\s+|\s+80\s+|\s+107\s+|\s+137\s+)' -or
+        $_ -iMatch '(\s+lsass\s+|\s+System\s+|\s+wininit\s+|\s+telnet\s+)'){
            @{ 'ForegroundColor' = 'Yellow' } }Else{ @{ 'ForegroundColor' = 'White' } }
         Write-Host @stringformat $_
      }
