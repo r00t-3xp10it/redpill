@@ -251,7 +251,7 @@ iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/redpill.ps1
 
 ## :octocat: Video Tutorials
 
-![Demo](https://github.com/r00t-3xp10it/redpill/blob/main/utils/AppLocker.gif)<br />
+![Demo](https://user-images.githubusercontent.com/23490060/117714794-5a85d900-b1cf-11eb-8928-b183d6966f3b.gif)<br />
 Demonstration - [This tutorial uses: sysinfo, GetPasswords, UacMe modules](https://drive.google.com/file/d/1iryAhz-ryJWMz8-MNqKm1WffLYS6nhT0/view?usp=sharing)<br />
 MouseLogger - [Capture Screenshots of 'MouseClicks' with the help of psr.exe](https://drive.google.com/file/d/1k3DrsDEc6nOd7RHm-25nw0q6oD_aGxjg/view?usp=sharing)<br />
 PhishCreds - [Phish for login credentials OR Brute Force user account password](https://drive.google.com/file/d/1m1M4rp24QGYftv9JPnp5Kj_zs8YFhz3_/view?usp=sharing)<br />
