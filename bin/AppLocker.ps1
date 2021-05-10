@@ -493,9 +493,9 @@ $mytable.Columns.Add("VulnerableDirectory")|Out-Null
 
 
 [int]$Count = 0
-## Search recursive for directorys with weak permissions! {Exclude: WinSxS,assembly dirs and inf|xml extensions}
+## Search recursive for directorys with weak permissions! {Exclude: WinSxS,assembly dirs and all extension types}
 $dAtAbAsEList = (Get-childItem -Path "$StartDir" -Recurse -Directory -Force -EA SilentlyContinue | Where-Object { 
-   $_.FullName -iNotMatch 'WinSxS' -and $_.FullName -iNotMatch 'assembly' -and $_.FullName -iNotMatch '(.inf|.xml)$'
+   $_.FullName -iNotMatch 'WinSxS' -and $_.FullName -iNotMatch 'assembly' -and $_.FullName -iNotMatch '(.inf|.xml|.dll|.ps1|.bat|.vbs|.json|.ttf|.nrr|.exe|.man|.msi|.js|.fae|.lex)$'
 }).FullName
 
 ForEach($Token in $dAtAbAsEList){## Loop truth Get-ChildItem Items (StoredPaths)
@@ -550,7 +550,7 @@ If($Count -gt 0){
     $readContents = Get-Content -Path "$Env:TMP\fsdsii.log" | Select-Object -Skip 3
     Remove-Item -Path "$Env:TMP\fsdsii.log" -Force
 
-    Write-Host "`nId IsInHerit FolderRights VulnerableDirectory"
+    Write-Host "`n`nId IsInHerit FolderRights VulnerableDirectory"
     Write-Host "-- --------- ------------ -------------------"
     ## Colorise DataTable Strings! { vuln directorys }
     echo $readContents | Out-String -Stream | ForEach-Object {

