@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: none
    Optional Dependencies: wevtutil
-   PS cmdlet Dev version: v1.4.11
+   PS cmdlet Dev version: v1.4.12
 
 .DESCRIPTION
    This cmdlet displays a list of ALL eventvwr categorie entrys and there
@@ -75,12 +75,21 @@
    None. You cannot pipe objects to GetLogs.ps1
 
 .OUTPUTS
-   Max(K) Retain OverflowAction    Entries Log                   
-   ------ ------ --------------    ------- ---                            
-   20 480      0 OverwriteAsNeeded   1 024 Application           
-   20 480      0 OverwriteAsNeeded       0 HardwareEvents                 
-   20 480      0 OverwriteAsNeeded      74 System                
-   15 360      0 OverwriteAsNeeded      85 Windows PowerShell
+   LogMode  MaximumSizeInBytes RecordCount LogName
+   -------  ------------------ ----------- -------
+   Circular           15728640        3955 Windows PowerShell
+   Circular           20971520        1643 System
+   Circular           20971520       32213 Security
+   Circular            1052672           0 Internet Explorer
+   Circular           20971520        1056 Application
+   Circular            1052672        1800 Microsoft-Windows-WMI-Activity/Operational
+   Circular            1052672           0 Microsoft-Windows-Windows Firewall With Advanced Security/ConnectionSecurity
+   Circular            1052672         492 Microsoft-Windows-Windows Defender/Operational
+   Circular            8388608           0 Microsoft-Windows-SMBServer/Security
+   Circular            8388608           0 Microsoft-Windows-SmbClient/Security
+   Circular           15728640         829 Microsoft-Windows-PowerShell/Operational
+   Circular            1052672         481 Microsoft-Windows-Bits-Client/Operational
+   Circular            1052672           0 Microsoft-Windows-AppLocker/EXE and DLL
 
 .LINK
    https://github.com/r00t-3xp10it/redpill
@@ -123,17 +132,29 @@ If($GetLogs -ieq "Enum"){
       Lists ALL eventvwr categorie entrys
 
    .OUTPUTS
-      Max(K) Retain OverflowAction    Entries Log                   
-      ------ ------ --------------    ------- ---                            
-      20 480      0 OverwriteAsNeeded   1 024 Application           
-      20 480      0 OverwriteAsNeeded       0 HardwareEvents                 
-      20 480      0 OverwriteAsNeeded      74 System                
-      15 360      0 OverwriteAsNeeded      85 Windows PowerShell
+      LogMode  MaximumSizeInBytes RecordCount LogName
+      -------  ------------------ ----------- -------
+      Circular           15728640        3955 Windows PowerShell
+      Circular           20971520        1643 System
+      Circular           20971520       32213 Security
+      Circular            1052672           0 Internet Explorer
+      Circular           20971520        1056 Application
+      Circular            1052672        1800 Microsoft-Windows-WMI-Activity/Operational
+      Circular            1052672           0 Microsoft-Windows-Windows Firewall With Advanced Security/ConnectionSecurity
+      Circular            1052672         492 Microsoft-Windows-Windows Defender/Operational
+      Circular            8388608           0 Microsoft-Windows-SMBServer/Security
+      Circular            8388608           0 Microsoft-Windows-SmbClient/Security
+      Circular           15728640         829 Microsoft-Windows-PowerShell/Operational
+      Circular            1052672         481 Microsoft-Windows-Bits-Client/Operational
+      Circular            1052672           0 Microsoft-Windows-AppLocker/EXE and DLL
    #>
 
 
    ## List ALL event logs categories and the number of entries of each one!
-   Get-EventLog -List | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {
+   # Deprecated: Get-EventLog -List | Format-Table -AutoSize
+   Get-WinEvent -ListLog * -ErrorAction Ignore | Where-Object {
+      $_.LogName -iMatch '(system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational)$'
+   } | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {
        $stringformat = If($_ -iMatch '\s+(Windows PowerShell)\s+'){
           @{ 'ForegroundColor' = 'Yellow' } }Else{ @{} }
        Write-Host @stringformat $_
@@ -187,10 +208,18 @@ If($GetLogs -ieq "Verbose"){
           600 Information PowerShell Engine state is changed from Available to Stopped. ... 
    #>
 
-   ## List ALL Event Logs
-   Get-EventLog -List | Format-Table -AutoSize
-   Start-Sleep -Seconds 1
 
+   ## List ALL event logs categories and the number of entries of each one!
+   # Deprecated: Get-EventLog -List | Format-Table -AutoSize
+   Get-WinEvent -ListLog * -ErrorAction Ignore | Where-Object {
+      $_.LogName -iMatch '(system|application|windows powershell|HardwareEvents|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational)$'
+   } | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {
+       $stringformat = If($_ -iMatch '\s+(Windows PowerShell)\s+'){
+          @{ 'ForegroundColor' = 'Yellow' } }Else{ @{} }
+       Write-Host @stringformat $_
+    }
+
+   Start-Sleep -Seconds 1
    If($NewEst -lt "1" -or $NewEst -gt "80"){
       ## Set the max\min number of logfiles to display!
       Write-Host "[error] Bad -NewEst [$NewEst] input, defaulting to [3] .." -ForegroundColor Red -BackgroundColor Black
@@ -222,15 +251,15 @@ If($GetLogs -ieq "Verbose"){
 
       Write-Host "`n$SysLogStat"
       Write-Host "$SysLogCatg" -ForegroundColor Green
-      $Log = (Get-EventLog -LogName "$Item" -newest "$NewEst" -EA SilentlyContinue).EntryType
+      $Log = Get-WinEvent -LogName "$Item" -EA SilentlyContinue | Select-Object -First 1
 
       If($? -ieq $False){
          Write-Host "$SysLogFile" ## $LASTEXITCODE return $False => NO logs!
          Write-Host "[error] None Eventvwr Entries found under $Item!" -ForegroundColor Red -BackgroundColor Black
       }Else{
          Write-Host "$SysLogFile" ## $LASTEXITCODE return $True => Logs present!
-         Get-EventLog -LogName "$Item" -newest "$NewEst" -EA SilentlyContinue |
-            Select-Object -Property EventID,EntryType,Source,Message | Format-Table -AutoSize
+         Get-WinEvent -LogName "$Item" -EA SilentlyContinue | Select-Object -First $NewEst |
+            Select-Object -Property Id,ProviderName,TimeCreated,Message | Format-Table -AutoSize
       }
    }
 
@@ -320,6 +349,7 @@ If($GetLogs -ieq "Yara"){
       "Microsoft-Windows-Applocker/EXE and DLL",
       "Microsoft-Windows-PowerShell/Operational",
       "Microsoft-Windows-Bits-Client/Operational",
+      "Microsoft-Windows-WMI-Activity/Operational",
       "Microsoft-Windows-Windows Defender/Operational"
    )    
  
@@ -398,12 +428,12 @@ If($GetLogs -ieq "Yara"){
       ## Loop trougth all Id numbers!
       ForEach($IdToken in $IdList){
 
-         Get-EventLog -LogName "$verb" -EA SilentlyContinue | Where-Object {
-            $_.EventId -eq $IdToken -and $_.Message -iNotMatch '^(Video.UI)' -and
-            $_.Source -iNotMatch '^(Microsoft-Windows-Power-Troubleshooter)$'      
-            } | Select-Object -Property EventID,EntryType,TimeGenerated,Source,Message -First $NewEst |
+         Get-WinEvent -LogName "$verb" -EA SilentlyContinue | Where-Object {
+            $_.Id -eq $IdToken -and $_.Message -iNotMatch '^(Video.UI)' -and
+            $_.ProviderName -iNotMatch '^(Microsoft-Windows-Power-Troubleshooter)$'
+            } | Select-Object -Property Id,ProviderName,TimeCreated,Message -First $NewEst |
             Format-List | Out-String -Stream | ForEach-Object {
-               $stringformat = If($_ -iMatch '^(TimeGenerated :)'){
+               $stringformat = If($_ -iMatch '^(ProviderName :)'){
                   @{ 'ForegroundColor' = 'Yellow' } }Else{ @{} }
                Write-Host @stringformat $_
             }
@@ -425,7 +455,8 @@ If($GetLogs -ieq "Yara"){
          # ID: 59,60               -> BITS
          # ID: 1116,1117,2000,5007 -> Windows Defender
          # ID: 800,8002            -> Applocke/exe and dll
-         $RawLit = "59,60,300,403,800,1116,1117,2000,5007,8002"
+         # ID: 5858                -> WMI
+         $RawLit = "59,60,300,403,800,1116,1117,2000,5007,5858,8002"
          $IdList = $RawLit.Split(',')
 
       }Else{## User input Id (only one ID number)
