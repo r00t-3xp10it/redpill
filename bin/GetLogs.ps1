@@ -142,8 +142,8 @@ If($GetLogs -ieq "Enum"){
    #>
 
 
-   ## List ALL event logs categories and the number of entries of each one!
-   # Deprecated: Get-EventLog -List | Format-Table -AutoSize
+   ## List Major event logs categories and the number of entries!
+   # [shanty] Deprecated: Get-EventLog -List | Format-Table -AutoSize
    Get-WinEvent -ListLog * -ErrorAction Ignore | Where-Object {
       $_.LogName -iMatch '^(system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational)$'
    } | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {## Print ForegroundColor as red if 0 entrys!
@@ -201,8 +201,8 @@ If($GetLogs -ieq "Verbose"){
    #>
 
 
-   ## List ALL event logs categories and the number of entries of each one!
-   # Deprecated: Get-EventLog -List | Format-Table -AutoSize
+   ## List Major event logs categories and the number of entries!
+   # [shanty] Deprecated: Get-EventLog -List | Format-Table -AutoSize
    Get-WinEvent -ListLog * -ErrorAction Ignore | Where-Object {
       $_.LogName -iMatch '(system|application|windows powershell|HardwareEvents|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational)$'
    } | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {
@@ -249,6 +249,7 @@ If($GetLogs -ieq "Verbose"){
          Write-Host "$SysLogFile" ## $LASTEXITCODE return $False => NO logs!
          Write-Host "[error] None Eventvwr Entries found under $Item!" -ForegroundColor Red -BackgroundColor Black
       }Else{
+         ## [shanty] Deprecated: Get-EventLog -List | Format-Table -AutoSize
          Write-Host "$SysLogFile" ## $LASTEXITCODE return $True => Logs present!
          Get-WinEvent -LogName "$Item" -EA SilentlyContinue | Select-Object -First $NewEst |
             Select-Object -Property Id,ContainerLog,TimeCreated,ProviderName,Message | Format-Table -AutoSize
@@ -336,8 +337,7 @@ If($GetLogs -ieq "Yara"){
    If($NewEst -lt "1"){$NewEst = "3"}
 
    ## Categories list!
-   $Categories = @(
-      "system",
+   $Categories = @("system",
       "Windows Powershell",
       "Microsoft-Windows-Applocker/EXE and DLL",
       "Microsoft-Windows-PowerShell/Operational",
@@ -362,7 +362,7 @@ If($GetLogs -ieq "Yara"){
          Write-Host "GetLogs Scan List!" -ForegroundColor Green
          Write-Host "------------------";echo $Categories
 
-      }Else{## User Input NOT present in Categories List!
+      }Else{## [error] User Input present in Categories List!
 
          If($Id -eq "False"){## None user -ID parameter argument inputs!
          Write-Host "[error] None -Id parameter argument enter, using cmdlet default ID's" -ForegroundColor Red -BackgroundColor Black}       
@@ -558,9 +558,15 @@ If($GetLogs -ieq "Clear"){
       }
 
 
-      ## List ALL event logs categories and
-      # the number of entries of each one now!
-      Get-EventLog -List | Format-Table -AutoSize
+      ## List Major event logs categories and the number of entries!
+      # [shanty] Deprecated: Get-EventLog -List | Format-Table -AutoSize
+      Get-WinEvent -ListLog * -ErrorAction Ignore | Where-Object {
+         $_.LogName -iMatch '^(system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational)$'
+      } | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {## Print ForegroundColor as Green if 0 entrys!
+          $stringformat = If($_ -Match '\s+(0)+\s+'){
+             @{ 'ForegroundColor' = 'Green' } }Else{ @{} }
+          Write-Host @stringformat $_
+       }
 
    }Else{
 
@@ -571,9 +577,15 @@ If($GetLogs -ieq "Clear"){
       ## wevtutil cl "Microsoft-Windows-Bits-Client/Operational" ## Clean BITS-TRANSFER logfiles
       wevtutil el | Foreach-Object { wevtutil cl "$_" }
 
-      ## List ALL event logs categories and
-      # the number of entries of each one now!
-      Get-EventLog -List | Format-Table -AutoSize
+      ## List Major event logs categories and the number of entries!
+      # [shanty] Deprecated: Get-EventLog -List | Format-Table -AutoSize
+      Get-WinEvent -ListLog * -ErrorAction Ignore | Where-Object {
+         $_.LogName -iMatch '^(system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational)$'
+      } | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {## Print ForegroundColor as Green if 0 entrys!
+          $stringformat = If($_ -Match '\s+(0)+\s+'){
+             @{ 'ForegroundColor' = 'Green' } }Else{ @{} }
+          Write-Host @stringformat $_
+       }
 
    }
 
