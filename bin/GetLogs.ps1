@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: none
    Optional Dependencies: wevtutil
-   PS cmdlet Dev version: v1.4.12
+   PS cmdlet Dev version: v1.4.13
 
 .DESCRIPTION
    This cmdlet displays a list of ALL eventvwr categorie entrys and there
@@ -77,18 +77,14 @@
 .OUTPUTS
    LogMode  MaximumSizeInBytes RecordCount LogName
    -------  ------------------ ----------- -------
-   Circular           15728640        3955 Windows PowerShell
-   Circular           20971520        1643 System
-   Circular           20971520       32213 Security
+   Circular           15728640        3978 Windows PowerShell
+   Circular           20971520        1731 System
    Circular            1052672           0 Internet Explorer
-   Circular           20971520        1056 Application
-   Circular            1052672        1800 Microsoft-Windows-WMI-Activity/Operational
-   Circular            1052672           0 Microsoft-Windows-Windows Firewall With Advanced Security/ConnectionSecurity
-   Circular            1052672         492 Microsoft-Windows-Windows Defender/Operational
-   Circular            8388608           0 Microsoft-Windows-SMBServer/Security
-   Circular            8388608           0 Microsoft-Windows-SmbClient/Security
-   Circular           15728640         829 Microsoft-Windows-PowerShell/Operational
-   Circular            1052672         481 Microsoft-Windows-Bits-Client/Operational
+   Circular           20971520        1122 Application
+   Circular            1052672        1729 Microsoft-Windows-WMI-Activity/Operational
+   Circular            1052672         520 Microsoft-Windows-Windows Defender/Operational
+   Circular           15728640         719 Microsoft-Windows-PowerShell/Operational
+   Circular            1052672         499 Microsoft-Windows-Bits-Client/Operational
    Circular            1052672           0 Microsoft-Windows-AppLocker/EXE and DLL
 
 .LINK
@@ -341,6 +337,7 @@ If($GetLogs -ieq "Yara"){
 
    ## Categories list!
    $Categories = @(
+      "system",
       "Windows Powershell",
       "Microsoft-Windows-Applocker/EXE and DLL",
       "Microsoft-Windows-PowerShell/Operational",
@@ -452,7 +449,8 @@ If($GetLogs -ieq "Yara"){
          # ID: 1116,1117,2000,5007 -> Windows Defender
          # ID: 800,8002            -> Applocke/exe and dll
          # ID: 5858                -> WMI
-         $RawLit = "59,60,300,403,800,1116,1117,2000,5007,5858,8002"
+         # ID: 1,7045              -> system
+         $RawLit = "1,59,60,300,403,800,1116,1117,2000,5007,5858,7045,8002"
          $IdList = $RawLit.Split(',')
 
       }Else{## User input Id (only one ID number)
@@ -470,7 +468,7 @@ If($GetLogs -ieq "Yara"){
 
             Get-WinEvent -LogName "$CatList" -EA SilentlyContinue | Where-Object {
                $_.Id -eq $IdToken -and $_.Message -iNotMatch '(svchost.exe|.img.|.json.|.png.|.jpg.)' -and
-               $_.LevelDisplayName -iMatch '^(Erro|Error|Aviso|Warning|Informações|Information)$'
+               $_.ContainerLog -iNotMatch '^(Microsoft-Windows-FilterManager)$' -and $_.LevelDisplayName -iMatch '^(Erro|Error|Aviso|Warning|Informações|Information)$'
                } | Select-Object -Property Id,TimeCreated,ContainerLog,Message -First $NewEst |
                Format-List | Out-String -Stream | ForEach-Object {
                   $stringformat = If($_ -iMatch '^(ContainerLog :)'){
