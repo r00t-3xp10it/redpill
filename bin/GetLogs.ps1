@@ -134,18 +134,14 @@ If($GetLogs -ieq "Enum"){
    .OUTPUTS
       LogMode  MaximumSizeInBytes RecordCount LogName
       -------  ------------------ ----------- -------
-      Circular           15728640        3955 Windows PowerShell
-      Circular           20971520        1643 System
-      Circular           20971520       32213 Security
+      Circular           15728640        3978 Windows PowerShell
+      Circular           20971520        1731 System
       Circular            1052672           0 Internet Explorer
-      Circular           20971520        1056 Application
-      Circular            1052672        1800 Microsoft-Windows-WMI-Activity/Operational
-      Circular            1052672           0 Microsoft-Windows-Windows Firewall With Advanced Security/ConnectionSecurity
-      Circular            1052672         492 Microsoft-Windows-Windows Defender/Operational
-      Circular            8388608           0 Microsoft-Windows-SMBServer/Security
-      Circular            8388608           0 Microsoft-Windows-SmbClient/Security
-      Circular           15728640         829 Microsoft-Windows-PowerShell/Operational
-      Circular            1052672         481 Microsoft-Windows-Bits-Client/Operational
+      Circular           20971520        1122 Application
+      Circular            1052672        1729 Microsoft-Windows-WMI-Activity/Operational
+      Circular            1052672         520 Microsoft-Windows-Windows Defender/Operational
+      Circular           15728640         719 Microsoft-Windows-PowerShell/Operational
+      Circular            1052672         499 Microsoft-Windows-Bits-Client/Operational
       Circular            1052672           0 Microsoft-Windows-AppLocker/EXE and DLL
    #>
 
@@ -153,10 +149,10 @@ If($GetLogs -ieq "Enum"){
    ## List ALL event logs categories and the number of entries of each one!
    # Deprecated: Get-EventLog -List | Format-Table -AutoSize
    Get-WinEvent -ListLog * -ErrorAction Ignore | Where-Object {
-      $_.LogName -iMatch '(system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational)$'
-   } | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {
-       $stringformat = If($_ -iMatch '\s+(Windows PowerShell)\s+'){
-          @{ 'ForegroundColor' = 'Yellow' } }Else{ @{} }
+      $_.LogName -iMatch '^(system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational)$'
+   } | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {## Print ForegroundColor as red if 0 entrys!
+       $stringformat = If($_ -Match '\s+(0)+\s+'){
+          @{ 'ForegroundColor' = 'Red' } }Else{ @{} }
        Write-Host @stringformat $_
     }
 
@@ -214,7 +210,7 @@ If($GetLogs -ieq "Verbose"){
    Get-WinEvent -ListLog * -ErrorAction Ignore | Where-Object {
       $_.LogName -iMatch '(system|application|windows powershell|HardwareEvents|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational)$'
    } | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {
-       $stringformat = If($_ -iMatch '\s+(Windows PowerShell)\s+'){
+       $stringformat = If($_ -iMatch '\s+(Windows PowerShell|application|system)\s+'){
           @{ 'ForegroundColor' = 'Yellow' } }Else{ @{} }
        Write-Host @stringformat $_
     }

@@ -625,12 +625,17 @@ If($NewEst -lt "1"){$NewEst = "3"} ## Set the min logs to display
       Remark: Clear @arg requires Administrator privs on shell
 
    .OUTPUTS
-      Max(K) Retain OverflowAction    Entries Log                   
-      ------ ------ --------------    ------- ---                            
-      20 480      0 OverwriteAsNeeded   1 024 Application           
-      20 480      0 OverwriteAsNeeded       0 HardwareEvents                 
-      20 480      0 OverwriteAsNeeded      74 System                
-      15 360      0 OverwriteAsNeeded      85 Windows PowerShell
+      LogMode  MaximumSizeInBytes RecordCount LogName
+      -------  ------------------ ----------- -------
+      Circular           15728640        3978 Windows PowerShell
+      Circular           20971520        1731 System
+      Circular            1052672           0 Internet Explorer
+      Circular           20971520        1122 Application
+      Circular            1052672        1729 Microsoft-Windows-WMI-Activity/Operational
+      Circular            1052672         520 Microsoft-Windows-Windows Defender/Operational
+      Circular           15728640         719 Microsoft-Windows-PowerShell/Operational
+      Circular            1052672         499 Microsoft-Windows-Bits-Client/Operational
+      Circular            1052672           0 Microsoft-Windows-AppLocker/EXE and DLL
    #>
 
    ## Download GetLogs.ps1 from my GitHub
@@ -638,7 +643,7 @@ If($NewEst -lt "1"){$NewEst = "3"} ## Set the min logs to display
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetLogs.ps1 -Destination $Env:TMP\GetLogs.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetLogs.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 23){## Corrupted download detected => DefaultFileSize: 23,078125/KB
+      If($SizeDump -lt 22){## Corrupted download detected => DefaultFileSize: 22,78125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetLogs.ps1"){Remove-Item -Path "$Env:TMP\GetLogs.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -3012,12 +3017,17 @@ $HelpParameters = @"
       Remark: Clear function requires Administrator privileges!
 
    .OUTPUTS
-      Max(K) Retain OverflowAction    Entries Log                   
-      ------ ------ --------------    ------- ---                            
-      20 480      0 OverwriteAsNeeded   1 024 Application           
-      20 480      0 OverwriteAsNeeded       0 HardwareEvents                 
-      20 480      0 OverwriteAsNeeded      74 System                
-      15 360      0 OverwriteAsNeeded      85 Windows PowerShell
+      LogMode  MaximumSizeInBytes RecordCount LogName
+      -------  ------------------ ----------- -------
+      Circular           15728640        3978 Windows PowerShell
+      Circular           20971520        1731 System
+      Circular            1052672           0 Internet Explorer
+      Circular           20971520        1122 Application
+      Circular            1052672        1729 Microsoft-Windows-WMI-Activity/Operational
+      Circular            1052672         520 Microsoft-Windows-Windows Defender/Operational
+      Circular           15728640         719 Microsoft-Windows-PowerShell/Operational
+      Circular            1052672         499 Microsoft-Windows-Bits-Client/Operational
+      Circular            1052672           0 Microsoft-Windows-AppLocker/EXE and DLL
    #>!bye..
 
 "@;
