@@ -251,7 +251,7 @@ If($GetLogs -ieq "Verbose"){
       }Else{
          Write-Host "$SysLogFile" ## $LASTEXITCODE return $True => Logs present!
          Get-WinEvent -LogName "$Item" -EA SilentlyContinue | Select-Object -First $NewEst |
-            Select-Object -Property Id,ProviderName,TimeCreated,Message | Format-Table -AutoSize
+            Select-Object -Property Id,ContainerLog,TimeCreated,ProviderName,Message | Format-Table -AutoSize
       }
    }
 
@@ -423,10 +423,10 @@ If($GetLogs -ieq "Yara"){
 
          Get-WinEvent -LogName "$verb" -EA SilentlyContinue | Where-Object {
             $_.Id -eq $IdToken -and $_.Message -iNotMatch '^(Video.UI)' -and
-            $_.ProviderName -iNotMatch '^(Microsoft-Windows-Power-Troubleshooter)$'
-            } | Select-Object -Property Id,ProviderName,TimeCreated,Message -First $NewEst |
+            $_.ProviderName -iNotMatch '(Microsoft-Windows-Power-Troubleshooter|Microsoft-Windows-FilterManager)'
+            } | Select-Object -Property Id,ContainerLog,TimeCreated,ProviderName,Message -First $NewEst |
             Format-List | Out-String -Stream | ForEach-Object {
-               $stringformat = If($_ -iMatch '^(ProviderName :)'){
+               $stringformat = If($_ -iMatch '^(ContainerLog :)'){
                   @{ 'ForegroundColor' = 'Yellow' } }Else{ @{} }
                Write-Host @stringformat $_
             }
@@ -468,8 +468,9 @@ If($GetLogs -ieq "Yara"){
 
             Get-WinEvent -LogName "$CatList" -EA SilentlyContinue | Where-Object {
                $_.Id -eq $IdToken -and $_.Message -iNotMatch '(svchost.exe|.img.|.json.|.png.|.jpg.)' -and
-               $_.ContainerLog -iNotMatch '^(Microsoft-Windows-FilterManager)$' -and $_.LevelDisplayName -iMatch '^(Erro|Error|Aviso|Warning|Informações|Information)$'
-               } | Select-Object -Property Id,TimeCreated,ContainerLog,Message -First $NewEst |
+               $_.LevelDisplayName -iMatch '^(Erro|Error|Aviso|Warning|Informações|Information)$' -and
+               $_.ProviderName -iNotMatch '^(Microsoft-Windows-Power-Troubleshooter|Microsoft-Windows-FilterManager)$'
+               } | Select-Object -Property Id,ContainerLog,TimeCreated,ProviderName,Message -First $NewEst |
                Format-List | Out-String -Stream | ForEach-Object {
                   $stringformat = If($_ -iMatch '^(ContainerLog :)'){
                      @{ 'ForegroundColor' = 'Yellow' } }Else{ @{} }
