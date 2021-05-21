@@ -621,7 +621,7 @@ If($NewEst -lt "1"){$NewEst = "3"} ## Set the min logs to display
       List -NewEst "28" logfiles with Id: 59,300,4104
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -GetLogs Clear
+      PS C:\> powershell -File redpill.ps1 -GetLogs DeleteAll
       Remark: Clear @arg requires Administrator privs on shell
 
    .OUTPUTS
@@ -643,7 +643,7 @@ If($NewEst -lt "1"){$NewEst = "3"} ## Set the min logs to display
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetLogs.ps1 -Destination $Env:TMP\GetLogs.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetLogs.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 25){## Corrupted download detected => DefaultFileSize: 25,2919921875/KB
+      If($SizeDump -lt 26){## Corrupted download detected => DefaultFileSize: 26,3056640625/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetLogs.ps1"){Remove-Item -Path "$Env:TMP\GetLogs.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -663,8 +663,8 @@ If($NewEst -lt "1"){$NewEst = "3"} ## Set the min logs to display
          powershell -File "$Env:TMP\GetLogs.ps1" -GetLogs Yara -NewEst "$NewEst" -Id "$Id"
       }
 
-   }ElseIf($GetLogs -ieq "Clear"){
-      powershell -File "$Env:TMP\GetLogs.ps1" -GetLogs Clear
+   }ElseIf($GetLogs -ieq "DeleteAll"){
+      powershell -File "$Env:TMP\GetLogs.ps1" -GetLogs DeleteAll
    }
 
    ## Clean Old files left behind
@@ -2973,7 +2973,7 @@ $HelpParameters = @"
       then this cmdlet will scan pre-defined event paths and ID's numbers!
 
    .Parameter GetLogs
-      Accepts argument: Enum, Verbose, Yara, Clean
+      Accepts argument: Enum, Verbose, Yara, DeleteAll
 
    .Parameter NewEst
       How many event logs to display int value (default: 3)
@@ -3013,8 +3013,12 @@ $HelpParameters = @"
       List newest 3 (default) logfiles of 'NetworkProfile/Operational' categorie with Id: 10001
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -GetLogs Clear
+      PS C:\> .\redpill.ps1 -GetLogs DeleteAll
       Remark: Clear function requires Administrator privileges!
+
+   .EXAMPLE
+      PS C:\> .\redpill.ps1 -GetLogs DeleteAll -Verb "Microsoft-Windows-Powershell/Operational"
+      Delete only logfiles from "Microsoft-Windows-Powershell/Operational" eventvwr categorie!
 
    .OUTPUTS
       LogMode  MaximumSizeInBytes RecordCount LogName
