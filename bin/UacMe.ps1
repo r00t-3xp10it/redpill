@@ -417,7 +417,7 @@ ShortSvcName=`"`"CorpVPN`"`"
    ## Build Output Table
    Write-Host "`nUAC State    : $UacStatus"
    Write-Host "UAC Settings : $UacSettings"
-   Write-Host "EOP Trigger  : $Env:TMP\DavSyncProvider.dll" -ForeGroudColor Yellow
+   Write-Host "EOP Trigger  : $Env:TMP\DavSyncProvider.dll"
    Write-Host "RUN cmdline  : $Execute"
    
    ## Clean ALL artifacts left behind!
