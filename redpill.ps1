@@ -591,7 +591,7 @@ If($GetTasks -ieq "Enum" -or $GetTasks -ieq "Create" -or $GetTasks -ieq "Delete"
    If(Test-Path -Path "$Env:TMP\GetTasks.ps1"){Remove-Item -Path "$Env:TMP\GetTasks.ps1" -Force}
 }
 
-If($GetLogs -ieq "Enum" -or $GetLogs -ieq "Clear" -or $GetLogs -ieq "Verbose" -or $getLogs -ieq "Yara"){
+If($GetLogs -ieq "Enum" -or $GetLogs -ieq "DeleteAll" -or $GetLogs -ieq "Verbose" -or $getLogs -ieq "Yara"){
 If($NewEst -lt "1"){$NewEst = "3"} ## Set the min logs to display
 
    <#
@@ -643,7 +643,7 @@ If($NewEst -lt "1"){$NewEst = "3"} ## Set the min logs to display
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetLogs.ps1 -Destination $Env:TMP\GetLogs.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetLogs.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 26){## Corrupted download detected => DefaultFileSize: 26,669921875/KB
+      If($SizeDump -lt 28){## Corrupted download detected => DefaultFileSize: 28,4189453125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetLogs.ps1"){Remove-Item -Path "$Env:TMP\GetLogs.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -664,7 +664,12 @@ If($NewEst -lt "1"){$NewEst = "3"} ## Set the min logs to display
       }
 
    }ElseIf($GetLogs -ieq "DeleteAll"){
-      powershell -File "$Env:TMP\GetLogs.ps1" -GetLogs DeleteAll
+
+      If($Verb -ne "False"){
+            powershell -File "$Env:TMP\GetLogs.ps1" -GetLogs DeleteAll -Verb "$Verb"
+         }Else{
+            powershell -File "$Env:TMP\GetLogs.ps1" -GetLogs DeleteAll    
+         }
    }
 
    ## Clean Old files left behind

