@@ -246,25 +246,24 @@ If($Action -ieq "Query"){## Query Windows Defender state
    ## None Admin privs required to start service
    Start-Service -Name "$ServiceName" -EA SilentlyContinue
 
-
-   ## Local function variable declarations
-   Start-Sleep -Seconds $Delay ## Give some time to update service state
-   $stype = (Get-Service $ServiceName -EA SilentlyContinue).StartType
-   $CurrStats = (Get-Service $ServiceName -EA SilentlyContinue).Status
-
-   ## Build Output Table
-   Write-Host "`nDisable Windows Defender Service" -ForegroundColor Green
-   Write-Host "--------------------------------"
-   echo "ServiceName      : $ServiceName" > $Env:TMP\qwerty.log
-   echo "StartType        : $stype" >> $Env:TMP\qwerty.log
-   echo "CurrentStatus    : $CurrStats" >> $Env:TMP\qwerty.log
-   echo "AMRversion       : $Patched" >> $Env:TMP\qwerty.log
-   echo "" >> $Env:TMP\qwerty.log
-   Get-Content -Path "$Env:TMP\qwerty.log"
-   Remove-Item -Path "$Env:TMP\qwerty.log" -Force
-
 }
 
+
+## Local function variable declarations
+Start-Sleep -Seconds $Delay ## Give some time to update service state
+$stype = (Get-Service $ServiceName -EA SilentlyContinue).StartType
+$CurrStats = (Get-Service $ServiceName -EA SilentlyContinue).Status
+
+## Build Output Table
+Write-Host "`nDisable Windows Defender Service" -ForegroundColor Green
+Write-Host "--------------------------------"
+echo "ServiceName      : $ServiceName" > $Env:TMP\qwerty.log
+echo "StartType        : $stype" >> $Env:TMP\qwerty.log
+echo "CurrentStatus    : $CurrStats" >> $Env:TMP\qwerty.log
+echo "AMRversion       : $Patched" >> $Env:TMP\qwerty.log
+echo "" >> $Env:TMP\qwerty.log
+Get-Content -Path "$Env:TMP\qwerty.log"
+Remove-Item -Path "$Env:TMP\qwerty.log" -Force
 
 ## Clean Artifacts left behind
 If(Test-Path -Path "$Env:TMP\BCDstore.msc" -EA SilentlyContinue){
