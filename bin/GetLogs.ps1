@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: none
    Optional Dependencies: wevtutil, UacMe.ps1
-   PS cmdlet Dev version: v1.5.18
+   PS cmdlet Dev version: v1.5.19
 
 .DESCRIPTION
    This cmdlet allow users to delete ALL eventvwr logfiles or to delete
@@ -366,7 +366,7 @@ If($GetLogs -ieq "Yara"){
    Write-Host "`nPlease Wait, Scanning Eventvwr registry! .." -ForegroundColor Green
 
    Start-Sleep -Milliseconds 700
-   If($Verb -ne "False" -and $Verb -Match '/'){
+   If($Verb -ne "False"){
 
       If($Categories -NotContains "$Verb"){
 
@@ -407,8 +407,8 @@ If($GetLogs -ieq "Yara"){
          If($verb -ieq "system"){
 
             ## Default Id's to scan! (if none user inputs)
-            # ID: 1,19,43,1102,4663,7000,7045 -> system
-            $RawLit = "1,19,43,1102,4663,7000,7045"
+            # ID: 1,19,43,1102,4663,7000 -> system
+            $RawLit = "1,19,43,1102,4663,7000"
             $IdList = $RawLit.Split(',')
          
          }ElseIf($verb -ieq "application"){
@@ -459,14 +459,14 @@ If($GetLogs -ieq "Yara"){
 
          ## Default Id's to scan! (if none user inputs)
          # ID: 403,4100            -> POWERSHELL/OPERATIONAL
-         # ID: 300,403             -> WINDOWS POWERSHELL
+         # ID: 300,403,4104        -> WINDOWS POWERSHELL
          # ID: 59,60               -> BITS
-         # ID: 1116,1117,2000,5007 -> Windows Defender
+         # ID: 1116,1117,5007      -> Windows Defender
          # ID: 800,8002,8004       -> Applocker/exe and dll
          # ID: 5858,5861           -> WMI
-         # ID: 1,7045              -> system
+         # ID: 1                   -> system
          # ID: 8004                -> NTLM/Operational
-         $RawLit = "1,59,60,300,403,800,1116,1117,2000,4100,5007,5858,5861,7045,8002,8004"
+         $RawLit = "1,59,60,300,403,800,1116,1117,4100,4104,5007,5858,5861,8002,8004"
          $IdList = $RawLit.Split(',')
 
       }Else{## User input Id (only one ID number)
@@ -500,7 +500,7 @@ If($GetLogs -ieq "Yara"){
 
                $regex = "Microsoft-Windows-Power-Troubleshooter|Microsoft-Windows-FilterManager|Microsoft-Windows-Diagnostics-Networking"
                Get-WinEvent -LogName "$CatList" -EA SilentlyContinue | Where-Object {
-                  $_.Id -eq $IdToken -and $_.Message -iNotMatch '(hardware clock|svchost.exe|.img.|.json.|.png.|.jpg.)' -and
+                  $_.Id -eq $IdToken -and $_.Message -iNotMatch '(hardware clock|svchost.exe|.img.|.json.|.png.|.jpg.|^Creating Scriptblock)' -and
                   $_.LevelDisplayName -iMatch '^(Erro|Error|Aviso|Warning|Informações|Information)$' -and $_.ProviderName -iNotMatch "^($regex)$"
                } | Select-Object -Property Id,TimeCreated,ProviderName,ContainerLog,Message -First $NewEst |
                Format-List | Out-String -Stream | ForEach-Object {
@@ -681,3 +681,5 @@ If($GetLogs -ieq "DeleteAll"){
    }
 
 }
+
+Write-Host ""
