@@ -462,7 +462,7 @@ If($GetLogs -ieq "Yara"){
          # ID: 300,403             -> WINDOWS POWERSHELL
          # ID: 59,60               -> BITS
          # ID: 1116,1117,2000,5007 -> Windows Defender
-         # ID: 800,8002            -> Applocke/exe and dll
+         # ID: 800,8002,8004       -> Applocker/exe and dll
          # ID: 5858,5861           -> WMI
          # ID: 1,7045              -> system
          # ID: 8004                -> NTLM/Operational
@@ -651,7 +651,7 @@ If($GetLogs -ieq "DeleteAll"){
 
       ## Clear Event Logs
       Write-Host "[i] Shell - administrator privileges: True" -ForegroundColor Yellow
-      Write-Host "[+] Cleaning ALL '$Env:COMPUTERNAME\$Env:USERNAME' Domain Eventvwr logfiles..`n" -ForeGroundColor Green
+      Write-Host "[+] Cleaning '$Env:COMPUTERNAME\$Env:USERNAME' Eventvwr logfiles..`n" -ForeGroundColor Green
       ## wevtutil cl "Microsoft-Windows-Powershell/Operational"  ## Clean Powershell logfiles
       ## wevtutil cl "Microsoft-Windows-Bits-Client/Operational" ## Clean BITS-TRANSFER logfiles
 
@@ -667,7 +667,7 @@ If($GetLogs -ieq "DeleteAll"){
 
       }
 
-      Start-Sleep -Seconds 2
+      Write-Host "";Start-Sleep -Seconds 2
       ## List Major event logs categories and the number of entries!
       # [shanty] Deprecated: Get-EventLog -List | Format-Table -AutoSize
       Get-WinEvent -ListLog * -ErrorAction Ignore | Where-Object {

