@@ -2092,7 +2092,7 @@ if($AppLocker -ne "false"){
    If($AppLocker -ieq "TestXml" -or $AppLocker -ieq "XmlBypass"){
 
       If(-not(Test-Path -Path "$Env:TMP\AppLockerXml.ps1")){## Download AppLockerXml.ps1 from my GitHub repository
-         iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/Modules/AppLockerXml.ps1" -OutFile "$Env:TMP\AppLockerXml.ps1" -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
+         iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/modules/AppLockerXml.ps1" -OutFile "$Env:TMP\AppLockerXml.ps1" -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
       }
 
    }Else{
