@@ -140,7 +140,7 @@ If($Action -ieq "XmlBypass"){
       through CVE-2018-8492 @bohops XML COM object transformation bypass technic!
 
    .NOTES
-      If sellected -verb 'force' @argument, then cmdlet skip's vulnerability
+      If sellected -verb 'True' @argument, then cmdlet skip's vulnerability
       tests and forceblly executes the -execute 'application.exe' cmdline!
       
    .OUTPUTS
@@ -163,7 +163,7 @@ If($Action -ieq "XmlBypass"){
 
    ## Build Output Table
    Write-Host "`n`n[INFO] Windows Device Guard!" -ForegroundColor Green
-   If($Verb -ieq 'True'){$AOF = "force execution"}Else{$AOF = "true"}
+   If($Verb -ieq 'True'){$AOF = "skip_test"}Else{$AOF = "true"}
    Write-Host "----------------------------------------"
    Write-Host "AffectedOSflavor    : $AOF"
 
@@ -184,7 +184,7 @@ If($Action -ieq "XmlBypass"){
 
    }Else{
    
-      $CLM = "force execution"
+      $CLM = "skip_test"
    
    }
 
