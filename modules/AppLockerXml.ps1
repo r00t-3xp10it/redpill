@@ -25,6 +25,9 @@
 .Parameter Action
    Accepts argument: XmlBypass
 
+.Parameter Verb
+   Accepts arguments: False, True - Skip vulnerability tests (default: False)
+
 .Parameter Execute
    The appl Name OR the appl to execute absoluct path! (default: cmd.exe)
 
