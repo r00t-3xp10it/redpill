@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: Msxml2 -Com Object {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.2.11
+   PS cmdlet Dev version: v1.2.12
 
 .DESCRIPTION
    AppLockerXml.ps1 module Checks\Exploits CVE-2018-8492 security bypass vulnerability in
@@ -235,7 +235,7 @@ If($Action -ieq "XmlBypass"){
       # Sellect -Last PID 'NOT' matching the current shell pid to prevent
       # This powershell process (parent) to close in the end of this function!
       $CheckApplIdState = (Get-Process -Name "$StopProc" -EA SilentlyContinue).Id | Where-Object {
-         $_.Id -ne $IdParent } #| Select-Object -Last 1
+         $_ -ne $IdParent } ## Only Stores PID's that does NOT match this PS process PID '$IdParent'
 
    }catch{}
 
