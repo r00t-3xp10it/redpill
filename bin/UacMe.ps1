@@ -356,7 +356,7 @@ ShortSvcName=`"`"CorpVPN`"`"
 
    ## Write Source.cs script into %tmp% directory!
    $BSDEdit = -join ((65..90) + (97..122) | Get-Random -Count 7 | % {[char]$_})
-   echo "$RawCSScript"|Out-File "$Env:TMP\$BSDEdit.cs" -encoding ascii -force
+   echo "$RawCSScript"|Out-File "$Env:TMP\$BSDEdit.cs" -Encoding ascii -Force
 
    ## Get system User Account Control settings
    # [String]::IsNullOrWhiteSpace((Get-Content -Path "$Env:TMP\lksfdv.log" -EA SilentlyContinue))
@@ -418,7 +418,7 @@ ShortSvcName=`"`"CorpVPN`"`"
    Write-Host "`nUAC State    : $UacStatus"
    Write-Host "UAC Settings : $UacSettings"
    Write-Host "EOP Trigger  : $Env:TMP\DavSyncProvider.dll"
-   Write-Host "RUN cmdline  : $Execute"
+   Write-Host "RUN cmdline  : $Execute`n"
    
    ## Clean ALL artifacts left behind!
    Remove-Item -Path "$Env:TMP\graca.log" -EA SilentlyContinue -Force
@@ -562,8 +562,7 @@ If($Action -ieq "Clean"){
    If(-not($MyList -ieq $null)){
       Write-Host "List of artifacts deleted!" -ForeGroundColor Yellow
       Write-Host "--------------------------"
-      Write-Host "$MyList"
+      Write-Host "$MyList`n"
    }
 
 }
-Write-Host "`n"

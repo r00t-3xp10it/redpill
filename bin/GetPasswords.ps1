@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: Invoke-WebRequest|BitsTransfer
    Optional Dependencies: BCDstore.msc|diskmgr.msc|DecryptAutoLogon.msc
-   PS cmdlet Dev version: v2.2.8
+   PS cmdlet Dev version: v2.2.9
 
 .DESCRIPTION
    -GetPasswords [ Enum ] search creds in wstore\reg\disk diferent locations.
