@@ -2,16 +2,16 @@
 
 <br />
 
-Author: @Sordum (RedTeam) | @r00t-3xp10it
-Tested Under: Windows 10 (19042 build) x64 bits
-dControl webpage: https://www.sordum.org/9480/defender-control-v1-9/
-Required Dependencies: <b><i>Invoke-WebRequest</i></b> {native} , <b><i>dControl.zip</i></b> {auto-download}, <b><i>UacMe.ps1</i></b> {auto-download}
-Optional Dependencies: none
+Author: @Sordum (RedTeam) | @r00t-3xp10it<br />
+Tested Under: Windows 10 (19042 build) x64 bits<br />
+dControl webpage: https://www.sordum.org/9480/defender-control-v1-9/<br />
+Required Dependencies: <b><i>Invoke-WebRequest</i></b> {native} , <b><i>dControl.zip</i></b> {auto-download}<br />
+Optional Dependencies: <b><i>UacMe.ps1</i></b> {auto-download}<br />
 
 <br />
 
 ## :octocat: DisableDefender.ps1 - Project Description
-[Defender Control](https://www.sordum.org/9480/defender-control-v1-9/) is a small Portable freeware which will allow you to disable Microsoft Defender in Windows 10 completely.<br />But it requires [Admin privileges](https://www.howtogeek.com/194041/how-to-open-the-command-prompt-as-administrator-in-windows-8.1/) on shell to do it .. The solluction ?? [@redpill - UacMe.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/bin/UacMe.ps1) Or [@redpill - DisableDefender.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/bin/DisableDefender.ps1) <-- (under dev)
+[Defender Control](https://www.sordum.org/9480/defender-control-v1-9/) is a small Portable freeware which will allow you to disable Microsoft Defender in Windows 10 completely.<br />But it requires [Admin privileges](https://www.howtogeek.com/194041/how-to-open-the-command-prompt-as-administrator-in-windows-8.1/) on shell to do it .. The solluction ?? [@redpill - UacMe.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/bin/UacMe.ps1) Or [@redpill - DisableDefender.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/bin/DisableDefender.ps1)
 
 <br />
 
