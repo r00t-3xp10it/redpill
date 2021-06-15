@@ -62,6 +62,7 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 |-GetProcess| Enum \| Kill \| Tokens |Enumerate OR Kill Remote Host Running Process(s)|
 |-GetTasks| Enum \| Create \| Delete |Enumerate\Create\Delete Remote Host Running Tasks|
 |-GetLogs| Enum \| Verbose \| Clear |Enumerate eventvwr logs OR Clear All event logs|
+|-LiveStream| Desktop \| Stop |Nishang script to streaming a target desktop using MJPEG|
 |-GetBrowsers| Enum \| Verbose \| Creds |Enumerate Installed Browsers and Versions OR Verbose|
 |-GetSkype| Contacts\|DomainUsers |Enumerating and attacking federated Skype|
 |-Screenshot| 1 |Capture 1 Desktop Screenshot and Store it on %TMP%|
