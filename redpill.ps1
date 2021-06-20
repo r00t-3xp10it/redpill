@@ -1004,11 +1004,17 @@ If($StartWebServer -ieq "Python" -or $StartWebServer -ieq "Powershell"){
       }   
    }
 
-   ## Run auxiliary module
-   $Timer = Get-Date -Format 'HH:mm:ss'
-   powershell -File "$Env:TMP\StartWebServer.ps1" -StartWebServer $StartWebServer -SPort $SPort
-   Write-Host "WebServer started at: $Timer  in: http://${Address}:${SPort}/" -ForegroundColor Green -BackgroundColor Black
-   Write-Host ""
+   try {
+       ## Run auxiliary module
+       $Timer = Get-Date -Format 'HH:mm:ss'
+       powershell -File "$Env:TMP\StartWebServer.ps1" -StartWebServer $StartWebServer -SPort $SPort
+       Write-Host "WebServer started at: $Timer  in: http://${Address}:${SPort}/" -ForegroundColor Green -BackgroundColor Black
+       Write-Host ""
+   catch{
+       Write-Host "[error] fail to run StartWebServer cmdlet!" -ForegroundColor Red -BackgroundColor Black
+       Write-Host ""
+   }
+
 
    ## Clean Old files left behind
    If(Test-Path -Path "$Env:TMP\UacMe.ps1"){Remove-Item -Path "$Env:TMP\UacMe.ps1" -Force}
