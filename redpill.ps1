@@ -997,7 +997,7 @@ If($StartWebServer -ieq "Python" -or $StartWebServer -ieq "Powershell"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/StartWebServer.ps1 -Destination $Env:TMP\StartWebServer.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\StartWebServer.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 5){## Corrupted download detected => DefaultFileSize: 5,53515625/KB
+      If($SizeDump -lt 7){## Corrupted download detected => DefaultFileSize: 7,6435546875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\StartWebServer.ps1"){Remove-Item -Path "$Env:TMP\StartWebServer.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
