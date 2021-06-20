@@ -1005,8 +1005,9 @@ If($StartWebServer -ieq "Python" -or $StartWebServer -ieq "Powershell"){
    }
 
    ## Run auxiliary module
+   $Timer = Get-Date -Format 'HH:mm:ss'
    powershell -File "$Env:TMP\StartWebServer.ps1" -StartWebServer $StartWebServer -SPort $SPort
-   Write-Host "[success] Access remote WebServer in: http://${Address}:${SPort}/" -ForegroundColor Green -BackgroundColor Black
+   Write-Host "WebServer started at: $Timer  in: http://${Address}:${SPort}/" -ForegroundColor Green -BackgroundColor Black
    Write-Host ""
 
    ## Clean Old files left behind
