@@ -1003,15 +1003,15 @@ If($StartWebServer -ieq "Python" -or $StartWebServer -ieq "Powershell"){
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
       }   
    }
+   $Timer = Get-Date -Format 'HH:mm:ss'
 
 
    try {
-       $Timer = Get-Date -Format 'HH:mm:ss' ## Get Date and Run auxiliary module
        powershell -File "$Env:TMP\StartWebServer.ps1" -StartWebServer $StartWebServer -SPort $SPort
-       Write-Host "WebServer started at: $Timer  in: http://${Address}:${SPort}/" -ForegroundColor Green -BackgroundColor Black
+       Write-Host "WebServer started at: $Timer in: http://${Address}:${SPort}/" -ForegroundColor Green -BackgroundColor Black
    catch{
        Write-Host "[error] fail to run StartWebServer cmdlet!" -ForegroundColor Red -BackgroundColor Black
-    }
+   }
 
 
    Write-Host ""
