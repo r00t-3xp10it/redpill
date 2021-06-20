@@ -1006,7 +1006,7 @@ If($StartWebServer -ieq "Python" -or $StartWebServer -ieq "Powershell"){
    $Timer = Get-Date -Format 'HH:mm:ss'
 
 
-   try {
+   try{
        powershell -File "$Env:TMP\StartWebServer.ps1" -StartWebServer $StartWebServer -SPort $SPort
        Write-Host "WebServer started at: $Timer in: http://${Address}:${SPort}/" -ForegroundColor Green -BackgroundColor Black
    catch{
