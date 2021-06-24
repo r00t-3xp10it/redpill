@@ -386,7 +386,7 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
 
    &"$Env:TMP\GetAvs.ps1"
    #powershell -WindowStyle Hidden -File "$Env:TMP\GetAvs.ps1"
-   #Remove-Item -Path "$Env:TMP\GetAvs.ps1" -Force
+   Remove-Item -Path "$Env:TMP\GetAvs.ps1" -Force
 
 
    ## Enumerate active SMB shares
@@ -463,7 +463,7 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
    }
 
    powershell -WindowStyle Hidden -File "$Env:TMP\List-AllMailboxAndPST.ps1"
-   #Remove-Item -Path "$Env:TMP\List-AllMailboxAndPST.ps1" -Force
+   Remove-Item -Path "$Env:TMP\List-AllMailboxAndPST.ps1" -Force
 
    ## TobeContinued ..
 
