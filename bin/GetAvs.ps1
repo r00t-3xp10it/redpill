@@ -9,11 +9,12 @@
    PS cmdlet Dev version: v1.0.1
 
 .DESCRIPTION
-   This cmdlet ....
+   This cmdlet enumerates common security product processes running!
+   By using target system 'Get-Process' powershell cmdlet {native}
 
 .NOTES
    Required Dependencies: Get-Process {native}
-   This cmdlet its an aux module of @redpill -sysinfo 'verbose'
+   This cmdlet is an aux module of -sysinfo 'verbose'
 
 .EXAMPLE
    PS C:\> Get-Help .\GetAvs.ps1 -full
