@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: none
    Optional Dependencies: curl, icacls
-   PS cmdlet Dev version: v1.4.10
+   PS cmdlet Dev version: v1.4.11
 
 .DESCRIPTION
    System info: IpAddress, OsVersion, OsFlavor, OsArchitecture,
@@ -117,7 +117,7 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
     Write-Host "System32          : $SystemDir"
     Write-Host "DefaultWebBrowser : $Parse_Browser_Data (predefined)"
     Write-Host "CmdLetWorkingDir  : $Working_Directory" -ForegroundColor Yellow
-    Write-Host "User-Agent        : $UserAgentString`n`n"
+    Write-Host "User-Agent        : $UserAgentString`n"
 
 
     ## Get network adapter settings!
@@ -161,7 +161,7 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
           findstr /V "iso3 tld calling area population region_code country_code"
     }
 
-    If($HideMyAss -ieq "True"){$PublicAddr = "********"}
+    If($HideMyAss -ieq "True"){$PublicAddr = "HideMyAss"}
     $GeoDate = $GeoLocation -replace '"','' -replace ',','' -replace '(^\s+|\s+$)',''
     $Moreati = $Geodate -replace '(city: |region: |country_name: |country_capital: |latitude: |longitude: )',''
        
@@ -347,84 +347,126 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
     }
 
 
-    ## Built Output Table
-    Write-Host "Default AV: $AntiVirusProduct"  -ForegroundColor Green
-    Write-Host "------------------------------";Start-Sleep -Seconds 1
-    Write-Host "UACEnabled                      : $UacStatus"
-    Write-Host "UACSettings                     : $UacSettings"
-    Write-Host "AMProductVersion                : $AMProductVersion"
-    Write-Host "AMServiceEnabled                : $AMServiceEnabled"
-    Write-Host "AntivirusEnabled                : $AntivirusEnabled" -ForegroundColor Yellow
-    Write-Host "IsTamperProtected               : $IsTamperProtected"
-    Write-Host "AntispywareEnabled              : $AntispywareEnabled"
-    Write-Host "DisableScriptScanning           : $DisableScriptScanning"
-    Write-Host "BehaviorMonitorEnabled          : $BehaviorMonitorEnabled"
-    Write-Host "RealTimeProtectionEnabled       : $RealTimeProtectionEnabled" -ForegroundColor Yellow
-    Write-Host "ConstrainedLanguage             : $ConState"
-    Write-Host "SignatureScheduleTime           : $SignatureScheduleTime"
-    Write-Host "AntivirusSignatureLastUpdated   : $AntivirusSignatureLastUpdated"
-    Write-Host "AntispywareSignatureLastUpdated : $AntispywareSignatureLastUpdated"
-    Write-Host "PowerShellCommandLogging        : $PSLoggingSession"  -ForegroundColor Yellow
-    Write-Host "DisableArchiveScanning          : $DisableArchiveScanning"
-    Write-Host "ScanScheduleTime                : $ScanScheduleTime"
-    Write-Host "ScanScheduleQuickScanTime       : $ScanScheduleQuickScanTime"
+   ## Built Output Table
+   Write-Host "Default AV: $AntiVirusProduct"  -ForegroundColor Green
+   Write-Host "------------------------------";Start-Sleep -Seconds 1
+   Write-Host "UACEnabled                      : $UacStatus"
+   Write-Host "UACSettings                     : $UacSettings"
+   Write-Host "AMProductVersion                : $AMProductVersion"
+   Write-Host "AMServiceEnabled                : $AMServiceEnabled"
+   Write-Host "AntivirusEnabled                : $AntivirusEnabled" -ForegroundColor Yellow
+   Write-Host "IsTamperProtected               : $IsTamperProtected"
+   Write-Host "AntispywareEnabled              : $AntispywareEnabled"
+   Write-Host "DisableScriptScanning           : $DisableScriptScanning"
+   Write-Host "BehaviorMonitorEnabled          : $BehaviorMonitorEnabled"
+   Write-Host "RealTimeProtectionEnabled       : $RealTimeProtectionEnabled" -ForegroundColor Yellow
+   Write-Host "ConstrainedLanguage             : $ConState"
+   Write-Host "SignatureScheduleTime           : $SignatureScheduleTime"
+   Write-Host "AntivirusSignatureLastUpdated   : $AntivirusSignatureLastUpdated"
+   Write-Host "AntispywareSignatureLastUpdated : $AntispywareSignatureLastUpdated"
+   Write-Host "PowerShellCommandLogging        : $PSLoggingSession"  -ForegroundColor Yellow
+   Write-Host "DisableArchiveScanning          : $DisableArchiveScanning"
+   Write-Host "ScanScheduleTime                : $ScanScheduleTime"
+   Write-Host "ScanScheduleQuickScanTime       : $ScanScheduleQuickScanTime"
 
 
-    ## Built Output Table
-    Write-Host "`n`nAV: Credential Guard Status"
-    Write-Host "------------------------------";Start-Sleep -Seconds 1
-    write-host "Name        : Credential Guard"
-    write-host "Status      : $Status" -ForegroundColor Yellow
-    write-host "Description : $Description`n"
+   ## Built Output Table
+   Write-Host "`n`nAV: Credential Guard Status"
+   Write-Host "------------------------------";Start-Sleep -Seconds 1
+   write-host "Name        : Credential Guard"
+   write-host "Status      : $Status" -ForegroundColor Yellow
+   write-host "Description : $Description"
 
 
-    ## Enumerate active SMB shares
-    Write-Host "`nSMB: Enumerating shares"
-    Write-Host "------------------------------";Start-Sleep -Seconds 1
-    Get-SmbShare -EA SilentlyContinue|Select-Object Name,Path,Description|Format-Table
-    If(-not($?)){## Make sure we have any results back
-        Write-Host "[error] None SMB shares found under $Remote_hostName system!" -ForegroundColor Red -BackgroundColor Black
-    }
+   ## GetAvs - Enumerate Anti-Virus process's running!
+   If(-not(Test-Path -Path "$Env:TMP\GetAvs.ps1" -EA SilentlyContinue))
+   {
+      iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetAvs.ps1" -OutFile "$Env:TMP\GetAvs.ps1" -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
+   }
+
+   &"$Env:TMP\GetAvs.ps1"
+   #powershell -WindowStyle Hidden -File "$Env:TMP\GetAvs.ps1"
+   #Remove-Item -Path "$Env:TMP\GetAvs.ps1" -Force
 
 
-    ## Enumerate NetBIOS Local Names
-    Write-Host "`n`nNetBIOS: Names       Type        Status"
-    Write-Host "-------------------------------------------"
-    nbtstat -n|Select-String -Pattern "<??>" >> $Env:TMP\NBNT.mt
-    $NetBiosData = Get-Content -Path "$Env:TMP\NBNT.mt"|findstr "<"
-    $DisplayData = $NetBiosData -replace '(^\s+|\s+$)','' ## Delete Empty spaces in beggining and End of string
-    If(-not($NetBiosData) -or $NetBiosData -ieq $null){   ## Make sure we have any results back
-        If(Test-Path -Path "$Env:TMP\NBNT.mt"){Remove-Item -Path "$Env:TMP\NBNT.mt" -Force}
-            Write-Host "[error] None NetBIOS Local Names found! {Table}" -ForegroundColor Red -BackgroundColor Black      
-        }Else{
-            echo $DisplayData
-            If(Test-Path -Path "$Env:TMP\NBNT.mt"){Remove-Item -Path "$Env:TMP\NBNT.mt" -Force}
-        }
+   ## Enumerate active SMB shares
+   Write-Host "`nSMB: Enumerating shares"
+   Write-Host "------------------------------";Start-Sleep -Seconds 1
+   Get-SmbShare -EA SilentlyContinue|Select-Object Name,Path,Description|Format-Table
+   If(-not($?)){## Make sure we have any results back
+       Write-Host "[error] None SMB shares found under $Remote_hostName system!" -ForegroundColor Red -BackgroundColor Black
+   }
 
 
-        ## Checks for remote host Firewall rules!
-        Get-NetFirewallRule | Where-Object {## Filter rules by { Enabled,Profile,Description } Objects!
-           $_.Enabled -iMatch 'True' -and $_.Profile -iNotMatch '(Private|Domain)' -and $_.Description -ne $null -and
-           $_.Description -iNotMatch '({|}|erro|error|router|Multicast|WFD|UDP|IPv6|^@Firewall)' -and $_.Description.Length -lt 42
-        } | Format-Table Action,Enabled,Profile,Description -AutoSize | Out-File -FilePath "$Env:TMP\ksjjhav.log" -Force
+   ## Enumerate NetBIOS Local Names
+   Write-Host "`n`nNetBIOS: Names       Type        Status"
+   Write-Host "-------------------------------------------"
+   nbtstat -n|Select-String -Pattern "<??>" >> $Env:TMP\NBNT.mt
+   $NetBiosData = Get-Content -Path "$Env:TMP\NBNT.mt"|findstr "<"
+   $DisplayData = $NetBiosData -replace '(^\s+|\s+$)','' ## Delete Empty spaces in beggining and End of string
+   If(-not($NetBiosData) -or $NetBiosData -ieq $null){   ## Make sure we have any results back
+       If(Test-Path -Path "$Env:TMP\NBNT.mt"){Remove-Item -Path "$Env:TMP\NBNT.mt" -Force}
+           Write-Host "[error] None NetBIOS Local Names found! {Table}" -ForegroundColor Red -BackgroundColor Black      
+       }Else{
+           echo $DisplayData
+           If(Test-Path -Path "$Env:TMP\NBNT.mt"){Remove-Item -Path "$Env:TMP\NBNT.mt" -Force}
+       }
 
-        $CheckLog = Get-Content -Path "$Env:TMP\ksjjhav.log" -EA SilentlyContinue |
-           Where-Object { $_ -ne "" } ## Remove Empty Lines from output!
-        Remove-Item -Path "$Env:TMP\ksjjhav.log" -Force
-        If($CheckLog -ne $null){## none firewall rules found!
-            Write-Host "`n`nGet: Firewall rules (Public|Any)" -ForegroundColor Green
-            Start-Sleep -Milliseconds 1300;echo $CheckLog
-        }
+
+       ## Checks for remote host Firewall rules!
+       Get-NetFirewallRule | Where-Object {## Filter rules by { Enabled,Profile,Description } Objects!
+          $_.Enabled -iMatch 'True' -and $_.Profile -iNotMatch '(Private|Domain)' -and $_.Description -ne $null -and
+          $_.Description -iNotMatch '({|}|erro|error|router|Multicast|WFD|UDP|IPv6|^@Firewall)' -and $_.Description.Length -lt 42
+       } | Format-Table Action,Enabled,Profile,Description -AutoSize | Out-File -FilePath "$Env:TMP\ksjjhav.log" -Force
+
+       $CheckLog = Get-Content -Path "$Env:TMP\ksjjhav.log" -EA SilentlyContinue |
+          Where-Object { $_ -ne "" } ## Remove Empty Lines from output!
+       Remove-Item -Path "$Env:TMP\ksjjhav.log" -Force
+       If($CheckLog -ne $null){## none firewall rules found!
+           Write-Host "`n`nGet: Firewall rules (Public|Any)" -ForegroundColor Green
+           Start-Sleep -Milliseconds 1300;echo $CheckLog
+       }
 
 
-        ## @Webserver Working dir ACL Description
-        Write-Host "`n`n`nDCALC: CmdLet Working Directory"
-        Write-Host "-------------------------------";Start-Sleep -Seconds 1
-        $GetACLDescription = icacls "$Working_Directory"|findstr /V "processing"
-        echo $GetACLDescription > $Env:TMP\ACl.log;Get-Content -Path "$Env:TMP\ACL.log"
-        Remove-Item -Path "$Env:TMP\ACl.log" -Force
+       ## @Webserver Working dir ACL Description
+       Write-Host "`n`n`nDCALC: CmdLet Working Directory"
+       Write-Host "-------------------------------";Start-Sleep -Seconds 1
+       $GetACLDescription = icacls "$Working_Directory"|findstr /V "processing"
+       echo $GetACLDescription > $Env:TMP\ACl.log;Get-Content -Path "$Env:TMP\ACL.log"
+       Remove-Item -Path "$Env:TMP\ACl.log" -Force
 
-      ## TobeContinued ..
-    }
-    Write-Host "";Start-Sleep -Seconds 1
+
+    <#
+    .SYNOPSIS
+       Helper - Get-OutLookMailbox users
+
+   .OUTPUTS
+      Current profile has the following configured accounts:  
+  
+      Account Type           					User Name				SMTP Address  
+      ------------           					---------        		------------  
+      Jean-Marc.Albert-EXT@domain.com		Jean-Marc.ALBERT-EXT    Jean-Marc.Albert-EXT@domain.com  
+      
+      Exchange Offile Folder Store:  
+      C:\Users\9999912\AppData\Local\Microsoft\Outlook\Jean-Marc.Albert-EXT@domain.com.ost  
+     
+      PST Files  
+      Display Name    File Path   
+      ------------    ---------  
+      Archive Folders C:\Users\jean-marc.albert\AppData\Local\Microsoft\Outlook\archive.pst     
+   #>
+   
+   Write-Host "`nOFFICE: Mailbox Enumeration"
+   Write-Host "---------------------------";Start-Sleep -Seconds 1
+   If(-not(Test-Path -Path "$Env:TMP\List-AllMailboxAndPST.ps1" -EA SilentlyContinue)){
+      iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/modules/List-AllMailboxAndPST.ps1" -OutFile "$Env:TMP\List-AllMailboxAndPST.ps1" -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
+   }
+
+   powershell -WindowStyle Hidden -File "$Env:TMP\List-AllMailboxAndPST.ps1"
+   #Remove-Item -Path "$Env:TMP\List-AllMailboxAndPST.ps1" -Force
+
+   ## TobeContinued ..
+
+   }
+   Write-Host "`n";Start-Sleep -Seconds 1
 }

