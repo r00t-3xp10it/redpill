@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
    Enumerate common security processes running!
 
