@@ -1,12 +1,12 @@
 ﻿<#
 .SYNOPSIS
-   Enumerate common security processes running!
+   List common security processes running!
 
    Author: r00t-3xp10it
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: Get-Process {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.5
+   PS cmdlet Dev version: v1.0.6
 
 .DESCRIPTION
    This cmdlet enumerates common security product processes running
@@ -47,6 +47,10 @@
    Product      : CrowdStrike Falcon EDR
    ProcessName  : CSFalcon
    Pid          : 8945
+
+.LINK
+   https://github.com/r00t-3xp10it/redpill
+   https://github.com/D4Vinci/Dr0p1t-Framework/blob/master/resources/killav.py
 #>
 
 
@@ -80,14 +84,24 @@ ForEach($Item in $processnames)
    $ppid = (Get-Process -Name "$rawName" -EA SilentlyContinue).Id
 
 
-   If(($Item.ProcessName -like "*mcshield*") -or ($Item.ProcessName -like "*mcagent*") -or ($Item.ProcessName -like "*mcdetect*") -or ($Item.ProcessName -like "*mghtml*") -or ($Item.ProcessName -like "*mpftray*") -or ($Item.ProcessName -like "*msssrv*"))
+   If(($Item.ProcessName -like "*mcshield*") -or 
+      ($Item.ProcessName -like "*mcagent*") -or 
+      ($Item.ProcessName -like "*mcdetect*") -or
+      ($Item.ProcessName -like "*mghtml*") -or 
+      ($Item.ProcessName -like "*oasclnt*") -or 
+      ($Item.ProcessName -like "*mpftray*") -or 
+      ($Item.ProcessName -like "*msssrv*") -or 
+      ($Item.ProcessName -like "*mscifapp*"))
    {
       $found = "True"
       Write-Host "Product      : McAfee AV" -ForegroundColor Yellow
       Write-Host "ProcessName  : $rawName"
       Write-Host "Pid          : $ppid`n"
    }
-   If(($Item.ProcessName -like "*windefend*") -or ($Item.ProcessName -like "*MSASCui*") -or ($Item.ProcessName -like "*msmpeng*") -or ($Item.ProcessName -like "*msmpsvc*"))
+   If(($Item.ProcessName -like "*windefend*") -or 
+      ($Item.ProcessName -like "*MSASCui*") -or 
+      ($Item.ProcessName -like "*msmpeng*") -or 
+      ($Item.ProcessName -like "*msmpsvc*"))
    {
       $found = "True"
       Write-Host "Product      : Windows Defender AV" -ForegroundColor Yellow
@@ -101,21 +115,39 @@ ForEach($Item in $processnames)
       Write-Host "ProcessName  : $rawName"
       Write-Host "Pid          : $ppid`n"
    }
-   If($Item.ProcessName -like "*savservice*")
+   If($Item.ProcessName -like "*swdoctor*")
+   {
+      $found = "True"
+      Write-Host "Product      : Spyware Doctor AV" -ForegroundColor Yellow
+      Write-Host "ProcessName  : $rawName"
+      Write-Host "Pid          : $ppid`n"
+   }
+   If(($Item.ProcessName -like "*savservice*") -or 
+      ($Item.ProcessName -like "*sbiectrl*"))
    {
       $found = "True"
       Write-Host "Product      : Sophos AV" -ForegroundColor Yellow
       Write-Host "ProcessName  : $rawName"
       Write-Host "Pid          : $ppid`n"
    }
-   If(($Item.ProcessName -like "*TMCCSF*") -or ($Item.ProcessName -like "*TmListen*") -or ($Item.ProcessName -like "*NTRtScan*"))
+   If(($Item.ProcessName -like "*TMCCSF*") -or 
+      ($Item.ProcessName -like "*ofcdog*") -or 
+      ($Item.ProcessName -like "*TmListen*") -or 
+      ($Item.ProcessName -like "*pcclient*") -or 
+      ($Item.ProcessName -like "*NTRtScan*"))
    {
       $found = "True"
       Write-Host "Product      : Trend Micro AV" -ForegroundColor Yellow
       Write-Host "ProcessName  : $rawName"
       Write-Host "Pid          : $ppid`n"
    }
-   If(($Item.ProcessName -like "*symantec antivirus*") -or ($Item.ProcessName -like "*SymCorpUI*") -or ($Item.ProcessName -like "*ccSvcHst*") -or ($Item.ProcessName -like "*SMC*")  -or ($Item.ProcessName -like "*Rtvscan*"))
+   If(($Item.ProcessName -like "*symantec antivirus*") -or 
+      ($Item.ProcessName -like "*symlcsvc*") -or 
+      ($Item.ProcessName -like "*SymCorpUI*") -or 
+      ($Item.ProcessName -like "*ccSvcHst*") -or 
+      ($Item.ProcessName -like "*usrprmpt*") -or 
+      ($Item.ProcessName -like "*Rtvscan*")  -or 
+      ($Item.ProcessName -like "*SMC*"))
    {
       $found = "True"
       Write-Host "Product      : Symantec AV" -ForegroundColor Yellow
@@ -150,73 +182,117 @@ ForEach($Item in $processnames)
       Write-Host "ProcessName  : $rawName"
       Write-Host "Pid          : $ppid`n"
    }
-   If(($Item.ProcessName -like "avastUI") -or ($Item.ProcessName -like "aswupdsv"))
+   If(($Item.ProcessName -like "avastUI") -or 
+      ($Item.ProcessName -like "aswupdsv"))
    {
       $found = "True"
       Write-Host "Product      : Avast AV" -ForegroundColor Yellow
       Write-Host "ProcessName  : $rawName"
       Write-Host "Pid          : $ppid`n"
    }
-   If(($Item.ProcessName -like "navapsvc") -or ($Item.ProcessName -like "NortonSecurity") -or ($Item.ProcessName -like "atrack") -or ($Item.ProcessName -like "bootwarn") -or ($Item.ProcessName -like "cfgwiz") -or ($Item.ProcessName -like "csinsmnt"))
+   If(($Item.ProcessName -like "navapsvc") -or 
+      ($Item.ProcessName -like "NortonSecurity") -or 
+      ($Item.ProcessName -like "atrack") -or 
+      ($Item.ProcessName -like "bootwarn") -or 
+      ($Item.ProcessName -like "cfgwiz") -or 
+      ($Item.ProcessName -like "nprotect") -or 
+      ($Item.ProcessName -like "csinsmnt"))
    {
       $found = "True"
       Write-Host "Product      : Norton AV" -ForegroundColor Yellow
       Write-Host "ProcessName  : $rawName"
       Write-Host "Pid          : $ppid`n"
    }
-   If($Item.ProcessName -like "PSUAMain")
+   If(($Item.ProcessName -like "PSUAMain") -or 
+      ($Item.ProcessName -like "pavfnsvr"))
    {
       $found = "True"
       Write-Host "Product      : Panda Cloud AV" -ForegroundColor Yellow
       Write-Host "ProcessName  : $rawName"
       Write-Host "Pid          : $ppid`n"
    }
-   If(($Item.ProcessName -like "avp") -or ($Item.ProcessName -like "avpm") -or ($Item.ProcessName -like "kav") -or ($Item.ProcessName -like "Kavss"))
+   If(($Item.ProcessName -like "avp") -or 
+      ($Item.ProcessName -like "avpm") -or 
+      ($Item.ProcessName -like "kav") -or 
+      ($Item.ProcessName -like "Kavss") -or 
+      ($Item.ProcessName -like "kavsvc"))
    {
       $found = "True"
       Write-Host "Product      : Kaspersky AV" -ForegroundColor Yellow
       Write-Host "ProcessName  : $rawName"
       Write-Host "Pid          : $ppid`n"
    }
-   If(($Item.ProcessName -like "aavgapi") -or ($Item.ProcessName -like "avgamsvr") -or ($Item.ProcessName -like "avgagent") -or ($Item.ProcessName -like "avgcc") -or ($Item.ProcessName -like "avgctrl"))
+   If(($Item.ProcessName -like "aavgapi") -or 
+      ($Item.ProcessName -like "avgamsvr") -or 
+      ($Item.ProcessName -like "avgagent") -or 
+      ($Item.ProcessName -like "avgcc") -or 
+      ($Item.ProcessName -like "avgctrl"))
    {
       $found = "True"
       Write-Host "Product      : AVG Security AV" -ForegroundColor Yellow
       Write-Host "ProcessName  : $rawName"
       Write-Host "Pid          : $ppid`n"
    }
-   If(($Item.ProcessName -like "aawservice") -or ($Item.ProcessName -like "aawtray") -or ($Item.ProcessName -like "ad-aware"))
+   If(($Item.ProcessName -like "aawservice") -or 
+      ($Item.ProcessName -like "aawtray") -or 
+      ($Item.ProcessName -like "ad-aware"))
    {
       $found = "True"
       Write-Host "Product      : Ad-Aware AV" -ForegroundColor Yellow
       Write-Host "ProcessName  : $rawName"
       Write-Host "Pid          : $ppid`n"
    }
-   If(($Item.ProcessName -like "a2guard") -or ($Item.ProcessName -like "a2adguard") -or ($Item.ProcessName -like "a2adwizard") -or ($Item.ProcessName -like "a2antidialer"))
+   If(($Item.ProcessName -like "a2guard") -or 
+      ($Item.ProcessName -like "a2adguard") -or 
+      ($Item.ProcessName -like "a2adwizard") -or 
+      ($Item.ProcessName -like "a2antidialer"))
    {
       $found = "True"
       Write-Host "Product      : A-squared Guard" -ForegroundColor Yellow
       Write-Host "ProcessName  : $rawName"
       Write-Host "Pid          : $ppid`n"
    }
-   If($Item.ProcessName -like "avguard")
+   If(($Item.ProcessName -like "sched") -or 
+      ($Item.ProcessName -like "avguard") -or
+      ($Item.ProcessName -like "savscan"))
    {
       $found = "True"
       Write-Host "Product      : Avira AV" -ForegroundColor Yellow
       Write-Host "ProcessName  : $rawName"
       Write-Host "Pid          : $ppid`n"
    }
-   If(($Item.ProcessName -like "bdagent") -or ($Item.ProcessName -like "bdnagent") -or ($Item.ProcessName -like "bdmcon") -or ($Item.ProcessName -like "bdss"))
+   If(($Item.ProcessName -like "bdagent") -or 
+      ($Item.ProcessName -like "bdnagent") -or 
+      ($Item.ProcessName -like "bdmcon") -or 
+      ($Item.ProcessName -like "bdss") -or 
+      ($Item.ProcessName -like "livesrv"))
    {
       $found = "True"
       Write-Host "Product      : Bitdefender AV" -ForegroundColor Yellow
       Write-Host "ProcessName  : $rawName"
       Write-Host "Pid          : $ppid`n"
    }
-   If(($Item.ProcessName -like "clamd") -or ($Item.ProcessName -like "clamservice") -or ($Item.ProcessName -like "clamtray"))
+   If(($Item.ProcessName -like "clamd") -or 
+      ($Item.ProcessName -like "clamservice") -or 
+      ($Item.ProcessName -like "clamtray"))
    {
       $found = "True"
       Write-Host "Product      : ClamAV security" -ForegroundColor Yellow
+      Write-Host "ProcessName  : $rawName"
+      Write-Host "Pid          : $ppid`n"
+   }
+   If(($Item.ProcessName -like "teatimer") -or 
+      ($Item.ProcessName -like "sdhelp"))
+   {
+      $found = "True"
+      Write-Host "Product      : Spybot - Search & Destroy" -ForegroundColor Yellow
+      Write-Host "ProcessName  : $rawName"
+      Write-Host "Pid          : $ppid`n"
+   }
+   If($Item.ProcessName -like "ssu")
+   {
+      $found = "True"
+      Write-Host "Product      : WebRoot Spy Sweeper" -ForegroundColor Yellow
       Write-Host "ProcessName  : $rawName"
       Write-Host "Pid          : $ppid`n"
    }
@@ -281,7 +357,8 @@ ForEach($Item in $processnames)
          Write-Host "ProcessName  : $rawName"
          Write-Host "Pid          : $ppid`n"
       }
-      If(($Item.ProcessName -like "*defensewall*") -or ($Item.ProcessName -like "*defensewall_serv*"))
+      If(($Item.ProcessName -like "*defensewall*") -or 
+         ($Item.ProcessName -like "*defensewall_serv*"))
       {
          $found = "True"
          Write-Host "Product      : DefenseWall intrusion detection" -ForegroundColor DarkYellow
@@ -290,6 +367,13 @@ ForEach($Item in $processnames)
       }
             
       #Firewall
+      If($Item.ProcessName -like "*zlclient*") 
+      {
+         $found = "True"
+         Write-Host "Product      : ZoneAlarm Security firewall" -ForegroundColor DarkYellow
+         Write-Host "ProcessName  : $rawName"
+         Write-Host "Pid          : $ppid`n"
+      }
       If($Item.ProcessName -like "*TmPfw*") 
       {
          $found = "True"
@@ -297,7 +381,9 @@ ForEach($Item in $processnames)
          Write-Host "ProcessName  : $rawName"
          Write-Host "Pid          : $ppid`n"
       }
-      If(($Item.ProcessName -like "*cfp*") -or ($Item.ProcessName -like "*cpf*") -or ($Item.ProcessName -like "*cmdagent*"))
+      If(($Item.ProcessName -like "*cfp*") -or 
+         ($Item.ProcessName -like "*cpf*") -or 
+         ($Item.ProcessName -like "*cmdagent*"))
       {
          $found = "True"
          Write-Host "Product      : Comodo Security firewall" -ForegroundColor DarkYellow
@@ -311,9 +397,33 @@ ForEach($Item in $processnames)
          Write-Host "ProcessName  : $rawName"
          Write-Host "Pid          : $ppid`n"
       }
+      If($Item.ProcessName -like "*outpost*")
+      {
+         $found = "True"
+         Write-Host "Product      : Agnitum Outpost Firewall" -ForegroundColor DarkYellow
+         Write-Host "ProcessName  : $rawName"
+         Write-Host "Pid          : $ppid`n"
+      }
+      If($Item.ProcessName -like "*scfservice*")
+      {
+         $found = "True"
+         Write-Host "Product      : Sophos Client Firewall" -ForegroundColor DarkYellow
+         Write-Host "ProcessName  : $rawName"
+         Write-Host "Pid          : $ppid`n"
+      }
+      If(($Item.ProcessName -like "*umxcfg*") -or 
+         ($Item.ProcessName -like "*umxagent*"))
+      {
+         $found = "True"
+         Write-Host "Product      : CA Personal Firewall" -ForegroundColor DarkYellow
+         Write-Host "ProcessName  : $rawName"
+         Write-Host "Pid          : $ppid`n"
+      }
             
       #DLP
-      If(($Item.ProcessName -like "dgagent") -or ($Item.ProcessName -like "DgService") -or ($Item.ProcessName -like "DgScan"))
+      If(($Item.ProcessName -like "dgagent") -or 
+         ($Item.ProcessName -like "DgService") -or 
+         ($Item.ProcessName -like "DgScan"))
       {
          $found = "True"
          Write-Host "Product      : Verdasys Digital Guardian DLP" -ForegroundColor DarkYellow
@@ -330,7 +440,14 @@ ForEach($Item in $processnames)
       If($Item.ProcessName -like "noads")
       {
          $found = "True"
-         Write-Host "Product      : NoAds addblocker" -ForegroundColor DarkYellow
+         Write-Host "Product      : NoAds Ad Blocker" -ForegroundColor DarkYellow
+         Write-Host "ProcessName  : $rawName"
+         Write-Host "Pid          : $ppid`n"
+      }
+      If($Item.ProcessName -like "sadblock")
+      {
+         $found = "True"
+         Write-Host "Product      : Super Ad Blocker" -ForegroundColor DarkYellow
          Write-Host "ProcessName  : $rawName"
          Write-Host "Pid          : $ppid`n"
       }
