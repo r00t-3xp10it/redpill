@@ -93,6 +93,7 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 |-CsOnTheFly| Compile \| Execute | Download \ Compile (to exe) and Execute CS scripts|
 |-CookieHijack| Dump\|History | Edge\|Chrome Cookie Hijacking tool|
 |-UacMe| Bypass \| Elevate \| Clean | UAC bypass\|EOP by dll reflection! (cmstp.exe)|
+|-GetCounterMeasures| Enum \| verbose | List common security processes\pid's running!|
 
 <br />
 
