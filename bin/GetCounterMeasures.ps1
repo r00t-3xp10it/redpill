@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: Get-Process {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.8
+   PS cmdlet Dev version: v1.0.9
 
 .DESCRIPTION
    This cmdlet enumerates common security product processes running
@@ -86,6 +86,51 @@ ForEach($Item in $processnames)
    $ppid = (Get-Process -Name "$rawName" -EA SilentlyContinue).Id
 
 
+   If($Item.ProcessName -like "*F-PROT*")
+   {
+      $foundit = "True"
+      Write-Host "Product      : F-Prot AntiVirus" -ForegroundColor Yellow
+      Write-Host "Description  : Anti-Virus"
+      Write-Host "ProcessName  : $rawName"
+      Write-Host "Pid          : $ppid`n"
+   }
+   If($Item.ProcessName -like "*nspupsvc*")
+   {
+      $foundit = "True"
+      Write-Host "Product      : nProtect" -ForegroundColor Yellow
+      Write-Host "Description  : Anti-Virus"
+      Write-Host "ProcessName  : $rawName"
+      Write-Host "Pid          : $ppid`n"
+   }
+   If($Item.ProcessName -like "*SpywareTerminatorShield*")
+   {
+      $foundit = "True"
+      Write-Host "Product      : SpywareTerminator" -ForegroundColor Yellow
+      Write-Host "Description  : Anti-Virus"
+      Write-Host "ProcessName  : $rawName"
+      Write-Host "Pid          : $ppid`n"
+   }
+   If(($Item.ProcessName -like "*AVK*") -or 
+      ($Item.ProcessName -like "*AVKCl*") -or 
+      ($Item.ProcessName -like "*GDScan*") -or 
+      ($Item.ProcessName -like "*AVKWCtl*") -or 
+      ($Item.ProcessName -like "*AVKBackupService*"))
+   {
+      $foundit = "True"
+      Write-Host "Product      : GData" -ForegroundColor Yellow
+      Write-Host "Description  : Anti-Virus"
+      Write-Host "ProcessName  : $rawName"
+      Write-Host "Pid          : $ppid`n"
+   }
+   If(($Item.ProcessName -like "*f-secure*") -or 
+      ($Item.ProcessName -like "*fsavgui*"))
+   {
+      $foundit = "True"
+      Write-Host "Product      : f-secure" -ForegroundColor Yellow
+      Write-Host "Description  : Anti-Virus"
+      Write-Host "ProcessName  : $rawName"
+      Write-Host "Pid          : $ppid`n"
+   }
    If(($Item.ProcessName -like "*mghtml*") -or 
       ($Item.ProcessName -like "*msssrv*") -or 
       ($Item.ProcessName -like "*mcagent*") -or
@@ -165,7 +210,8 @@ ForEach($Item in $processnames)
       Write-Host "Pid          : $ppid`n"
    }
    If(($Item.ProcessName -like "*mbae*") -or 
-      ($Item.ProcessName -like "*mbam*"))
+      ($Item.ProcessName -like "*mbam*") -or 
+      ($Item.ProcessName -like "*mbamtray*"))
    {
       $foundit = "True"
       Write-Host "Product      : MalwareBytes Anti-Exploit" -ForegroundColor Yellow
@@ -419,7 +465,8 @@ ForEach($Item in $processnames)
       }
             
       #Firewall
-      If($Item.ProcessName -like "*zlclient*") 
+      If(($Item.ProcessName -like "*vsmon*") -or 
+         ($Item.ProcessName -like "*zlclient*")) 
       {
          $foundit = "True"
          Write-Host "Product      : ZoneAlarm Security firewall" -ForegroundColor DarkYellow
