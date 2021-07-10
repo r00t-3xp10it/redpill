@@ -576,7 +576,7 @@ If($GetLogs -ieq "DeleteAll"){
 
       }Else{## Clean ALL logfiles from eventvwr snapIn!
 
-         $RawPScript = "wevtutil el | Foreach-Object { wevtutil cl `"`$_`" }"
+         $RawPScript = "wevtutil el | Where-Object { `$_ -iNotMatch '^(Microsoft-Windows-LiveId/Analytic|Microsoft-Windows-LiveId/Operational|Microsoft-Windows-USBVideo/Analytic)$' } | Foreach-Object { wevtutil cl `"`$_`" }"
          $regex = "system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational"
 
       }
@@ -662,7 +662,7 @@ If($GetLogs -ieq "DeleteAll"){
 
       }Else{## Clean ALL logfiles from eventvwr snapIn!
 
-         wevtutil el | Foreach-Object { wevtutil cl "$_" }
+         wevtutil el | Where-Object { $_ -iNotMatch '^(Microsoft-Windows-LiveId/Analytic|Microsoft-Windows-LiveId/Operational|Microsoft-Windows-USBVideo/Analytic)$' } | Foreach-Object { wevtutil cl "$_" }
          $regex = "system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational"
 
       }
