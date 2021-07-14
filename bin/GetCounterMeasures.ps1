@@ -75,7 +75,7 @@ $processnames = Get-Process * -EA SilentlyContinue | Where-Object {
 
 
 ## Build Output Table
-Write-Host "`n`nCommon security processes running!"
+Write-Host "`n`nCommon security processes running!" -ForeGroundColor Green
 Write-Host "----------------------------------"
 
 ForEach($Item in $processnames)
