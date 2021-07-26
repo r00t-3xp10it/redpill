@@ -278,7 +278,9 @@ EOP - [Find missing software patchs for privilege escalation](https://drive.goog
 ![pingverbose](https://user-images.githubusercontent.com/23490060/107841656-87834500-6db4-11eb-953c-22e2322577b6.png)<br /><br />
 ![eopmodule](https://user-images.githubusercontent.com/23490060/108617459-78347500-740e-11eb-8cce-90994c2e048a.png)<br /><br />
 ![DumpSAMhashs](https://user-images.githubusercontent.com/23490060/113536669-83162400-95ce-11eb-9365-cee2f0d85be2.jpg)<br /><br />
-![EOP](https://user-images.githubusercontent.com/23490060/115331142-4846eb00-a18d-11eb-85c4-7a2b57404c40.png)<br />
+![EOP](https://user-images.githubusercontent.com/23490060/115331142-4846eb00-a18d-11eb-85c4-7a2b57404c40.png)<br /><br />
+![NoAmsi](https://user-images.githubusercontent.com/23490060/125387813-6429e980-e396-11eb-9ae7-6a488f1647b8.png)<br />
+
 **[Any collaborations Or bugreports are wellcome](https://github.com/r00t-3xp10it/redpill/issues)**
 
 <br />

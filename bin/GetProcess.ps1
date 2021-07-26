@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (18363) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.3
+   PS cmdlet Dev version: v1.0.4
 
 .DESCRIPTION
    This CmdLet enumerates 'All' running process if used
@@ -155,7 +155,7 @@ If($GetProcess -ieq "Enum" -or $GetProcess -ieq "Kill"){
        Start-Sleep -Seconds 1
        $RawProcName = $ProcessName -replace '.exe','' ## Replace .exe in processname to be abble use Get-Process
        Get-Process $RawProcName -EA SilentlyContinue | Select-Object Id,PriorityClass,Name,ProcessName,Description,Product,Company,StartTime,ProductVersion,Path,MainWindowTitle,Responding |
-          Where-Object { $_.Name -iNotMatch "^($Exclude)$" } | Format-List > $Env:TMP\Tbl.log # To be abble to exclude the first line from output later!
+          Where-Object { $_.Name -iNotMatch "^($Exclude)$" -and $_.PriorityClass -iNotMatch '^(Idle)$' } | Format-List > $Env:TMP\Tbl.log # To be abble to exclude the first line from output later!
 
        #Colorize output and exclude 1º line
        Get-Content -Path "$Env:TMP\Tbl.log" | 
