@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: none
    Optional Dependencies: wevtutil, UacMe.ps1
-   PS cmdlet Dev version: v1.5.19
+   PS cmdlet Dev version: v1.5.20
 
 .DESCRIPTION
    This cmdlet allow users to delete ALL eventvwr logfiles or to delete
@@ -144,7 +144,7 @@ If($GetLogs -ieq "Enum"){
       Circular            1052672           0 Microsoft-Windows-AppLocker/EXE and DLL
    #>
 
-   Write-Host "`nPlease Wait, Scanning Eventvwr registry! .." -ForegroundColor Green;Start-Sleep -Milliseconds 700
+   Write-Host "`n[+] Please Wait, Scanning Eventvwr registry! .." -ForegroundColor Green;Start-Sleep -Milliseconds 700
    $regex = "system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational"
    ## List Major event logs categories and the number of entries!
    # [shanty] Deprecated: Get-EventLog -List | Format-Table -AutoSize
@@ -204,7 +204,7 @@ If($GetLogs -ieq "Verbose"){
           600 Information PowerShell Engine state is changed from Available to Stopped. ... 
    #>
 
-   Write-Host "`nPlease Wait, Scanning Eventvwr registry! .." -ForegroundColor Green;Start-Sleep -Milliseconds 700
+   Write-Host "`n[+] Please Wait, Scanning Eventvwr registry! .." -ForegroundColor Green;Start-Sleep -Milliseconds 700
    $regex = "system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational"
    ## List Major event logs categories and the number of entries!
    # [shanty] Deprecated: Get-EventLog -List | Format-Table -AutoSize
@@ -363,7 +363,7 @@ If($GetLogs -ieq "Yara"){
    # If sellected -verb "Microsoft-Windows-NetworkProfile/Operational" (or other path)
    # then the registry path will be appended to the default $Categories List and scanned!
    # WARNING: Some Eventvwr Registry Paths require administrator privileges to list entrys!
-   Write-Host "`nPlease Wait, Scanning Eventvwr registry! .." -ForegroundColor Green
+   Write-Host "`n[+] Please Wait, Scanning Eventvwr registry! .." -ForegroundColor Green
 
    Start-Sleep -Milliseconds 700
    If($Verb -ne "False"){
@@ -551,7 +551,7 @@ If($GetLogs -ieq "DeleteAll"){
       Delete ONLY logfiles from "Microsoft-Windows-Powershell/Operational" eventvwr categorie!
    #>
 
-   Write-Host "`nPlease Wait, Deleting Eventvwr logfiles! .." -ForegroundColor Green
+   Write-Host "`n[+] Please Wait, Deleting Eventvwr logfiles! .." -ForegroundColor Green
    Start-Sleep -Milliseconds 700
    If(-not($IsClientAdmin)){
 

