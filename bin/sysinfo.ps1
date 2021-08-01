@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: none
    Optional Dependencies: curl, icacls
-   PS cmdlet Dev version: v1.4.11
+   PS cmdlet Dev version: v1.4.12
 
 .DESCRIPTION
    System info: IpAddress, OsVersion, OsFlavor, OsArchitecture,
@@ -243,7 +243,7 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
      # 'lsass','System', 'wininit' and 'telnet' process names as yellow foregroundcolor!
      $tcptable | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {
         $stringformat = If($_ -Match '(\s+20\s+|\s+23\s+|\s+80\s+|\s+107\s+|\s+137\s+)' -or
-        $_ -iMatch '(\s+lsass\s+|\s+System\s+|\s+wininit\s+|\s+telnet\s+)'){
+        $_ -iMatch '(\s+lsass\s+|\s+System\s+|\s+wininit\s+|\s+telnet\s+|\s+MsMpEng\s+)'){
            @{ 'ForegroundColor' = 'Yellow' } }Else{ @{ 'ForegroundColor' = 'White' } }
         Write-Host @stringformat $_
      }

@@ -109,10 +109,12 @@
    [string]$DnsSpoof="false",
    [string]$TimeOpen="false",
    [string]$GetSkype="False",
+   [string]$LogFile="false",
    [string]$IconSet="False",
    [string]$Sponsor="false",
    [string]$NoAmsi="false",
    [string]$PSargs="false",
+   [string]$Query="false",
    [string]$UacMe="false",
    [string]$Verb="false",
    [string]$Port="false",
@@ -257,7 +259,7 @@ If($Sysinfo -ieq "Enum" -or $Sysinfo -ieq "Verbose"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/sysinfo.ps1 -Destination $Env:TMP\Sysinfo.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\Sysinfo.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 21){## Corrupted download detected => DefaultFileSize: 21,248046875/KB
+      If($SizeDump -lt 21){## Corrupted download detected => DefaultFileSize: 21,2587890625/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\Sysinfo.ps1"){Remove-Item -Path "$Env:TMP\Sysinfo.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -313,7 +315,7 @@ If($GetConnections -ieq "Enum" -or $GetConnections -ieq "Verbose"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetConnections.ps1 -Destination $Env:TMP\GetConnections.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetConnections.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 5){## Corrupted download detected => DefaultFileSize: 5,36328125/KB
+      If($SizeDump -lt 8){## Corrupted download detected => DefaultFileSize: 8,5517578125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetConnections.ps1"){Remove-Item -Path "$Env:TMP\GetConnections.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -322,9 +324,9 @@ If($GetConnections -ieq "Enum" -or $GetConnections -ieq "Verbose"){
 
    ## Run auxiliary module
    If($GetConnections -ieq "Enum"){
-      powershell -File "$Env:TMP\GetConnections.ps1" -GetConnections Enum
+      powershell -File "$Env:TMP\GetConnections.ps1" -Action Enum -Query $Query -LogFile $LogFile
    }ElseIf($GetConnections -ieq "Verbose"){
-      powershell -File "$Env:TMP\GetConnections.ps1" -GetConnections Verbose
+      powershell -File "$Env:TMP\GetConnections.ps1" -Action Verbose -Query $Query -LogFile $LogFile
    }
 
    ## Clean Old files left behind
@@ -3391,35 +3393,46 @@ $HelpParameters = @"
    <#!Help.
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - Gets a list of ESTABLISHED TCP connections
+      Helper - Gets a list of ESTABLISHED TCP connections!
    
    .DESCRIPTION
-      Enumerates ESTABLISHED TCP connections and retrieves the
-      ProcessName associated from the connection PID (Id) identifier
+      Enumerates ESTABLISHED UDP\TCP connections and retrieves the
+      Process Name associated from the connection PID (Id) identifier.
 
    .Parameter GetConnections
-      Accepts arguments: Enum and Verbose (default: Enum)
+      Accepts arguments: Enum, Verbose (default: Enum)
+
+   .Parameter Query
+      Search particular string in connections (default: false)
+
+   .Parameter LogFile
+      The path\name.log of the logfile to create (default: false)
     
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetConnections Enum
-      Enumerates All ESTABLISHED TCP connections (IPV4 only)
+      Enumerates ESTABLISHED TCP connections only! (IPv4)
 
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetConnections Verbose
-      Retrieves process info from the connection PID (Id) identifier
+      Enumerates LISTENNING\ESTABLISHED UDP\TCP connections! (IPv4)
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -GetConnections Enum -Query "13.225.245.57:443"
+      Search for '13.225.245.57:443' string in ESTABLISHED TCP connections! (IPv4)
+
+   .EXAMPLE
+      PS C:\> powershell -File redpill.ps1 -GetConnections Verbose -LogFile "`$Env:TMP\testme.log"
+      Enumerates All LISTENNING\ESTABLISHED UDP\TCP connections and store results on testme.log
 
    .OUTPUTS
-      Proto  Local Address          Foreign Address        State           Id
-      -----  -------------          ---------------        -----           --
-      TCP    127.0.0.1:58490        127.0.0.1:58491        ESTABLISHED     10516
-      TCP    192.168.1.72:60547     40.67.254.36:443       ESTABLISHED     3344
-      TCP    192.168.1.72:63492     216.239.36.21:80       ESTABLISHED     5512
-
-      Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
-      -------  ------    -----      -----     ------     --  -- -----------
-          671      47    39564      28452       1,16  10516   4 firefox
-          426      20     5020      21348       1,47   3344   0 svchost
-         1135      77   252972     271880      30,73   5512   4 powershell
+      Proto LocalAddress  LocalPort RemoteAdress    RemotePort ProcessName PID   State      
+      ----- ------------- --------- --------------- ---------- ----------- ---   -----      
+      TCP   192.168.1.72  50776     13.225.245.57   443        opera       14492 ESTABLISHED
+      TCP   192.168.1.72  53139     142.250.201.80  443        svchost     7280  ESTABLISHED
+      TCP   192.168.1.72  55941     20.54.37.64     443        svchost     13224 ESTABLISHED
+      TCP   192.168.1.72  56650     2.16.65.56      443        opera       14492 ESTABLISHED
+      TCP   192.168.1.72  63127     35.185.44.232   443        opera       14492 ESTABLISHED
+      TCP   192.168.1.72  63395     40.115.117.93   443        MsMpEng     3512  ESTABLISHED
    #>!bye..
 
 "@;

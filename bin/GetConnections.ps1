@@ -1,135 +1,246 @@
 ﻿<#
 .SYNOPSIS
-   Gets a list of ESTABLISHED connections (TCP)
+   Enumerate ESTABLISHED TCP\UDP connections! (IPv4)
 
    Author: r00t-3xp10it
-   Tested Under: Windows 10 (18363) x64 bits
-   Required Dependencies: none
+   Tested Under: Windows 10 (19042) x64 bits
+   Required Dependencies: netstat {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.3
+   PS cmdlet Dev version: v1.2.8
    
 .DESCRIPTION
    Enumerates ESTABLISHED TCP connections and retrieves the
-   ProcessName associated from the connection PID identifier
+   Process Name associated from the connection PID identifier.
+   
+.NOTES
+   If used -Action 'verbose' @argument then this cmdlet will
+   also list UDP, 0.0.0.0 and 127.0.0.1 (localhost) connections!
+   If used -LogFile '$Env:TMP\connections.log' @argument then
+   cmdlet will store connections report logfile on %tmp% dir!
+   The -Query @argument does not search\filter process_names!
 
-.Parameter GetConnections
-   Accepts arguments: Enum and Verbose
+.Parameter Action
+   Accepts arguments: Enum, Verbose (default: Enum)
+
+.Parameter Query
+   Search particular string in connections (default: false)
+
+.Parameter LogFile
+   The path\name.log of the logfile to create (default: false)
 
 .EXAMPLE
    PS C:\> Get-Help .\GetConnections.ps1 -full
    Access this cmdlet comment based help
     
 .EXAMPLE
-   PS C:\> .\GetConnections.ps1 -GetConnections Enum
-   Enumerates All ESTABLISHED TCP connections (IPV4 only)
+   PS C:\> .\GetConnections.ps1 -Action Enum
+   Enumerates ESTABLISHED TCP connections only!
 
 .EXAMPLE
-   PS C:\> .\GetConnections.ps1 -GetConnections Verbose
-   Retrieves process info from the connection PID (Id) identifier
+   PS C:\> .\GetConnections.ps1 -Action Verbose
+   Enumerates LISTENNING\ESTABLISHED UDP\TCP connections!
+
+.EXAMPLE
+   PS C:\> .\GetConnections.ps1 -Action Enum -Query "13.225.245.57:443"
+   Search for '13.225.245.57:443' string in ESTABLISHED TCP connections!
+
+.EXAMPLE
+   PS C:\> .\GetConnections.ps1 -Action Verbose -LogFile "$Env:TMP\testme.log"
+   Enumerates LISTENNING\ESTABLISHED UDP\TCP connections and store results on testme.log
 
 .OUTPUTS
-   Proto  Local Address          Foreign Address        State           Id
-   -----  -------------          ---------------        -----           --
-   TCP    127.0.0.1:58490        127.0.0.1:58491        ESTABLISHED     10516
-   TCP    192.168.1.72:60547     40.67.254.36:443       ESTABLISHED     3344
-   TCP    192.168.1.72:63492     216.239.36.21:80       ESTABLISHED     5512
-
-   Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
-   -------  ------    -----      -----     ------     --  -- -----------
-   671      47        39564      28452     1,16    10516   4 firefox
-   426      20        5020       21348     1,47     3344   0 svchost
-   1135     77        252972     271880    30,73    5512   4 powershell
+   Proto LocalAddress  LocalPort RemoteAdress    RemotePort ProcessName PID   State      
+   ----- ------------- --------- --------------- ---------- ----------- ---   -----      
+   TCP   192.168.1.72  50776     13.225.245.57   443        opera       14492 ESTABLISHED
+   TCP   192.168.1.72  53139     142.250.201.80  443        svchost     7280  ESTABLISHED
+   TCP   192.168.1.72  55941     20.54.37.64     443        svchost     13224 ESTABLISHED
+   TCP   192.168.1.72  56650     2.16.65.56      443        opera       14492 ESTABLISHED
+   TCP   192.168.1.72  63127     35.185.44.232   443        opera       14492 ESTABLISHED
+   TCP   192.168.1.72  63395     40.115.117.93   443        MsMpEng     3512  ESTABLISHED
+   
+.LINK
+   https://github.com/r00t-3xp10it/redpill
+   https://gist.github.com/r00t-3xp10it/bfd266b380b4993014d21881f3bacb90#gistcomment-3837230
 #>
 
 
 [CmdletBinding(PositionalBinding=$false)] param(
-   [string]$GetConnections="false"
+   [string]$LogFile="false",
+   [string]$Action="Enum",
+   [string]$Query="false"
 )
 
 
-## Disable Powershell Command Logging for current session.
+$err = $null
+$ErrorActionPreference = "SilentlyContinue"
+#Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
-If($GetConnections -ieq "Enum"){## Quick TCP enumeration
+
+
+#Build TCP connections DataTable!
+$tcptable = New-Object System.Data.DataTable
+$tcptable.Columns.Add("Proto")|Out-Null
+$tcptable.Columns.Add("LocalAddress ")|Out-Null
+$tcptable.Columns.Add("LocalPort")|Out-Null
+$tcptable.Columns.Add("RemoteAdress   ")|Out-Null
+$tcptable.Columns.Add("RemotePort")|Out-Null
+$tcptable.Columns.Add("ProcessName")|Out-Null
+$tcptable.Columns.Add("PID")|Out-Null
+$tcptable.Columns.Add("State")|Out-Null
+
+
+Write-Host ""
+#Display Network NetAdapter settings!
+Get-NetAdapter | Select-Object Name,Status,LinkSpeed,DeviceID |
+Format-Table -AutoSize | Out-String -Stream | ForEach-Object {
+   $stringformat = If($_ -Match '(Up)'){
+      @{ 'ForegroundColor' = 'DarkCyan' } }Else{ @{ } }
+   Write-Host @stringformat $_
+}
+
+
+If($Action -ieq "false" -or $Action -eq $null)
+{
+   #None @arguments sellected by user!
+   Write-Host "[error] None @arguments sellected by user!" -ForeGroundColor Red -BackGroundColor Black
+   Write-Host "";Start-Sleep -Seconds 3;Get-Help .\GetConnections.ps1 -Detailed;exit #Exit @GetConnections
+}
+ElseIf($Action -ieq "verbose")
+{
 
    <#
    .SYNOPSIS
-      Helper - Gets a list of ESTABLISHED connections (TCP)
-
-   .DESCRIPTION
-      Quick Enumeration of ESTABLISHED TCP connections
-
-   .EXAMPLE
-      PS C:\> .\GetConnections.ps1 -GetConnections Enum
-      Enumerates All ESTABLISHED TCP connections (IPV4 only)
-
-   .OUTPUTS
-      LocalAddress LocalPort RemoteAddress RemotePort OwningProcess
-      ------------ --------- ------------- ---------- -------------
-      192.168.1.72     64372 34.216.9.227         443         12992
-      192.168.1.72     58016 51.138.106.75        443         11232
-      192.168.1.72     58012 140.82.112.26        443         12992
-      192.168.1.72     55274 40.67.254.36         443          3708
+      Author: @r00t-3xp10it
+      Helper - netstat enumeration filters!
    #>
 
-   Write-Host "`n`n"
-   ## CmdLine To Display TCP listenning connections also!
-   # $_.State -ieq "Established" -or $_.State -ieq "Listen"
-   Get-NetTCPConnection | Where-Object {## Filter stdout outputs { search established and exclude IPV6 + localhost }
-      $_.State -ieq "Established" -and $_.LocalAddress -NotMatch ":" -and $_.LocalAddress -NotMatch "127.0.0.1" -and $_.LocalAddress -NotMatch "0.0.0.0"
-      }| Select-Object LocalAddress,LocalPort,RemoteAddress,RemotePort,OwningProcess | Format-Table
-}   
+   #Detailed Enumeration settings! {exclude: IPv6}
+   Write-Host "[i] Listing TCP\UDP ESTABLISHED\LISTENING connections!" -ForeGroundColor Green
+   $Filter = "UDP LISTENING ESTABLISHED"     #List LISTENING\ESTABLISHED UDP\TCP connections!
+   $Exclude = "[ ::"                         #Exclude from querys IPv6 protocol connections!
+}
+Else
+{
+   #Default scan settings! {exclude: UDP|IPv6|LocalHost}
+   Write-Host "[i] Listing TCP ESTABLISHED connections!" -ForeGroundColor Green
+   $Filter = "ESTABLISHED"                   #List only ESTABLISHED TCP connections!
+   $Exclude = "[ :: UDP 0.0.0.0:0 127.0.0.1" #Exclude from querys UDP|IPv6|LocalHost connections!
+}
 
 
-If($GetConnections -ieq "Verbose"){## Verbose module
+#User query search sellection!
+#Query @arg does not search for process_names!
+If($Query -ne "false"){$Filter = "$Query";$Exclude = "beterraba"}
+
+#Use netstat to start building the Output Table!
+$TcpList = netstat -ano | findstr "$Filter" | findstr /V "$Exclude"
+If(-not($TcpList))
+{
+   Write-Host "[error] None connection(s) found active in $Env:COMPUTERNAME!" -ForegroundColor Red -BackgroundColor Black
+   Write-Host "";exit ## Exit @GetConnections
+}
+
+
+ForEach($Item in $TcpList)
+{#Loop trougth all $TcpList Items to build Table!
+
+   #Split List using the empty spaces betuiwn strings!
+   $parse = $Item.split()
+
+   #Delete empty lines from the variable List!
+   $viriato = $parse | ? { $_.trim() -ne "" }
+
+   $Protocol = $viriato[0]             ## Protocol
+   $AddrPort = $viriato[1]             ## LocalAddress + port
+   $LocalHos = $AddrPort.Split(':')[0] ## LocalAddress
+   $LocalPor = $AddrPort.Split(':')[1] ## LocalPort
+   $ProcPPID = $viriato[-1]            ## Process PID
+   $Remoteal = $viriato[2]             ## RemoteAddress + port
+
+   If($Remoteal -iNotMatch '^(LISTENING|ESTABLISHED)$' -or $Remoteal -ne $null)
+   {
+      $Remotead = $Remoteal.Split(':')[0] ## RemoteAddress
+      $Remotepo = $Remoteal.Split(':')[1] ## RemotePort
+   }
+   Else
+   {
+      $Remoteal = "";$Remotead = "";$Remotepo = ""
+   }
+
+   try{## Get each process name Tag by is PID identifier! {silent}
+      $ProcName = (Get-Process -PID "$ProcPPID" -EA SilentlyContinue).ProcessName
+   }catch{} ## Catch exeptions - Do Nothing!
+
+
+   If($Item -iMatch 'ESTABLISHED')
+   {
+      $portstate = "ESTABLISHED"
+   }
+   ElseIf($Item -iMatch 'LISTENING')
+   {
+      $portstate = "LISTENING"
+   }
+
+   ## Adding values to output DataTable!
+   $tcptable.Rows.Add("$Protocol",   ## Protocol
+                      "$LocalHos",   ## LocalAddress
+                      "$LocalPor",   ## LocalPort
+                      "$Remotead",   ## RemoteAddress
+                      "$Remotepo",   ## RemotePort
+                      "$ProcName",   ## ProcessName
+                      "$ProcPPID",   ## PID
+                      "$portstate"   ## state
+   )|Out-Null
+
+}## End of 'ForEach()' loop function!
+
+
+<#
+.SYNOPSIS
+   Author: @r00t-3xp10it
+   Helper - Diplay connections DataTable!
+
+.NOTES
+   Out-String formats strings containing the ports '20,23,80,107,137' and 'lsass'
+   'System', 'wininit', 'telnet' and 'MsMpEng' processnames as yellow foregroundcolor!
+#>
+$tcptable | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {
+   $stringformat = If($_ -Match '(\s+20\s+|\s+23\s+|\s+80\s+|\s+107\s+|\s+137\s+)' -or
+   $_ -iMatch '(\s+lsass\s+|\s+System\s+|\s+wininit\s+|\s+telnet\s+|\s+MsMpEng\s+)'){
+      @{ 'ForegroundColor' = 'Yellow' } }Else{ @{ 'ForegroundColor' = 'White' } }
+   Write-Host @stringformat $_
+}
+
+
+If($LogFile -ne "false")
+{
 
    <#
    .SYNOPSIS
-      Helper - Gets a list of ESTABLISHED connections (TCP)
+      Author: @r00t-3xp10it
+      Helper - Create report logfile!
+      
+   .NOTES
+      If the input Path does not exist then cmdlet
+      will try to create the logfile.log on %tmp%
+   #>
    
-   .DESCRIPTION
-      Enumerates ESTABLISHED TCP connections and retrieves the
-      ProcessName associated from the connection PID identifier
-
-   .EXAMPLE
-      PS C:\> .\GetConnections.ps1 -GetConnections Verbose
-      Retrieves process info from the connection PID (Id) identifier
-
-   .OUTPUTS
-      Proto  Local Address          Foreign Address        State           Id
-      -----  -------------          ---------------        -----           --
-      TCP    127.0.0.1:58490        127.0.0.1:58491        ESTABLISHED     10516
-      TCP    192.168.1.72:60547     40.67.254.36:443       ESTABLISHED     3344
-      TCP    192.168.1.72:63492     216.239.36.21:80       ESTABLISHED     5512
-
-      Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
-      -------  ------    -----      -----     ------     --  -- -----------
-      671      47        39564      28452     1,16    10516   4 firefox
-      426      20        5020       21348     1,47     3344   0 svchost
-      1135     77        252972     271880    30,73    5512   4 powershell
-   #>
-
-   Write-Host "`n`nProto  Local Address          Foreign Address        State           Id"
-   Write-Host "-----  -------------          ---------------        -----           --"
-   $TcpList = netstat -ano|findstr "ESTABLISHED LISTENING"|findstr /V "[ UDP 0.0.0.0:0 127.0.0.1"
-   If($? -ieq $False){## fail to retrieve List of ESTABLISHED TCP connections!
-      Write-Host "  [error] fail to retrieve List of ESTABLISHED TCP connections!" -ForegroundColor Red -BackgroundColor Black
-      Write-Host "";Start-Sleep -Seconds 1;exit ## Exit @redpill
+   #Make sure the input path exists!   
+   $RawName = $LogFile.Split('\\')[-1]              ## GetConnections.log
+   $AbsoluctPath = $LogFile -replace "$RawName",""  ## C:\Users\pedro\Desktop\
+   If(-not(Test-Path -Path "$AbsoluctPath" -EA SilentlyContinue))
+   { 
+      Write-Host "[error] '$AbsoluctPath' directory tree not found!" -ForegroundColor Red -BackgroundColor Black
+      Start-Sleep -Seconds 1;$AbsoluctPath = "$Env:TMP\GetConnections.log";$err = "True"
+   }
+   Else
+   {
+      $err = "False"
+      $AbsoluctPath = "$LogFile"
    }
 
-   ## Align the Table to feat next Table outputs
-   # {delete empty spaces in begging of each line}
-   $parsedata = $TcpList -replace '^(\s+)',''
-   echo $parsedata
-
-   Write-Host "" ## List of ProcessName + PID associated to $Tcplist
-   ForEach($Item in $TcpList){## Loop truth ESTABLISHED connections
-      echo $Item.split()[-1] >> test.log
-   }
-   $PPid = Get-Content -Path "test.log"
-   Remove-Item -Path "test.log" -Force
-
-   ## ESTABLISHED Connections PID (Id) Loop
-   ForEach($Token in $PPid){
-      Get-Process -PID $Token -EA SilentlyContinue
-   }
+   Start-Sleep -Milliseconds 500
+   If($err -ieq "True"){$banner = "[  *  ]"}Else{$banner = "[i]"}
+   Write-Host "$banner Created logfile: '$AbsoluctPath' .." -ForegroundColor Green -BackgroundColor Black
+   Write-Host "";$tcptable | Format-Table -AutoSize | Out-File -FilePath "$AbsoluctPath" -Force
 }
