@@ -411,7 +411,7 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
       iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetCounterMeasures.ps1" -OutFile "$Env:TMP\GetCounterMeasures.ps1" -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
    }
 
-   &"$Env:TMP\GetCounterMeasures.ps1" -Action verbose
+   &"$Env:TMP\GetCounterMeasures.ps1" -Action enum
    Remove-Item -Path "$Env:TMP\GetCounterMeasures.ps1" -Force
 
 
