@@ -186,7 +186,7 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
 
 
      ## Enumerate ESTABLISHED TCP connections!
-     # Build TCP connections DataTable!
+     #Build TCP connections DataTable!
      $tcptable = New-Object System.Data.DataTable
      $tcptable.Columns.Add("Proto")|Out-Null
      $tcptable.Columns.Add("LocalAddress ")|Out-Null
@@ -195,46 +195,73 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
      $tcptable.Columns.Add("RemotePort")|Out-Null
      $tcptable.Columns.Add("ProcessName")|Out-Null
      $tcptable.Columns.Add("PID")|Out-Null
+     $tcptable.Columns.Add("State")|Out-Null
 
      ## Get a list of ESTABLISHED TCP connections! { Exclude UDP|IPV6|LocalHost protocols }
      # If used '-sysinfo verbose' then ESTABLISHED and LISTENING connections will be listed!
      If($SysInfo -ieq "verbose"){## Detailed Enumeration function!
 
-        $Filter = "ESTABLISHED LISTENING"
-        $Regex = "[ UDP 127.0.0.1"
+        $Filter = "UDP ESTABLISHED LISTENING"
+        $Regex = "[ ::"
 
      }Else{## Default scan settings!
 
         $Filter = "ESTABLISHED"
-        $Regex = "[ UDP 0.0.0.0:0 127.0.0.1"
+        $Regex = "[ :: UDP 0.0.0.0:0 127.0.0.1"
 
      }
 
      $TcpList = netstat -ano | findstr "$Filter" | findstr /V "$Regex"
      ForEach($Item in $TcpList){## Loop trougth all $TcpList Items!
 
-        $Protocol = $Item.Split()[2]        ## Protocol
-        $AddrPort = $Item.Split()[6]        ## LocalAddress + port
+        #Split List using the empty spaces betuiwn strings!
+        $parse = $Item.split()
+
+        #Delete empty lines from the variable List!
+        $viriato = $parse | ? { $_.trim() -ne "" }
+
+        $Protocol = $viriato[0]             ## Protocol
+        $AddrPort = $viriato[1]             ## LocalAddress + port
         $LocalHos = $AddrPort.Split(':')[0] ## LocalAddress
         $LocalPor = $AddrPort.Split(':')[1] ## LocalPort
-        $Remoteal = $Item.Split()[11]       ## RemoteAddress + port
-        $Remotead = $Remoteal.Split(':')[0] ## RemoteAddress
-        $Remotepo = $Remoteal.Split(':')[1] ## RemotePort
-        $ProcPPID = $Item.Split()[-1]       ## Process PID
+        $ProcPPID = $viriato[-1]            ## Process PID
+        $Remoteal = $viriato[2]             ## RemoteAddress + port
 
-           try{## Get each process name Tag by is PID identifier! {silent}
-              $ProcName = (Get-Process -PID "$ProcPPID" -EA SilentlyContinue).ProcessName
-           }catch{} ## Catch exeptions - Do Nothing!
+        If($Remoteal -iNotMatch '^(LISTENING|ESTABLISHED)$' -or $Remoteal -ne $null)
+        {
+           $Remotead = $Remoteal.Split(':')[0] ## RemoteAddress
+           $Remotepo = $Remoteal.Split(':')[1] ## RemotePort
+        }
+        Else
+        {
+           $Remoteal = "";$Remotead = "";$Remotepo = ""
+        }
 
-        ## Adding values to DataTable!
-        $tcptable.Rows.Add("$Protocol",  ## Protocol
-                          "$LocalHos",   ## LocalAddress
-                          "$LocalPor",   ## LocalPort
-                          "$Remotead",   ## RemoteAddress
-                          "$Remotepo",   ## RemotePort
-                          "$ProcName",   ## ProcessName
-                          "$ProcPPID"    ## PID
-         )|Out-Null
+
+        try{## Get each process name Tag by is PID identifier! {silent}
+           $ProcName = (Get-Process -PID "$ProcPPID" -EA SilentlyContinue).ProcessName
+        }catch{} ## Catch exeptions - Do Nothing!
+
+
+        If($Item -iMatch 'ESTABLISHED')
+        {
+           $portstate = "ESTABLISHED"
+        }
+        ElseIf($Item -iMatch 'LISTENING')
+        {
+           $portstate = "LISTENING"
+        }
+
+        ## Adding values to output DataTable!
+        $tcptable.Rows.Add("$Protocol",   ## Protocol
+                           "$LocalHos",   ## LocalAddress
+                           "$LocalPor",   ## LocalPort
+                           "$Remotead",   ## RemoteAddress
+                           "$Remotepo",   ## RemotePort
+                           "$ProcName",   ## ProcessName
+                           "$ProcPPID",   ## PID
+                           "$portstate"   ## state
+        )|Out-Null
 
      }## End of 'ForEach()' loop function!
 
@@ -384,7 +411,7 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
       iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetCounterMeasures.ps1" -OutFile "$Env:TMP\GetCounterMeasures.ps1" -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
    }
 
-   &"$Env:TMP\GetCounterMeasures.ps1" -Action Enum
+   &"$Env:TMP\GetCounterMeasures.ps1" -Action verbose
    Remove-Item -Path "$Env:TMP\GetCounterMeasures.ps1" -Force
 
 

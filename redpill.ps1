@@ -259,7 +259,7 @@ If($Sysinfo -ieq "Enum" -or $Sysinfo -ieq "Verbose"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/sysinfo.ps1 -Destination $Env:TMP\Sysinfo.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\Sysinfo.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 21){## Corrupted download detected => DefaultFileSize: 21,2587890625/KB
+      If($SizeDump -lt 21){## Corrupted download detected => DefaultFileSize: 21,962890625/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\Sysinfo.ps1"){Remove-Item -Path "$Env:TMP\Sysinfo.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -361,7 +361,7 @@ If($GetDnsCache -ieq "Enum" -or $GetDnsCache -ieq "Clear"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetDnsCache.ps1 -Destination $Env:TMP\GetDnsCache.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetDnsCache.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 2){## Corrupted download detected => DefaultFileSize: 2,041015625/KB
+      If($SizeDump -lt 2){## Corrupted download detected => DefaultFileSize: 2,6640625/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetDnsCache.ps1"){Remove-Item -Path "$Env:TMP\GetDnsCache.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -462,9 +462,8 @@ If($GetInstalled -ieq "Enum"){
 
    $RawHKLMkey = "HKLM:\Software\" +
    "Wow6432Node\Microsoft\Windows\" + "CurrentVersion\Uninstall\*" -Join ''
-   Write-Host "$Remote_hostName Applications installed" -ForegroundColor Green
-   Write-Host "-----------------------------";Start-Sleep -Seconds 1
-   Get-ItemProperty "$RawHKLMkey"|Select-Object DisplayName,DisplayVersion|Format-Table -AutoSize
+   Write-Host "[i] Applications installed on $Remote_hostName\$Env:username!" -ForegroundColor Green;Start-Sleep -Seconds 1
+   Get-ItemProperty "$RawHKLMkey" | Select-Object DisplayVersion,DisplayName,InstallLocation | Format-Table -AutoSize
    Start-Sleep -Seconds 1
 }
 
@@ -3148,7 +3147,7 @@ If($GetCounterMeasures -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetCounterMeasures.ps1 -Destination $Env:TMP\GetCounterMeasures.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetCounterMeasures.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 18){## Corrupted download detected => DefaultFileSize: 18,611328125/KB
+      If($SizeDump -lt 24){## Corrupted download detected => DefaultFileSize: 24,9873046875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetCounterMeasures.ps1"){Remove-Item -Path "$Env:TMP\GetCounterMeasures.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -3366,7 +3365,7 @@ $HelpParameters = @"
       Helper - Enumerate remote host DNS cache entrys
 
    .Parameter GetDnsCache
-      Accepts arguments: Enum and Clear (default: Enum)
+      Accepts arguments: Enum, Clear (default: Enum)
       
    .EXAMPLE
       PS C:\> powershell -File redpill.ps1 -GetDnsCache Enum
@@ -3377,12 +3376,15 @@ $HelpParameters = @"
       Clear Dns Cache entrys {delete all entrys}
 
    .OUTPUTS
-      Entry                           Data
-      -----                           ----
-      example.org                     93.184.216.34
-      play.google.com                 216.239.38.10
-      www.facebook.com                129.134.30.11
-      safebrowsing.googleapis.com     172.217.21.10
+      TTL Entry              Name                         Data                              
+      --- -----              ----                         ----                              
+      158 www.gstatic.com    www.gstatic.com              142.250.184.163                   
+      158 www.gstatic.com    ns2.google.com               216.239.34.10
+      13  www.facebook.com   www.facebook.com             star-mini.c10r.facebook.com       
+      13  www.facebook.com   star-mini.c10r.facebook.com  69.171.250.35                     
+      13  www.facebook.com   d.ns.c10r.facebook.com       185.89.219.11
+      56  www.messenger.com  a.ns.c10r.facebook.com       129.134.30.11
+      225 www.youtube.com    ns1.google.com               2001:4860:4802:32::a  
    #>!bye..
 
 "@;
@@ -3455,11 +3457,14 @@ $HelpParameters = @"
       PC C:\> powershell -File redpill.ps1 -GetInstalled Enum
 
    .OUTPUTS
-      DisplayName                   DisplayVersion     
-      -----------                   --------------     
-      Adobe Flash Player 32 NPAPI   32.0.0.314         
-      ASUS GIFTBOX                  7.5.24
-      StarCraft II                  1.31.0.12601
+      DisplayVersion  DisplayName                      InstallLocation
+      --------------  -----------                      ---------------
+      1.4.887.091316  REALTEK Bluetooth Filter Driver  C:\PROGRA~2\REALTEK
+      5.1.7           Resource Hacker Version 5.1.7    C:\Program Files (x86)\Resource Hacker\
+                      StarCraft II                     C:\Program Files (x86)\StarCraft II
+      11.0.59518      TeamViewer 11                    C:\Program Files (x86)\TeamViewer
+      4.1.8           ASUS USB Charger Plus            C:\Program Files (x86)\ASUS\USBChargerPlus
+      1.0.0043        ATK Package                      C:\Program Files (x86)\ASUS\ATK Package\
    #>!bye..
 
 "@;
@@ -5192,17 +5197,11 @@ $HelpParameters = @"
       Behavioral Analysis, EDR, DLP, Intrusion Detection, Firewall, HIPS.
 
    .OUTPUTS
-      Common security processes running!
-      ----------------------------------
-      Product      : Windows Defender AV
-      Description  : Anti-Virus
-      ProcessName  : MsMpEng
-      Pid          : 3516
-
-      Product      : CrowdStrike Falcon EDR
-      Description  : Behavioral Analysis
-      ProcessName  : CSFalcon
-      Pid          : 8945
+      Pid  ProcessName Product             Description        
+      ---  ----------- -------             -----------        
+      3512 MsMpEng     Anti-Virus          Windows Defender AV
+      4300 TmPfw       Firewall            Trend Micro firewall
+      8945 CSFalcon    Behavioral Analysis CrowdStrike Falcon EDR
    #>!bye..
 
 "@;

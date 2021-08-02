@@ -17,13 +17,13 @@
    also list UDP, 0.0.0.0 and 127.0.0.1 (localhost) connections!
    If used -LogFile '$Env:TMP\connections.log' @argument then
    cmdlet will store connections report logfile on %tmp% dir!
-   The -Query @argument does not search\filter process_names!
+   The -Query '@argument' does not search\filter ProcessNames!
 
 .Parameter Action
    Accepts arguments: Enum, Verbose (default: Enum)
 
 .Parameter Query
-   Search particular string in connections (default: false)
+   Search for a particular string in connections (default: false)
 
 .Parameter LogFile
    The path\name.log of the logfile to create (default: false)
@@ -129,7 +129,6 @@ Else
 
 
 #User query search sellection!
-#Query @arg does not search for process_names!
 If($Query -ne "false"){$Filter = "$Query";$Exclude = "beterraba"}
 
 #Use netstat to start building the Output Table!
@@ -241,6 +240,6 @@ If($LogFile -ne "false")
 
    Start-Sleep -Milliseconds 500
    If($err -ieq "True"){$banner = "[  *  ]"}Else{$banner = "[i]"}
-   Write-Host "$banner Created logfile: '$AbsoluctPath' .." -ForegroundColor Green -BackgroundColor Black
+   Write-Host "$banner Created logfile: '$AbsoluctPath' .." -ForegroundColor Green
    Write-Host "";$tcptable | Format-Table -AutoSize | Out-File -FilePath "$AbsoluctPath" -Force
 }

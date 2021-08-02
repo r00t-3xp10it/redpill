@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: Get-Process {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.9
+   PS cmdlet Dev version: v1.1.10
 
 .DESCRIPTION
    This cmdlet enumerates common security product processes running
@@ -37,17 +37,11 @@
    None. You cannot pipe objects to GetCounterMeasures.ps1
 
 .OUTPUTS
-   Common security processes running!
-   ----------------------------------
-   Product      : Windows Defender AV
-   Description  : Anti-Virus
-   ProcessName  : MsMpEng
-   Pid          : 3516
-
-   Product      : CrowdStrike Falcon EDR
-   Description  : Behavioral Analysis
-   ProcessName  : CSFalcon
-   Pid          : 8945
+   Pid  ProcessName Product             Description        
+   ---  ----------- -------             -----------        
+   3512 MsMpEng     Anti-Virus          Windows Defender AV
+   4300 TmPfw       Firewall            Trend Micro firewall
+   8945 CSFalcon    Behavioral Analysis CrowdStrike Falcon EDR
 
 .LINK
    https://github.com/r00t-3xp10it/redpill
@@ -75,8 +69,16 @@ $processnames = Get-Process * -EA SilentlyContinue | Where-Object {
 
 
 ## Build Output Table
-Write-Host "`n`nCommon security processes running!" -ForeGroundColor Green
-Write-Host "----------------------------------"
+Write-Host "`n`n[i] Common security processes running!" -ForeGroundColor Green
+
+
+#Build security processes DataTable!
+$mytable = New-Object System.Data.DataTable
+$mytable.Columns.Add("Pid")|Out-Null
+$mytable.Columns.Add("ProcessName")|Out-Null
+$mytable.Columns.Add("Product")|Out-Null
+$mytable.Columns.Add("Description")|Out-Null
+
 
 ForEach($Item in $processnames)
 {
@@ -89,26 +91,35 @@ ForEach($Item in $processnames)
    If($Item.ProcessName -like "*F-PROT*")
    {
       $foundit = "True"
-      Write-Host "Product      : F-Prot AntiVirus" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",           ## PID
+                        "$rawName",        ## ProcessName
+                        "Anti-Virus",      ## Description
+                        "F-Prot AntiVirus" ## Product
+
+      )|Out-Null
    }
    If($Item.ProcessName -like "*nspupsvc*")
    {
       $foundit = "True"
-      Write-Host "Product      : nProtect" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",      ## PID
+                        "$rawName",   ## ProcessName
+                        "Anti-Virus", ## Description
+                        "nProtect"    ## Product
+
+      )|Out-Null
    }
    If($Item.ProcessName -like "*SpywareTerminatorShield*")
    {
       $foundit = "True"
-      Write-Host "Product      : SpywareTerminator" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",            ## PID
+                        "$rawName",         ## ProcessName
+                        "Anti-Virus",       ## Description
+                        "SpywareTerminator" ## Product
+
+      )|Out-Null
    }
    If(($Item.ProcessName -like "*AVK*") -or 
       ($Item.ProcessName -like "*AVKCl*") -or 
@@ -117,19 +128,25 @@ ForEach($Item in $processnames)
       ($Item.ProcessName -like "*AVKBackupService*"))
    {
       $foundit = "True"
-      Write-Host "Product      : GData" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",       ## PID
+                        "$rawName",    ## ProcessName
+                        "Anti-Virus",  ## Description
+                        "GData"        ## Product
+
+      )|Out-Null
    }
    If(($Item.ProcessName -like "*f-secure*") -or 
       ($Item.ProcessName -like "*fsavgui*"))
    {
       $foundit = "True"
-      Write-Host "Product      : f-secure" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",       ## PID
+                        "$rawName",    ## ProcessName
+                        "Anti-Virus",  ## Description
+                        "f-secure"     ## Product
+
+      )|Out-Null
    }
    If(($Item.ProcessName -like "*mghtml*") -or 
       ($Item.ProcessName -like "*msssrv*") -or 
@@ -141,10 +158,13 @@ ForEach($Item in $processnames)
       ($Item.ProcessName -like "*mcshield*"))
    {
       $foundit = "True"
-      Write-Host "Product      : McAfee AV" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",       ## PID
+                        "$rawName",    ## ProcessName
+                        "Anti-Virus",  ## Description
+                        "McAfee AV"    ## Product
+
+      )|Out-Null
    }
    If(($Item.ProcessName -like "*msmpsvc*") -or 
       ($Item.ProcessName -like "*MSASCui*") -or 
@@ -152,36 +172,48 @@ ForEach($Item in $processnames)
       ($Item.ProcessName -like "*windefend*"))
    {
       $foundit = "True"
-      Write-Host "Product      : Windows Defender AV" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",              ## PID
+                        "$rawName",           ## ProcessName
+                        "Anti-Virus",         ## Description
+                        "Windows Defender AV" ## Product
+
+      )|Out-Null
    }
    If(($Item.ProcessName -like "*WRSA*") -or 
       ($Item.ProcessName -like "*WebrootWRSA*"))
    {
       $foundit = "True"
-      Write-Host "Product      : WebRoot AV" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",      ## PID
+                        "$rawName",   ## ProcessName
+                        "Anti-Virus", ## Description
+                        "WebRoot AV"  ## Product
+
+      )|Out-Null
    }
    If($Item.ProcessName -like "*swdoctor*")
    {
       $foundit = "True"
-      Write-Host "Product      : Spyware Doctor AV" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",             ## PID
+                        "$rawName",          ## ProcessName
+                        "Anti-Virus",        ## Description
+                        "Spyware Doctor AV"  ## Product
+
+      )|Out-Null
    }
    If(($Item.ProcessName -like "*sbiectrl*") -or 
       ($Item.ProcessName -like "*savservice*"))
    {
       $foundit = "True"
-      Write-Host "Product      : Sophos AV" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",       ## PID
+                        "$rawName",    ## ProcessName
+                        "Anti-Virus",  ## Description
+                        "Sophos AV"    ## Product
+
+      )|Out-Null
    }
    If(($Item.ProcessName -like "*TMCCSF*") -or 
       ($Item.ProcessName -like "*ofcdog*") -or 
@@ -190,10 +222,13 @@ ForEach($Item in $processnames)
       ($Item.ProcessName -like "*NTRtScan*"))
    {
       $foundit = "True"
-      Write-Host "Product      : Trend Micro AV" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",         ## PID
+                        "$rawName",      ## ProcessName
+                        "Anti-Virus",    ## Description
+                        "Trend Micro AV" ## Product
+
+      )|Out-Null
    }
    If(($Item.ProcessName -like "*SMC*") -or 
       ($Item.ProcessName -like "*Rtvscan*") -or 
@@ -204,46 +239,61 @@ ForEach($Item in $processnames)
       ($Item.ProcessName -like "*symantec antivirus*"))
    {
       $foundit = "True"
-      Write-Host "Product      : Symantec AV" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",      ## PID
+                        "$rawName",   ## ProcessName
+                        "Anti-Virus", ## Description
+                        "Symantec AV" ## Product
+
+      )|Out-Null
    }
    If(($Item.ProcessName -like "*mbae*") -or 
       ($Item.ProcessName -like "*mbam*") -or 
       ($Item.ProcessName -like "*mbamtray*"))
    {
       $foundit = "True"
-      Write-Host "Product      : MalwareBytes Anti-Exploit" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",                    ## PID
+                        "$rawName",                 ## ProcessName
+                        "Anti-Virus",               ## Description
+                        "MalwareBytes Anti-Exploit" ## Product
+
+      )|Out-Null
    }
    If($Item.ProcessName -like "adaware")
    {
       $foundit = "True"
-      Write-Host "Product      : Adaware AV" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",       ## PID
+                        "$rawName",    ## ProcessName
+                        "Anti-Virus",  ## Description
+                        "Adaware AV"   ## Product
+
+      )|Out-Null
    }
    If(($Item.ProcessName -like "drwatson") -or 
       ($Item.ProcessName -like "Drwtsn32"))
    {
       $foundit = "True"
-      Write-Host "Product      : DrWatson AV" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",       ## PID
+                        "$rawName",    ## ProcessName
+                        "Anti-Virus",  ## Description
+                        "DrWatson AV"  ## Product
+
+      )|Out-Null
    }
    If(($Item.ProcessName -like "nod32") -or 
       ($Item.ProcessName -like "nod32krn"))
    {
       $foundit = "True"
-      Write-Host "Product      : Nod32 AV" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",      ## PID
+                        "$rawName",   ## ProcessName
+                        "Anti-Virus", ## Description
+                        "Nod32 AV"    ## Product
+
+      )|Out-Null
    }
    If(($Item.ProcessName -like "avastUI") -or 
       ($Item.ProcessName -like "ashdisp") -or 
@@ -251,10 +301,13 @@ ForEach($Item in $processnames)
       ($Item.ProcessName -like "aswupdsv"))
    {
       $foundit = "True"
-      Write-Host "Product      : Avast AV" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",      ## PID
+                        "$rawName",   ## ProcessName
+                        "Anti-Virus", ## Description
+                        "Avast AV"    ## Product
+
+      )|Out-Null
    }
    If(($Item.ProcessName -like "atrack") -or 
       ($Item.ProcessName -like "cfgwiz") -or 
@@ -265,19 +318,25 @@ ForEach($Item in $processnames)
       ($Item.ProcessName -like "NortonSecurity"))
    {
       $foundit = "True"
-      Write-Host "Product      : Norton AV" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",      ## PID
+                        "$rawName",   ## ProcessName
+                        "Anti-Virus", ## Description
+                        "Norton AV"   ## Product
+
+      )|Out-Null
    }
    If(($Item.ProcessName -like "PSUAMain") -or 
       ($Item.ProcessName -like "pavfnsvr"))
    {
       $foundit = "True"
-      Write-Host "Product      : Panda Cloud AV" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",          ## PID
+                        "$rawName",       ## ProcessName
+                        "Anti-Virus",     ## Description
+                        "Panda Cloud AV"  ## Product
+
+      )|Out-Null
    }
    If(($Item.ProcessName -like "avp") -or 
       ($Item.ProcessName -like "kav") -or 
@@ -286,10 +345,13 @@ ForEach($Item in $processnames)
       ($Item.ProcessName -like "kavsvc"))
    {
       $foundit = "True"
-      Write-Host "Product      : Kaspersky AV" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",        ## PID
+                        "$rawName",     ## ProcessName
+                        "Anti-Virus",   ## Description
+                        "Kaspersky AV"  ## Product
+
+      )|Out-Null
    }
    If(($Item.ProcessName -like "avgcc") -or 
       ($Item.ProcessName -like "aavgapi") -or 
@@ -298,10 +360,13 @@ ForEach($Item in $processnames)
       ($Item.ProcessName -like "avgctrl"))
    {
       $foundit = "True"
-      Write-Host "Product      : AVG Security AV" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",           ## PID
+                        "$rawName",        ## ProcessName
+                        "Anti-Virus",      ## Description
+                        "AVG Security AV"  ## Product
+
+      )|Out-Null
    }
    If(($Item.ProcessName -like "aawtray") -or 
       ($Item.ProcessName -like "ad-watch") -or 
@@ -309,10 +374,13 @@ ForEach($Item in $processnames)
       ($Item.ProcessName -like "aawservice"))
    {
       $foundit = "True"
-      Write-Host "Product      : Ad-Aware AV" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",       ## PID
+                        "$rawName",    ## ProcessName
+                        "Anti-Virus",  ## Description
+                        "Ad-Aware AV"  ## Product
+
+      )|Out-Null
    }
    If(($Item.ProcessName -like "a2cfg") -or
       ($Item.ProcessName -like "a2guard") -or 
@@ -321,10 +389,13 @@ ForEach($Item in $processnames)
       ($Item.ProcessName -like "a2antidialer"))
    {
       $foundit = "True"
-      Write-Host "Product      : A-squared Guard" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",           ## PID
+                        "$rawName",        ## ProcessName
+                        "Anti-Virus",      ## Description
+                        "A-squared Guard"  ## Product
+
+      )|Out-Null
    }
    If(($Item.ProcessName -like "a2scan") -or 
       ($Item.ProcessName -like "a2start") -or 
@@ -332,20 +403,26 @@ ForEach($Item in $processnames)
       ($Item.ProcessName -like "a2hijackfree"))
    {
       $foundit = "True"
-      Write-Host "Product      : Emsisoft AV" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",       ## PID
+                        "$rawName",    ## ProcessName
+                        "Anti-Virus",  ## Description
+                        "Emsisoft AV"  ## Product
+
+      )|Out-Null
    }
    If(($Item.ProcessName -like "sched") -or 
       ($Item.ProcessName -like "avguard") -or
       ($Item.ProcessName -like "savscan"))
    {
       $foundit = "True"
-      Write-Host "Product      : Avira AV" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",       ## PID
+                        "$rawName",    ## ProcessName
+                        "Anti-Virus",  ## Description
+                        "Avira AV"     ## Product
+
+      )|Out-Null
    }
    If(($Item.ProcessName -like "bdss") -or 
       ($Item.ProcessName -like "bdmcon") -or 
@@ -354,38 +431,50 @@ ForEach($Item in $processnames)
       ($Item.ProcessName -like "livesrv"))
    {
       $foundit = "True"
-      Write-Host "Product      : Bitdefender AV" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",          ## PID
+                        "$rawName",       ## ProcessName
+                        "Anti-Virus",     ## Description
+                        "Bitdefender AV"  ## Product
+
+      )|Out-Null
    }
    If(($Item.ProcessName -like "clamd") -or 
       ($Item.ProcessName -like "clamtray") -or 
       ($Item.ProcessName -like "clamservice"))
    {
       $foundit = "True"
-      Write-Host "Product      : ClamAV security" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Virus"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",           ## PID
+                        "$rawName",        ## ProcessName
+                        "Anti-Virus",      ## Description
+                        "ClamAV security"  ## Product
+
+      )|Out-Null
    }
    If(($Item.ProcessName -like "sdhelp") -or 
       ($Item.ProcessName -like "teatimer"))
    {
       $foundit = "True"
-      Write-Host "Product      : Spybot - Search & Destroy" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Spywear"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",                     ## PID
+                        "$rawName",                  ## ProcessName
+                        "Anti-Spywear",              ## Description
+                        "Spybot - Search & Destroy"  ## Product
+
+      )|Out-Null
    }
    If(($Item.ProcessName -like "ssu") -or 
       ($Item.ProcessName -like "spysweeper"))
    {
       $foundit = "True"
-      Write-Host "Product      : WebRoot Spy Sweeper" -ForegroundColor Yellow
-      Write-Host "Description  : Anti-Spywear"
-      Write-Host "ProcessName  : $rawName"
-      Write-Host "Pid          : $ppid`n"
+      #Adding values to output DataTable!
+      $mytable.Rows.Add("$ppid",               ## PID
+                        "$rawName",            ## ProcessName
+                        "Anti-Spywear",        ## Description
+                        "WebRoot Spy Sweeper"  ## Product
+
+      )|Out-Null
    }
 
 
@@ -405,63 +494,84 @@ ForEach($Item in $processnames)
       If($Item.ProcessName -like "*Parity*")
       {
          $foundit = "True"
-         Write-Host "Product      : Bit9 application whitelisting" -ForegroundColor DarkYellow
-         Write-Host "Description  : AppWhitelisting"
-         Write-Host "ProcessName  : $rawName"
-         Write-Host "Pid          : $ppid`n"
+         #Adding values to output DataTable!
+         $mytable.Rows.Add("$ppid",                         ## PID
+                           "$rawName",                      ## ProcessName
+                           "AppWhitelisting",               ## Description
+                           "Bit9 application whitelisting"  ## Product
+
+         )|Out-Null
       }
             
       #Behavioral Analysis
       If($Item.ProcessName -like "*cb*")
       {
          $foundit = "True"
-         Write-Host "Product      : Carbon Black behavioral analysis" -ForegroundColor DarkYellow
-         Write-Host "Description  : Behavioral Analysis"
-         Write-Host "ProcessName  : $rawName"
-         Write-Host "Pid          : $ppid`n"
+         #Adding values to output DataTable!
+         $mytable.Rows.Add("$ppid",                            ## PID
+                           "$rawName",                         ## ProcessName
+                           "Behavioral Analysis",              ## Description
+                           "Carbon Black behavioral analysis"  ## Product
+
+         )|Out-Null
       }
       If($Item.ProcessName -like "*bds-vision*")
       {
          $foundit = "True"
-         Write-Host "Product      : BDS Vision behavioral analysis" -ForegroundColor DarkYellow
-         Write-Host "Description  : Behavioral Analysis"
-         Write-Host "ProcessName  : $rawName"
-         Write-Host "Pid          : $ppid`n"
+         #Adding values to output DataTable!
+         $mytable.Rows.Add("$ppid",                          ## PID
+                           "$rawName",                       ## ProcessName
+                           "Behavioral Analysis",            ## Description
+                           "BDS Vision behavioral analysis"  ## Product
+
+         )|Out-Null
       } 
       If($Item.ProcessName -like "*Triumfant*")
       {
          $foundit = "True"
-         Write-Host "Product      : Triumfant behavioral analysis" -ForegroundColor DarkYellow
-         Write-Host "Description  : Behavioral Analysis"
-         Write-Host "ProcessName  : $rawName"
-         Write-Host "Pid          : $ppid`n"
+         #Adding values to output DataTable!
+         $mytable.Rows.Add("$ppid",                         ## PID
+                           "$rawName",                      ## ProcessName
+                           "Behavioral Analysis",           ## Description
+                           "Triumfant behavioral analysis"  ## Product
+
+         )|Out-Null
       }
       If($Item.ProcessName -like "CSFalcon")
       {
          $foundit = "True"
-         Write-Host "Product      : CrowdStrike Falcon EDR" -ForegroundColor DarkYellow
-         Write-Host "Description  : Behavioral Analysis"
-         Write-Host "ProcessName  : $rawName"
-         Write-Host "Pid          : $ppid`n"
+         #Adding values to output DataTable!
+         $mytable.Rows.Add("$ppid",                  ## PID
+                           "$rawName",               ## ProcessName
+                           "Behavioral Analysis",    ## Description
+                           "CrowdStrike Falcon EDR"  ## Product
+
+         )|Out-Null
       }
             
       #Intrusion Detection
       If($Item.ProcessName -like "*ossec*")
       {
          $foundit = "True"
-         Write-Host "Product      : OSSEC intrusion detection" -ForegroundColor DarkYellow
-         Write-Host "Description  : Intrusion Detection"
-         Write-Host "ProcessName  : $rawName"
-         Write-Host "Pid          : $ppid`n"
+         #Adding values to output DataTable!
+         $mytable.Rows.Add("$ppid",                     ## PID
+                           "$rawName",                  ## ProcessName
+                           "Intrusion Detection",       ## Description
+                           "OSSEC intrusion detection"  ## Product
+
+         )|Out-Null
       }
       If(($Item.ProcessName -like "*defensewall*") -or 
          ($Item.ProcessName -like "*defensewall_serv*"))
       {
          $foundit = "True"
-         Write-Host "Product      : DefenseWall intrusion detection" -ForegroundColor DarkYellow
-         Write-Host "Description  : Intrusion Detection"
-         Write-Host "ProcessName  : $rawName"
-         Write-Host "Pid          : $ppid`n"
+         #Adding values to output DataTable!
+         $mytable.Rows.Add("$ppid",                           ## PID
+                           "$rawName",                        ## ProcessName
+                           "Intrusion Detection",             ## Description
+                           "DefenseWall intrusion detection"  ## Product
+
+         )|Out-Null
       }
             
       #Firewall
@@ -469,61 +579,82 @@ ForEach($Item in $processnames)
          ($Item.ProcessName -like "*zlclient*")) 
       {
          $foundit = "True"
-         Write-Host "Product      : ZoneAlarm Security firewall" -ForegroundColor DarkYellow
-         Write-Host "Description  : Firewall"
-         Write-Host "ProcessName  : $rawName"
-         Write-Host "Pid          : $ppid`n"
+         #Adding values to output DataTable!
+         $mytable.Rows.Add("$ppid",                       ## PID
+                           "$rawName",                    ## ProcessName
+                           "Firewall",                    ## Description
+                           "ZoneAlarm Security firewall"  ## Product
+
+         )|Out-Null
       }
       If($Item.ProcessName -like "*TmPfw*") 
       {
          $foundit = "True"
-         Write-Host "Product      : Trend Micro firewall" -ForegroundColor DarkYellow
-         Write-Host "Description  : Firewall"
-         Write-Host "ProcessName  : $rawName"
-         Write-Host "Pid          : $ppid`n"
+         #Adding values to output DataTable!
+         $mytable.Rows.Add("$ppid",                ## PID
+                           "$rawName",             ## ProcessName
+                           "Firewall",             ## Description
+                           "Trend Micro firewall"  ## Product
+
+         )|Out-Null
       }
       If(($Item.ProcessName -like "*cfp*") -or 
          ($Item.ProcessName -like "*cpf*") -or 
          ($Item.ProcessName -like "*cmdagent*"))
       {
          $foundit = "True"
-         Write-Host "Product      : Comodo Security firewall" -ForegroundColor DarkYellow
-         Write-Host "Description  : Firewall"
-         Write-Host "ProcessName  : $rawName"
-         Write-Host "Pid          : $ppid`n"
+         #Adding values to output DataTable!
+         $mytable.Rows.Add("$ppid",                    ## PID
+                           "$rawName",                 ## ProcessName
+                           "Firewall",                 ## Description
+                           "Comodo Security firewall"  ## Product
+
+         )|Out-Null
       }
       If($Item.ProcessName -like "*msfwsvc*")
       {
          $foundit = "True"
-         Write-Host "Product      : OneCare Security firewall" -ForegroundColor DarkYellow
-         Write-Host "Description  : Firewall"
-         Write-Host "ProcessName  : $rawName"
-         Write-Host "Pid          : $ppid`n"
+         #Adding values to output DataTable!
+         $mytable.Rows.Add("$ppid",                     ## PID
+                           "$rawName",                  ## ProcessName
+                           "Firewall",                  ## Description
+                           "OneCare Security firewall"  ## Product
+
+         )|Out-Null
       }
       If($Item.ProcessName -like "*outpost*")
       {
          $foundit = "True"
-         Write-Host "Product      : Agnitum Outpost Firewall" -ForegroundColor DarkYellow
-         Write-Host "Description  : Firewall"
-         Write-Host "ProcessName  : $rawName"
-         Write-Host "Pid          : $ppid`n"
+         #Adding values to output DataTable!
+         $mytable.Rows.Add("$ppid",                    ## PID
+                           "$rawName",                 ## ProcessName
+                           "Firewall",                 ## Description
+                           "Agnitum Outpost Firewall"  ## Product
+
+         )|Out-Null
       }
       If($Item.ProcessName -like "*scfservice*")
       {
          $foundit = "True"
-         Write-Host "Product      : Sophos Client Firewall" -ForegroundColor DarkYellow
-         Write-Host "Description  : Firewall"
-         Write-Host "ProcessName  : $rawName"
-         Write-Host "Pid          : $ppid`n"
+         #Adding values to output DataTable!
+         $mytable.Rows.Add("$ppid",                  ## PID
+                           "$rawName",               ## ProcessName
+                           "Firewall",               ## Description
+                           "Sophos Client Firewall"  ## Product
+
+         )|Out-Null
       }
       If(($Item.ProcessName -like "*umxcfg*") -or 
          ($Item.ProcessName -like "*umxagent*"))
       {
          $foundit = "True"
-         Write-Host "Product      : CA Personal Firewall" -ForegroundColor DarkYellow
-         Write-Host "Description  : Firewall"
-         Write-Host "ProcessName  : $rawName"
-         Write-Host "Pid          : $ppid`n"
+         #Adding values to output DataTable!
+         $mytable.Rows.Add("$ppid",                ## PID
+                           "$rawName",             ## ProcessName
+                           "Firewall",             ## Description
+                           "CA Personal Firewall"  ## Product
+
+         )|Out-Null
       }
             
       #DLP
@@ -532,34 +663,46 @@ ForEach($Item in $processnames)
          ($Item.ProcessName -like "DgService"))
       {
          $foundit = "True"
-         Write-Host "Product      : Verdasys Digital Guardian DLP" -ForegroundColor DarkYellow
-         Write-Host "Description  : DLP"
-         Write-Host "ProcessName  : $rawName"
-         Write-Host "Pid          : $ppid`n"
+         #Adding values to output DataTable!
+         $mytable.Rows.Add("$ppid",                         ## PID
+                           "$rawName",                      ## ProcessName
+                           "DLP",                           ## Description
+                           "Verdasys Digital Guardian DLP"  ## Product
+
+         )|Out-Null
       }   
       If($Item.ProcessName -like "kvoop")
       {
          $foundit = "True"
-         Write-Host "Product      : Unknown DLP" -ForegroundColor DarkYellow
-         Write-Host "Description  : DLP"
-         Write-Host "ProcessName  : $rawName"
-         Write-Host "Pid          : $ppid`n"
+         #Adding values to output DataTable!
+         $mytable.Rows.Add("$ppid",       ## PID
+                           "$rawName",    ## ProcessName
+                           "DLP",         ## Description
+                           "Unknown DLP"  ## Product
+
+         )|Out-Null
       }
       If($Item.ProcessName -like "noads")
       {
          $foundit = "True"
-         Write-Host "Product      : NoAds Ad Blocker" -ForegroundColor DarkYellow
-         Write-Host "Description  : Ad Blocker"
-         Write-Host "ProcessName  : $rawName"
-         Write-Host "Pid          : $ppid`n"
+         #Adding values to output DataTable!
+         $mytable.Rows.Add("$ppid",            ## PID
+                           "$rawName",         ## ProcessName
+                           "Ad Blocker",       ## Description
+                           "NoAds Ad Blocker"  ## Product
+
+         )|Out-Null
       }
       If($Item.ProcessName -like "sadblock")
       {
          $foundit = "True"
-         Write-Host "Product      : Super Ad Blocker" -ForegroundColor DarkYellow
-         Write-Host "Description  : Ad Blocker"
-         Write-Host "ProcessName  : $rawName"
-         Write-Host "Pid          : $ppid`n"
+         #Adding values to output DataTable!
+         $mytable.Rows.Add("$ppid",            ## PID
+                           "$rawName",         ## ProcessName
+                           "Ad Blocker",       ## Description
+                           "Super Ad Blocker"  ## Product
+
+         )|Out-Null
       }
    }
 }
@@ -569,6 +712,14 @@ If($foundit -ieq "False")
 {
    Write-Host "[error] none security products found running!" -ForegroundColor Red -BackgroundColor Black
    Write-Host ""
+}
+Else
+{
+$mytable | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {
+   $stringformat = If($_ -iMatch '(Ad Blocker|DLP|Firewall|Intrusion Detection|Behavioral Analysis|AppWhitelisting)'){
+      @{ 'ForegroundColor' = 'Yellow' } }Else{ @{ 'ForegroundColor' = 'White' } }
+   Write-Host @stringformat $_
+   }
 }
 
 Write-Host ""
