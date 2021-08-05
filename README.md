@@ -14,12 +14,12 @@
 
 ## :octocat: Project Description
 The redpill project aims to assist reverse tcp shells in post-exploration tasks. Often, on redteam appointments we<br />
-we need to use unconventional ways to access the target system, like reverse tcp shells (<b> <i> not metasploit </i> </b>) in order <br />
+need to use unconventional ways to access the target system, like reverse tcp shells (<b><i>not metasploit</i></b>) in order<br />
 to bypass the defenses implemented by the system administrator. After the first step has been successfully completed<br />
-we face another kind of problem: <b> <i> "I have (shell) access to the target system, and now what can I do with it?" </i> </b> <br />
+we face another type of problem: <b> <i> "I have (shell) access to the target system, and now what can I do with it?" </i> </b> <br />
 
-This project consists of several PowerShell scripts that perform different <b><i> post-scan</i> </b> and <br /> functions.
-main script <b><i>redpill.ps1</i> </b> whose main job is to download / config / exe the scripts contained in this repository. <br /> 
+This project consists of several PowerShell scripts that perform different <b><i> post-exploitation</i> </b> tasks and <br />
+The main script <b><i>redpill.ps1</i> </b> whose main job is to download/config/exec the scripts contained in this repository. <br /> 
 
 The goal is to have a similar meterpreter experience in our reverse tcp shell prompt (meterpreter similar options)<br />
 
@@ -268,6 +268,7 @@ EOP - [Find missing software patchs for privilege escalation](https://drive.goog
 ![sysinfo](https://user-images.githubusercontent.com/23490060/128348577-107d7478-8d92-46be-b617-9878f08bb524.png)<br /><br />
 ![GetConnections](https://user-images.githubusercontent.com/23490060/127775867-3a1d4e60-81df-4982-8c63-4d54fcbd0e8b.png)<br /><br />
 ![SAM](https://user-images.githubusercontent.com/23490060/128350159-85cf1868-64ff-488d-8bbf-26c614b8cf3f.png)<br /><br />
+![brute](https://user-images.githubusercontent.com/23490060/128359506-f9dff4fe-e586-4407-998c-a467875745a9.jpg)<br /><br />
 ![eop](https://user-images.githubusercontent.com/23490060/128349459-eb129772-6955-4822-8677-fa1878d4ec01.png)<br /><br />
 ![NoAmsi](https://user-images.githubusercontent.com/23490060/125387813-6429e980-e396-11eb-9ae7-6a488f1647b8.png)<br />
 
