@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.3.6
+   PS cmdlet Dev version: v1.3.7
 
 .DESCRIPTION
    Cmdlet to find missing software patchs for privilege escalation (windows).
@@ -133,7 +133,7 @@
 
 ## Var declarations
 $CveDataBaseId = "25"        ## 25 CVE's entrys available ($dATAbASE)
-$CmdletVersion = "v1.3.6"    ## Sherlock CmdLet develop version number
+$CmdletVersion = "v1.3.7"    ## Sherlock CmdLet develop version number
 $CVEdataBase = "13/01/2021"  ## Global $dATAbASE (CVE) last update date
 $Global:ExploitTable = $null ## Global Output DataTable
 $ProcessArchitecture = $env:PROCESSOR_ARCHITECTURE
@@ -726,7 +726,7 @@ $KBDataEntrys = "null"
       $KB_dataBase = "06/01/2021" ## KB entrys database last update date
    }ElseIf($MajorVersion -eq '10' -and $CPUArchitecture -eq "64 bits"){
       $KBDataEntrys = "5"        ## Credits: @r00t-3xp10it (fully patch)
-      $KB_dataBase = "25/04/2021" ## KB entrys database last update date
+      $KB_dataBase = "05/08/2021" ## KB entrys database last update date
    }
 
    ## Create Data Table for output
@@ -755,8 +755,8 @@ $KBDataEntrys = "null"
    If($MajorVersion -eq 10){## Windows 10
       If($CPUArchitecture -eq "64 bits" -or $ProcessArchitecture -eq "AMD64"){
          $dATAbASE = @(## Windows 10 x64 bits
-            "KB4601050","KB4562830","KB4580325","KB5001330",
-            "KB5001405"
+            "KB5003537","KB4562830","KB4577586","KB4580325",
+            "KB5004237","KB5003742"
          )
       }Else{## Windows 10 x32 bits
          $dATAbASE = "Not supported under W$MajorVersion ($CPUArchitecture) architecture"

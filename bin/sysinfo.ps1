@@ -123,10 +123,10 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
     ## Get network adapter settings!
     If(-not($HideMyAss -ieq "True")){## Default enumeration!
        $AdaptTable = Get-NetAdapter -EA SilentlyContinue |
-          Select-Object InterfaceName,Status,LinkSpeed,MacAddress
+          Select-Object Name,Status,LinkSpeed,MacAddress
     }Else{## Hide mac address sellected by user!
        $AdaptTable = Get-NetAdapter -EA SilentlyContinue |
-          Select-Object InterfaceName,Status,LinkSpeed,DriverFileName
+          Select-Object Name,Status,LinkSpeed,DriverFileName
     }
 
     ## Colorize output DataTable strings!
@@ -411,16 +411,16 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
       iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetCounterMeasures.ps1" -OutFile "$Env:TMP\GetCounterMeasures.ps1" -UserAgent "Mozilla/5.0 (Android; Mobile; rv:40.0) Gecko/40.0 Firefox/40.0"
    }
 
-   &"$Env:TMP\GetCounterMeasures.ps1" -Action enum
+   &"$Env:TMP\GetCounterMeasures.ps1" -Action Enum
    Remove-Item -Path "$Env:TMP\GetCounterMeasures.ps1" -Force
 
 
    ## Enumerate active SMB shares
-   Write-Host "`nSMB: Enumerating shares"
+   Write-Host "SMB: Enumerating shares"
    Write-Host "------------------------------";Start-Sleep -Seconds 1
    Get-SmbShare -EA SilentlyContinue|Select-Object Name,Path,Description|Format-Table
    If(-not($?)){## Make sure we have any results back
-       Write-Host "[error] None SMB shares found under $Remote_hostName system!" -ForegroundColor Red -BackgroundColor Black
+       Write-Host "[error] None SMB shares found under $Env:COMPUTERNAME system!" -ForegroundColor Red -BackgroundColor Black
    }
 
 
@@ -455,7 +455,7 @@ If($SysInfo -ieq "Enum" -or $SysInfo -ieq "Verbose"){
 
 
        ## @Webserver Working dir ACL Description
-       Write-Host "`n`n`nDCALC: CmdLet Working Directory"
+       Write-Host "`n`nDCALC: CmdLet Working Directory"
        Write-Host "-------------------------------";Start-Sleep -Seconds 1
        $GetACLDescription = icacls "$Working_Directory"|findstr /V "processing"
        echo $GetACLDescription > $Env:TMP\ACl.log;Get-Content -Path "$Env:TMP\ACL.log"

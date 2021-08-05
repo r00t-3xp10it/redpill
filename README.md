@@ -13,24 +13,15 @@
 <br />
 
 ## :octocat: Project Description
-The redpill project aims to assist reverse tcp shells in post-exploration tasks. Often in redteam engagements we<br />
-need to use unconventional ways to access target system, such as reverse tcp shells (<b><i>not metasploit</i></b>) in order<br />
-to bypass the defenses implemented by the system administrator. After the first stage was successful compleated<br />
-we face another type of problems: <b><i>"I have (shell) access to the target system, and now what can I do with it?"</i></b><br />
+The redpill project aims to assist reverse tcp shells in post-exploration tasks. Often, on redteam appointments we<br />
+we need to use unconventional ways to access the target system, like reverse tcp shells (<b> <i> not metasploit </i> </b>) in order <br />
+to bypass the defenses implemented by the system administrator. After the first step has been successfully completed<br />
+we face another kind of problem: <b> <i> "I have (shell) access to the target system, and now what can I do with it?" </i> </b> <br />
 
-This project consists of several PowerShell scripts that perform different <b><i>post-exploitation</i></b> functions and the<br />
-main script <b><i>redpill.ps1</i></b> that is main work its to download/config/exe the scripts contained in this repository.<br />
+This project consists of several PowerShell scripts that perform different <b><i> post-scan</i> </b> and <br /> functions.
+main script <b><i>redpill.ps1</i> </b> whose main job is to download / config / exe the scripts contained in this repository. <br /> 
 
 The goal is to have a similar meterpreter experience in our reverse tcp shell prompt (meterpreter similar options)<br />
-
-<br />
-
-|Folder Name|Description|Notes|
-|---|---|---|
-|Bin|Contains redpill main modules|Sysinfo \| GetConnections \| Persiste \| Keylogger \| etc.|
-|Bypass|Contains redpill bypass scripts|Manual Download/Execution required|
-|modules|Contains redpill modules|Sherlock \| CredsPhish \| Webserver \| StartWebServer \| etc.|
-|Utils|Contains BAT \| PS1 scripts| Manual execution required|
 
 <br />
 
@@ -101,7 +92,7 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 <i>To Display Detailed information about each parameter execute:</i>
 
 ```powershell
-Syntax : .\redpill.ps1 -Help [ -Parameter Name ]
+Syntax : .\redpill.ps1 -Help [ Parameter Name ]
 Example: .\redpill.ps1 -Help WifiPasswords
 ```
 
@@ -165,7 +156,7 @@ cd C:\Users\pedro\Desktop
 5º - Access <b><i>[ -WifiPasswords ]</i></b> Detailed Parameter Help
 
 ```powershell
-Syntax : .\redpill.ps1 -Help [ -Parameter Name ]
+Syntax : .\redpill.ps1 -Help [ Parameter Name ]
 Example: .\redpill.ps1 -Help WifiPasswords
 ```
 
@@ -176,7 +167,7 @@ Example: .\redpill.ps1 -Help WifiPasswords
 6º - Running <b><i>[ -WifiPasswords ] [ Dump ]</i></b> Module 
 
 ```powershell
-Syntax : .\redpill.ps1 [ -Parameter Name ] [ @argument ]
+Syntax : .\redpill.ps1 [ Parameter Name ] [ @argument ]
 Example: .\redpill.ps1 -WifiPasswords Dump
 ```
 
@@ -187,7 +178,7 @@ Example: .\redpill.ps1 -WifiPasswords Dump
 7º - Running <b><i>[ -sysinfo ] [ Enum ]</i></b> Module 
 
 ```powershell
-Syntax : .\redpill.ps1 [ -Parameter Name ] [ @argument ]
+Syntax : .\redpill.ps1 [ Parameter Name ] [ @argument ]
 Example: .\redpill.ps1 -sysinfo Enum
 ```
 
@@ -274,11 +265,10 @@ EOP - [Find missing software patchs for privilege escalation](https://drive.goog
 |<b><i>@Shanty_Damayanti|Debugging this cmdlet (amsi string detection bypasses)|Windows 10 x64bits</b>|
 |<b><i>@miltinhoc|Debugging this cmdlet and recording video tutorials|Windows 10 x64bits</b>|
 
-![geolocation](https://user-images.githubusercontent.com/23490060/107866747-c7593380-6e6b-11eb-8e38-9ef3acdb3c01.png)<br /><br />
-![pingverbose](https://user-images.githubusercontent.com/23490060/107841656-87834500-6db4-11eb-953c-22e2322577b6.png)<br /><br />
-![eopmodule](https://user-images.githubusercontent.com/23490060/108617459-78347500-740e-11eb-8cce-90994c2e048a.png)<br /><br />
-![DumpSAMhashs](https://user-images.githubusercontent.com/23490060/113536669-83162400-95ce-11eb-9365-cee2f0d85be2.jpg)<br /><br />
-![EOP](https://user-images.githubusercontent.com/23490060/115331142-4846eb00-a18d-11eb-85c4-7a2b57404c40.png)<br /><br />
+![sysinfo](https://user-images.githubusercontent.com/23490060/128348577-107d7478-8d92-46be-b617-9878f08bb524.png)<br /><br />
+![GetConnections](https://user-images.githubusercontent.com/23490060/127775867-3a1d4e60-81df-4982-8c63-4d54fcbd0e8b.png)<br /><br />
+![SAM](https://user-images.githubusercontent.com/23490060/128350159-85cf1868-64ff-488d-8bbf-26c614b8cf3f.png)<br /><br />
+![eop](https://user-images.githubusercontent.com/23490060/128349459-eb129772-6955-4822-8677-fa1878d4ec01.png)<br /><br />
 ![NoAmsi](https://user-images.githubusercontent.com/23490060/125387813-6429e980-e396-11eb-9ae7-6a488f1647b8.png)<br />
 
 **[Any collaborations Or bugreports are wellcome](https://github.com/r00t-3xp10it/redpill/issues)**

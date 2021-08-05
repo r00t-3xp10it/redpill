@@ -69,7 +69,7 @@ $processnames = Get-Process * -EA SilentlyContinue | Where-Object {
 
 
 ## Build Output Table
-Write-Host "`n`n[i] Common security processes running!" -ForeGroundColor Green
+Write-Host "`n`nCommon security processes running!" -ForeGroundColor Green
 
 
 #Build security processes DataTable!
@@ -715,11 +715,15 @@ If($foundit -ieq "False")
 }
 Else
 {
-$mytable | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {
+
+   $mytable | Format-Table -AutoSize > $Env:TMP\tbl.log
+   Get-Content -Path "$Env:TMP\tbl.log" | Select -Skip 1 | Out-String -Stream | ForEach-Object {
    $stringformat = If($_ -iMatch '(Ad Blocker|DLP|Firewall|Intrusion Detection|Behavioral Analysis|AppWhitelisting)'){
       @{ 'ForegroundColor' = 'Yellow' } }Else{ @{ 'ForegroundColor' = 'White' } }
    Write-Host @stringformat $_
    }
 }
 
+#Delete artifacts left behind!
+Remove-Item -path "$Env:TMP\tbl.log" -EA SilentlyContinue -Force
 Write-Host ""

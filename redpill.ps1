@@ -259,7 +259,7 @@ If($Sysinfo -ieq "Enum" -or $Sysinfo -ieq "Verbose"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/sysinfo.ps1 -Destination $Env:TMP\Sysinfo.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\Sysinfo.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 21){## Corrupted download detected => DefaultFileSize: 21,962890625/KB
+      If($SizeDump -lt 21){## Corrupted download detected => DefaultFileSize: 21,9384765625/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\Sysinfo.ps1"){Remove-Item -Path "$Env:TMP\Sysinfo.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -315,7 +315,7 @@ If($GetConnections -ieq "Enum" -or $GetConnections -ieq "Verbose"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetConnections.ps1 -Destination $Env:TMP\GetConnections.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetConnections.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 8){## Corrupted download detected => DefaultFileSize: 8,5517578125/KB
+      If($SizeDump -lt 10){## Corrupted download detected => DefaultFileSize: 10,044921875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetConnections.ps1"){Remove-Item -Path "$Env:TMP\GetConnections.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -460,10 +460,9 @@ If($GetInstalled -ieq "Enum"){
       StarCraft II                  1.31.0.12601
    #>
 
-   $RawHKLMkey = "HKLM:\Software\" +
-   "Wow6432Node\Microsoft\Windows\" + "CurrentVersion\Uninstall\*" -Join ''
-   Write-Host "[i] Applications installed on $Remote_hostName\$Env:username!" -ForegroundColor Green;Start-Sleep -Seconds 1
-   Get-ItemProperty "$RawHKLMkey" | Select-Object DisplayVersion,DisplayName,InstallLocation | Format-Table -AutoSize
+   $RawHKLMkey = "HKLM:\Software\" + "Wow6432Node\Microsoft\Windows\" + "CurrentVersion\Uninstall\*" -Join ''
+   Write-Host "[i] Applications installed on $Env:COMPUTERNAME\$Env:USERNAME!" -ForegroundColor Green;Start-Sleep -Seconds 1
+   Get-ItemProperty "$RawHKLMkey" | Select-Object DisplayName,DisplayVersion,Publisher,InstallDate | Format-Table -AutoSize
    Start-Sleep -Seconds 1
 }
 
@@ -1326,7 +1325,7 @@ If($EOP -ieq "Verbose" -or $EOP -ieq "Enum"){
 
    ## Check for file download integrity (fail/corrupted downloads)
    $CheckInt = Get-Content -Path "$Env:TMP\sherlock.ps1" -EA SilentlyContinue
-   $SizeDump = ((Get-Item -Path "$Env:TMP\sherlock.ps1" -EA SilentlyContinue).length/1KB) ## Default => 84,6005859375/KB
+   $SizeDump = ((Get-Item -Path "$Env:TMP\sherlock.ps1" -EA SilentlyContinue).length/1KB) ## Default => 84,6123046875/KB
    If(-not(Test-Path -Path "$Env:TMP\sherlock.ps1") -or $SizeDump -lt 84 -or $CheckInt -iMatch '^(<!DOCTYPE html)'){
       ## Fail to download Sherlock.ps1 using BitsTransfer OR the downloaded file is corrupted
       Write-Host "[abort] fail to download Sherlock.ps1 using BitsTransfer (BITS)" -ForeGroundColor Red -BackGroundColor Black
@@ -3147,7 +3146,7 @@ If($GetCounterMeasures -ne "false"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetCounterMeasures.ps1 -Destination $Env:TMP\GetCounterMeasures.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetCounterMeasures.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 24){## Corrupted download detected => DefaultFileSize: 24,9873046875/KB
+      If($SizeDump -lt 25){## Corrupted download detected => DefaultFileSize: 25,1572265625/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetCounterMeasures.ps1"){Remove-Item -Path "$Env:TMP\GetCounterMeasures.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -3457,14 +3456,18 @@ $HelpParameters = @"
       PC C:\> powershell -File redpill.ps1 -GetInstalled Enum
 
    .OUTPUTS
-      DisplayVersion  DisplayName                      InstallLocation
-      --------------  -----------                      ---------------
-      1.4.887.091316  REALTEK Bluetooth Filter Driver  C:\PROGRA~2\REALTEK
-      5.1.7           Resource Hacker Version 5.1.7    C:\Program Files (x86)\Resource Hacker\
-                      StarCraft II                     C:\Program Files (x86)\StarCraft II
-      11.0.59518      TeamViewer 11                    C:\Program Files (x86)\TeamViewer
-      4.1.8           ASUS USB Charger Plus            C:\Program Files (x86)\ASUS\USBChargerPlus
-      1.0.0043        ATK Package                      C:\Program Files (x86)\ASUS\ATK Package\
+      DisplayName                        DisplayVersion  Publisher                    InstallDate
+      -----------                        --------------  ---------                    -----------
+      ASUS GIFTBOX                       6.6.10          ASUSTek Computer Inc                    
+      Battle.net                                         Blizzard Entertainment                                                                                                                              
+      Realtek PCI-E Wireless LAN Driver  Drv_3.00.0008   REALTEK Semiconductor Corp.  20170718   
+      WPS Office for ASUS                10.1.0.5644     Kingsoft Corp.                          
+      Microsoft Edge                     92.0.902.62     Microsoft Corporation        20210731   
+      Microsoft Edge Update              1.3.147.37                                                  
+      Microsoft Edge WebView2 Runtime    92.0.902.62     Microsoft Corporation        20210731   
+      Resource Hacker Version 5.1.7                                                   20210312   
+      StarCraft II                                       Blizzard Entertainment                  
+      TeamViewer 11                      11.0.59518      TeamViewer        
    #>!bye..
 
 "@;

@@ -4,9 +4,9 @@
 
    Author: r00t-3xp10it
    Tested Under: Windows 10 (19042) x64 bits
-   Required Dependencies: netstat {native}
+   Required Dependencies: netstat, Get-NetAdapter {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.2.8
+   PS cmdlet Dev version: v1.2.9
    
 .DESCRIPTION
    Enumerates ESTABLISHED TCP connections and retrieves the
@@ -76,7 +76,6 @@ $ErrorActionPreference = "SilentlyContinue"
 #Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 
-
 #Build TCP connections DataTable!
 $tcptable = New-Object System.Data.DataTable
 $tcptable.Columns.Add("Proto")|Out-Null
@@ -87,7 +86,6 @@ $tcptable.Columns.Add("RemotePort")|Out-Null
 $tcptable.Columns.Add("ProcessName")|Out-Null
 $tcptable.Columns.Add("PID")|Out-Null
 $tcptable.Columns.Add("State")|Out-Null
-
 
 Write-Host ""
 #Display Network NetAdapter settings!
@@ -170,7 +168,6 @@ ForEach($Item in $TcpList)
       $ProcName = (Get-Process -PID "$ProcPPID" -EA SilentlyContinue).ProcessName
    }catch{} ## Catch exeptions - Do Nothing!
 
-
    If($Item -iMatch 'ESTABLISHED')
    {
       $portstate = "ESTABLISHED"
@@ -200,14 +197,37 @@ ForEach($Item in $TcpList)
    Helper - Diplay connections DataTable!
 
 .NOTES
-   Out-String formats strings containing the ports '20,23,80,107,137' and 'lsass'
-   'System', 'wininit', 'telnet' and 'MsMpEng' processnames as yellow foregroundcolor!
+   Out-String formats strings containing the ports '20,23,80,107,137' and
+   'ssh', 'lsass', 'System', 'wininit', 'telnet','TeamViewer' and 'MsMpEng'
+   Process Names as yellow foregroundcolor in Table output!
 #>
 $tcptable | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {
    $stringformat = If($_ -Match '(\s+20\s+|\s+23\s+|\s+80\s+|\s+107\s+|\s+137\s+)' -or
-   $_ -iMatch '(\s+lsass\s+|\s+System\s+|\s+wininit\s+|\s+telnet\s+|\s+MsMpEng\s+)'){
+   $_ -iMatch '(\s+ssh\s+|\s+TeamViewer\s+|\s+lsass\s+|\s+System\s+|\s+wininit\s+|\s+telnet\s+|\s+MsMpEng\s+)'){
       @{ 'ForegroundColor' = 'Yellow' } }Else{ @{ 'ForegroundColor' = 'White' } }
    Write-Host @stringformat $_
+}
+
+
+If($Action -ieq "verbose")
+{
+
+   <#
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - Display Network NetAdapter statistics (IPv4)
+
+   .NOTES
+      This function auto-sellects the active netadapter
+      to be abble to retrieve netadapter IPv4 statistics!
+   #>
+
+   try{#Retrieve Active NetAdapter statistics!
+      $AdpterUp = (Get-NetAdapter|Select-Object Name,Status|Where-Object { $_.Status -iMatch '^(Up)$' }).Name
+      $displayStatisticsTable = Get-NetAdapterStatistics -Name $AdpterUp|Select-Object SystemName,Name,ReceivedBytes,ReceivedUnicastPackets,SentBytes,SentUnicastPackets|Format-Table -AutoSize
+      echo $displayStatisticsTable #I needed to put the table inside an variable to be abble to build the logfile later on!
+   }catch{Write-Host "[error] failed to retrieve NetAdapter statistics!`n" -ForeGroundColor Red -BackGroundColor Black;Start-Sleep -Seconds 1}
+
 }
 
 
@@ -224,22 +244,39 @@ If($LogFile -ne "false")
       will try to create the logfile.log on %tmp%
    #>
    
-   #Make sure the input path exists!   
-   $RawName = $LogFile.Split('\\')[-1]              ## GetConnections.log
-   $AbsoluctPath = $LogFile -replace "$RawName",""  ## C:\Users\pedro\Desktop\
-   If(-not(Test-Path -Path "$AbsoluctPath" -EA SilentlyContinue))
-   { 
-      Write-Host "[error] '$AbsoluctPath' directory tree not found!" -ForegroundColor Red -BackgroundColor Black
-      Start-Sleep -Seconds 1;$AbsoluctPath = "$Env:TMP\GetConnections.log";$err = "True"
+   If($LogFile -iNotMatch '\\')
+   {
+      Write-Host "[error] -LogFile '<string>' parameter bad input!" -ForegroundColor Red -BackgroundColor Black
+      Start-Sleep -Milliseconds 400;Write-Host "[  *  ] Defaulting Path to: '`$Env:TMP\GetConnections.log'" -ForegroundColor Yellow
+      $AbsoluctPath = "$Env:TMP\GetConnections.log"
+      $err = "True"
    }
    Else
    {
-      $err = "False"
-      $AbsoluctPath = "$LogFile"
+      #Make sure the input path exists!   
+      $RawName = $LogFile.Split('\\')[-1]              ## GetConnections.log
+      $AbsoluctPath = $LogFile -replace "$RawName",""  ## C:\Users\pedro\Desktop\
+      If(-not(Test-Path -Path "$AbsoluctPath" -EA SilentlyContinue))
+      { 
+         Write-Host "[error] '$AbsoluctPath' directory tree not found!" -ForegroundColor Red -BackgroundColor Black
+         Start-Sleep -Milliseconds 400;Write-Host "[  *  ] Defaulting Path to: '`$Env:TMP\GetConnections.log'" -ForegroundColor Yellow
+         $AbsoluctPath = "$Env:TMP\GetConnections.log"
+         $err = "True"
+      }
+      Else
+      {
+         $err = "False"
+         $AbsoluctPath = "$LogFile"
+      }
+
    }
 
-   Start-Sleep -Milliseconds 500
+   #Creating logfile!
+   $tcptable | Format-Table -AutoSize | Out-File -FilePath "$AbsoluctPath" -Force
+   If($Action -ieq "verbose"){echo $displayStatisticsTable >> $AbsoluctPath}
+
+   Start-Sleep -Milliseconds 300
    If($err -ieq "True"){$banner = "[  *  ]"}Else{$banner = "[i]"}
-   Write-Host "$banner Created logfile: '$AbsoluctPath' .." -ForegroundColor Green
-   Write-Host "";$tcptable | Format-Table -AutoSize | Out-File -FilePath "$AbsoluctPath" -Force
+   Write-Host "$banner Created logfile in: $AbsoluctPath ..`n" -ForegroundColor Green
+
 }
