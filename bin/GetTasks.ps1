@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: schtasks {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.1.3
+   PS cmdlet Dev version: v1.1.4
 
 .DESCRIPTION
    This module enumerates remote host running tasks
@@ -22,13 +22,13 @@
    The Task Name to Query, Create or to Kill (default: false)
 
 .Parameter Interval
-   The interval time (minuts) to run the task (default: 1 minut)
+   The interval time (in minuts) to run the task (default: 1)
 
 .Parameter Exec
    The cmdline (cmd|ps) to be executed by the task (default: false)
 
 .Parameter Filter
-   The task state to filter when query tasks (default: Ready Running)
+   The task state to filter when query for tasks (default: Ready Running)
 
 .EXAMPLE
    PS C:\> Get-Help .\GetTasks.ps1 -full
@@ -59,7 +59,8 @@
    --------                                 -------------          ------
    ASUS Smart Gesture Launcher              N/A                    Ready          
    CreateExplorerShellUnelevatedTask        N/A                    Ready          
-   OneDrive Standalone Update Task-S-1-5-21 24/01/2021 17:43:44    Ready   
+   OneDrive Standalone Update Task-S-1-5-21 24/01/2021 17:43:44    Ready
+   RedPillTask                              24/01/2021 01:08:46    Ready
 #>
 
 
@@ -95,7 +96,7 @@ If($GetTasks -ieq "Enum")
       Write-Host "--------                                 -------------          ------"
       schtasks | findstr /I "$Filter" |
          Format-Table -AutoSize | Out-String -Stream | ForEach-Object {
-            $stringformat = If($_ -Match '(Running|RedPillTask)'){
+            $stringformat = If($_ -iMatch '(Running|RedPillTask)'){
                @{ 'ForegroundColor' = 'Yellow' } }Else{ @{ } }
             Write-Host @stringformat $_
          }
@@ -114,7 +115,7 @@ If($GetTasks -ieq "Enum")
            Else
            {
               echo $checkme | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {
-                 $stringformat = If($_ -iMatch '^(TaskName:|Next Run Time:|Repeat: Every:|Task To Run:|Repeat: Until: Duration)'){
+                 $stringformat = If($_ -iMatch '^(TaskName:|Next Run Time:|Repeat: Every:|Task To Run:|Repeat: Until: Duration)' -or $_ -iMatch '(NT|SYSTEM)'){
                     @{ 'ForegroundColor' = 'Yellow' } }Else{ @{ } }
                  Write-Host @stringformat $_
               }
@@ -135,6 +136,10 @@ If($GetTasks -ieq "Create")
    .SYNOPSIS
       Author: @r00t-3xp10it
       Helper - Create one schedule tasks!
+
+   .NOTES
+      If executed with 'ADMINISTRATOR' privileges then this
+      cmdlet will set the created task(s) to run as 'SYSTEM'!
    #>
 
    If($Exec -ieq "false" -or $Exec -ieq $null)
@@ -144,7 +149,18 @@ If($GetTasks -ieq "Create")
 
    If($TaskName -ieq 'false'){$TaskName = "RedPillTask"}
    $Task_duration = "000" + "9" + ":00" ## 9 Hours of Task Duration
-   schtasks /Create /sc minute /mo "$Interval" /tn "$TaskName" /tr "$Exec" /du "$Task_duration"
+
+   #Elevate schedule task from ADMIN to SYSTEM?
+   $IsClientAdmin = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
+   If($IsClientAdmin)
+   {
+      Write-Host "[administrator] Execute schedule task as 'SYSTEM' .." -ForegroundColor Green
+      schtasks /Create /RU SYSTEM /sc minute /mo "$Interval" /tn "$TaskName" /tr "$Exec" /du "$Task_duration"
+   }
+   Else
+   {
+      schtasks /Create /sc minute /mo "$Interval" /tn "$TaskName" /tr "$Exec" /du "$Task_duration"
+   }
    
    $viriato = (schtasks /Query /tn "$TaskName") -replace 'Folder: \\','' #/v /fo list
    echo $viriato > $Env:TMP\vahja.log;Get-Content -Path "$Env:TMP\vahja.log" -EA SilentlyContinue
@@ -165,6 +181,10 @@ If($GetTasks -ieq "Delete")
    #>
 
    schtasks /Delete /tn "$TaskName" /f
+   If(-not($?))
+   {
+      Write-Host "[error] fail to find\kill '$TaskName' task name .." -ForegroundColor Red -BackgroundColor Black
+   }
 
 }
 
