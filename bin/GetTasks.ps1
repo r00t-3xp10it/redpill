@@ -1,19 +1,21 @@
 ﻿<#
 .SYNOPSIS
-   Enumerate\Create\Delete running tasks!
+   Enumerate\Create\Delete schedule tasks!
 
    Author: r00t-3xp10it
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: schtasks {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.1.4
+   PS cmdlet Dev version: v1.2.4
 
 .DESCRIPTION
-   This module enumerates remote host running tasks
-   Or creates a new task Or deletes existence tasks
+   This module enumerates host ready\running tasks
+   Or creates a new task Or deletes schedule tasks
 
 .NOTES
    Created tasks have the default duration of 9 hours.
+   If executed with 'ADMINISTRATOR' privileges then this
+   cmdlet will set the created task(s) to run as 'SYSTEM'!
 
 .Parameter GetTasks
    Accepts arguments: Enum, Create, Delete (default: Enum)
@@ -28,7 +30,7 @@
    The cmdline (cmd|ps) to be executed by the task (default: false)
 
 .Parameter Filter
-   The task state to filter when query for tasks (default: Ready Running)
+   Task 'state' to filter when query for tasks (default: Ready Running)
 
 .EXAMPLE
    PS C:\> Get-Help .\GetTasks.ps1 -full
@@ -36,15 +38,15 @@
 
 .EXAMPLE
    PS C:\> .\GetTasks.ps1 -GetTasks Enum
-   Enumerate All running\ready schedule tasks!
+   Enumerate running\ready schedule tasks!
 
 .EXAMPLE
    PS C:\> .\GetTasks.ps1 -GetTasks Enum -Filter "Ready"
-   Enumerate Only ready state schedule tasks!
+   Enumerate only 'ready' state schedule tasks!
 
 .EXAMPLE
    PS C:\> .\GetTasks.ps1 -GetTasks Enum -TaskName "CDSSync"
-   Enumerate 'CDSSync' task detailed information!
+   Enumerate only 'CDSSync' task detailed information!
 
 .EXAMPLE
    PS C:\> .\GetTasks.ps1 -GetTasks Create -TaskName "RedPillTask" -Interval 10 -Exec "cmd /c start calc.exe"
@@ -52,7 +54,7 @@
 
 .EXAMPLE
    PS C:\> .\GetTasks.ps1 -GetTasks Delete -TaskName "RedPillTask"
-   Delete\Kill 'RedPillTask' taskname
+   Delete\Kill 'RedPillTask' task name
 
 .OUTPUTS
    TaskName                                 Next Run Time          Status
@@ -67,14 +69,13 @@
 [CmdletBinding(PositionalBinding=$false)] param(
    [string]$Filter="Ready Running",
    [string]$TaskName="false",
-   [string]$GetTasks="false",
+   [string]$GetTasks="Enum",
    [string]$Exec="false",
    [int]$Interval='1'
 )
 
 
 Write-Host "`n"
-$Remote_hostName = hostname
 $ErrorActionPreference = "SilentlyContinue"
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
@@ -86,7 +87,7 @@ If($GetTasks -ieq "Enum")
    <#
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - Enumerate ALL running\ready schedule tasks!
+      Helper - Enumerate running\ready schedule tasks!
    #>
 
    If($TaskName -ieq 'false')
@@ -106,11 +107,12 @@ If($GetTasks -ieq "Enum")
         Else
         {
 
+           #Query only User Sellected Task Name! {detailed}
            Start-Process -WindowStyle Hidden powershell -ArgumentList "schtasks /Query /tn '$TaskName' /v /fo list > $Env:TMP\tdfr.log" -Wait
            $CheckMe = Get-Content -Path "$Env:TMP\tdfr.log" -EA SilentlyContinue
            If(-not($CheckMe) -or $CheckMe -eq $null)
            {
-              write-host "[error] fail to retrieve '$TaskName' Tasks info!" -ForegroundColor Red -BackgroundColor Black
+              write-host "ERROR: cmdlet fail to retrieve '$TaskName' Task info!" -ForegroundColor Red -BackgroundColor Black
            }
            Else
            {
@@ -135,7 +137,7 @@ If($GetTasks -ieq "Create")
    <#
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - Create one schedule tasks!
+      Helper - Create one schedule task!
 
    .NOTES
       If executed with 'ADMINISTRATOR' privileges then this
@@ -162,7 +164,7 @@ If($GetTasks -ieq "Create")
       schtasks /Create /sc minute /mo "$Interval" /tn "$TaskName" /tr "$Exec" /du "$Task_duration"
    }
    
-   $viriato = (schtasks /Query /tn "$TaskName") -replace 'Folder: \\','' #/v /fo list
+   $viriato = (schtasks /Query /tn "$TaskName") -replace 'Folder: \\',''
    echo $viriato > $Env:TMP\vahja.log;Get-Content -Path "$Env:TMP\vahja.log" -EA SilentlyContinue
 
    #Delete artifacts left behind!
@@ -177,13 +179,13 @@ If($GetTasks -ieq "Delete")
    <#
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - Delete one existing schedule tasks!
+      Helper - Delete one existing schedule task!
    #>
 
    schtasks /Delete /tn "$TaskName" /f
    If(-not($?))
    {
-      Write-Host "[error] fail to find\kill '$TaskName' task name .." -ForegroundColor Red -BackgroundColor Black
+      Write-Host "ERROR: cmdlet fail to find\kill '$TaskName' task name."
    }
 
 }

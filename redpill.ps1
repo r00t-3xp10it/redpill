@@ -586,7 +586,7 @@ If($GetTasks -ieq "Enum" -or $GetTasks -ieq "Create" -or $GetTasks -ieq "Delete"
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetTasks.ps1 -Destination $Env:TMP\GetTasks.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetTasks.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 5){## Corrupted download detected => DefaultFileSize: 6,1318359375/KB
+      If($SizeDump -lt 6){## Corrupted download detected => DefaultFileSize: 6,224609375/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetTasks.ps1"){Remove-Item -Path "$Env:TMP\GetTasks.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -3554,15 +3554,16 @@ $HelpParameters = @"
    <#!Help.
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - Enumerate\Create\Delete running tasks!
+      Helper - Enumerate\Create\Delete schedule tasks!
 
    .DESCRIPTION
-      This module enumerates remote host running tasks
-      Or creates a new task Or deletes existence tasks
+      This module enumerates host ready\running tasks
+      Or creates a new task Or deletes schedule tasks
 
    .NOTES
-      Required Dependencies: schtasks {native}
       Created tasks have the default duration of 9 hours.
+      If executed with 'ADMINISTRATOR' privileges then this
+      cmdlet will set the created task(s) to run as 'SYSTEM'!
 
    .Parameter GetTasks
       Accepts arguments: Enum, Create, Delete (default: Enum)
@@ -3571,18 +3572,18 @@ $HelpParameters = @"
       The Task Name to Query, Create or to Kill (default: false)
 
    .Parameter Interval
-      The interval time (minuts) to run the task (default: 1 minut)
+      The interval time (in minuts) to run the task (default: 1)
 
    .Parameter Exec
       The cmdline (cmd|ps) to be executed by the task (default: false)
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -GetTasks Enum
-      Enumerate All running\ready schedule tasks!
+      Enumerate running\ready schedule tasks!
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -GetTasks Enum -TaskName "CDSSync"
-      Enumerate 'CDSSync' task detailed information!
+      Enumerate only 'CDSSync' task detailed information!
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -GetTasks Create -TaskName mytask -Interval 10 -Exec "cmd /c start calc.exe"
@@ -3590,7 +3591,7 @@ $HelpParameters = @"
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -GetTasks Delete -TaskName "mytask"
-      Delete\Kill 'mytask' taskname
+      Delete\Kill 'mytask' task name
 
    .OUTPUTS
       TaskName                                 Next Run Time          Status
