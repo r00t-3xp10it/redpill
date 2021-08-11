@@ -586,7 +586,7 @@ If($GetTasks -ieq "Enum" -or $GetTasks -ieq "Create" -or $GetTasks -ieq "Delete"
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetTasks.ps1 -Destination $Env:TMP\GetTasks.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetTasks.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 6){## Corrupted download detected => DefaultFileSize: 6,224609375/KB
+      If($SizeDump -lt 8){## Corrupted download detected => DefaultFileSize: 8,0869140625/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetTasks.ps1"){Remove-Item -Path "$Env:TMP\GetTasks.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -3557,11 +3557,11 @@ $HelpParameters = @"
       Helper - Enumerate\Create\Delete schedule tasks!
 
    .DESCRIPTION
-      This module enumerates host ready\running tasks
-      Or creates a new task Or deletes schedule tasks
+      This module enumerates host ready\running tasks,
+      creates new task Or delete existing schedule task.
 
    .NOTES
-      Created tasks have the default duration of 9 hours.
+      Created tasks have the default duration of 12 hours.
       If executed with 'ADMINISTRATOR' privileges then this
       cmdlet will set the created task(s) to run as 'SYSTEM'!
 
@@ -3587,7 +3587,7 @@ $HelpParameters = @"
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -GetTasks Create -TaskName mytask -Interval 10 -Exec "cmd /c start calc.exe"
-      Creates 'mytask' taskname that executes 'calc.exe' with 10 minutes of interval and 9 hours of duration
+      Creates 'mytask' taskname that executes 'calc.exe' with 10 minutes of interval and 12 hours of duration
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -GetTasks Delete -TaskName "mytask"
