@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Capture clipboard text\file\image\audio contents!
 
