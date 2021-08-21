@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Capture clipboard text\file\image\audio contents!
 
@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: Assembly PresentationCore {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v2.2.8
+   PS cmdlet Dev version: v2.2.9
 
 .DESCRIPTION
    This module captures clipboard content everytime the clipboard its used!
@@ -150,6 +150,10 @@ If($Action -ieq "Enum")
    ElseIf([Windows.Clipboard]::ContainsAudio())
    {
       Write-Output ("[capture] "+[Windows.Clipboard]::GetAudio())
+   }
+   Else
+   {
+      Write-Host "`nERROR: None clipboard contents found under $Env:COMPUTERNAME!" -ForegroundColor Red -BackgroundColor Black
    }
    Write-Host "`n`n"
 
