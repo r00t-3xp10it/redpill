@@ -358,7 +358,6 @@ If($Action -ieq "Capture")
          
          If($Forensic -ieq "True")
          {
-            #Copy clipboard items to 'Forensic' folder!
             Copy-Item -Path "$RawOutput" -Destination "$ForensicDirectory" -Force
          }         
       }
