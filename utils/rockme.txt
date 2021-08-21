@@ -1,6 +1,3 @@
-123456
-12345
-123456789
 password
 iloveyou
 princess
