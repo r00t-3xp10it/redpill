@@ -12,4 +12,4 @@
 |NSudo.exe|Auxiliary module of -UacMe parameter|.\redpill.ps1 -UacMe Elevate -Execute "cmd.exe"|
 |DWD|Auxiliary module of -DisableAV parameter|.\redpill.ps1 -DisableAV Stop,Start|
 |WinBruteLogon|Auxiliary module of -PhishCreds 'Brute' argument|brute force user account password|
-|rockme.txt|Dicionary file for brute-force|Manual\Automatic_Download|
+|rockme.txt|Dicionary file for brute-force attacks|Manual \ Automatic_Download execution|
