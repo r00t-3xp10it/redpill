@@ -63,6 +63,7 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 |-MouseLogger| Start |Capture Screenshots of Mouse Clicks for 10 seconds|
 |-PhishCreds| Start \| Brute |Promp current user for a valid credential and leak captures|
 |-GetPasswords| Enum \| Dump |Enumerate passwords of diferent locations {Store\|Regedit\|Disk}|
+|-PasswordSpray| Spray |Password spraying attack against accounts in Active Directory!|
 |-WifiPasswords| Dump \| ZipDump |Enum Available SSIDs OR ZipDump All Wifi passwords|
 |-EOP| Enum \| Verbose |Find Missing Software Patchs for Privilege Escalation|
 |-ADS| Enum \| Create \| Exec \| Clear|Hidde scripts { bat \| ps1 \| exe } on $DATA records (ADS)|
