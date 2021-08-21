@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Capture clipboard text\file\image\audio contents!
 
@@ -137,19 +137,19 @@ If($Action -ieq "Enum")
    #Display clipboard contents!
    If([Windows.Clipboard]::ContainsFileDropList())
    {
-      Write-Output ("[capture] "+[Windows.Clipboard]::GetFileDropList())
+      Write-Output ([Windows.Clipboard]::GetFileDropList())
    }
    ElseIf([Windows.Clipboard]::ContainsText())
    {
-      Write-Output ("[capture] "+[Windows.Clipboard]::GetText().split("`n"))
+      Write-Output ([Windows.Clipboard]::GetText().split("`n"))
    }
    ElseIf([Windows.Clipboard]::ContainsImage())
    {
-      Write-Output ("[capture] "+[Windows.Clipboard]::GetImage())
+      Write-Output ([Windows.Clipboard]::GetImage())
    }
    ElseIf([Windows.Clipboard]::ContainsAudio())
    {
-      Write-Output ("[capture] "+[Windows.Clipboard]::GetAudio())
+      Write-Output ([Windows.Clipboard]::GetAudio())
    }
    Else
    {
