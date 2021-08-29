@@ -74,7 +74,7 @@ The goal is to have a similar meterpreter experience in our reverse tcp shell pr
 |-AppLocker| Enum \| WhoAmi \| TestBat |Enumerate AppLocker Directorys with weak permissions|
 |-FileMace| $Env:TMP\test.txt |Change File Mace {CreationTime,LastAccessTime,LastWriteTime}|
 |-MetaData| $Env:TMP\test.exe |Display files \ applications description (metadata)|
-|-psgetsys| Enum \| Auto \| Impersonate | spawn a process under a different parent process!|
+|-Psgetsys| Enum \| Auto \| Impersonate | spawn a process under a different parent process!|
 |-MsgBox| "Hello World." |Spawns "Hello World." msgBox on local host {wscriptComObject}|
 |-SpeakPrank| "Hello World." |Make remote host speak user input sentence {prank}|
 |-NetTrace| Enum |Agressive Enumeration with the help of netsh {native}|
