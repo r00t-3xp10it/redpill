@@ -15,7 +15,7 @@
    a special case of the Caesar cipher which was developed in ancient Rome.
 
 .NOTES
-   .\enc-rot13.ps1 -text [<text>] -output [<con|log|ps1>] -storage [<$Env:TMP>]
+   .\enc-rot13.ps1 -text [<text>] -output [<con|log|ps1>] -outpath [<$Env:TMP>]
    Remark: -output [<ps1>] creates ps1 script with rot13 decrypt\exec routine.
 
 .Parameter Text
@@ -80,7 +80,7 @@ $Result = $null
 $cmdletVersion = "v1.2.5"
 $ErrorActionPreference = "SilentlyContinue"
 #Disable Powershell Command Logging for current session.
-Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
+Set-PSReadlineOption ï¿½HistorySaveStyle SaveNothing|Out-Null
 $host.UI.RawUI.WindowTitle = "@enc-rot13 $cmdletVersion {SSA@RedTeam}"
 $RandomMe = -join ((65..90) + (97..122) | Get-Random -Count 7 | % {[char]$_})
 
