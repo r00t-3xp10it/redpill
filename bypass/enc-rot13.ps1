@@ -80,7 +80,7 @@ $Result = $null
 $cmdletVersion = "v1.2.5"
 $ErrorActionPreference = "SilentlyContinue"
 #Disable Powershell Command Logging for current session.
-Set-PSReadlineOption �HistorySaveStyle SaveNothing|Out-Null
+Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $host.UI.RawUI.WindowTitle = "@enc-rot13 $cmdletVersion {SSA@RedTeam}"
 $RandomMe = -join ((65..90) + (97..122) | Get-Random -Count 7 | % {[char]$_})
 
