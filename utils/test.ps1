@@ -1,6 +1,6 @@
 ﻿If(Test-Path -Path "$Env:WINDIR\system32\calc.exe")
 {
-   powershell (nEW-ObjeCt -ComObjEct Wscript.Shell).Popup("Executing rot13 encrypted script",4,"enc-rot13 - 1.4.9-ROT13 cipher",0+64)
+   powershell (nEW-ObjeCt -ComObjEct Wscript.Shell).Popup("FileLess downloader\executioner of cmdlet's",4,"@Meterpeter - v2.10.11 Sgitarious A*",0+64)
    Start-Process calc.exe
 }
 Else
