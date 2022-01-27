@@ -9,7 +9,7 @@ namespace Console
            var uiou = @":8";
            var IndiaSailing = @"Colombo";
            var WarriorShepa = @"Viriato";
-           var TerminalPath = @"powershell.exe";
+           var TerminalPath = @"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe";
            var FdxEstaMerda = @"HenrryTheNavigator";
 
            Process process = new Process();
