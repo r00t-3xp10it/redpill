@@ -1,1 +1,1 @@
-powershell Start-Process calc.exe
+powershell -C "Start-Process calc.exe"
