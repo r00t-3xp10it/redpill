@@ -14,4 +14,4 @@
 |WinBruteLogon|Auxiliary module of -PhishCreds 'Brute' argument|brute force user account password|
 |rockme.txt|Dicionary file for brute-force attacks|Manual \ Automatic_Download execution|
 |comsvcs.dll|Dump Lsass.exe process memory data|.\redpill.ps1 -DumpLsass all|
-
+|Crandle_Builder.vbs|Cmdlet of @Meterpeter C2 to create Download_Crandle.vbs|
