@@ -1,9 +1,0 @@
-﻿If(Test-Path -Path "$Env:WINDIR\system32\calc.exe")
-{
-   powershell (New-Object -ComObject Wscript.Shell).Popup("FileLess downloader\executioner of cmdlet's",4,"@Meterpeter - v2.10.11 Sagittarius A*",0+64)
-   Start-Process calc.exe
-}
-Else
-{
-   Start-Process mspaint.exe
-}
