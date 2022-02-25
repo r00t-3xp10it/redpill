@@ -5,7 +5,7 @@
      script. It also contains extra features such as built-in relays, execute
      powershell, and a dnscat2 client. 
      
-     Redpill papacat version its a modified version of powercat to bypass AV detection.
+     Redpill papacat version its a modified version of powercat to bypass AV AMS1 detection.
      
      
      Usage: papacat [-c or -l] [-p port] [options]
