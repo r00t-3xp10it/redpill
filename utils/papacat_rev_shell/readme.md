@@ -109,14 +109,14 @@ GitHub: [https://github.com/r00t-3xp10it/redpill/blob/main/utils/papacat_rev_she
 
 |Parameter Name|Description|Default Value|Optional value|
 |---|---|---|---|
-|action|creates raw\obfuscated client|obfuscate|rawcat|
-|ClientName|Reverse tcp shell name|revshell|user_input|
+|action|creates raw\obfuscated client (payload)|obfuscate|rawcat|
+|ClientName|Reverse tcp shell name (payload)|revshell|user_input|
 |VbsName|Vbscript download crandle name|update|user_input|
 |Execute|name of the process to start|cmd.exe|powershell.exe|
 |TimeOut|seconds to wait before giving up on listening|120|user_input|
 |serverPort|Python3 http.server port number|8080|user_input|
-|PayloadPort|Reverse tcp shell port number|666|user_input|
-|Force|Disable AV sample submition|false|true|
+|PayloadPort|Reverse tcp shell port number (payload)|666|user_input|
+|Force|Disable AV sample submition (local + remote)|false|true|
 
 <br />
 
