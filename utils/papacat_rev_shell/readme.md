@@ -130,6 +130,11 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/papa
 Get-Help .\Builder.ps1 -full
 ```
 
+#### execute cmdlet with default values
+```powershell
+.\Builder.ps1
+```
+
 ![papacat](https://user-images.githubusercontent.com/23490060/155855813-ff5f7cb3-8156-4e16-8fc7-893e30ced7e6.png)
 
 <br />
