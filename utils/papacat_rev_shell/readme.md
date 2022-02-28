@@ -115,7 +115,7 @@ Encode\Decode tcp data flow: [ired.team/bypassing-ids-signatures-with-simple-rev
 |ClientName|Reverse tcp shell name (payload)|revshell|user_input|
 |VbsName|Vbscript download crandle name|update|user_input|
 |Execute|name of the process to start|cmd.exe|powershell.exe|
-|TimeOut|seconds to wait before giving up on listening|120|user_input|
+|TimeOut|seconds to wait before giving up on listening|120|from 60 to 200 sec|
 |serverPort|Python3 http.server port number|8080|user_input|
 |PayloadPort|Reverse tcp shell port number (payload)|666|user_input|
 |Force|Disable AV sample submition (local + remote)<br />and encodes client\server tcp data flow if invoked together with -action 'rawcat'|false|true|
