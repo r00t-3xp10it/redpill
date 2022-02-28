@@ -138,6 +138,11 @@ Get-Help .\Builder.ps1 -full
 ```
 
 ![papacat](https://user-images.githubusercontent.com/23490060/155855813-ff5f7cb3-8156-4e16-8fc7-893e30ced7e6.png)<br />
+
+Encode\Decode tcp data flow between client and server.
+```powershell
+.\Builder.ps1 -action "rawcat" -force "true"
+```
 ![yap](https://user-images.githubusercontent.com/23490060/155972413-01f8f574-2f62-404f-9186-bddbd1341c5b.jpg)
 
 <br />
