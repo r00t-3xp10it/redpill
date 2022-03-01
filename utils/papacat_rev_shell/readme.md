@@ -120,7 +120,6 @@ Encode\Decode tcp data flow: [ired.team/bypassing-ids-signatures-with-simple-rev
 |PayloadPort|Reverse tcp shell port number (payload)|666|user_input|
 |Force|Disable AV sample submition (local + remote)|false|true|
 |Encode|encodes client\server tcp data flow if invoked together with -action 'rawcat'|false|true|
-|Elevate|Make crandle spawn UAC gui to be abble to run crandle\client elevated?|false|true|
 
 <br />
 
