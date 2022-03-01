@@ -111,14 +111,14 @@ Encode\Decode tcp data flow: [ired.team/bypassing-ids-signatures-with-simple-rev
 
 |Parameter Name|Description|Default Value|Optional value|
 |---|---|---|---|
-|action|creates raw\obfuscated client (payload)|obfuscate|rawcat|
+|action|creates papacat_client OR obfuscated_client (payload)|obfuscate|rawcat|
 |ClientName|Reverse tcp shell name (payload)|revshell|user_input|
-|VbsName|Vbscript download crandle name|update|user_input|
-|Execute|name of the process to start|cmd.exe|powershell.exe|
+|VbsName|Vbscript download\execution crandle name|update|user_input|
+|Execute|name of the process to start (parent)|cmd.exe|powershell.exe|
 |TimeOut|seconds to wait before giving up on listening|120|from 60 to ...|
 |serverPort|Python3 http.server port number|8080|user_input|
 |PayloadPort|Reverse tcp shell port number (payload)|666|user_input|
-|Force|Disable AV sample submition (local + remote)|false|true|
+|Force|Disable AV sample submition ( local + remote )|false|true|
 |elevate|Make crandle spawn UAC gui to be abble to run crandle\client elevated|false|true|
 |Encode|encodes client\server tcp data flow if invoked together with -action 'rawcat'|false|true|
 
