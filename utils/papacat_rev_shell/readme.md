@@ -149,9 +149,9 @@ Encode\Decode tcp data flow between client and server.
 
 <br />
 
-Creates a new obfuscated client (revshell.ps1), disable av samples submition and<br />creates Setup.vbs download crandle that spawn UAC gui to run crandle\client with elevated privs.
+Creates a new obfuscated client (revshell.ps1), disable av samples submition and<br />creates mycat.vbs download crandle that spawn UAC gui to run crandle\client with elevated privs.
 ```powershell
-.\Builder.ps1 -action "obfuscate" -force "true" -VbsName "Setup" -Elevate "true"
+.\Builder.ps1 -action "obfuscate" -force "true" -VbsName "mycat" -Elevate "true"
 ```
 
 ![up](https://user-images.githubusercontent.com/23490060/156248091-1b64c1bc-cb9d-4fa0-b1fa-9a01235ebae6.png)
