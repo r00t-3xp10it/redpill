@@ -57,6 +57,8 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/enc
 
 ## :octocat: Decrypt-String cmdlet Parameters
 
+![nice](https://user-images.githubusercontent.com/23490060/156942705-5fce1475-5cb9-4631-adf7-8743e43a7c12.png)
+
 |Parameter Name|Description|Default Value|
 |---|---|---|
 |Action|Accepts arguments: console, execute|console|
