@@ -25,6 +25,7 @@ But in that ocassion the Decrypt-String cmdlet will not work unless the comrresp
 |InFile|Get the string to encrypt from txt\ps1|false|
 |OutFile|The decrypt routine script name|decrypt|
 |RandomByte|Random secretkey generation|false|
+|deldecrypt|Auto-delete decrypt.ps1 cmdlet?|true|
 
 <br />
 
