@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: ConvertTo-SecureString {native}
    Optional Dependencies: Encrypt-String.ps1
-   PS cmdlet Dev version: v1.0.2
+   PS cmdlet Dev version: v1.0.3
    
 .DESCRIPTION
    This cmdlet allow users to Decrypt text\commands with the help of
@@ -74,10 +74,10 @@
 )
 
 
-$cmdletVersion = "v1.0.2"
+$cmdletVersion = "v1.0.3"
 $ErrorActionPreference = "SilentlyContinue"
 #Disable Powershell Command Logging for current session.
-Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
+Set-PSReadlineOption â€“HistorySaveStyle SaveNothing|Out-Null
 $host.UI.RawUI.WindowTitle = "@Decrypt-String $cmdletVersion {SSA@RedTeam}"
 write-host "`n* Powershell Ptr chiper cmdlet." -ForegroundColor Green
 
