@@ -1,4 +1,4 @@
-# EnCrypt\Decrypt strings in powershell using a SecretKey 
+# Encrypt\Decrypt strings in powershell using a SecretKey (113 bytes length)
 ![one](https://user-images.githubusercontent.com/23490060/156936241-192b7b66-564d-40a5-af44-e8f61e8254a3.png)
 
 <br /><br />
@@ -26,12 +26,12 @@ But in that ocassion the Decrypt-String cmdlet will not work unless the comrresp
 |OutFile|The decrypt routine script name|decrypt|
 |RandomByte|Random secretkey generation|false|
 
+<br />
+
 ## :octocat: Download cmdlet
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/encrypt_decrypt/Encrypt-String.ps1" -OutFile "Encrypt-String.ps1"
 ```
-
-<br />
 
 ## :octocat: Encrypt-String cmdlet examples
 ```powershell
@@ -62,12 +62,12 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/enc
 |EncryptedString|The string\text\command to be Decrypted by this cmdlet|User_Input|
 |RandomByte|Encrypt-String SecretKey Last Byte|253|
 
+<br />
+
 ## :octocat: Download cmdlet
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/encrypt_decrypt/Decrypt-String.ps1" -OutFile "Decrypt-String.ps1"
 ```
-
-<br />
 
 ## :octocat: Decrypt-String cmdlet examples
 ```powershell
