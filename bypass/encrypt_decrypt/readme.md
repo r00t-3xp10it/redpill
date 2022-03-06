@@ -26,6 +26,13 @@ But in that ocassion the Decrypt-String cmdlet will not work unless the comrresp
 |OutFile|The decrypt routine script name|decrypt|
 |RandomByte|Random secretkey generation|false|
 
+## :octocat: Download cmdlet
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/encrypt_decrypt/Encrypt-String.ps1" -OutFile "Encrypt-String.ps1"
+```
+
+<br />
+
 ## :octocat: Encrypt-String cmdlet examples
 ```powershell
 .\Encrypt-String.ps1 -action "console" -plaintextstring "whoami"
@@ -54,6 +61,13 @@ But in that ocassion the Decrypt-String cmdlet will not work unless the comrresp
 |Action|Accepts arguments: console, execute|console|
 |EncryptedString|The string\text\command to be Decrypted by this cmdlet|User_Input|
 |RandomByte|Encrypt-String SecretKey Last Byte|253|
+
+## :octocat: Download cmdlet
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/encrypt_decrypt/Decrypt-String.ps1" -OutFile "Decrypt-String.ps1"
+```
+
+<br />
 
 ## :octocat: Decrypt-String cmdlet examples
 ```powershell
