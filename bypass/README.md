@@ -11,3 +11,4 @@
 |UACBypassCMSTP.ps1|@MeterPeter C2 v2.10.11 - `SendKeys UAC bypass Module`|
 |enc-rot13.ps1|Encrypt or decrypt strings using `ROT13 cipher`|
 |Invoke-HiveNightmare.ps1|`CVE-2021-36934` (retrieve SAM, Security, and Software Registry hives in Windows 10)|
+|encrypt_decrypt| Encrypt\Decrypt strings in powershell using a SecretKey|
