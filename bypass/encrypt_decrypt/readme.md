@@ -4,12 +4,12 @@
 <br /><br />
 
 ## :octocat: Project Description
-This cmdlet allow users to encrypt text\commands\scripts.ps1 with the help of ConvertTo-SecureString cmdlet and a secretkey of 113 bytes length, it outputs results on console,logfile or builds a decrypt.ps1 script with the decrypt function routine to be abble to execute the encrypted string ..<br />
+This cmdlet allow users to encrypt <b><i>'text\commands\scripts.ps1'</i></b> with the help of <b><i>ConvertTo-SecureString</i></b> cmdlet and a secretkey of 113<br />bytes length, it outputs results on console, logfile or builds a decrypt.ps1 script with the decrypt function routine to be abble to execute<br />the encrypted string. ( decrypt.ps1 cmdlet will auto-deletes itself after execution if <b><i>NOT</i></b> invoked -deldecrypt 'false' parameter )<br />
 
 <br />
 
 ## :octocat: Notes
-If invoked -RandomByte 'true' then cmdlet random generates SecretKey last byte.<br />
+If invoked <b><i>-RandomByte 'true'</i></b> then Encrypt-String.ps1 cmdlet random generates the SecretKey last byte.<br />
 But in that ocassion the Decrypt-String cmdlet will not work unless the comrrespondent secretkey ( the same secretkey used to encrypt ) its invoked. Remark: Parameter -RandomByte '253' (secretkey last byte) can be invoked on Decrypt-String cmdlet to input the required secretKey used by Encrypt-String cmdlet while encrypting string.<br />
 
 ---
