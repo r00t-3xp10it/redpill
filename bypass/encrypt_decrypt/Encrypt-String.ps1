@@ -243,8 +243,6 @@ $PS1DecriptRot = @("<#
    Helper - Decrypt\Execute Ptr cipher! 
 #>
 
-#Disable Powershell Command Logging for current session.
-Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 [Byte[]]`$SecretKey = 117,9,103,192,133,20,53,149,82,95,108,34,82,224,226,220,56,68,133,120,139,241,176,239,171,54,231,205,83,57,51,$RoolTheDiceAgain
 [String]`$EncryptedString = `"$EncryptedString`"
 
