@@ -11,7 +11,7 @@ This cmdlet allow users to encrypt <b><i>'text\commands\scripts.ps1'</i></b> wit
 <br />
 
 ## :octocat: Notes
-If invoked <b><i>-RandomByte 'true'</i></b> then Encrypt-String.ps1 cmdlet random generates the SecretKey last byte (3 digits). But in that ocassion the Decrypt-String cmdlet will not work unless the comrrespondent secretkey ( the same secretkey used to encrypt ) its invoked to decrypt string.<br /><br />
+If invoked <b><i>-RandomByte '0'</i></b> then Encrypt-String.ps1 cmdlet random generates the SecretKey last byte (3 digits). But in that ocassion the Decrypt-String cmdlet will not work unless the comrrespondent secretkey ( the same secretkey used to encrypt ) its invoked to decrypt string.<br /><br />
 Remark: Parameter -RandomByte '253' (default secretkey last byte) can be invoked on Decrypt-String cmdlet to input the required secretKey.<br />
 Remark: Parameter -RunElevated 'true' Spawns UAC gui to be abble to run decrypt.ps1 in an elevated context. ( administrator token privs )
 
@@ -27,7 +27,7 @@ Remark: Parameter -RunElevated 'true' Spawns UAC gui to be abble to run decrypt.
 |PlainTextString|The string\text\command to encrypt|whoami|
 |InFile|Get the string to encrypt from txt\ps1|false|
 |OutFile|The decrypt routine script name|decrypt|
-|RandomByte|Random secretkey generation|false|
+|RandomByte|0 (random), 253 (default) OR from 242 to 255|253|
 |deldecrypt|Auto-delete decrypt.ps1 cmdlet?|true|
 |RunElevated *|Auto-elevate decrypt.ps1 cmdlet?|false|
 * Spawn UAC gui to be abble to run decrypt.ps1 in an elevated context ...
@@ -53,10 +53,10 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/enc
 .\Encrypt-String.ps1 -action "autodecrypt" -plaintextstring "whoami"
 ```
 ```powershell
-.\Encrypt-String.ps1 -action "autodecrypt" -infile "test.ps1" -randombyte "true"
+.\Encrypt-String.ps1 -action "autodecrypt" -infile "test.ps1" -randombyte "0"
 ```
 ```powershell
-.\Encrypt-String.ps1 -action "autodecrypt" -plaintextstring "powershell.exe" -randombyte "true" -runelevated "true"
+.\Encrypt-String.ps1 -action "autodecrypt" -plaintextstring "powershell.exe" -randombyte "0" -runelevated "true"
 ```
 ![iamadmin](https://user-images.githubusercontent.com/23490060/156955891-cb3d2d83-772e-40a8-9a60-0e1d686709ef.png)
 
