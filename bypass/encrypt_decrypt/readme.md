@@ -110,6 +110,8 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/enc
 |@shanty damayanti|Debugging cmdlet|
 |@Saâd Ahla|Debugging cmdlet|
 
+<br />
+
 **Anatomy of a decrypt script**
 ![anatomy](https://user-images.githubusercontent.com/23490060/157081056-70bcb061-4015-41c4-a775-f716afdc4696.jpg)
 
