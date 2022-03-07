@@ -26,6 +26,7 @@ But in that ocassion the Decrypt-String cmdlet will not work unless the comrresp
 |OutFile|The decrypt routine script name|decrypt|
 |RandomByte|Random secretkey generation|false|
 |deldecrypt|Auto-delete decrypt.ps1 cmdlet?|true|
+|RunElevated|Auto-elevate decrypt.ps1 cmdlet?|false|
 
 <br />
 
