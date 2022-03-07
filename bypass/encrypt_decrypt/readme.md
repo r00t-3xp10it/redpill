@@ -9,7 +9,8 @@ This cmdlet allow users to encrypt <b><i>'text\commands\scripts.ps1'</i></b> wit
 
 This project can be used as an <b><i>encrypted chat</i></b> where is users encrypt their messages at source with the help of <b><i>Encrypt-String.ps1</i></b><br />cmdlet and decrypt messages at destination with the help of <b><i>Decrypt-String.ps1</i></b> cmdlet ( both users encrypted communication )<br />
 
-It can also be used to create a <b><i>decryption script (decrypt.ps1)</i></b> that will execute commands or full ps1 scripts encrypted.<br />Useful for evading Windows Defender amsi string detection engine that searchs for suspicious strings inside our projects.<br />**Example: Encrypt-String.ps1 cmdlet can be used to encrypt @Meterpeter C2 client.ps1 agent and auto-decrypt (decrypt.ps1) it at runtime**.
+It can also be used to create a <b><i>decryption script (decrypt.ps1)</i></b> that will execute commands or full ps1 scripts encrypted.<br />Useful for evading Windows Defender amsi string detection engine that searchs for suspicious strings inside our projects.<br />**Example: Encrypt-String.ps1 cmdlet can be used to encrypt @Meterpeter C2 client.ps1 agent and auto-decrypt it at runtime**.
+
 
 <br />
 
