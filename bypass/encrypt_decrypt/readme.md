@@ -1,4 +1,4 @@
-# * Encrypt\Decrypt strings in powershell using a SecretKey *
+# * Encrypt\Decrypt strings with powershell using a SecretKey *
 ![sem](https://user-images.githubusercontent.com/23490060/156955337-0b51d056-f091-465d-893a-d5ceb17ddabf.png)
 
 
