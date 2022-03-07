@@ -46,21 +46,43 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/enc
 <br />
 
 ## :octocat: Encrypt-String cmdlet examples
+
+Encrypt 'whoami' command and print encrypted string onscreen
 ```powershell
 .\Encrypt-String.ps1 -action "console" -plaintextstring "whoami"
 ```
+
+<br />
+
+Encrypt 'whoami' command and store encrypted string in logfile
 ```powershell
 .\Encrypt-String.ps1 -action "log" -plaintextstring "whoami"
 ```
+
+<br />
+
+Encrypt the contents of 'test.ps1' and print encrypted string onscreen
 ```powershell
 .\Encrypt-String.ps1 -action "console" -infile "test.ps1"
 ```
+
+<br />
+
+Encrypt 'whoami' command + create 'decrypt.ps1' decrypt script + print encrypted string onscreen
 ```powershell
 .\Encrypt-String.ps1 -action "autodecrypt" -plaintextstring "whoami"
 ```
+
+<br />
+
+Encrypt the contents of 'test.ps1' + create 'decrypt.ps1' decrypt script + randomize secretkey last byte + print encrypted string onscreen
 ```powershell
 .\Encrypt-String.ps1 -action "autodecrypt" -infile "test.ps1" -randombyte "0"
 ```
+
+<br />
+
+Encrypt 'powershell.exe' command + create 'decrypt.ps1' decrypt script + randomize secretkey last byte + run decrypt.ps1 elevated + print encrypted string onscreen
 ```powershell
 .\Encrypt-String.ps1 -action "autodecrypt" -plaintextstring "powershell.exe" -randombyte "0" -runelevated "true"
 ```
@@ -95,10 +117,15 @@ Decrypt string and print results onscreen
 ```powershell
 .\Decrypt-String.ps1 -action "console" -EncryptedString "76492d1116743f0423413b16050a5345MgB8AHIAUAA0AHkAdABMADgAYgBEAFAAdwBLAEkARgBOAHkATABwAEEAcgBUAEEAPQA9AHwAZAA0ADUAZAA1AGEAMgAxAGYAMAAxAGIAMwAxADAAMABkADkAZABiADgAOQAzADgANwAzADMAYwAzADQAYgA0ADEAZgAzAGUAMwBkAGYAYQAwADQAZgA3ADkAMAA4AGUAMAAxAGEAYgA0ADQAMgBmADQAZQA0ADUAYwA4AGUAYwA3AGUANwBiAGEAYwBiADkAMgAyADcANwA3ADMAZAA2AGEAYQA5AGUAYwAxAGQAMQA2AGIANABmAGMANABkADMAYQBmADYAOABiAGMAYQBkADkANQBjADcAMwBkADIAZAAwAGQAMgBhAGUAZQA4ADgAMQBmAGUAYgAwADcAZQA2ADQAMwBkADUAYwAyADUAMgA4ADYAZAA2ADMAZQA5ADAAZgA5AGEAMgA3ADUAOABlADEAMwA4ADYAMgA4ADQAMQAyADIANgA5ADkAOQBhADcAMQA1ADIAYwAyADMANABlADYAOQA5AGYAYQBmADQAMwA3ADUAZgA0ADQAZABmADkA"
 ```
+
+<br />
+
 Decrypt string using '250' as secretkey randombyte and execute\print onscreen
 ```powershell
 .\Decrypt-String.ps1 -action "execute" -randombyte "250" -EncryptedString "76492d1116743f0423413b16050a5345MgB8AHIAUAA0AHkAdABMADgAYgBEAFAAdwBLAEkARgBOAHkATABwAEEAcgBUAEEAPQA9AHwAZAA0ADUAZAA1AGEAMgAxAGYAMAAxAGIAMwAxADAAMABkADkAZABiADgAOQAzADgANwAzADMAYwAzADQAYgA0ADEAZgAzAGUAMwBkAGYAYQAwADQAZgA3ADkAMAA4AGUAMAAxAGEAYgA0ADQAMgBmADQAZQA0ADUAYwA4AGUAYwA3AGUANwBiAGEAYwBiADkAMgAyADcANwA3ADMAZAA2AGEAYQA5AGUAYwAxAGQAMQA2AGIANABmAGMANABkADMAYQBmADYAOABiAGMAYQBkADkANQBjADcAMwBkADIAZAAwAGQAMgBhAGUAZQA4ADgAMQBmAGUAYgAwADcAZQA2ADQAMwBkADUAYwAyADUAMgA4ADYAZAA2ADMAZQA5ADAAZgA5AGEAMgA3ADUAOABlADEAMwA4ADYAMgA4ADQAMQAyADIANgA5ADkAOQBhADcAMQA1ADIAYwAyADMANABlADYAOQA5AGYAYQBmADQAMwA3ADUAZgA0ADQAZABmADkA"
 ```
+
+<br />
 
 Decrypt string (test.ps1 cmdlet) and execute\print onscreen
 ```powershell
