@@ -1,16 +1,16 @@
-# * Encrypt\Decrypt strings with powershell using a SecretKey *
+# * Encrypt\Decrypt strings with powershell using a Secret Key *
 ![sem](https://user-images.githubusercontent.com/23490060/156955337-0b51d056-f091-465d-893a-d5ceb17ddabf.png)
 
 
 <br /><br />
 
 ## :octocat: Project Description
-This cmdlet allow users to encrypt <b><i>'text\commands\scripts.ps1'</i></b> with the help of <b><i>ConvertTo-SecureString</i></b> cmdlet and a secretkey of 113<br />bytes length, it outputs results on console, logfile or builds a decrypt.ps1 script with the decrypt function routine to be abble to execute<br />the encrypted string. ( decrypt.ps1 cmdlet will auto-delete itself after execution if <b><i>NOT</i></b> invoked with -deldecrypt 'false' parameter )<br />
+This cmdlet allow users to encrypt <b><i>'text\commands\scripts.ps1'</i></b> with the help of <b><i>ConvertTo-SecureString</i></b> cmdlet and a secret key of 113<br />bytes length, it outputs results on console, logfile or builds a decrypt.ps1 script with the decrypt function routine to be abble to execute<br />the encrypted string. ( decrypt.ps1 cmdlet will auto-delete itself after execution if <b><i>NOT</i></b> invoked with -deldecrypt 'false' parameter )<br />
 
-This project can be used as an <b><i>encrypted chat</i></b> where is users encrypt their messages at source with the help of <b><i>Encrypt-String.ps1</i></b><br />cmdlet and decrypt messages at destination with the help of <b><i>Decrypt-String.ps1</i></b> cmdlet ( both users encrypted communication )<br />Remark: If the <b><i>EncryptedString</i></b> length its greater than <b><i>1000 bytes</i></b>, then cmdlet will auto-create one logfile with the encrypted<br />string (oneline) to be easy to copy\paste if required..
+This project can be used to exchange encrypted messages between two persons (eg. facebook chat) Where we encrypt the messages<br />at the source with the help of <b><i>Encrypt-String.ps1</i></b> cmdlet and decrypt the messages at destination with the help of <b><i>Decrypt-String.ps1</i></b><br />Remark: If the <b><i>EncryptedString</i></b> length its greater than <b><i>1000 bytes</i></b>, then cmdlet will auto-create one logfile with the encrypted string.
 
-It can also be used to create a <b><i>decryption script (decrypt.ps1)</i></b> that will execute commands or full ps1 scripts encrypted.<br />Useful for evading Windows Defender amsi string detection engine that searchs for suspicious strings inside our projects.<br />**Example: Encrypt-String.ps1 cmdlet can be used to encrypt @Meterpeter C2 client.ps1 agent and auto-decrypt it at runtime**.
-
+It can also be used to create a <b><i>decryption script (decrypt.ps1)</i></b> that will execute commands or full PS1 (powershell) scripts encrypted.<br />Technic useful for evading Windows Defender amsi string detection engine that searchs for suspicious strings inside our projects.<br />**Example: Encrypt-String.ps1 cmdlet can be used to encrypt @Meterpeter C2 client.ps1 agent and auto-decrypt it at runtime**.
+![nosuprisses](https://user-images.githubusercontent.com/23490060/157342560-e89e1de7-e50d-4ff1-903b-46e42e9f794c.png)
 
 <br />
 
@@ -140,6 +140,7 @@ Decrypt string (test.ps1 cmdlet) and execute\print onscreen
 |---|---|
 |@shanty damayanti|Debugging cmdlet|
 |@Saâd Ahla|Debugging cmdlet|
+|@Daniel_Durnea|Debugging cmdlet|
 
 <br />
 
