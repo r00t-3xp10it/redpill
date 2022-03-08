@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Encrypt or decrypt strings using a secretkey.
     
@@ -63,8 +63,12 @@
    Encrypt 'whoami' command and build auto-decrypt routine function script.ps1
 
 .EXAMPLE
-   PS C:\> .\Encrypt-String.ps1 -action "autodecrypt" -infile "test.ps1" -outfile "Obfuscated"
-   Encrypt the contents of 'test.ps1' and build auto-decrypt routine function Obfuscated.ps1
+   PS C:\> .\Encrypt-String.ps1 -action "autodecrypt" -infile "test.ps1" -randombyte "248"
+   Encrypt the contents of 'test.ps1' (last byte 250) + build auto-decrypt routine decrypt.ps1
+
+.EXAMPLE
+   PS C:\> .\Encrypt-String.ps1 -action "autodecrypt" -plaintextstring "powershell.exe" -runelevated "true"
+   Encrypt 'powershell.exe' command + build auto-decrypt routine decrypt.ps1 that runs elevated (administrator)
 
 .INPUTS
    None. You cannot pipe objects into Encrypt-String.ps1
@@ -118,6 +122,14 @@ If($RandomByte -lt 242 -or $RandomByte -gt 255)
 Else
 {
    [byte]$RoolTheDiceAgain = [byte]$RandomByte
+}
+
+If($Action -iNotMatch '^(console|autodecrypt|log)$')
+{
+   write-host "*" -ForegroundColor Red -BackgroundColor Black -NoNewline;
+   write-host " Error: " -ForegroundColor DarkGray -BackgroundColor Black -NoNewline;
+   write-host "wrong parameter argument input .." -ForegroundColor Red -BackgroundColor Black;
+   Start-Sleep -Seconds 2;Get-Help .\Encrypt-String.ps1 -Full;exit
 }
 
 
