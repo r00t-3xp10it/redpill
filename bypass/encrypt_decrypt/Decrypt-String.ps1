@@ -11,7 +11,7 @@
 .DESCRIPTION
    This cmdlet allow users to Decrypt text\commands with the help of
    ConvertTo-SecureString cmdlet and a secretkey of 113 bytes length.
-   It outputs results on console and executes the Decrypted String if
+   It outputs results on console or executes the Decrypted String if
    invoked -action 'execute' parameter declaration ..
 
 .NOTES
@@ -78,7 +78,7 @@ $Success = "False"
 $cmdletVersion = "v1.1.4"
 $ErrorActionPreference = "SilentlyContinue"
 #Disable Powershell Command Logging for current session.
-Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
+Set-PSReadlineOption â€“HistorySaveStyle SaveNothing|Out-Null
 $host.UI.RawUI.WindowTitle = "@Decrypt-String $cmdletVersion {SSA@RedTeam}"
 write-host "`n* Powershell Ptr chiper cmdlet." -ForegroundColor Green
 
