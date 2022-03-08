@@ -31,7 +31,7 @@ Remark: Parameter -RunElevated 'true' Spawns UAC gui to be abble to run decrypt.
 |PlainTextString|The string\text\command to encrypt|whoami|
 |InFile|Get the string to encrypt from txt\ps1|false|
 |OutFile|The decrypt routine script name|decrypt|
-|RandomByte|0 (random), 253 (default) OR from 242 to 255|253|
+|RandomByte|0 (random), 253 (default) OR from 240 to 255|253|
 |deldecrypt|Auto-delete decrypt.ps1 cmdlet?|true|
 |RunElevated *|Auto-elevate decrypt.ps1 cmdlet?|false|
 * Spawn UAC gui to be abble to run decrypt.ps1 in an elevated context ...
