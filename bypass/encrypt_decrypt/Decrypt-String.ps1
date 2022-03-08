@@ -2,11 +2,11 @@
 .SYNOPSIS
    Decrypt strings using a secretkey.
     
-   Author: r00t-3xp10it
+   Author: @r00t-3xp10it
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: ConvertTo-SecureString {native}
    Optional Dependencies: Encrypt-String.ps1
-   PS cmdlet Dev version: v1.0.3
+   PS cmdlet Dev version: v1.0.4
    
 .DESCRIPTION
    This cmdlet allow users to Decrypt text\commands with the help of
@@ -74,12 +74,20 @@
 )
 
 
-$cmdletVersion = "v1.0.3"
+$cmdletVersion = "v1.0.4"
 $ErrorActionPreference = "SilentlyContinue"
 #Disable Powershell Command Logging for current session.
-Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
+Set-PSReadlineOption â€“HistorySaveStyle SaveNothing|Out-Null
 $host.UI.RawUI.WindowTitle = "@Decrypt-String $cmdletVersion {SSA@RedTeam}"
 write-host "`n* Powershell Ptr chiper cmdlet." -ForegroundColor Green
+
+If($Action -iNotMatch '^(console|execute)$')
+{
+   write-host "*" -ForegroundColor Red -BackgroundColor Black -NoNewline;
+   write-host " Error: " -ForegroundColor DarkGray -BackgroundColor Black -NoNewline;
+   write-host "wrong parameter argument input .." -ForegroundColor Red -BackgroundColor Black;
+   Start-Sleep -Seconds 2;Get-Help .\Decrypt-String.ps1 -Full;exit
+}
 
 
 #Decryption key (secretkey 113 bytes)
@@ -101,10 +109,16 @@ If(-not($String) -or $String -ieq $null)
 {
    [string]$ParseLastByte = $DisplaySecret.Split(',')[-1]                # Get last byte of secretkey
    [string]$ParseFirsByte = $DisplaySecret -replace "$ParseLastByte",""  # Delete last byte of secretKey
-   write-host "* Fail to Decrypt: wrong 'EncryptedString' input?" -ForegroundColor Red -BackgroundColor Black
-   write-host "* Fail to Decrypt: wrong secretkey last byte [" -ForegroundColor Red -BackgroundColor Black -NoNewline;
+   write-host "*" -ForegroundColor Red -BackgroundColor Black -NoNewline;
+   write-host " Fail to Decrypt: " -ForegroundColor DarkGray -BackgroundColor Black -NoNewline;
+   write-host "wrong 'EncryptedString' input?" -ForegroundColor Red -BackgroundColor Black;
+
+   write-host "*" -ForegroundColor Red -BackgroundColor Black -NoNewline;
+   write-host " Fail to Decrypt: " -ForegroundColor DarkGray -BackgroundColor Black -NoNewline;
+   write-host "wrong secretkey last byte [" -ForegroundColor Red -BackgroundColor Black -NoNewline;
    write-host "$ParseLastByte" -ForegroundColor Yellow -BackgroundColor Black -NoNewline;
    write-host "] input?" -ForegroundColor Red -BackgroundColor Black;
+
    write-host "  => SecretKey: $ParseFirsByte" -ForegroundColor Green -NoNewline;
    write-host "$ParseLastByte`n" -ForegroundColor Yellow;
    exit
