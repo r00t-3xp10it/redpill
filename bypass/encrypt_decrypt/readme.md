@@ -9,19 +9,17 @@ This cmdlet allow users to encrypt <b><i>'text\commands\scripts.ps1'</i></b> wit
 
 This project can be used to exchange encrypted messages between two persons (eg. facebook chat) Where we encrypt the messages<br />at the source with the help of <b><i>Encrypt-String.ps1</i></b> cmdlet and decrypt the messages at destination with the help of <b><i>Decrypt-String.ps1</i></b><br />Remark: If the <b><i>EncryptedString</i></b> length its greater than <b><i>1000 bytes</i></b>, then cmdlet will auto-create one logfile with the encrypted string.
 
-It can also be used to create a <b><i>decryption script (decrypt.ps1)</i></b> that will execute commands or full PS1 (powershell) scripts encrypted.<br />Technic useful for evading Windows Defender amsi string detection engine that searchs for suspicious strings inside our projects.<br />**Example: Encrypt-String.ps1 cmdlet can be used to encrypt @Meterpeter C2 client.ps1 agent and auto-decrypt it at runtime**.
+It can also be used to create a <b><i>decryption script (decrypt.ps1)</i></b> that will execute commands or full PS1 (powershell) scripts encrypted.<br />Technic useful for evading Windows Defender amsi string detection engine that searchs for suspicious strings inside our projects.<br />**Example: 'Encrypt-String.ps1 cmdlet can be used to encrypt @Meterpeter C2 client.ps1 agent and auto-decrypt it at runtime'**.
 ![nosuprisses](https://user-images.githubusercontent.com/23490060/157342560-e89e1de7-e50d-4ff1-903b-46e42e9f794c.png)
 
-<br />
-
 ## :octocat: Notes
-If invoked <b><i>-RandomByte '0'</i></b> then Encrypt-String.ps1 cmdlet random generates the SecretKey last byte (3 digits). But in that ocassion the Decrypt-String cmdlet will not work unless the comrrespondent secretkey ( the same secretkey used to encrypt ) its invoked to decrypt string.<br /><br />
-Remark: Parameter -RandomByte '253' (default secretkey last byte) can be invoked on Decrypt-String cmdlet to input the required secretKey.<br />
-Remark: Parameter -RunElevated 'true' Spawns UAC gui to be abble to run decrypt.ps1 in an elevated context. ( administrator token privs )
+If invoked <b><i>-RandomByte '0'</i></b> param then Encrypt-String.ps1 cmdlet random generates the Secret Key last byte (3 digits). But in that ocassion the <b><i>Decrypt-String</i></b> cmdlet will not work unless the comrrespondent secret key (the same secret key used to encrypt) its invoked to decrypt string.<br /><br />
+Remark: Parameter -RandomByte 'byte' (secret key last byte) can be invoked on <b><i>Decrypt-String</i></b> cmdlet to input the required secret Key.<br />
+Remark: Parameter -RunElevated 'true' Spawns UAC gui to be abble to run <b><i>decrypt.ps1</i></b> in an elevated context ( administrator token privs )
 
 ---
 
-<br />
+<br /><br />
 
 ## :octocat: Encrypt-String cmdlet Parameters
 
@@ -75,14 +73,14 @@ Encrypt 'whoami' command + create 'decrypt.ps1' decrypt script + print encrypted
 
 <br />
 
-Encrypt the contents of 'test.ps1' + create 'decrypt.ps1' decrypt script + randomize secretkey last byte + print encrypted string onscreen
+Encrypt the contents of 'test.ps1' + create 'decrypt.ps1' decrypt script + randomize secret key last byte
 ```powershell
 .\Encrypt-String.ps1 -action "autodecrypt" -infile "test.ps1" -randombyte "0"
 ```
 
 <br />
 
-Encrypt 'powershell.exe' command + create 'decrypt.ps1' decrypt script + randomize secretkey last byte + run decrypt.ps1 elevated + print encrypted string onscreen
+Encrypt 'powershell.exe' command + create 'decrypt.ps1' decrypt script + randomize secret key last byte + run decrypt.ps1 elevated 
 ```powershell
 .\Encrypt-String.ps1 -action "autodecrypt" -plaintextstring "powershell.exe" -randombyte "0" -runelevated "true"
 ```
@@ -91,17 +89,17 @@ Encrypt 'powershell.exe' command + create 'decrypt.ps1' decrypt script + randomi
 
 ---
 
-<br />
+<br /><br />
 
 ## :octocat: Decrypt-String cmdlet Parameters
 
 ![nice](https://user-images.githubusercontent.com/23490060/156942705-5fce1475-5cb9-4631-adf7-8743e43a7c12.png)
 
-|Parameter Name|Description|Default Value|
-|---|---|---|
-|Action|Accepts arguments: console, execute|console|
-|EncryptedString|The string\text\command to be Decrypted by this cmdlet|User_Input|
-|RandomByte|Encrypt-String SecretKey Last Byte|253|
+|Parameter Name|Description|Default Value|Optional value Description|
+|---|---|---|---|
+|Action|Accepts arguments: console, execute|console|execute = decrypt\execute|
+|EncryptedString|The string\text\command to be Decrypted by this cmdlet|User_Input|---|
+|RandomByte|Encrypt-String SecretKey Last Byte|253|accepts values from 240 to 255|
 
 <br />
 
