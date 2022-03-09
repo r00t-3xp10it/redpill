@@ -32,6 +32,7 @@ Remark: Parameter -RunElevated 'true' Spawns UAC gui to be abble to run <b><i>de
 |RandomByte|0 (random), 253 (default) OR from 240 to 255|253|accepts values from 240 to 255|
 |deldecrypt|Auto-delete decrypt.ps1 cmdlet?|true|false = dont del decrypt.ps1|
 |RunElevated *|Auto-elevate decrypt.ps1 cmdlet?|false|true = spawn UAC gui to run elevated (admin)|
+|SendTo|Send encrypted string to email address|false|pedroubuntu101@gmail.com|
 * Spawn UAC gui to be abble to run decrypt.ps1 in an elevated context ...
 
 <br />
