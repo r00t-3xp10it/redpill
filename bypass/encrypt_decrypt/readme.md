@@ -23,15 +23,15 @@ Remark: Parameter -RunElevated 'true' Spawns UAC gui to be abble to run <b><i>de
 
 ## :octocat: Encrypt-String cmdlet Parameters
 
-|Parameter Name|Description|Default Value|
-|---|---|---|
-|Action|Accepts arguments: console, autodecrypt, log|console|
-|PlainTextString|The string\text\command to encrypt|whoami|
-|InFile|Get the string to encrypt from txt\ps1|false|
-|OutFile|The decrypt routine script name|decrypt|
-|RandomByte|0 (random), 253 (default) OR from 240 to 255|253|
-|deldecrypt|Auto-delete decrypt.ps1 cmdlet?|true|
-|RunElevated *|Auto-elevate decrypt.ps1 cmdlet?|false|
+|Parameter Name|Description|Default Value|Optional value Description|
+|---|---|---|---|
+|Action|Accepts args: console, autodecrypt, log|console|autodecrypt = decrypt\execute \| log = create logfile|
+|PlainTextString|The string\text\command to encrypt|whoami|netstat -ano \| findstr ':443' \| findstr /V '['|
+|InFile|Get the string to encrypt from txt\ps1|false|true = input script to encrypt path\name|
+|OutFile|The decrypt routine script name|decrypt|---|
+|RandomByte|0 (random), 253 (default) OR from 240 to 255|253|accepts values from 240 to 255|
+|deldecrypt|Auto-delete decrypt.ps1 cmdlet?|true|false = dont del decrypt.ps1|
+|RunElevated *|Auto-elevate decrypt.ps1 cmdlet?|false|true = spawn UAC gui to run elevated (admin)|
 * Spawn UAC gui to be abble to run decrypt.ps1 in an elevated context ...
 
 <br />
