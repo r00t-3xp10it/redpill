@@ -81,14 +81,14 @@ Encrypt the contents of 'test.ps1' + create 'decrypt.ps1' decrypt script + rando
 
 <br />
 
-Encrypt 'powershell.exe' command + create 'decrypt.ps1' decrypt script + randomize secret key last byte + run decrypt.ps1 elevated 
+Encrypt 'whoami' command + send encrypted string to the recipient email address
 ```powershell
 .\Encrypt-String.ps1 -action "console" -plaintextstring "whoami" -SendTo "pedroubuntu101@gmail.com"
 ```
 
 <br />
 
-Encrypt 'whoami' command + send encrypted string to the recipient email address
+Encrypt 'powershell.exe' command + create 'decrypt.ps1' decrypt script + randomize secret key last byte + run decrypt.ps1 elevated
 ```powershell
 .\Encrypt-String.ps1 -action "autodecrypt" -plaintextstring "powershell.exe" -randombyte "0" -runelevated "true"
 ```
