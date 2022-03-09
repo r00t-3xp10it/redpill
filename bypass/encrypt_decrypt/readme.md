@@ -27,7 +27,7 @@ Remark: Parameter -RunElevated 'true' Spawns UAC gui to be abble to run <b><i>de
 |---|---|---|---|
 |Action|Accepts args: console, autodecrypt, log|console|autodecrypt = decrypt\execute \| log = create logfile|
 |PlainTextString|The string\text\command to encrypt|whoami|netstat -ano \| findstr ':443' \| findstr /V '['|
-|InFile|Get the string to encrypt from txt\ps1|false|true = input script to encrypt path\name|
+|InFile|Get the string to encrypt from txt\ps1|false|input script to encrypt path\name|
 |OutFile|The decrypt routine script name|decrypt|---|
 |RandomByte|0 (random), 253 (default) OR from 240 to 255|253|accepts values from 240 to 255|
 |deldecrypt|Auto-delete decrypt.ps1 cmdlet?|true|false = dont del decrypt.ps1|
