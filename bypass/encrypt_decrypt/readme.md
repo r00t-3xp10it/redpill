@@ -151,8 +151,10 @@ Decrypt string (test.ps1 cmdlet) and execute\print onscreen
 <br /><br />
 
 ## :octocat: Final Notes:
-**Modifying Encrypt-String.ps1 secret key (manual)**
-![easteregg](https://user-images.githubusercontent.com/23490060/157575909-b4946432-7cbe-451f-ac0b-94570755b059.png)
+**Modifying '[Encrypt-String.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/bypass/encrypt_decrypt/Encrypt-String.ps1)' secret key for further obfuscation ( manual )**
+- Activating this function causes '[Decrypt-String.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/bypass/encrypt_decrypt/Decrypt-String.ps1)' to fail decrypting the string. But does not affect the auto-decryption on '<b><i>decrypt.ps1</i></b>'
+
+![feito](https://user-images.githubusercontent.com/23490060/157682281-299634f4-ccde-4c60-8587-f07395e7ea16.png)
 
 
 **Anatomy of one decrypt script (decrypt.ps1)**
