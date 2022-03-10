@@ -148,7 +148,11 @@ Decrypt string (test.ps1 cmdlet) and execute\print onscreen
 |@Saâd Ahla|Debugging cmdlet|
 |@Daniel_Durnea|Debugging cmdlet|
 
-<br />
+<br /><br />
+
+## :octocat: Final Notes:
+![easteregg](https://user-images.githubusercontent.com/23490060/157575909-b4946432-7cbe-451f-ac0b-94570755b059.png)
+
 
 **Anatomy of a decrypt script**
 ![anatomy](https://user-images.githubusercontent.com/23490060/157081056-70bcb061-4015-41c4-a775-f716afdc4696.jpg)
