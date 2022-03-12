@@ -33,6 +33,7 @@ Remark: Parameter -RunElevated 'true' Spawns UAC gui to be abble to run <b><i>de
 |deldecrypt|Auto-delete decrypt.ps1 cmdlet?|true|false = dont del decrypt.ps1|
 |RunElevated *|Auto-elevate decrypt.ps1 cmdlet?|false|true = spawn UAC gui to run elevated (admin)|
 |SendTo|Send encrypted string to email address|false|pedroubuntu101@gmail.com|
+|ClipBoard|Auto-Copy encrypted string to clipboard?|false|true|
 * Spawn UAC gui to be abble to run decrypt.ps1 in an elevated context ...
 
 <br />
