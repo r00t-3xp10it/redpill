@@ -1,8 +1,10 @@
 ## Module Name
-   AMSBP
+   <b><i>AMSBP</i></b>
 
    **Description:**
-   <b><i>Disable AMSI within current process</i></b>
+   <b><i>Disable AMSI within current process</i></b><br />
+   **Privileges:**
+   <b><i>User Land</i></b><br />
 
    **Syntax:**
 ```powershell
@@ -15,8 +17,10 @@ Import-Module -Name .\AMSBP.ps1 -Force;AMSBP
    Disable-Amsi
 
    **Description:**
-   <b><i>disable AMSI within current process using well-known<br />
-   techniques laid out in an unsignatured way</i></b>
+   <b><i>disable AMSI within current process using well<br />
+   known techniques laid out in an unsignatured way</i></b><br />
+   **Privileges:**
+   <b><i>User Land</i></b><br />   
 
    **Syntax:**
 ```powershell      
