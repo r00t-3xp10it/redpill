@@ -1,5 +1,5 @@
 ## Module Name
-   <b><i>AMSBP</i></b>
+   <b><i>AMSBP.ps1</i></b>
 
 |Function name|Description|Privileges
 |---|---|---|
@@ -14,7 +14,7 @@ AMSBP
 <br />
 
 ## Module Name
-   <b><i>Disable-Amsi</i></b>
+   <b><i>Disable-Amsi.ps1</i></b>
    
 |Cmdlet Name|Description|Privileges
 |---|---|---|
