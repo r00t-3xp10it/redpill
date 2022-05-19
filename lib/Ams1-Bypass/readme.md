@@ -19,7 +19,7 @@ AMSBP
 ## Module Name
    <b><i>Disable-Amsi.ps1</i></b>
    
-|Cmdlet Name|Description|Privileges
+|Function Name|Description|Privileges
 |---|---|---|
 |Disable-Amsi|disable AMSI within current process using well<br />known techniques laid out in an unsignatured way</i></b>|User Land|
 
