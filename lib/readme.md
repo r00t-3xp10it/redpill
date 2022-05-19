@@ -12,8 +12,8 @@ This repository contains resources written by me or by external developers.
 
 ## :octocat: Repository Structure
 ```
-Directory Name                                         Cmdlet Description
---------------                                         ------------------
+Directory Name                                         Resource Description
+--------------                                         --------------------
 Database
         |_ Ams1-Bypass
                       |_ AMSBP.ps1                     Disable AMSI within current process
