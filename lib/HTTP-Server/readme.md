@@ -3,7 +3,7 @@
 
 |Function name|Description|Privileges|Notes|
 |---|---|---|---|
-|CaptureServer|Captute HTTP data (webserver)|User Land|Administrator|
+|CaptureServer|Captute HTTP local lan data (logile)|User Land|Administrator privileges required|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/HTTP-Server/CaptureServer.ps1" -OutFile "CaptureServer.ps1"
@@ -21,7 +21,7 @@ CaptureServer -AuthType Basic -IPAddress 192.168.1.72 -LogFilePath $Env:TMP\logf
    
 |Function Name|Description|Privileges|Notes|
 |---|---|---|---|
-|Start-SimpleHTTPServer|Simple HTTP pure powershell webserver|Administrator|Current dir its used as webroot|
+|Start-SimpleHTTPServer|Simple HTTP pure powershell webserver|Administrator|Current directory its used as webroot|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/HTTP-Server/Start-SimpleHTTPServer.ps1" -OutFile "Start-SimpleHTTPServer.ps1"
@@ -39,7 +39,7 @@ Start-SimpleHTTPServer
    
 |Script Name|Description|Privileges|Notes|
 |---|---|---|---|
-|wget.vbs|VBScript to download files from Local Lan|User Land|\*\*\*|
+|wget.vbs|VBScript to download files from Local Lan|User Land|can be executed using **'cscript'** or **'powershell'** interpreter|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/HTTP-Server/wget.vbs" -OutFile "wget.vbs"
