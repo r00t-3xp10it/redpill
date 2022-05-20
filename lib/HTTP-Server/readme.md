@@ -10,8 +10,9 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/HTTP-S
 ```
 
 ```powershell
-Import-Module -Name .\CaptureServer.ps1 -Force
-CaptureServer -AuthType Basic -IPAddress 192.168.1.72 -LogFilePath $Env:TMP\logfile.txt
+Import-Module -Name ".\CaptureServer.ps1" -Force
+CaptureServer -AuthType "Basic" -IPAddress "192.168.1.72" -LogFilePath "$Env:TMP\CaptureServer.txt"
+Start "http://192.168.1.72:80"
 ```
 
 <br />
@@ -28,8 +29,8 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/HTTP-S
 ```
 
 ```powershell      
-Import-Module -Name .\Start-SimpleHTTPServer.ps1 -Force
-Start-SimpleHTTPServer -port 8080
+Import-Module -Name ".\Start-SimpleHTTPServer.ps1" -Force
+Start-SimpleHTTPServer -Port "8080"
 ```   
 
 <br />
