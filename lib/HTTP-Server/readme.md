@@ -29,7 +29,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/HTTP-S
 
 ```powershell      
 Import-Module -Name .\Start-SimpleHTTPServer.ps1 -Force
-Start-SimpleHTTPServer
+Start-SimpleHTTPServer -port 8080
 ```   
 
 <br />
