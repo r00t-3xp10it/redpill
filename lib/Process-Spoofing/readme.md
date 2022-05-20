@@ -33,7 +33,7 @@ Start-Process -FilePath $Env:windir\System32\notepad.exe -PassThru | Start-ATHPr
 <br />
 
 ## Module Name
-   <b><i>SelectMyParent.ps1</i></b>
+   <b><i>SelectMyParent.exe</i></b>
 
 |Binary name|Description|Privileges|Notes|
 |---|---|---|---|
@@ -54,7 +54,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Proces
 
 
 ## Module Name
-   <b><i>spoof.ps1</i></b>
+   <b><i>spoof.exe</i></b>
 
 |Binary name|Description|Privileges|Notes|
 |---|---|---|---|
