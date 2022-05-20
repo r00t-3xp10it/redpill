@@ -1,14 +1,14 @@
 ## Module Name
-   FakeCmdLine
+<b><i>FakeCmdLine.exe</i></b>
+   
+|Function Name|Description|Privileges|Notes|
+|---|---|---|---|
+|FakeCmdLine|less-known (but documented) behavior of CreateProcess() function.<br />Effectively you can put any string into the child process Command Line field.|User Land|[URL](https://github.com/gtworek/PSBits/tree/master/FakeCmdLine)|
 
-   **Description:**
-   <b><i>less-known (but documented) behavior of CreateProcess() function.<br />
-   Effectively you can put any string into the child process Command Line field.</i></b>
-
-   **Syntax:**
-```powershell   
-.\FakeCmdLine.exe <ExeToLaunch > <cmdline>
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Fake-Cmdline/FakeCmdLine.exe" -OutFile "FakeCmdLine.exe"
 ```
 
-   **URL**
-   https://github.com/gtworek/PSBits/tree/master/FakeCmdLine
+```powershell   
+.\FakeCmdLine.exe <ExeToLaunch> <cmdline>
+``` 
