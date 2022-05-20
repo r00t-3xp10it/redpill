@@ -45,6 +45,12 @@ Disable-Amsi -DontDisableBlockLogging "true"
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/Invoke-Bypass.ps1" -OutFile "Invoke-Bypass.ps1"
 ```
 
+**PreRequesites:**
+```
+-filepath 'string' only accepts .ps1 .bat .vbs file formats
+-payloadurl 'string' only accepts .ps1 .bat .vbs file formats
+```
+
 ```powershell      
 .\Invoke-Bypass.ps1 -list "technic"
 .\Invoke-Bypass.ps1 -technic "1"
