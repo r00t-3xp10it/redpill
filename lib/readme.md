@@ -32,5 +32,5 @@ Database
         |_ HTTP-Server
                       |_ CaptureServer.ps1             Simple HTTP pure powershell webserver
                       |_ Start-SimpleHTTPServer.ps1    Simple HTTP pure powershell webserver     
-                      |_ wget.vbs                      VBScript to download files on Local Lan
+                      |_ wget.vbs                      VBScript to download files from Local Lan
 ```
