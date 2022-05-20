@@ -3,7 +3,7 @@
 
 |Function name|Description|Privileges|Notes|
 |---|---|---|---|
-|PPIDSpoof|Creates a process as a child of a specified process ID.<br />Technique ID: T1134.004 (Access Token Manipulation: Parent PID Spoofing)|User Land|\*\*\*|
+|PPIDSpoof|Creates a process as a child of a specified process ID.<br />Technique ID: T1134.004 (Access Token Manipulation: Parent PID Spoofing)|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Process-Spoofing/PPIDSpoof.png)|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Process-Spoofing/PPIDSpoof.ps1" -OutFile "PPIDSpoof.ps1"
