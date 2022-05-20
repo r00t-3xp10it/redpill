@@ -3,7 +3,7 @@
 
 |Function name|Description|Privileges|Notes|
 |---|---|---|---|
-|SharpGhosting|Spawn child process disassosiated from parent<br />And hidde parent process name from taskmanager|User Land|\*\*\*|
+|SharpGhosting|Spawn the **child** process disassosiated from **parent** process<br />And hidde **parent** process name from taskmanager|User Land|\*\*\*|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/SharpGhosting/SharpGhosting.exe" -OutFile "SharpGhosting.exe"
