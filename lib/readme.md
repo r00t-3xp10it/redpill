@@ -18,6 +18,7 @@ Database
         |_ Ams1-Bypass
                       |_ AMSBP.ps1                     Disable AMSI within current process
                       |_ Disable-Amsi.ps1              Disable AMSI within current process
+                      |_ Invoke-Bypass.ps1             Disable AMSI within current process
         |_ Dump-Browser
                       |_ DumpChromePasswords.ps1       Dumps URLs, usernames, and passwords from Chrome
                       |_ HarvestBrowserPasswords.exe   Dumps URLs, usernames, and passwords from major browsers
