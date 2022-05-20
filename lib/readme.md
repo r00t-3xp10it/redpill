@@ -33,4 +33,6 @@ Database
                       |_ CaptureServer.ps1             Simple HTTP pure powershell webserver
                       |_ Start-SimpleHTTPServer.ps1    Simple HTTP pure powershell webserver     
                       |_ wget.vbs                      VBScript to download files from Local Lan
+        |_ SharpGhosting
+                      |_ SharpGhosting.exe             Hidde parent process name from TaskManager displays
 ```
