@@ -3,7 +3,7 @@
 
 |Function name|Description|Privileges|Notes|
 |---|---|---|---|
-|CaptureServer|Captute HTTP local lan data (logile)|User Land|Administrator privileges required|
+|CaptureServer|Captute HTTP local lan data (logile)|Administrator|Administrator privileges required|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/HTTP-Server/CaptureServer.ps1" -OutFile "CaptureServer.ps1"
