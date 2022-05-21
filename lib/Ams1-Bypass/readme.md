@@ -3,7 +3,7 @@
 
 |Function name|Description|Privileges|Notes|
 |---|---|---|---|
-|AMSBP|Disable AMSI within current process|User Land|\*\*\*|
+|AMSBP|Disable AMSI within current process|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/AMSBP.png)|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/AMSBP.ps1" -OutFile "AMSBP.ps1"
@@ -21,7 +21,7 @@ AMSBP
    
 |Function Name|Description|Privileges|Notes|
 |---|---|---|---|
-|Disable-Amsi|disable AMSI within current process using well<br />known techniques laid out in an unsignatured way</i></b>|User Land|3 bypass technics available (auto-sellection)|
+|Disable-Amsi|disable AMSI within current process using well<br />known techniques laid out in an unsignatured way</i></b>|User Land|3 bypass technics available (auto-sellection)<br />[Disable-Amsi cmdlet Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/Disable-Amsi.png)|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/Disable-Amsi.ps1" -OutFile "Disable-Amsi.ps1"
