@@ -112,7 +112,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String
 .\Encrypt-String.ps1 -action "console" -plaintextstring "whoami" -SendTo "pedroubuntu@gmail.com"
 ```
 
-<br />
+<br /><br />
 
 ```powershell
 iwr -uri "[https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/encrypt_decrypt/Decrypt-String.ps1" -OutFile "Decrypt-String.ps1"
