@@ -24,7 +24,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String
 
 |Function Name|Description|Privileges|Notes|
 |---|---|---|---|
-|Out-EncodedSpecialCharOnlyCommand|Generates Special-Character-Only encoded payload for a PowerShell<br />command or script.|User Land|[Screenshot1](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/AMSBP.png)<br />[Screenshot2](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/AMSBP.png)<br />[Screenshot3](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/AMSBP.png)|
+|Out-EncodedSpecialCharOnlyCommand|Generates Special-Character-Only encoded payload<br />for a PowerShell command or script.|User Land|[Screenshot1](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/AMSBP.png)<br />[Screenshot2](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/AMSBP.png)<br />[Screenshot3](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/AMSBP.png)|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Out-EncodedSpecialCharOnlyCommand.ps1" -OutFile "Out-EncodedSpecialCharOnlyCommand.ps1"
@@ -34,5 +34,3 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String
 Import-Module -Name ".\Out-EncodedSpecialCharOnlyCommand.ps1" -Force
 Out-EncodedSpecialCharOnlyCommand -ScriptBlock {Write-Host 'Hello World!' -ForegroundColor Green;Write-Host 'Obfuscation Rocks!' -ForegroundColor Green} -NoProfile -NonInteractive
 ```
-
-
