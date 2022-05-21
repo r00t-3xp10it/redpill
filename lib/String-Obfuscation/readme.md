@@ -76,3 +76,34 @@ cscript.exe vbs_obfuscator.vbs Payload.vbs > Buffer.vbs
 $parse = Get-Content Buffer.vbs
 echo $parse[3] > Buffer.vbs
 ```
+
+<br />
+
+
+## Module Name
+   <b><i>Encrypt-String.ps1</i></b>
+
+|Cmdlet Name|Description|Privileges|Notes|
+|---|---|---|---|
+|Encrypt-String|Encrypt commands \| scripts|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/vbs_obfuscator.png)|
+
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Encrypt-String.ps1" -OutFile "Encrypt-String.ps1"
+```
+
+**[Encrypt cmdline OnScreen]**
+```powershell
+.\Encrypt-String.ps1 -action "console" -plaintextstring "whoami"
+```
+
+**[Encrypt PS1 script and build decrypt script]**
+```powershell
+.\Encrypt-String.ps1 -action "autodecrypt" -infile "Payload.ps1"
+```
+
+**[Encrypt 'whoami' command + send encrypted string to the recipient email address]**
+```powershell
+.\Encrypt-String.ps1 -action "console" -plaintextstring "whoami" -SendTo "pedroubuntu@gmail.com"
+```
+
+
