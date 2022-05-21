@@ -6,7 +6,7 @@ This repository contains a library of cmdlet's which for one reason or another h
 
 ## :octocat: Disclamer
 
-This repository contains resources written by me or by external developers.
+This repository contains resources written by me or by external developers to help in Red Team engagements.
 
 <br />
 
