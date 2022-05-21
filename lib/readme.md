@@ -19,6 +19,8 @@ Database
                       |_ AMSBP.ps1                     Disable AMSI within current process (bxor)
                       |_ Disable-Amsi.ps1              Disable AMSI within current process (un-signed technics)
                       |_ Invoke-Bypass.ps1             Disable AMSI within current process + exec script through bypass
+        |_ Ams1-Triger
+                      |_ AmsiTrigger_x64.exe           Hunting for Malicious Strings that triggers AMSI detection
         |_ Dump-Browser
                       |_ DumpChromePasswords.ps1       Dumps URLs, usernames, and passwords from Chrome
                       |_ HarvestBrowserPasswords.exe   Dumps URLs, usernames, and passwords from major browsers
