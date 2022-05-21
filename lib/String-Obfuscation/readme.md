@@ -59,7 +59,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String
 
 |Script Name|Description|Privileges|Notes|
 |---|---|---|---|
-|vbs_obfuscator|Encrypt vbs scripts|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/obfuscator.png)|
+|vbs_obfuscator|Encrypt vbs scripts|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/vbs_obfuscator.png)|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/vbs_obfuscator.vbs" -OutFile "vbs_obfuscator.vbs"
