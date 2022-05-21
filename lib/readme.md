@@ -50,4 +50,5 @@ Database
                       |_ Out-EncodedSpecialCharOnlyCommand.ps1 Generates Special-Character-Only encoded payload
                       |_ obfuscator.bat                Obfuscate batch scripts
                       |_ vbs_obfuscator.vbs            Obfuscate VBS scripts
+                      |_ Encrypt-String.ps1            Encrypt commands\scripts using a secret key
 ```
