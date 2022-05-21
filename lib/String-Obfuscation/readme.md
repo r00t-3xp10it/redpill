@@ -97,6 +97,8 @@ echo $parse > Buffer.vbs
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Encrypt-String.ps1" -OutFile "Encrypt-String.ps1"
 ```
 
+<br />
+
 **[Encrypt cmdline OnScreen]**
 ```powershell
 .\Encrypt-String.ps1 -action "console" -plaintextstring "whoami"
