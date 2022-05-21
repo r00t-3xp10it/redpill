@@ -21,7 +21,7 @@ AMSBP
    
 |Function Name|Description|Privileges|Notes|
 |---|---|---|---|
-|Disable-Amsi|disable AMSI within current process using well<br />known techniques laid out in an unsignatured way</i></b>|User Land|3 bypass technics available (auto)|
+|Disable-Amsi|disable AMSI within current process using well<br />known techniques laid out in an unsignatured way</i></b>|User Land|3 bypass technics available (auto-sellection)|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/Disable-Amsi.ps1" -OutFile "Disable-Amsi.ps1"
