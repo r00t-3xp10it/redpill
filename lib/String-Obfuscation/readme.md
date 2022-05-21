@@ -32,5 +32,5 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String
 
 ```powershell
 Import-Module -Name ".\Out-EncodedSpecialCharOnlyCommand.ps1" -Force
-Out-EncodedSpecialCharOnlyCommand -ScriptBlock {Write-Host 'Hello World!' -ForegroundColor Green;Write-Host 'Obfuscation Rocks!' -ForegroundColor Green} -NoProfile -NonInteractive
+Out-EncodedSpecialCharOnlyCommand -ScriptBlock {Write-Host 'Hello World!' -ForegroundColor Green; Write-Host 'Obfuscation Rocks!' -ForegroundColor Green} -NoProfile -NonInteractive -PassThru
 ```
