@@ -1,33 +1,20 @@
 ## Module Name
-   <b><i>AMSBP.ps1</i></b>
+   <b><i>CarbonCopy.py</i></b>
 
-|Function name|Description|Privileges|Notes|
+|Script Name|Description|Privileges|Notes|
 |---|---|---|---|
-|AMSBP|Disable AMSI within current process|User Land|\*\*\*|
+|CarbonCopy|A tool which creates a spoofed certificate of any online website<br />and signs an Executable for AV Evasion. Works for both Windows and Linux|User Land|To be executed under Linux|
 
-```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/AMSBP.ps1" -OutFile "AMSBP.ps1"
+```shell
+wget https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Sign-Executables/CarbonCopy.py -O CarbonCopy.py
 ```
 
-```powershell
-Import-Module -Name ".\AMSBP.ps1" -Force
-AMSBP
-```
-
-
-## Module Name
-   CarbonCopy
-
-   **Description:**
-   <b><i>A tool which creates a spoofed certificate of any online website<br />
-   and signs an Executable for AV Evasion. Works for both Windows and Linux</i></b>
-
-   **prerequisites:**
+**prerequisites:**
 ```shell 
 apt-get install osslsigncode
 pip3 install pyopenssl
 ```
-   **Syntax:**
+
 ```python   
 python3 CarbonCopy.py www.microsoft.com 443 prometheus.exe signed-prometheus.exe
 ```
@@ -35,17 +22,17 @@ python3 CarbonCopy.py www.microsoft.com 443 prometheus.exe signed-prometheus.exe
 <br />
 
 ## Module Name
-   sigthief
+   <b><i>sigthief.py</i></b>
 
-   **Description:**
-   <b><i>A tool to sign Executable for AV Evasion.<br />
-   It clones signcheck.exe to sign the new binary</i></b>
+|Script Name|Description|Privileges|Notes|
+|---|---|---|---|
+|sigthief|A tool to sign an Executable for AV Evasion.<br />It clones signcheck.exe to sign the new binary|User Land|Dependencies: python3|
 
-   **prerequesites:**
-   python3
-   osslsigncode
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Sign-Executables/sigthief.py" -OutFile "sigthief.py"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Sign-Executables/signcheck.exe" -OutFile "signcheck.exe"
+```
 
-   **Syntax:**
 ```python   
 python Sigthief.py -i "sigcheck.exe" -t "prometheus.exe" -o "signed-prometheus.exe"
 ```
