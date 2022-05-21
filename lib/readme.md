@@ -45,4 +45,7 @@ Database
         |_ Sign-Executables
                       |_ CarbonCopy.py                 Creates spoofed certificate of online website to sign PE
                       |_ sigthief.py                   Sign an PE for AV Evasion by cloning other PE certificate
+        |_ String-Obfuscation
+                      |_ enc-rot13.ps1                 Encrypt or decrypt strings using ROT13 cipher.
+                      |_ Out-EncodedSpecialCharOnlyCommand.ps1 Generates Special-Character-Only encoded payload
 ```
