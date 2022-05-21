@@ -114,6 +114,10 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String
 
 <br />
 
+```powershell
+iwr -uri "[https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/encrypt_decrypt/Decrypt-String.ps1" -OutFile "Decrypt-String.ps1"
+```
+
 **[Decrypt cmdline OnScreen (encrypted chat)]**
 ```powershell
 .\Decrypt-String.ps1 -action "console" -EncryptedString "76492d1116743f0423413b16050a5345MgB8AHAARgBNAHgASABTAEIARQA5AEkAWgA5AFIAaQBkAGEAcQBKADkAdwBHAFEAPQA9AHwANQBhAGEANwBhADkAYQBhAGMANgAzADIAOQBmAGQAMwBmADEAMwAwADQAYwBmADgAZAA2AGIAYQBlADUAMABmAA=="
