@@ -35,6 +35,8 @@ Import-Module -Name ".\Out-EncodedSpecialCharOnlyCommand.ps1" -Force
 Out-EncodedSpecialCharOnlyCommand -ScriptBlock {Write-Host 'Hello World!' -ForegroundColor Green; Write-Host 'Obfuscation Rocks!' -ForegroundColor Green} -NoProfile -NonInteractive -PassThru
 ```
 
+<br />
+
 ## Module Name
    <b><i>obfuscator.bat</i></b>
 
@@ -48,4 +50,29 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String
 
 ```powershell
 .\obfuscator.bat Payload.bat
+```
+
+<br />
+
+## Module Name
+   <b><i>vbs_obfuscator.vbs</i></b>
+
+|Script Name|Description|Privileges|Notes|
+|---|---|---|---|
+|vbs_obfuscator|Encrypt vbs scripts|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/obfuscator.png)|
+
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/vbs_obfuscator.vbs" -OutFile "vbs_obfuscator.vbs"
+```
+
+**[Manual]**
+```vbs
+cscript.exe vbs_obfuscator.vbs Payload.vbs
+```
+
+**[Automatic]**
+```vbs
+cscript.exe vbs_obfuscator.vbs Payload.vbs > Buffer.vbs
+$parse = Get-Content Buffer.vbs
+echo $parse[3] > Buffer.vbs
 ```
