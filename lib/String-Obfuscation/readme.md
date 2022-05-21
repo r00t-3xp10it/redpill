@@ -34,3 +34,18 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String
 Import-Module -Name ".\Out-EncodedSpecialCharOnlyCommand.ps1" -Force
 Out-EncodedSpecialCharOnlyCommand -ScriptBlock {Write-Host 'Hello World!' -ForegroundColor Green; Write-Host 'Obfuscation Rocks!' -ForegroundColor Green} -NoProfile -NonInteractive -PassThru
 ```
+
+## Module Name
+   <b><i>obfuscator.bat</i></b>
+
+|Script Name|Description|Privileges|Notes|
+|---|---|---|---|
+|obfuscator|Encrypt batch scripts|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/enc-rot13.png)|
+
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/obfuscator.bat" -OutFile "obfuscator.bat"
+```
+
+```powershell
+.\obfuscator.bat Payload.bat
+```
