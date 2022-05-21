@@ -24,7 +24,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String
 
 |Function Name|Description|Privileges|Notes|
 |---|---|---|---|
-|Out-EncodedSpecialCharOnlyCommand|Generates Special-Character-Only encoded payload<br />for a PowerShell command or script.|User Land|[Screenshot1](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/bhoanoon1.png)<br />[Screenshot2](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/2bhoanoon1.png)<br />[Screenshot3](https://github.com/r00t-3xp10it/redpill/blob/main/lib/String-Obfuscation/output-to-file.png)|
+|Out-EncodedSpecialCharOnlyCommand|Generates Special-Character-Only encoded payload<br />for a PowerShell command or script.|User Land|[Screenshot1](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/bhoanoon1.png)<br />[Screenshot2](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/2bhoanoon1.png)<br />[Screenshot3](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/output-to-file.png)|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Out-EncodedSpecialCharOnlyCommand.ps1" -OutFile "Out-EncodedSpecialCharOnlyCommand.ps1"
@@ -91,7 +91,7 @@ echo $parse > Buffer.vbs
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|Encrypt-String|Encrypt commands \| scripts using a secret key of 113 bytes|User Land|[Screenshot1](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Encrypt-String.png)<br />[Screenshot2](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Encrypt-Decrypt.png) - [Decrypt-String.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/bypass/encrypt_decrypt/Decrypt-String.ps1)|
+|Encrypt-String|Encrypt commands \| scripts using a secret key of 113 bytes|User Land|[Screenshot1](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Encrypt-String.png) - [Encrypt-String.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/lib/String-Obfuscation/Encrypt-String.ps1)<br />[Screenshot2](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Encrypt-Decrypt.png) - [Decrypt-String.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/bypass/encrypt_decrypt/Decrypt-String.ps1)|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Encrypt-String.ps1" -OutFile "Encrypt-String.ps1"
@@ -107,13 +107,15 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String
 .\Encrypt-String.ps1 -action "autodecrypt" -infile "Payload.ps1"
 ```
 
-**[Encrypt 'whoami' command + send encrypted string to the recipient email address]**
+**[Encrypt 'whoami' command + send encrypted string to the recipient email address (encrypted chat)]**
 ```powershell
 .\Encrypt-String.ps1 -action "console" -plaintextstring "whoami" -SendTo "pedroubuntu@gmail.com"
 ```
 
 <br /><br />
 
+
+**Decrypt Strings**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/encrypt_decrypt/Decrypt-String.ps1" -OutFile "Decrypt-String.ps1"
 ```
