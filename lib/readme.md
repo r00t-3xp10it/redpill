@@ -18,13 +18,13 @@ Database
         |_ Ams1-Bypass
                       |_ AMSBP.ps1                     Disable AMSI within current process
                       |_ Disable-Amsi.ps1              Disable AMSI within current process
-                      |_ Invoke-Bypass.ps1             Disable AMSI within current process
+                      |_ Invoke-Bypass.ps1             Disable AMSI within current process + exec script through bypass
         |_ Dump-Browser
                       |_ DumpChromePasswords.ps1       Dumps URLs, usernames, and passwords from Chrome
                       |_ HarvestBrowserPasswords.exe   Dumps URLs, usernames, and passwords from major browsers
         |_ Exfiltration
+                      |_ DLLSearch.ps1                 List all DLLs loaded by running\sellected processes
                       |_ DecodeRDPCache.ps1            Reads RDP persistent cache from the cache0001.bin
-                      |_ DLLSearch.ps1                 List DLLs loaded by running processes
                       |_ Find-AppLockerLogs.ps1        Look through the AppLocker logs to find processes
                       |_ List-AllMailboxAndPST.ps1     Uses the Outlook COM object to display the data stores 
                       |_ Read-ExcelFile-Using_COM.ps1  Read Outlook excel files using COM object
