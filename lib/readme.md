@@ -40,4 +40,7 @@ Database
                       |_ spoof.exe                     Creates a process as a child of a specified process ID.
         |_ SharpGhosting
                       |_ SharpGhosting.exe             Hidde parent process name from TaskManager displays
+        |_ Sign-Executables
+                      |_ CarbonCopy.py                 Creates spoofed certificate of online website to sign PE
+                      |_ sigthief.py                   Sign an PE  for AV Evasion by cloning other PE certificate
 ```
