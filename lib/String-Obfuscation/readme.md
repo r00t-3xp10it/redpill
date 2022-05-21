@@ -75,15 +75,16 @@ cscript.exe vbs_obfuscator.vbs Payload.vbs
 cscript.exe vbs_obfuscator.vbs Payload.vbs > Buffer.vbs
 $parse = Get-Content Buffer.vbs
 echo $parse[3] > Buffer.vbs
+```
 
-OR:
+**OR**
+```powershell
 cscript.exe vbs_obfuscator.vbs Payload.vbs > Buffer.vbs
 $parse = Get-Content Buffer.vbs|Select-String -Pattern "Execute chr"
 echo $parse > Buffer.vbs
 ```
 
 <br />
-
 
 ## Module Name
    <b><i>Encrypt-String.ps1</i></b>
