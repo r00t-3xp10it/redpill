@@ -38,6 +38,8 @@ Database
                       |_ PPIDSpoof.ps1                 Creates a process as a child of a specified process ID.
                       |_ SelectMyParent.exe            Creates a process as a child of a specified process ID.
                       |_ spoof.exe                     Creates a process as a child of a specified process ID.
+        |_ Screenshot
+                      |_ Screenshot.exe                Capture desktop screenshot ( silent )
         |_ SharpGhosting
                       |_ SharpGhosting.exe             Hidde parent process name from TaskManager displays
         |_ Sign-Executables
