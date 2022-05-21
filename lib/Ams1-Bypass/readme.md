@@ -39,7 +39,7 @@ Disable-Amsi -DontDisableBlockLogging "true"
    
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|Invoke-Bypass|disable AMSI within current process + execute script through bypass?|User Land|3 bypass technics available (manual)|
+|Invoke-Bypass|disable AMSI within current process + exec script through bypass?|User Land|3 bypass technics available (manual)|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/Invoke-Bypass.ps1" -OutFile "Invoke-Bypass.ps1"
