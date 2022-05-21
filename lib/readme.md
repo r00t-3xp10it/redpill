@@ -48,4 +48,6 @@ Database
         |_ String-Obfuscation
                       |_ enc-rot13.ps1                 Encrypt or decrypt strings using ROT13 cipher.
                       |_ Out-EncodedSpecialCharOnlyCommand.ps1 Generates Special-Character-Only encoded payload
+                      |_ obfuscator.bat                Obfuscate batch scripts
+                      |_ vbs_obfuscator.vbs            Obfuscate VBS scripts
 ```
