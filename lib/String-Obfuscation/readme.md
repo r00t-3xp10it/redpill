@@ -91,7 +91,7 @@ echo $parse > Buffer.vbs
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|Encrypt-String|Encrypt commands \| scripts using a secret key of 113 bytes|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Encrypt-String.png) - [Decrypt-String.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/bypass/encrypt_decrypt/Decrypt-String.ps1)|
+|Encrypt-String|Encrypt commands \| scripts using a secret key of 113 bytes|User Land|[Screenshot1](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Encrypt-String.png)<br />[Screenshot2](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Encrypt-Decrypt.png) - [Decrypt-String.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/bypass/encrypt_decrypt/Decrypt-String.ps1)|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Encrypt-String.ps1" -OutFile "Encrypt-String.ps1"
@@ -112,4 +112,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String
 .\Encrypt-String.ps1 -action "console" -plaintextstring "whoami" -SendTo "pedroubuntu@gmail.com"
 ```
 
-
+**[Decrypt cmdline OnScreen (encrypted chat)]**
+```powershell
+.\Decrypt-String.ps1 -action "console" -EncryptedString "76492d1116743f0423413b16050a5345MgB8AHAARgBNAHgASABTAEIARQA5AEkAWgA5AFIAaQBkAGEAcQBKADkAdwBHAFEAPQA9AHwANQBhAGEANwBhADkAYQBhAGMANgAzADIAOQBmAGQAMwBmADEAMwAwADQAYwBmADgAZAA2AGIAYQBlADUAMABmAA=="
+```
