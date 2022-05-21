@@ -75,6 +75,11 @@ cscript.exe vbs_obfuscator.vbs Payload.vbs
 cscript.exe vbs_obfuscator.vbs Payload.vbs > Buffer.vbs
 $parse = Get-Content Buffer.vbs
 echo $parse[3] > Buffer.vbs
+
+OR:
+cscript.exe vbs_obfuscator.vbs Payload.vbs > Buffer.vbs
+$parse = Get-Content Buffer.vbs|Select-String -Pattern "Execute chr"
+echo $parse > Buffer.vbs
 ```
 
 <br />
