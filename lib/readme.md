@@ -24,6 +24,8 @@ Database
         |_ Dump-Browser
                       |_ DumpChromePasswords.ps1       Dumps URLs, usernames, and passwords from Chrome
                       |_ HarvestBrowserPasswords.exe   Dumps URLs, usernames, and passwords from major browsers
+        |_ EnableAllParentPrivileges
+                      |_ EnableAllParentPrivileges.exe Enable All Parent Privileges ( whoami /priv )
         |_ Exfiltration
                       |_ DLLSearch.ps1                 List all DLLs loaded by running\sellected processes
                       |_ DecodeRDPCache.ps1            Reads RDP persistent cache from the cache0001.bin
