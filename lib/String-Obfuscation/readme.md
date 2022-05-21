@@ -91,7 +91,7 @@ echo $parse > Buffer.vbs
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|Encrypt-String|Encrypt commands \| scripts using a secret key of 113 bytes|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Encrypt-String.png)|
+|Encrypt-String|Encrypt commands \| scripts using a secret key of 113 bytes|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Encrypt-String.png) - [Decrypt-String.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/bypass/encrypt_decrypt/Decrypt-String.ps1)|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Encrypt-String.ps1" -OutFile "Encrypt-String.ps1"
