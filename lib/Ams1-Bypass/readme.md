@@ -21,7 +21,7 @@ AMSBP
    
 |Function Name|Description|Privileges|Notes|
 |---|---|---|---|
-|Disable-Amsi|disable AMSI within current process using well<br />known techniques laid out in an unsignatured way</i></b>|User Land|3 bypass technics available|
+|Disable-Amsi|disable AMSI within current process using well<br />known techniques laid out in an unsignatured way</i></b>|User Land|3 bypass technics available (auto)|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/Disable-Amsi.ps1" -OutFile "Disable-Amsi.ps1"
@@ -39,7 +39,7 @@ Disable-Amsi -DontDisableBlockLogging "true"
    
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|Invoke-Bypass|disable AMSI within current process + execute script through bypass?|User Land|3 bypass technics available|
+|Invoke-Bypass|disable AMSI within current process + execute script through bypass?|User Land|3 bypass technics available (manual)|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/Invoke-Bypass.ps1" -OutFile "Invoke-Bypass.ps1"
