@@ -3,7 +3,7 @@
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|enc-rot13|Encrypt or decrypt strings using ROT13 cipher.|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/AMSBP.png)|
+|enc-rot13|Encrypt or decrypt strings using ROT13 cipher.|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/enc-rot13.png)|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/enc-rot13.ps1" -OutFile "enc-rot13.ps1"
