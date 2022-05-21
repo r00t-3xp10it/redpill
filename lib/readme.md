@@ -16,8 +16,8 @@ Directory Name                                         Resource Description
 --------------                                         --------------------
 Database
         |_ Ams1-Bypass
-                      |_ AMSBP.ps1                     Disable AMSI within current process
-                      |_ Disable-Amsi.ps1              Disable AMSI within current process
+                      |_ AMSBP.ps1                     Disable AMSI within current process (bxor)
+                      |_ Disable-Amsi.ps1              Disable AMSI within current process (un-signed technics)
                       |_ Invoke-Bypass.ps1             Disable AMSI within current process + exec script through bypass
         |_ Dump-Browser
                       |_ DumpChromePasswords.ps1       Dumps URLs, usernames, and passwords from Chrome
@@ -27,11 +27,11 @@ Database
                       |_ DecodeRDPCache.ps1            Reads RDP persistent cache from the cache0001.bin
                       |_ Find-AppLockerLogs.ps1        Look through the AppLocker logs to find processes
                       |_ List-AllMailboxAndPST.ps1     Uses the Outlook COM object to display the data stores 
-                      |_ Read-ExcelFile-Using_COM.ps1  Read Outlook excel files using COM object
+                      |_ Read-ExcelFile-Using_COM.ps1  Read Outlook excel files sheet using COM object
         |_ Fake-Cmdline
                       |_ Fake-Cmdline.exe              Put any string into the child process Command Line field
         |_ HTTP-Server
-                      |_ CaptureServer.ps1             Simple HTTP pure powershell webserver
+                      |_ CaptureServer.ps1             Captute HTTP credentials on local lan (spawns credential box)
                       |_ Start-SimpleHTTPServer.ps1    Simple HTTP pure powershell webserver     
                       |_ wget.vbs                      VBScript to download files from Local Lan
         |_ Process-Spoofing
