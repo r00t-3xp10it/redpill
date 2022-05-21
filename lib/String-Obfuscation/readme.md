@@ -42,7 +42,7 @@ Out-EncodedSpecialCharOnlyCommand -ScriptBlock {Write-Host 'Hello World!' -Foreg
 
 |Script Name|Description|Privileges|Notes|
 |---|---|---|---|
-|obfuscator|Encrypt batch scripts|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/obfuscator.png)|
+|obfuscator|Encrypt batch scripts|User Land|Dependencies: certutil - [Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/obfuscator.png)|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/obfuscator.bat" -OutFile "obfuscator.bat"
