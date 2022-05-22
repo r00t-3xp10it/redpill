@@ -13,14 +13,26 @@ IF %errorLevel% == 0 (
 )
 
 :: Get the PS script (cmdlet) Absoluct Path
-SET /p PSsignPath="Input the PS script absoluct path: "
-IF NOT EXIST %PSsignPath% (
-    echo [failure]: cmdlet %PSsignPath% not found.
+SET /p PSsignPath="[ input ]: Input cmdlet absoluct path: "
+IF NOT EXIST "%PSsignPath%" (
+    color 04
+    echo [failure]: Cmdlet '%PSsignPath%' not found.
     exit
 )
 
-echo [PS1path]: %PSsignPath%
+:: Display settings OnScreen
+FOR /F "tokens=*" %%g IN ('powershell -C "(Get-Date).AddMonths(6)"') do (SET ExpiresDate=%%g)
+echo .
+echo            Certificate information
+echo            -----------------------
+echo            Subject      : My_Code_Signing_Certificate
+echo            PS1path      : %PSsignPath%
+echo            FriendlyName : SsaRedTeam
+echo            CertLocation : Cert:\LocalMachine\Root
+echo            ExpiresIn    : %ExpiresDate%
+echo .
+
 :: Digitally sign our cmdlet in certlm.msc
-echo [certlm]: digitally sign our cmdlet { cert expires in six months }
+echo [cert_lm]: digitally sign our cmdlet {certificate expires in six months}
 powershell $CertSign = New-SelfSignedCertificate -Subject "My_Code_Signing_Certificate" -FriendlyName "SsaRedTeam" -NotAfter (Get-Date).AddMonths(6) -Type CodeSigningCert -CertStoreLocation cert:\LocalMachine\My;Move-Item -Path $CertSign.PSPath -Destination "Cert:\LocalMachine\Root";Set-AuthenticodeSignature -FilePath %PSsignPath% -Certificate $CertSign
 timeout /T 2 >nul
