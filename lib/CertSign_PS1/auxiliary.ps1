@@ -21,6 +21,22 @@ $ErrorActionPreference = "SilentlyContinue"
 write-host "`n* Auxiliary script of PSscriptSigning.bat" -ForegroundColor Green
 Start-Sleep -Seconds 1
 
+
+#Check shell privileges
+$bool = (([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544");
+If($bool)
+{
+   write-host "  + shellprivileges: Admin        [correct privileges hold]" -ForegroundColor Green
+}
+Else
+{
+   write-host "  x " -ForegroundColor Red -NoNewline
+   write-host "shellprivileges: " -ForegroundColor DarkGray -NoNewline 
+   write-host "User Land" -ForegroundColor Red -NoNewline
+   write-host "    [wrong privileges hold]" -ForegroundColor DarkGray 
+}
+
+
 #Check Executionpolicy settings
 $GetUserPolicy = Get-ExecutionPolicy -Scope CurrentUser
 If($GetUserPolicy -iMatch "(AllSigned|RemoteSigned)")
