@@ -21,6 +21,9 @@ Database
                       |_ Invoke-Bypass.ps1             Disable AMSI within current process + exec script through bypass
         |_ Ams1-Triger
                       |_ AmsiTrigger_x64.exe           Hunting for Malicious Strings that triggers AMSI detection
+        |_ CertSign_PS1
+                      |_ PSscriptSigning.bat           Signs one PS1 script ( **certlm.msc - certificate** )
+                      |_ DeletePSscriptSignning.bat    Delete certificate added by previous script from store
         |_ Dump-Browser
                       |_ DumpChromePasswords.ps1       Dumps URLs, usernames, and passwords from Chrome
                       |_ HarvestBrowserPasswords.exe   Dumps URLs, usernames, and passwords from major browsers
