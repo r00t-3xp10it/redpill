@@ -11,8 +11,9 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/PSs
 
 <br />
 
-**prerequesites:**
+**prerequesites checks:**
 ```powershell
+Get-ExecutionPolicy -List
 Get-Service -Name LanManServer
 ```
 
@@ -23,10 +24,9 @@ Add-Content -Path "PSscriptSigning.bat" -Value "`npowershell -File %PSsignPath%"
 ```
 
 
-**checks:**
+**check if (FriendlyName: SsaRedTeam - Subject: My_Code_Signing_Certificate) certificate exists:**
 ```powershell
-Check certificate store  :  Certlm.msc
-Check ExecutionPolicy    :  Get-ExecutionPolicy -List
+Certlm.msc
 ```
 
 <br /><br />
@@ -40,9 +40,9 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/Del
 .\DeletePSscriptSignning.bat
 ```
 
-**checks:**
+**check if (FriendlyName: SsaRedTeam - Subject: My_Code_Signing_Certificate) certificate was deleted:**
 ```powershell
-Check certificate store  :  Certlm.msc
+Certlm.msc
 ```
 
 <br /><br />
