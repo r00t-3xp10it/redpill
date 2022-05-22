@@ -29,7 +29,7 @@ Get-Service -Name LanManServer
 **check if (Subject: My_Code_Signing_Certificate) certificate exists:**
 ```powershell
 [manual] Certlm.msc
-[auto] Get-ChildItem Cert:\LocalMachine\Root | Where-Object {$_.Issuer -match 'My_Code_Signing_Certificate'}
+[auto] $List = @("Root","My");ForEach($Item in $List){Get-ChildItem Cert:\LocalMachine\$Item|Where-Object {$_.Issuer -match 'My_Code_Signing_Certificate'}}
 ```
 
 <br /><br />
