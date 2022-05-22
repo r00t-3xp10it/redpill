@@ -17,10 +17,10 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Screen
 
 **Take screenshots with time intervals (1 second) a max of 4 captures**
 ```powershell
-For($i=1; $i -le 4; $i++){Start-Sleep -S 1;echo "[*] capture: screenshot_$i.png";.\screenshot.exe;Rename-Item screenshot.png screenshot_$i.png -Force}
+For($i=1; $i -le 4; $i++){echo "[*] capture: screenshot_$i.png";.\screenshot.exe;Start-Sleep -S 1;Rename-Item screenshot.png screenshot_$i.png -Force}
 ```
 
 **Silently Capture 4 screenshots with 1 second of interval (No GUI interface)**
 ```powershell
-Start-Process -WindowStyle hidden powershell -ArgumentList "For(`$i=1; `$i -le 4; `$i++){Start-Sleep -S 1;.\screenshot.exe;Rename-Item screenshot.png screenshot_`$i.png -Force}";exit
+Start-Process -WindowStyle hidden powershell -ArgumentList "For(`$i=1; `$i -le 4; `$i++){.\screenshot.exe;Start-Sleep -S 1;Rename-Item screenshot.png screenshot_`$i.png -Force}";exit
 ```
