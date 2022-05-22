@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Auxiliary script of PSscriptSigning.bat
 
@@ -10,6 +10,9 @@
    batch script are present before running PSscriptSigning.bat. It also enumerates
    the certificate store after PSscriptSigning.bat script execution, and executes
    calc.exe in the end as POC ( that proffs this cmdlet as been executed ) ..
+   
+.NOTES
+   This cmdlet can be signed by PSscriptSigning.bat to serve as POC
 #>
 
 
