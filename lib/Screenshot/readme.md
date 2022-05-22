@@ -12,3 +12,11 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/screen
 ```powershell
 .\screenshot.exe
 ```
+
+<br />
+
+**Take screenshots with time intervals (1 second) a max of 10 captures**
+
+```powershell
+For($i=0; $i -le 10; $i++){Start-Sleep -S 1;echo "[*] capture: $i";.\screenshot.exe}
+```
