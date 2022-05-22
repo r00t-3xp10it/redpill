@@ -3,7 +3,7 @@
 
 |Script Name|Description|Privileges|Notes|
 |---|---|---|---|
-|PSscriptSigning|Signs one PS1 script ( **certlm.msc - certificate** ) + Execute it?<br />This allow us to execute our PS1 cmdlet even if set-executionpolicy<br />its set to only run signed cmdlets [( AllSigned, RemoteSigned )](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.security/set-executionpolicy?view=powershell-7.2)|Administrator|[PSscriptSigning.bat](https://github.com/r00t-3xp10it/redpill/blob/main/bypass/PSscriptSigning.bat)<br />[DeletePSscriptSignning.bat](https://github.com/r00t-3xp10it/redpill/blob/main/bypass/DeletePSscriptSignning.bat)|
+|PSscriptSigning|Signs one PS1 script ( **certlm.msc - certificate** ) + Execute it?<br />This allow us to execute our PS1 cmdlet even if set-executionpolicy<br />its set to only run signed cmdlets [( AllSigned, RemoteSigned )](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.security/set-executionpolicy?view=powershell-7.2)|Administrator|[PSscriptSigning.bat](https://github.com/r00t-3xp10it/redpill/blob/main/bypass/PSscriptSigning.bat)<br />[DeletePSscriptSignning.bat](https://github.com/r00t-3xp10it/redpill/blob/main/bypass/DeletePSscriptSignning.bat)<br />Dependencies: LanManServer|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/PSscriptSigning.bat" -OutFile "PSscriptSigning.bat"
@@ -26,7 +26,7 @@ Get-Service -Name LanManServer
 ```
 
 
-**check if (FriendlyName: SsaRedTeam - Subject: My_Code_Signing_Certificate) certificate exists:**
+**check if (Subject: My_Code_Signing_Certificate) certificate exists:**
 ```powershell
 [manual] Certlm.msc
 [auto] Get-ChildItem Cert:\LocalMachine\Root | Where-Object {$_.Issuer -match 'My_Code_Signing_Certificate'}
@@ -43,7 +43,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/Del
 .\DeletePSscriptSignning.bat
 ```
 
-**check if (FriendlyName: SsaRedTeam - Subject: My_Code_Signing_Certificate) certificate was deleted:**
+**check if (Subject: My_Code_Signing_Certificate) certificate was deleted:**
 ```powershell
 [manual] Certlm.msc
 [auto] Get-ChildItem Cert:\LocalMachine\Root | Where-Object {$_.Issuer -match 'My_Code_Signing_Certificate'}
