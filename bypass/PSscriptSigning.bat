@@ -1,5 +1,11 @@
 @echo off
-title Signning (certlm) ONE powerShell script
+##
+#   Description:
+#      Digitally sign (certlm) one cmdlet.
+#      Author: @r00t-3xp10it
+##
+title Signning (certlm) ONE powerShell cmdlet
+
 
 echo .
 :: Test for shell admin permissions
@@ -22,15 +28,15 @@ IF NOT EXIST "%PSsignPath%" (
 
 :: Display settings OnScreen
 FOR /F "tokens=*" %%g IN ('powershell -C "(Get-Date).AddMonths(6)"') do (SET ExpiresDate=%%g)
-echo .
+echo _
 echo            Certificate information
 echo            -----------------------
-echo            Subject      : My_Code_Signing_Certificate
-echo            PS1path      : %PSsignPath%
 echo            FriendlyName : SsaRedTeam
 echo            CertLocation : Cert:\LocalMachine\Root
+echo            Subject      : My_Code_Signing_Certificate
+echo            PS1path      : %PSsignPath%
 echo            ExpiresIn    : %ExpiresDate%
-echo .
+echo _
 
 :: Digitally sign our cmdlet in certlm.msc
 echo [cert_lm]: digitally sign our cmdlet {certificate expires in six months}
