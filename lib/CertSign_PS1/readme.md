@@ -26,7 +26,8 @@ Add-Content -Path "PSscriptSigning.bat" -Value "`npowershell -File %PSsignPath%"
 
 **check if (FriendlyName: SsaRedTeam - Subject: My_Code_Signing_Certificate) certificate exists:**
 ```powershell
-Certlm.msc
+[manual] Certlm.msc
+[auto] Get-ChildItem Cert:\LocalMachine\Root | Where-Object {$_.Issuer -match 'My_Code_Signing_Certificate'}
 ```
 
 <br /><br />
@@ -42,7 +43,8 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/Del
 
 **check if (FriendlyName: SsaRedTeam - Subject: My_Code_Signing_Certificate) certificate was deleted:**
 ```powershell
-Certlm.msc
+[manual] Certlm.msc
+[auto] Get-ChildItem Cert:\LocalMachine\Root | Where-Object {$_.Issuer -match 'My_Code_Signing_Certificate'}
 ```
 
 <br /><br />
