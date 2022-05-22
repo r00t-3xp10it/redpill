@@ -13,6 +13,13 @@
    
 .NOTES
    This cmdlet can be signed by PSscriptSigning.bat to serve as POC
+
+.EXAMPLE
+   PS C:\> (IEX(IWR -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSign_PS1/auxiliary.ps1"))
+   Test if PSscriptSigning.bat dependencies are satisfied
+
+.EXAMPLE
+   PS C:\> .\PSscriptSigning.bat
 #>
 
 
@@ -75,17 +82,17 @@ If($CheckCert)
    write-host "  + certificate    : My_Code_Signing_Certificate [found]`n" -ForegroundColor Green
    echo $CheckCert
    write-host ""
+
+   Start-Sleep -Seconds 1
+   #Executes calc as execution POC
+   write-host "* Executing: calc.exe as execution POC" -ForegroundColor Green
+   Start-Process calc.exe
 }
 Else
 {
    write-host "  x " -ForegroundColor Red -NoNewline
    write-host "certificate    : " -ForegroundColor DarkGray -NoNewline 
    write-host "My_Code_Signing_Certificate" -ForegroundColor Red -NoNewline
-   write-host " [not found]" -ForegroundColor DarkGray     
+   write-host " [not found]" -ForegroundColor DarkGray
+   write-host "* Executing: exit cmdlet execution .." -ForegroundColor Green
 }
-
-
-Start-Sleep -Seconds 1
-#Executes calc as execution POC
-write-host "* Executing: calc.exe as execution POC" -ForegroundColor Green
-Start-Process calc.exe
