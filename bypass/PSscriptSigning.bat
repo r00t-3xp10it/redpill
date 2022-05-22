@@ -9,7 +9,6 @@ IF %errorLevel% == 0 (
 ) ELSE (
     color 04
     echo [failure]: Current permissions inadequate.
-    timeout /T 4 >nul
     exit
 )
 
