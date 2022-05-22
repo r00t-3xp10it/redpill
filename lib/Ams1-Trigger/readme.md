@@ -6,7 +6,7 @@
 |amsitrigger_x64|Hunting for Malicious Strings that triggers AMSI detection|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Triger/Ams1-Trigger.png)|
 
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Triger/amsitrigger_x64.exe" -OutFile "amsitrigger_x64.exe"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Trigger/amsitrigger_x64.exe" -OutFile "amsitrigger_x64.exe"
 ```
 
 ```powershell
