@@ -54,3 +54,5 @@ Because its uses 'SsaRedTeam' as certificate FriendlyName, but... if we execute 
 DeletePSscriptSignning.bat script than PSscriptSigning.bat can be invoked again to sign a new cmdlet ..
 
 ```
+
+Article: https://github.com/r00t-3xp10it/hacking-material-books/blob/master/obfuscation/working-with-certificates.md
