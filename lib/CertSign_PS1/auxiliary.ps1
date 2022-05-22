@@ -75,8 +75,9 @@ Else
 
 
 Start-Sleep -Seconds 1
+$CertificateList = @("Root","My")
 #Check if certificate exists
-$CheckCert = Get-ChildItem Cert:\LocalMachine\Root | Where-Object {$_.Issuer -match "My_Code_Signing_Certificate"}
+$CheckCert = ForEach($Item in $CertificateList){Get-ChildItem Cert:\LocalMachine\$Item|Where-Object {$_.Issuer -Match 'My_Code_Signing_Certificate'}}
 If($CheckCert)
 {
    write-host "  + certificate    : My_Code_Signing_Certificate [found]`n" -ForegroundColor Green
