@@ -20,6 +20,8 @@ Get-Service -Name LanManServer
 ```powershell
 # Execute the next cmdline to auto-execute PS1 after sign it?
 Add-Content -Path "PSscriptSigning.bat" -Value "`npowershell -File %PSsignPath%" -Force
+
+# Execute the batch script that signs our cmdlet
 .\PSscriptSigning.bat
 ```
 
