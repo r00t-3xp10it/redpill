@@ -1,19 +1,34 @@
 @echo off
 ::
+::   Author:
+::      @r00t-3xp10it
+::
 ::   Description:
 ::      Digitally sign (certlm) one cmdlet.
-::      Author: @r00t-3xp10it
+::
+::   Output:
+::      [success]: Administrative permissions confirmed.
+::      [ input ]: Input cmdlet absoluct path: C:\Users\pedro\AppData\Local\Temp\Payload.ps1
+::      _
+::                 Certificate information
+::                 -----------------------
+::                 FriendlyName : SsaRedTeam
+::                 CertLocation : Cert:\LocalMachine\Root
+::                 Subject      : My_Code_Signing_Certificate
+::                 PS1path      : C:\Users\pedro\AppData\Local\Temp\Payload.ps1
+::                 ExpiresIn    : 23 de novembro de 2022 00:31:20
+::      _
+::     [cert_lm]: Digitally sign our cmdlet {cert expires in six months}
+::     [success]: Signed 'C:\Users\pedro\AppData\Local\Temp\Payload.ps1'
 :: ---
 title Signning (certlm) ONE powerShell cmdlet
 
 
-echo .
-:: Test for shell admin permissions
+:: Test for shell permissions
 net session >nul 2>&1
 IF %errorLevel% == 0 (
     echo [success]: Administrative permissions confirmed.
 ) ELSE (
-    color 04
     echo [failure]: Current permissions inadequate.
     exit
 )
@@ -21,7 +36,6 @@ IF %errorLevel% == 0 (
 :: Get the PS script (cmdlet) Absoluct Path
 SET /p PSsignPath="[ input ]: Input cmdlet absoluct path: "
 IF NOT EXIST "%PSsignPath%" (
-    color 04
     echo [failure]: Cmdlet '%PSsignPath%' not found.
     exit
 )
@@ -39,6 +53,13 @@ echo            ExpiresIn    : %ExpiresDate%
 echo _
 
 :: Digitally sign our cmdlet in certlm.msc
-echo [cert_lm]: digitally sign our cmdlet {certificate expires in six months}
+echo [cert_lm]: Digitally sign our cmdlet {certificate expires in six months}
 powershell $CertSign = New-SelfSignedCertificate -Subject "My_Code_Signing_Certificate" -FriendlyName "SsaRedTeam" -NotAfter (Get-Date).AddMonths(6) -Type CodeSigningCert -CertStoreLocation cert:\LocalMachine\My;Move-Item -Path $CertSign.PSPath -Destination "Cert:\LocalMachine\Root";Set-AuthenticodeSignature -FilePath %PSsignPath% -Certificate $CertSign
+
+IF %errorlevel% == 0 (
+   echo [success]: Signed '%PSsignPath%'.
+) ELSE (
+   echo [failure]: To digitally sign '%PSsignPath%'.
+)
+
 timeout /T 2 >nul
