@@ -44,3 +44,13 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/Del
 ```powershell
 Check certificate store  :  Certlm.msc
 ```
+
+<br /><br />
+
+## Restrictions
+```
+The PSscriptSigning.bat batch script can only be used to sign one cmdlet at a time...
+Because its uses 'SsaRedTeam' as certificate FriendlyName, but... if we execute the
+DeletePSscriptSignning.bat script than PSscriptSigning.bat can be invoked again to sign a new cmdlet ..
+
+```
