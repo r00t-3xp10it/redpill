@@ -13,15 +13,18 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/PSs
 
 **prerequesites checks:**
 ```powershell
-(IEX(Invoke-WebRequest -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSign_PS1/auxiliary.ps1"))
+[manual] Get-ExecutionPolicy -List
+[manual] Get-Service -Name LanManServer
+
+[auto] (IEX(Invoke-WebRequest -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSign_PS1/auxiliary.ps1"))
 ```
 
 ```powershell
 # Execute the next cmdline to auto-execute PS1 after sign it?
-Add-Content -Path "PSscriptSigning.bat" -Value "`npowershell -File %PSsignPath%" -Force
+[optional] Add-Content -Path "PSscriptSigning.bat" -Value "`npowershell -File %PSsignPath%" -Force
 
 # Execute the batch script that signs our cmdlet
-.\PSscriptSigning.bat
+[mandatory] .\PSscriptSigning.bat
 ```
 
 
@@ -39,7 +42,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/Del
 ```
 
 ```powershell
-.\DeletePSscriptSignning.bat
+[mandatory] .\DeletePSscriptSignning.bat
 ```
 
 **check if (FriendlyName: SsaRedTeam - Subject: My_Code_Signing_Certificate) certificate was deleted:**
