@@ -1,9 +1,9 @@
 @echo off
-##
-#   Description:
-#      Digitally sign (certlm) one cmdlet.
-#      Author: @r00t-3xp10it
-##
+::
+::   Description:
+::      Digitally sign (certlm) one cmdlet.
+::      Author: @r00t-3xp10it
+:: ---
 title Signning (certlm) ONE powerShell cmdlet
 
 
