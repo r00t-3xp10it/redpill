@@ -3,7 +3,7 @@
 
 |Script Name|Description|Privileges|Notes|
 |---|---|---|---|
-|PSscriptSigning|Signs one PS1 script ( **certlm.msc - certificate** ) + Execute it?<br />This allow us to execute our PS1 cmdlet even if set-executionpolicy<br />its set to only run signed cmdlets [( AllSigned, RemoteSigned )](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.security/set-executionpolicy?view=powershell-7.2)|Administrator|\*\*\*|
+|PSscriptSigning|Signs one PS1 script ( **certlm.msc - certificate** ) + Execute it?<br />This allow us to execute our PS1 cmdlet even if set-executionpolicy<br />its set to only run signed cmdlets [( AllSigned, RemoteSigned )](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.security/set-executionpolicy?view=powershell-7.2)|Administrator|[PSscriptSigning.bat](https://github.com/r00t-3xp10it/redpill/blob/main/bypass/PSscriptSigning.bat)<br />[DeletePSscriptSignning.bat](https://github.com/r00t-3xp10it/redpill/blob/main/bypass/DeletePSscriptSignning.bat)|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/PSscriptSigning.bat" -OutFile "PSscriptSigning.bat"
