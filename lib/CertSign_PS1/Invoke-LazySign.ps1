@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Sign a Windows binary with a self-signed certificate
 
@@ -83,7 +83,7 @@
 $CmdletVersion = "v1.0.1"
 #Global variable declarations
 $StoreLocation = "Cert:\CurrentUser\My"
-# $ErrorActionPreference = "SilentlyContinue"
+$ErrorActionPreference = "SilentlyContinue"
 #Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $host.UI.RawUI.WindowTitle = "@Invoke-LazySign $CmdletVersion {SSA@RedTeam}"
@@ -112,7 +112,7 @@ If($Action -ieq "query")
    <#
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - Query for certificate existance in store.
+      Helper - Query for certificate existance.
 
    .OUTPUTS
       * Manage Windows Store Certificates.
@@ -241,7 +241,6 @@ If($Action -ieq "Sign")
    write-host "  Target       : $Target" -ForegroundColor DarkGray
    write-host "  Password     : $Password`n"
    Start-Sleep -Seconds 1
-
 
    #Create Self Signed Certificate and PFX file in current directory
    $Certificate = New-SelfSignedCertificate -Subject "$RandSubject" -FriendlyName "$FriendlyName" -CertStoreLocation "$StoreLocation" -DnsName "$Domain" -Type "CodeSigning" -ErrorAction SilentlyContinue  
