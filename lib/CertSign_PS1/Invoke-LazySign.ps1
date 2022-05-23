@@ -31,6 +31,9 @@
 .Parameter Subject
    Certificate subject name (default: LazySign)
 
+.Parameter Password
+   Certificate password (default: Passw0rd!)
+
 .EXAMPLE
    PS C:\> .\Invoke-LazySign.ps1 -Action "query" -Subject "[a-z 0-9]"
    Query for ALL certificates in 'Cert:\CurrentUser\My' Windows Store
@@ -112,7 +115,7 @@ If($Action -ieq "query")
    <#
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - Query for certificate existance.
+      Helper - Query for certificate existance in store.
 
    .OUTPUTS
       * Manage Windows Store Certificates.
