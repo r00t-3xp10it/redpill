@@ -24,6 +24,7 @@ Database
         |_ CertSign_PS1
                       |_ PSscriptSigning.bat           Signs one PS1 script ( certlm.msc - certificate )
                       |_ DeletePSscriptSignning.bat    Delete certificate added by previous script from store
+                      |_ Invoke-LazySign.ps1           Script that Sign a Windows binary with a self-signed cert
         |_ Dump-Browser
                       |_ DumpChromePasswords.ps1       Dumps URLs, usernames, and passwords from Chrome
                       |_ HarvestBrowserPasswords.exe   Dumps URLs, usernames, and passwords from major browsers
