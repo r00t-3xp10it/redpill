@@ -49,7 +49,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/Del
 [auto] Get-ChildItem Cert:\LocalMachine\Root | Where-Object {$_.Issuer -match 'My_Code_Signing_Certificate'}
 ```
 
-<br /><br />
+<br />
 
 ## Restrictions
 ```
@@ -60,3 +60,15 @@ DeletePSscriptSignning.bat script than PSscriptSigning.bat can be invoked again 
 ```
 
 Article: https://github.com/r00t-3xp10it/hacking-material-books/blob/master/obfuscation/working-with-certificates.md
+
+<br /><br />
+
+## Module Name
+   <b><i>Invoke-LazySign.ps1</i></b>
+
+|Function Name|Description|Privileges|Notes|
+|---|---|---|---|
+|Invoke-LazySign|Sign a Windows binary with a self-signed certificate ( **certlm.msc - certificate** )|User Land|\*\*\*|
+
+
+
