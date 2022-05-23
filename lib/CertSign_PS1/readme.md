@@ -64,7 +64,7 @@ Article: https://github.com/r00t-3xp10it/hacking-material-books/blob/master/obfu
 <br /><br />
 
 ## Module Name
-   <b><i>Invoke-LazySign.ps1</i></b>
+   <b><i>Invoke-LazySign.ps1</i></b> - AddaptedFrom: @JeanMaes {Invoke-LazySign}
 
 |Function Name|Description|Privileges|Notes|
 |---|---|---|---|
