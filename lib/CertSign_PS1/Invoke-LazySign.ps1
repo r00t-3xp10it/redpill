@@ -131,6 +131,7 @@ If($Action -ieq "query")
    .OUTPUTS
    * Manage Windows Store Certificates.
      + Store Location: Cert:\CurrentUser\My
+     + Store Location: Cert:\CurrentUser\Root
 
    FriendlyName : Sectigo (AddTrust)
    Subject      : CN=AddTrust External CA Root, OU=AddTrust External TTP Network, O=AddTrust AB, C=SE
@@ -146,6 +147,9 @@ If($Action -ieq "query")
    write-host "  + " -ForegroundColor DarkYellow -NoNewline
    write-host "Store Location: " -ForegroundColor DarkGray -NoNewline
    write-host "$StoreLocation" -ForegroundColor DarkYellow
+   write-host "  + " -ForegroundColor DarkYellow -NoNewline
+   write-host "Store Location: " -ForegroundColor DarkGray -NoNewline
+   write-host "Cert:\LocalMachine\Root" -ForegroundColor DarkYellow
 
    ## Query certlm.msc for certificate existance
    # Debug: Cert:\CurrentUser\My - 30a40d0a
@@ -211,6 +215,7 @@ If($Action -ieq "Sign")
    $SupportedVersion = ($PSversionTable).PSVersion.Major
    $CertPath = $(Join-Path (Get-Location) "$Domain.pfx")
    $Rand = -join (((48..57)+(65..90)+(97..122)) * 80 |Get-Random -Count 4 |%{[char]$_})
+   $bool = (([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
    $SecurePassword = ConvertTo-SecureString -String $Password -AsPlainText -Force -ErrorAction SilentlyContinue
 
    If($SupportedVersion -lt 3)
@@ -279,7 +284,6 @@ If($Action -ieq "Sign")
        return
    }
 
-   $bool = (([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
    If($bool)
    {
       <#
@@ -291,6 +295,7 @@ If($Action -ieq "Sign")
       $TestExistence = (Get-ChildItem "Cert:\CurrentUser\My"|?{$_.Issuer -iMatch "$Subject" -or $_.Subject -iMatch "^(CN=$Subject)"}).Subject
       If($TestExistence)
       {
+         write-host "   + Moving certificate to 'Cert:\LocalMachine\Root'" -ForegroundColor Green
          Move-Item -Path $Certificate.PSPath -Destination "Cert:\LocalMachine\Root"
       }
    }
@@ -303,7 +308,7 @@ If($Action -ieq "Sign")
    ForEach($SetLocation in $LocationsList)
    {
       Get-ChildItem $SetLocation | Where-Object {
-         $_.Issuer -iMatch "$Subject" -or $_.Subject -iMatch "^(CN=$Subject)"
+         $_.Subject -iMatch "^(CN=$RandSubject)"
       }| Select-Object Thumbprint,Subject | Format-Table -AutoSize
    }
 
