@@ -21,6 +21,6 @@ echo [ exec  ]: Check for certificate existence.
 powershell $List = @('Root','My');ForEach($Item in $List){Get-ChildItem Cert:\LocalMachine\$Item ^| Where-Object {$_.Issuer -match 'My_Code_Signing_Certificate'}}
 timeout /T 3 >nul
 
-echo [ exec  ]: Deleting 'SsaRedTeam' (FriendlyName) Certificate from Cert Store ..
+echo [ exec  ]: Deleting certificate from Cert Store ..
 powershell $List = @('Root','My');ForEach($Item in $List){Get-ChildItem Cert:\LocalMachine\$Item ^| Where-Object {$_.Issuer -match 'My_Code_Signing_Certificate'} ^| Remove-Item}
 :: powershell Get-ChildItem Cert:\LocalMachine\Root ^| Where-Object {$_.Issuer -match 'My_Code_Signing_Certificate'} ^| Remove-Item
