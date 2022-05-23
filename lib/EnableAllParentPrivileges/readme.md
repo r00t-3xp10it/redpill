@@ -12,9 +12,25 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/Enab
 <br />
 
 **prerequesites:**
+```powershell
+
+#Administrator privileges required to Enable ALL privileges ..
+$token=(([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544");If($token){echo "token: Admin"}
+
+#Privileges information
+whoami /priv
 ```
-Administrator privileges required to elevate ALL privileges ..
-User Land privileges will only elevate the follow privileges:
+
+```powershell
+.\EnableAllParentPrivileges.exe
+```
+
+
+<br />
+
+**Remark:**
+```powershell
+[User Land] token will only Enable the follow privileges:
 
    SeAssignPrimaryTokenPrivilege Substituir um token de nível de processo      Enabled
    SeShutdownPrivilege           Encerrar o sistema                            Enabled
@@ -22,9 +38,4 @@ User Land privileges will only elevate the follow privileges:
    SeUndockPrivilege             Remover computador da estação de ancoragem    Enabled
    SeIncreaseWorkingSetPrivilege Aumentar um conjunto de trabalho de processos Enabled
    SeTimeZonePrivilege           Alterar o fuso horário                        Enabled
-```
-
-```powershell
-whoami /priv
-.\EnableAllParentPrivileges.exe
 ```
