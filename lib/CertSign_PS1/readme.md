@@ -68,7 +68,7 @@ Article: https://github.com/r00t-3xp10it/hacking-material-books/blob/master/obfu
 
 |Function Name|Description|Privileges|Notes|
 |---|---|---|---|
-|Invoke-LazySign|Sign a Windows binary with a self-signed certificate ( **certlm.msc - certificate** )|User Land|\*\*\*|
+|Invoke-LazySign|Sign a Windows binary with a self-signed certificate ( **certlm.msc - certificate** )|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSign_PS1/LazySign.png)|
 
 
 
