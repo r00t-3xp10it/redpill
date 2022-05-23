@@ -151,10 +151,10 @@ If($Action -ieq "query")
    write-host "Store Location: " -ForegroundColor DarkGray -NoNewline
    write-host "Cert:\LocalMachine\Root" -ForegroundColor DarkYellow
 
-   ## Query certlm.msc for certificate existance
-   # Debug: Cert:\CurrentUser\My - 30a40d0a
    ForEach($SetLocation in $LocationsList)
    {
+      ## Query certlm.msc for certificate existance
+      # DebugString: Cert:\CurrentUser\My - 30a40d0a
       Get-ChildItem "$SetLocation" | Where-Object {
          $_.Issuer -iMatch "$Subject" -or $_.Subject -iMatch "^(CN=$Subject)"
       }| Select-Object FriendlyName,Subject,Issuer,PSParentPath,PublicKey,NotAfter,NotBefore |
