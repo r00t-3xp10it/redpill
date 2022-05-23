@@ -161,8 +161,7 @@ If($Action -ieq "query")
       Out-String -Stream | Select-Object -Skip 1 | Select-Object -SkipLast 2 | Format-List >> $Env:TMP\dave.log
    }
 
-   $ChekMe = Get-Content -Path "$Env:TMP\dave.log"
-   If($ChekMe -ieq $null)
+   If((Get-Content -Path "$Env:TMP\dave.log") -eq $null)
    {
       write-host "`n  x Error: none '$Subject' certificates found..`n" -ForegroundColor Red -BackgroundColor Black
       write-host "* Exit Invoke-LazySign cmdlet [" -ForegroundColor Green -NoNewline
