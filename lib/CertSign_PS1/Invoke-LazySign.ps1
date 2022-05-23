@@ -17,7 +17,7 @@
 
 .NOTES
    This cmdlet uses 'Cert:\CurrentUser\My' store to create certs,
-   Unless cmdlet its execute with administrator privileges. In that
+   Unless cmdlet its executed with administrator privileges. In that
    ocassion it exports the certificate to 'Cert:\LocalMachine\Root'.
 
 .Parameter Action
@@ -181,7 +181,9 @@ If($Action -ieq "Sign")
 
    .NOTES
       This function requires 'PSVersion 3' or bigger ..
-      This function uses 'Cert:\CurrentUser\My' store to create certs
+      This function uses 'Cert:\CurrentUser\My' store to create certs,
+      Unless cmdlet its executed with administrator privileges. In that
+      ocassion it exports the certificate to 'Cert:\LocalMachine\Root'.
 
    .OUTPUTS
       * Manage Windows Store Certificates.
@@ -259,7 +261,6 @@ If($Action -ieq "Sign")
    write-host "  Password     : $Password`n"
    Start-Sleep -Seconds 1
 
-   < #
    #Create Self Signed Certificate and PFX file in current directory
    $Certificate = New-SelfSignedCertificate -Subject "$RandSubject" -FriendlyName "$FriendlyName" -CertStoreLocation "$StoreLocation" -DnsName "$Domain" -Type "CodeSigning" -ErrorAction SilentlyContinue  
    Export-PfxCertificate -FilePath "$CertPath" -Password "$SecurePassword" -Cert "$Certificate" -ErrorAction SilentlyContinue
@@ -302,7 +303,7 @@ If($Action -ieq "Sign")
          $_.Issuer -iMatch "$Subject" -or $_.Subject -iMatch "^(CN=$Subject)"
       }| Select-Object Thumbprint,Subject | Format-Table -AutoSize
    }
-   #>
+
 }
 
 #CmdLet Exit
