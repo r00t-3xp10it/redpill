@@ -28,7 +28,7 @@ IF %errorLevel% == 0 (
 )
 
 echo [ exec  ]: Check for certificate existence.
-powershell $List = @('Root','My');ForEach($Item in $List){Get-ChildItem Cert:\LocalMachine\$Item ^| Where-Object {$_.Issuer -match 'CN'}}
+powershell $List = @('Root','My');ForEach($Item in $List){Get-ChildItem Cert:\LocalMachine\$Item ^| Where-Object {$_.Issuer -match 'My_Code_Signing_Certificate'}}
 timeout /T 3 >nul
 
 echo [ exec  ]: Deleting certificates from cert store ..
