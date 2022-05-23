@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (19043) x64 bits
    Required Dependencies: PSVersion 3 {native?}
    Optional Dependencies: Administrator privs
-   PS cmdlet Dev version: v1.0.2
+   PS cmdlet Dev version: v1.0.3
 
 .DESCRIPTION
    This cmdlet allow users to sign windows binarys or scripts
@@ -88,10 +88,10 @@
 )
 
 
-$CmdletVersion = "v1.0.2"
+$CmdletVersion = "v1.0.3"
 #Global variable declarations
 $StoreLocation = "Cert:\CurrentUser\My"
-# $ErrorActionPreference = "SilentlyContinue"
+$ErrorActionPreference = "SilentlyContinue"
 #Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $host.UI.RawUI.WindowTitle = "@Invoke-LazySign $CmdletVersion {SSA@RedTeam}"
@@ -147,16 +147,18 @@ If($Action -ieq "query")
    write-host "Store Location: " -ForegroundColor DarkGray -NoNewline
    write-host "$StoreLocation" -ForegroundColor DarkYellow
 
-   #Query certlm.msc for certificate existance - 30a40d0a
+   ## Query certlm.msc for certificate existance
+   # Debug: Cert:\CurrentUser\My - 30a40d0a
    ForEach($SetLocation in $LocationsList)
    {
-      $checkMe = Get-ChildItem $SetLocation | Where-Object {
+      Get-ChildItem "$SetLocation" | Where-Object {
          $_.Issuer -iMatch "$Subject" -or $_.Subject -iMatch "^(CN=$Subject)"
       }| Select-Object FriendlyName,Subject,Issuer,PSParentPath,PublicKey,NotAfter,NotBefore |
-      Out-String -Stream | Select-Object -Skip 1 | Select-Object -SkipLast 2 | Format-List
+      Out-String -Stream | Select-Object -Skip 1 | Select-Object -SkipLast 2 | Format-List >> $Env:TMP\dave.log
    }
 
-   If(-not($checkMe) -or $checkMe -eq $null)
+   $ChekMe = Get-Content -Path "$Env:TMP\dave.log"
+   If($ChekMe -ieq $null)
    {
       write-host "`n  x Error: none '$Subject' certificates found..`n" -ForegroundColor Red -BackgroundColor Black
       write-host "* Exit Invoke-LazySign cmdlet [" -ForegroundColor Green -NoNewline
@@ -165,8 +167,9 @@ If($Action -ieq "query")
       return
    }
 
-   #Output cert info
-   echo $checkMe
+   #Output certificate information
+   Get-Content -Path "$Env:TMP\dave.log"
+   Remove-Item -Path "$Env:TMP\dave.log" -Force
 }
 
 
