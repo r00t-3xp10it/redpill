@@ -68,7 +68,38 @@ Article: https://github.com/r00t-3xp10it/hacking-material-books/blob/master/obfu
 
 |Function Name|Description|Privileges|Notes|
 |---|---|---|---|
-|Invoke-LazySign|Sign a Windows binary with a self-signed certificate ( **certlm.msc - certificate** )|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSign_PS1/invoke-LazySign.png)|
+|Invoke-LazySign|Sign a Windows binary with a self-signed certificate|User Land \| Administrator|Dependencies: PSVersion.Major 3+<br />[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSign_PS1/invoke-LazySign.png)|
+
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSign_PS1/..." -OutFile "Invoke-LazySign.ps1"
+```
+
+<br />
+
+**prerequesites checks:**
+```powershell
+($PSversionTable).PSVersion.Major
+```
 
 
+```powershell
+Get-Help .\Invoke-LazySign.ps1 -full
 
+#Query for ALL certificates in 'Cert:\CurrentUser\My | Root' Store
+.\Invoke-LazySign.ps1 -Action "query" -Subject "[a-z 0-9]"
+
+#Query for ALL 'LazySign' certs in 'Cert:\CurrentUser\My | Root' Store
+.\Invoke-LazySign.ps1 -Action "query" -Subject "LazySign"
+
+#Sign binary (Payload.exe) with crafted certificate (Subject: LazySign-4zrH Domain: microsoft.com)
+.\Invoke-LazySign.ps1 -Subject "LazySign" -Target "$pwd\Payload.exe" -Domain "microsoft.com"
+
+#Sign binary (Payload.exe) with crafted certificate (Subject: LazySign-4zrH Domain: microsoft.com password: Passw0rd!)
+.\Invoke-LazySign.ps1 -Subject "LazySign" -Target "Payload.exe" -Domain "microsoft.com" -Password "Passw0rd!"
+```
+
+**Notes:**
+```powershell
+[Administrator] privileges exports the cert from 'Cert:\CurrentUser\My' to 'Cert:\LocalMachine\Root'
+[ Note_ToSelf ] write -action 'delete' function that allow users to delete the fake cert from store?
+```
