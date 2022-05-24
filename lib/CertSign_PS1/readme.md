@@ -95,7 +95,7 @@ Get-Help .\Invoke-LazySign.ps1 -full
 .\Invoke-LazySign.ps1 -Subject "LazySign" -Target "$pwd\Payload.exe" -Domain "microsoft.com"
 
 #Sign binary (Payload.exe) with crafted certificate (Subject: LazySign-4zrH Domain: microsoft.com password: Passw0rd!)
-.\Invoke-LazySign.ps1 -Subject "LazySign" -Target "Payload.exe" -Domain "microsoft.com" -Password "Passw0rd!"
+.\Invoke-LazySign.ps1 -Action 'sign' -Subject "LazySign" -Target "Payload.exe" -Domain "microsoft.com" -Password "Passw0rd!"
 ```
 
 **Notes:**
