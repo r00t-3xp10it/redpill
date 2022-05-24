@@ -85,10 +85,10 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSi
 ```powershell
 Get-Help .\Invoke-LazySign.ps1 -full
 
-#Query for ALL certificates in 'Cert:\CurrentUser\My | Root' Store
+#Query for ALL certificates in 'Cert:\CurrentUser\My | Cert:\LocalMachine\Root' Store
 .\Invoke-LazySign.ps1 -Action "query" -Subject "[a-z 0-9]"
 
-#Query for ALL 'LazySign' certs in 'Cert:\CurrentUser\My | Root' Store
+#Query for ALL 'LazySign' certs in 'Cert:\CurrentUser\My | Cert:\LocalMachine\Root' Store
 .\Invoke-LazySign.ps1 -Action "query" -Subject "LazySign"
 
 #Sign binary (Payload.exe) with crafted certificate (Subject: LazySign-4zrH Domain: microsoft.com)
@@ -103,3 +103,5 @@ Get-Help .\Invoke-LazySign.ps1 -full
 [Administrator] privileges exports the cert from 'Cert:\CurrentUser\My' to 'Cert:\LocalMachine\Root'
 [ Note_ToSelf ] write -action 'delete' function that allow users to delete the fake cert from store?
 ```
+
+Article: https://github.com/r00t-3xp10it/hacking-material-books/blob/master/obfuscation/working-with-certificates.md
