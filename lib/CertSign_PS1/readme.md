@@ -68,7 +68,7 @@ Article: https://github.com/r00t-3xp10it/hacking-material-books/blob/master/obfu
 
 |Function Name|Description|Privileges|Notes|
 |---|---|---|---|
-|Invoke-LazySign|Sign a Windows binary with a self-signed certificate|Administrator|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSign_PS1/invoke-LazySign.png)|
+|Invoke-LazySign|Sign a Windows binary\Cmdlet with a self-signed certificate|Administrator|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSign_PS1/Invoke-LazySign.png)|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSign_PS1/Invoke-LazySign.ps1" -OutFile "Invoke-LazySign.ps1"
