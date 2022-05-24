@@ -110,12 +110,17 @@ Get-Help .\Invoke-LazySign.ps1 -full
 
 <br />
 
-## Restrictions
+## Final Notes
 ```
-Do 'NOT' edit the signed binary\cmdlet after its being signed, or else the cerificate
-code block inside signed binary\cmdlet will brake rending the signed binary\cmdlet
-as NOT-SIGNED anymore ..
+Do 'NOT' edit the signed binary\cmdlet after its being signed, or else the cerificate code block
+inside signed binary\cmdlet will brake rending the signed binary\cmdlet as NOT-SIGNED anymore ..
 
+This cmdlet will NOT sign our script.ps1 if 'Set-ExecutionPolicy AllSigned, RemoteSigned' are set.
+Because ExecutionPolicy will prevent this cmdlet from running, If you wish to bypass restrictions
+then execute the 'PSscriptSigning.bat' module contained in this same repository (the first module)
+
+The PSscriptSigning.bat script can only be used to sign ONE cmdlet at a time, because it uses
+the same Subject Name everytime it signs one cmdlet ( Subject: My_Code_Signing_Certificate )
 ```
 
 Article: https://github.com/r00t-3xp10it/hacking-material-books/blob/master/obfuscation/working-with-certificates.md
