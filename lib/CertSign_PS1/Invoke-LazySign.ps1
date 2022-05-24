@@ -96,7 +96,7 @@
 $CmdletVersion = "v1.0.6"
 #Global variable declarations
 $StoreLocation = "Cert:\LocalMachine\My"
-#$ErrorActionPreference = "SilentlyContinue"
+$ErrorActionPreference = "SilentlyContinue"
 
 #Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
