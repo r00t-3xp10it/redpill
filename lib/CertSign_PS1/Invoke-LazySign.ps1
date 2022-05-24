@@ -126,6 +126,7 @@ If($NotAfter -eq 0)
 
 #Supported stores
 $LocationsList = @(
+   "Cert:\CurrentUser\My",
    "Cert:\LocalMachine\My",
    "Cert:\LocalMachine\Root"
 )
@@ -155,6 +156,9 @@ If($Action -ieq "query")
    #>
 
    #Local function variable declarations
+   write-host "  + " -ForegroundColor DarkYellow -NoNewline
+   write-host "Store Location: " -ForegroundColor DarkGray -NoNewline
+   write-host "Cert:\CurrentUser\My" -ForegroundColor DarkYellow
    write-host "  + " -ForegroundColor DarkYellow -NoNewline
    write-host "Store Location: " -ForegroundColor DarkGray -NoNewline
    write-host "$StoreLocation" -ForegroundColor DarkYellow
@@ -377,6 +381,20 @@ If($Action -ieq "del")
       return
    }
 
+   If($Subject -Match '\[')
+   {
+      write-host "`n  x " -ForegroundColor Red -NoNewline
+      write-host "Error: '" -ForegroundColor DarkGray -NoNewline
+      write-host "Regex search" -ForegroundColor Red -NoNewline
+      write-host "' detected, aborting .." -ForegroundColor DarkGray
+      write-host "  + Warning: This function uses recursive search." -ForegroundColor DarkYellow
+
+      write-host "`n* Exit Invoke-LazySign cmdlet [" -ForegroundColor Green -NoNewline
+      write-host "ok" -ForegroundColor DarkYellow -NoNewline
+      write-host "].." -ForegroundColor Green
+      return   
+   }
+
    #Make sure certificate to delete exists
    ForEach($SetLocation in $LocationsList)
    {
@@ -405,7 +423,7 @@ If($Action -ieq "del")
    }
 
 
-   write-host "`n  + " -ForegroundColor Red -NoNewline
+   write-host "`n  + " -ForegroundColor DarkYellow -NoNewline
    write-host "Success: deleted '" -ForegroundColor DarkGray -NoNewline
    write-host "$Subject" -ForegroundColor Red -NoNewline
    write-host "' certificate.`n" -ForegroundColor DarkGray 
