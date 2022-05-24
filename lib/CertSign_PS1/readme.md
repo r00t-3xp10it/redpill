@@ -71,7 +71,7 @@ Article: https://github.com/r00t-3xp10it/hacking-material-books/blob/master/obfu
 |Invoke-LazySign|Sign a Windows binary with a self-signed certificate|User Land \| Administrator|Dependencies: PSVersion.Major 3+<br />[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSign_PS1/invoke-LazySign.png)|
 
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSign_PS1/..." -OutFile "Invoke-LazySign.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSign_PS1/Invoke-LazySign.ps1" -OutFile "Invoke-LazySign.ps1"
 ```
 
 <br />
@@ -101,8 +101,8 @@ Get-Help .\Invoke-LazySign.ps1 -full
 **Notes:**
 ```powershell
 [Administrator] privileges exports the cert from 'Cert:\CurrentUser\My' to 'Cert:\LocalMachine\Root'
-[ Note_ToSelf ] write -action 'delete' function that allow users to delete the fake cert from store?
-[ Note_ToSelf ] add 'ExpireDate' in certificate creation ?
+This cmdlet does not delete fake certificates from Windows Store because the certificates created by
+this cmdlet will auto-delete itself in the sellected time stamp (by using -NotAfter 'int' paramater) 
 ```
 
 Article: https://github.com/r00t-3xp10it/hacking-material-books/blob/master/obfuscation/working-with-certificates.md
