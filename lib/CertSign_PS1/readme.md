@@ -68,7 +68,7 @@ Article: https://github.com/r00t-3xp10it/hacking-material-books/blob/master/obfu
 
 |Function Name|Description|Privileges|Notes|
 |---|---|---|---|
-|Invoke-LazySign|Sign a Windows binary with a self-signed certificate|User Land \| Administrator|Dependencies: PSVersion.Major 3+<br />[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSign_PS1/invoke-LazySign.png)|
+|Invoke-LazySign|Sign a Windows binary with a self-signed certificate|Administrator|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSign_PS1/invoke-LazySign.png)|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSign_PS1/Invoke-LazySign.ps1" -OutFile "Invoke-LazySign.ps1"
@@ -78,31 +78,24 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSi
 
 **prerequesites checks:**
 ```powershell
-($PSversionTable).PSVersion.Major
+(Get-Module -ListAvailable -Name *).ExportedCmdlets|findstr /C:"New-SelfSignedCertificate" /C:"Set-AuthenticodeSignature"
 ```
 
 
 ```powershell
 Get-Help .\Invoke-LazySign.ps1 -full
 
-#Query for ALL certificates in 'Cert:\CurrentUser\My | Cert:\LocalMachine\Root' Store
+#Query for ALL certificates in 'Cert:\LocalMachine\My | Cert:\LocalMachine\Root' Store
 .\Invoke-LazySign.ps1 -Action "query" -Subject "[a-z 0-9]"
 
-#Query for ALL 'LazySign' certs in 'Cert:\CurrentUser\My | Cert:\LocalMachine\Root' Store
+#Query for ALL 'LazySign' certs in 'Cert:\LocalMachine\My | Cert:\LocalMachine\Root' Store
 .\Invoke-LazySign.ps1 -Action "query" -Subject "LazySign"
 
-#Sign binary (Payload.exe) with crafted certificate (Subject: LazySign-4zrH Domain: microsoft.com)
-.\Invoke-LazySign.ps1 -Action 'Sign' -Subject "LazySign" -Target "$pwd\Payload.exe" -Domain "microsoft.com"
+#Sign binary (Payload.exe) with crafted certificate (Subject: LazySign-4zrH Expires: 6 months)
+.\Invoke-LazySign.ps1 -Action 'Sign' -Subject "LazySign" -Target "$pwd\Payload.exe" -NotAfter "6"
 
-#Sign binary (Payload.exe) with crafted certificate (Subject: LazySign-4zrH Domain: microsoft.com password: Passw0rd!)
-.\Invoke-LazySign.ps1 -Action 'sign' -Subject "LazySign" -Target "Payload.exe" -Domain "microsoft.com" -Password "Passw0rd!"
-```
-
-**Notes:**
-```powershell
-[Administrator] privileges exports the cert from 'Cert:\CurrentUser\My' to 'Cert:\LocalMachine\Root'
-This cmdlet does not delete fake certificates from Windows Store because the certificates created by
-this cmdlet will auto-delete itself in the sellected time stamp (by using -NotAfter 'int' paramater) 
+#Sign binary (Payload.ps1) with crafted certificate (Subject: LazySign-4zrH Expires: 3 months)
+.\Invoke-LazySign.ps1 -Action 'sign' -Subject "LazySign" -Target "Payload.ps1" -NotAfter "3"
 ```
 
 Article: https://github.com/r00t-3xp10it/hacking-material-books/blob/master/obfuscation/working-with-certificates.md
