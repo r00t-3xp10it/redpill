@@ -3,7 +3,7 @@
 
 |Script Name|Description|Privileges|Notes|
 |---|---|---|---|
-|PSscriptSigning|Signs one PS1 script ( **certlm.msc - certificate** ) + Execute it?<br />This allow us to execute our PS1 cmdlet even if set-executionpolicy<br />its set to only run signed cmdlets [( AllSigned, RemoteSigned )](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.security/set-executionpolicy?view=powershell-7.2)|Administrator|[PSscriptSigning.bat](https://github.com/r00t-3xp10it/redpill/blob/main/bypass/PSscriptSigning.bat)<br />[DeletePSscriptSignning.bat](https://github.com/r00t-3xp10it/redpill/blob/main/bypass/DeletePSscriptSignning.bat)<br />Dependencies: LanManServer|
+|PSscriptSigning|Signs one PS1 script ( **certlm.msc - certificate** ) + Auto-Execute it ?<br />This allow us to execute our PS1 cmdlet even if set-executionpolicy<br />its set to only run signed cmdlets [( AllSigned, RemoteSigned )](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.security/set-executionpolicy?view=powershell-7.2)|Administrator|[PSscriptSigning.bat](https://github.com/r00t-3xp10it/redpill/blob/main/bypass/PSscriptSigning.bat)<br />[DeletePSscriptSignning.bat](https://github.com/r00t-3xp10it/redpill/blob/main/bypass/DeletePSscriptSignning.bat)<br />Dependencies: LanManServer|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/PSscriptSigning.bat" -OutFile "PSscriptSigning.bat"
@@ -55,7 +55,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/Del
 ```
 This BATCH script can sign\execute our cmdlet even if Set-ExecutionPolicy its set to 'AllSigned, RemoteSigned'.
 Because executing BATCH scripts its NOT affected by 'Set-ExecutionPolicy' target settings, this allow us to
-Sign the cmdlet and then execute it bypassing 'Set-ExecutionPolicy AllSigned' execution restrictions ...
+Sign the cmdlet and then auto-execute it bypassing 'Set-ExecutionPolicy AllSigned,RemoteSigned' restrictions.
 
 The PSscriptSigning.bat script can only be used to sign ONE cmdlet at a time, because it uses
 the same Subject Name everytime it signs one cmdlet ( Subject: My_Code_Signing_Certificate )
@@ -112,8 +112,11 @@ Get-Help .\Invoke-LazySign.ps1 -full
 
 ## Final Notes
 ```
-Do 'NOT' edit the signed binary\cmdlet after its being signed, or else the cerificate code block
-inside signed binary\cmdlet will brake rending the signed binary\cmdlet as 'NOT-SIGNED' anymore.
+Do 'NOT' edit the signed binary\cmdlet after its being signed, or else the certificate code block
+inside signed binary\cmdlet will brake, rending the signed binary\cmdlet as 'NOT-SIGNED' again.
+
+Do 'NOT' use Regex when invoking -Action 'del' to delete certificates from the Windows Store.
+Because Invoke-LazySign.ps1 cmdlet uses recursive search by default (deleting multiple certs)
 
 This cmdlet will 'NOT' sign our script.ps1 if 'Set-ExecutionPolicy AllSigned,RemoteSigned' are set.
 Because ExecutionPolicy will prevent this cmdlet from running. If you wish to bypass the restrictions
