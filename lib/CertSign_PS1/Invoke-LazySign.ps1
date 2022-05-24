@@ -97,9 +97,6 @@ $CmdletVersion = "v1.0.6"
 #Global variable declarations
 $StoreLocation = "Cert:\LocalMachine\My"
 $ErrorActionPreference = "SilentlyContinue"
-
-#Disable Powershell Command Logging for current session.
-Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $host.UI.RawUI.WindowTitle = "@Invoke-LazySign $CmdletVersion {SSA@RedTeam}"
 $bool = (([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
 write-host "* Manage Windows Store Certificates." -ForegroundColor Green
