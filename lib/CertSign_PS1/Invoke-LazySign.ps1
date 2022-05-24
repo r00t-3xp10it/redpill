@@ -21,7 +21,7 @@
    8 months before auto-delete itself after the limmit time reached.
 
 .Parameter Action
-   Accepts arguments: query, sign (default: query)
+   Accepts arguments: query, sign, del (default: query)
 
 .Parameter Target
    The windows Cmdlet\Script to sign (default: off)
@@ -50,6 +50,10 @@
 .EXAMPLE
    PS C:\> .\Invoke-LazySign.ps1 -Action "sign" -Subject "LazySign" -Target "Payload.ps1" -NotAfter "12"
    Sign cmdlet (Payload.ps1) with crafted certificate (Subject: LazySign-4zrH ExpiresIn: 12 months)
+
+.EXAMPLE
+   PS C:\> .\Invoke-LazySign.ps1 -Action "del" -Subject "LazySign-4zrH"
+   Delete the 'LazySign-4zrH' certificate from windows store ..
 
 .OUTPUTS
    * Manage Windows Store Certificates.
