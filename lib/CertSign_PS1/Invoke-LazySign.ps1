@@ -80,7 +80,7 @@
 
 .LINK
    https://github.com/jfmaes/LazySign
-   https://sid-500.com/2017/10/26/how-to-digitally-sign-powershell-scripts
+   http://woshub.com/how-to-create-self-signed-certificate-with-powershell
    https://github.com/r00t-3xp10it/hacking-material-books/blob/master/obfuscation/working-with-certificates.md
 #>
 
