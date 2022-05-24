@@ -98,4 +98,14 @@ Get-Help .\Invoke-LazySign.ps1 -full
 .\Invoke-LazySign.ps1 -Action 'sign' -Subject "LazySign" -Target "Payload.ps1" -NotAfter "3"
 ```
 
+<br />
+
+## Restrictions
+```
+Do 'NOT' edit the signed binary\cmdlet after its being signed, or else the cerificate
+code block inside signed binary\cmdlet will brake rending the signed binary\cmdlet
+as NOT-SIGNED anymore ..
+
+```
+
 Article: https://github.com/r00t-3xp10it/hacking-material-books/blob/master/obfuscation/working-with-certificates.md
