@@ -100,6 +100,9 @@ Get-Help .\Invoke-LazySign.ps1 -full
 
 #Sign binary (Payload.ps1) with crafted certificate (Subject: LazySign-4zrH Expires: 3 months)
 .\Invoke-LazySign.ps1 -Action 'sign' -Subject "LazySign" -Target "Payload.ps1" -NotAfter "3"
+
+#Delete the 'LazySign-4zrH' certificate from windows store
+.\Invoke-LazySign.ps1 -Action 'del' -Subject "LazySign-4zrH"
 ```
 
 <br />
