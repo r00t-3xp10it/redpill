@@ -429,7 +429,7 @@ If($Action -ieq "del")
 
    write-host "`n  + " -ForegroundColor DarkYellow -NoNewline
    write-host "Success: deleted '" -ForegroundColor DarkGray -NoNewline
-   write-host "$Subject" -ForegroundColor Red -NoNewline
+   write-host "$Subject" -ForegroundColor DarkYellow -NoNewline
    write-host "' certificate.`n" -ForegroundColor DarkGray 
 
 }
