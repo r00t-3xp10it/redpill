@@ -51,11 +51,14 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/Del
 
 <br />
 
-## Restrictions
+## Final Notes
 ```
-The PSscriptSigning.bat batch script can only be used to sign one cmdlet at a time...
-Because its uses 'SsaRedTeam' as certificate FriendlyName, but... if we execute the
-DeletePSscriptSignning.bat script than PSscriptSigning.bat can be invoked again to sign a new cmdlet ..
+This BATCH script can sign\execute our cmdlet even if Set-ExecutionPolicy its set to 'AllSigned, RemoteSigned'.
+Because executing BATCH scripts its NOT affected by 'Set-ExecutionPolicy' target settings, this allow us to
+Sign the cmdlet and then execute it bypassing 'Set-ExecutionPolicy AllSigned' restrictions ...
+
+The PSscriptSigning.bat script can only be used to sign ONE cmdlet at a time, because it uses
+the same Subject Name everytime it signs the cmdlet ( Subject: My_Code_Signing_Certificate )
 
 ```
 
