@@ -51,14 +51,14 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/Del
 
 <br />
 
-## Final Notes
+### Final Notes
 ```
 This BATCH script can sign\execute our cmdlet even if Set-ExecutionPolicy its set to 'AllSigned, RemoteSigned'.
 Because executing BATCH scripts its NOT affected by 'Set-ExecutionPolicy' target settings, this allow us to
-Sign the cmdlet and then execute it bypassing 'Set-ExecutionPolicy AllSigned' restrictions ...
+Sign the cmdlet and then execute it bypassing 'Set-ExecutionPolicy AllSigned' execution restrictions ...
 
 The PSscriptSigning.bat script can only be used to sign ONE cmdlet at a time, because it uses
-the same Subject Name everytime it signs the cmdlet ( Subject: My_Code_Signing_Certificate )
+the same Subject Name everytime it signs one cmdlet ( Subject: My_Code_Signing_Certificate )
 
 ```
 
@@ -113,13 +113,13 @@ Get-Help .\Invoke-LazySign.ps1 -full
 ## Final Notes
 ```
 Do 'NOT' edit the signed binary\cmdlet after its being signed, or else the cerificate code block
-inside signed binary\cmdlet will brake rending the signed binary\cmdlet as NOT-SIGNED anymore ..
+inside signed binary\cmdlet will brake rending the signed binary\cmdlet as 'NOT-SIGNED' anymore.
 
-This cmdlet will NOT sign our script.ps1 if 'Set-ExecutionPolicy AllSigned, RemoteSigned' are set.
-Because ExecutionPolicy will prevent this cmdlet from running, If you wish to bypass restrictions
-then execute the 'PSscriptSigning.bat' module contained in this same repository (the first module)
+This cmdlet will 'NOT' sign our script.ps1 if 'Set-ExecutionPolicy AllSigned,RemoteSigned' are set.
+Because ExecutionPolicy will prevent this cmdlet from running. If you wish to bypass the restrictions
+then execute the 'PSscriptSigning.bat' batch module contained in this same repository (the first module)
 
-The PSscriptSigning.bat script can only be used to sign ONE cmdlet at a time, because it uses
+The PSscriptSigning.bat script can only be used to sign 'ONE' cmdlet at a time, because it uses
 the same Subject Name everytime it signs one cmdlet ( Subject: My_Code_Signing_Certificate )
 ```
 
