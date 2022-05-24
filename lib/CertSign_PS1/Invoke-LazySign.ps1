@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (19043) x64 bits
    Required Dependencies: PSVersion 3 {native?}
    Optional Dependencies: Administrator privs
-   PS cmdlet Dev version: v1.0.3
+   PS cmdlet Dev version: v1.0.4
 
 .DESCRIPTION
    This cmdlet allow users to sign windows binarys or scripts
@@ -88,7 +88,7 @@
 )
 
 
-$CmdletVersion = "v1.0.3"
+$CmdletVersion = "v1.0.4"
 #Global variable declarations
 $StoreLocation = "Cert:\CurrentUser\My"
 $ErrorActionPreference = "SilentlyContinue"
@@ -131,7 +131,7 @@ If($Action -ieq "query")
    .OUTPUTS
    * Manage Windows Store Certificates.
      + Store Location: Cert:\CurrentUser\My
-     + Store Location: Cert:\CurrentUser\Root
+     + Store Location: Cert:\LocalMachine\Root
 
    FriendlyName : Sectigo (AddTrust)
    Subject      : CN=AddTrust External CA Root, OU=AddTrust External TTP Network, O=AddTrust AB, C=SE
