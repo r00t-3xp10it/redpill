@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19043) x64 bits
    Required Dependencies: Administrator privileges
    Optional Dependencies: New-SelfSignedCertificate
-   PS cmdlet Dev version: v1.0.6
+   PS cmdlet Dev version: v1.0.7
 
 .DESCRIPTION
    This cmdlet allow users to sign windows cmdlets or scripts
@@ -93,7 +93,7 @@
 )
 
 
-$CmdletVersion = "v1.0.6"
+$CmdletVersion = "v1.0.7"
 #Global variable declarations
 $StoreLocation = "Cert:\LocalMachine\My"
 $ErrorActionPreference = "SilentlyContinue"
@@ -178,8 +178,12 @@ If($Action -ieq "query")
    If((Get-Content -Path "$Env:TMP\dave.log") -eq $null)
    {
       Remove-Item -Path "$Env:TMP\dave.log" -Force
-      write-host "`n  x Error: none '$Subject' certificates found..`n" -ForegroundColor Red -BackgroundColor Black
-      write-host "* Exit Invoke-LazySign cmdlet [" -ForegroundColor Green -NoNewline
+      write-host "`n  x " -ForegroundColor Red -NoNewline
+      write-host "Error: none '" -ForegroundColor DarkGray -NoNewline
+      write-host "$Subject" -ForegroundColor Red -NoNewline
+      write-host "' certificates found.." -ForegroundColor DarkGray
+
+      write-host "`n* Exit Invoke-LazySign cmdlet [" -ForegroundColor Green -NoNewline
       write-host "ok" -ForegroundColor DarkYellow -NoNewline
       write-host "].." -ForegroundColor Green
       return
