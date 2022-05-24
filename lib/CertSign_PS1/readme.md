@@ -102,6 +102,7 @@ Get-Help .\Invoke-LazySign.ps1 -full
 ```powershell
 [Administrator] privileges exports the cert from 'Cert:\CurrentUser\My' to 'Cert:\LocalMachine\Root'
 [ Note_ToSelf ] write -action 'delete' function that allow users to delete the fake cert from store?
+[ Note_ToSelf ] add 'ExpireDate' in certificate creation ?
 ```
 
 Article: https://github.com/r00t-3xp10it/hacking-material-books/blob/master/obfuscation/working-with-certificates.md
