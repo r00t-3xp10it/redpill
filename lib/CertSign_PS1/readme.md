@@ -64,7 +64,7 @@ Article: https://github.com/r00t-3xp10it/hacking-material-books/blob/master/obfu
 <br /><br />
 
 ## Module Name
-   <b><i>Invoke-LazySign.ps1</i></b> - AddaptedFrom: @JeanMaes {Invoke-LazySign}
+   <b><i>Invoke-LazySign.ps1</i></b>
 
 |Function Name|Description|Privileges|Notes|
 |---|---|---|---|
@@ -78,6 +78,10 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSi
 
 **prerequesites checks:**
 ```powershell
+#Make sure we have administrator privileges in shell
+$bool = (([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544");If($bool){Admin}
+
+#Make sure the required modules are present\loaded
 (Get-Module -ListAvailable -Name *).ExportedCmdlets|findstr /C:"New-SelfSignedCertificate" /C:"Set-AuthenticodeSignature"
 ```
 
