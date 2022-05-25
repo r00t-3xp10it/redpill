@@ -13,8 +13,8 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/PSs
 
 **prerequesites checks:**
 ```powershell
-Get-ExecutionPolicy -Scope CurrentUser
 [bool](Get-Service -Name LanManServer)
+[bool]((Get-ExecutionPolicy -Scope CurrentUser) -iMatch "^(AllSigned|RemoteSigned)$")
 ```
 
 ```powershell
