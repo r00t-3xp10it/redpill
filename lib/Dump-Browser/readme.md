@@ -62,6 +62,9 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-byp
 #Make sure Windows Defender service its running
 Get-Service -Name WinDefend
 
+#Make sure required modules are present\loaded
+(Get-Module -ListAvailable -Name ConfigDefender).ExportedCommands|findstr /C:"Set-MpPreference"
+
 #Make sure we have administrator privileges in shell
 [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")
 ```
