@@ -59,6 +59,9 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Bypass
 
 **prerequesites checks:**
 ```powershell
+#Make sure Windows Defender service its running
+Get-Service -Name WinDefend
+
 #Make sure we have administrator privileges in shell
 [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")
 ```
