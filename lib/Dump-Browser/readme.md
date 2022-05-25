@@ -67,10 +67,12 @@ Get-Service -Name WinDefend
 ```
 
 ```powershell
+#Get full module information
 Get-help .\Invoke-Exclusions.ps1 -Force
 
 #Get Exclusions List
 .\Invoke-Exclusions.ps1 -action "query"
+
 
 #Set-MpPreference -ExclusionExtension "exe" -Force
 .\Invoke-Exclusions.ps1 -action "add" -type "ExclusionExtension" -Exclude "exe"
