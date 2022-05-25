@@ -89,5 +89,5 @@ ChromePass.exe standalone executable its flagged by AV as malicious, thats why w
 The trick consistes in adding %TMP% directory to WD ExclusionPath, then Download\Execute ChromePass.exe from that location.
 
 Invoke-Exclusions.ps1 cmdlet will take care of adding the exclusion, download PE, execute PE (ChromePass.exe).
-Warning: Invoke-Exclusions will 'NOT' delete itself or ChromePass.exe (deliver by -Uri parameter) at the end of exec.
+Warning: Invoke-Exclusions will 'NOT' delete itself or ChromePass.exe (deliver by -Uri parameter) at the end of execution.
 ```
