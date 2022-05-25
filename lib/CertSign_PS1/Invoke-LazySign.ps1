@@ -387,7 +387,7 @@ If($Action -ieq "del")
       return
    }
 
-   If($Subject -Match '\[' -or $Subject.Length -lt 3)
+   If($Subject -Match '^(\(|\[)' -or $Subject.Length -lt 3)
    {
       write-host "`n  x " -ForegroundColor Red -NoNewline
       write-host "Error: '" -ForegroundColor DarkGray -NoNewline
