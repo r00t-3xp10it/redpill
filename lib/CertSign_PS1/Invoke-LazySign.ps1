@@ -98,7 +98,7 @@ $CmdletVersion = "v1.0.8"
 $StoreLocation = "Cert:\LocalMachine\My"
 $ErrorActionPreference = "SilentlyContinue"
 $host.UI.RawUI.WindowTitle = "@Invoke-LazySign $CmdletVersion {SSA@RedTeam}"
-$bool = (([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
+$AdminShell = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")
 write-host "* Manage Windows Store Certificates." -ForegroundColor Green
 
 
@@ -142,6 +142,7 @@ If($Action -ieq "query")
 
    .OUTPUTS
    * Manage Windows Store Certificates.
+     + Store Location: Cert:\CurrentUser\My
      + Store Location: Cert:\LocalMachine\My
      + Store Location: Cert:\LocalMachine\Root
 
@@ -205,7 +206,6 @@ If($Action -ieq "Sign")
 
    .NOTES
       Requires: New-SelfSignedCertificate, Set-AuthenticodeSignature
-
       This function uses 'Cert:\LocalMachine\My' store to create certs,
       then exports the created certificate to 'Cert:\LocalMachine\Root'.
 
@@ -236,7 +236,7 @@ If($Action -ieq "Sign")
    #Local function variable declarations
    $Rand = -join (((48..57)+(65..90)+(97..122)) * 80 |Get-Random -Count 4 |%{[char]$_})
 
-   If(-not($bool))
+   If($AdminShell -iMatch '^(False)$')
    {
       write-host "  x " -ForegroundColor Red -NoNewline
       write-host "Error: '" -ForegroundColor DarkGray -NoNewline
@@ -329,8 +329,7 @@ If($Action -ieq "Sign")
       Administrator privileges required to move cert
    #>
 
-   $TestExistence = (Get-ChildItem "$StoreLocation"|?{$_.Issuer -iMatch "$Subject" -or $_.Subject -iMatch "^(CN=$Subject)"}).Subject
-   If($TestExistence)
+   If([bool](Get-ChildItem "$StoreLocation"|?{$_.Issuer -iMatch "$Subject" -or $_.Subject -iMatch "^(CN=$Subject)"}) -iMatch '^(True)$')
    {
       write-host "  + " -ForegroundColor DarkYellow -NoNewline
       write-host "Moving certificate to: '" -ForegroundColor DarkGray -NoNewline
@@ -363,18 +362,35 @@ If($Action -ieq "del")
    <#
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - Delete certificates from Windows Store
+      Helper - Delete certificates from Windows Store.
       As a precaution it asks for comfirmation before deleting certs.
 
    .NOTES
       Warning: Administrator privileges required.
       Warning: This function uses recursive search.
-      Warning: It requires strings bigger than 3 chars.
+      Warning: It requires strings bigger than 2 chars.
+
+   .OUTPUTS
+      * Manage Windows Store Certificates.
+        => Action: delete 'LazySign' cert.
+
+      FriendlyName : SsaRedTeam
+      Subject      : CN=LazySign-VW6I
+      Issuer       : CN=LazySign-VW6I
+      PSParentPath : Microsoft.PowerShell.Security\Certificate::LocalMachine\Root
+      NotAfter     : 25/06/2022 18:15:00
+      NotBefore    : 25/05/2022 18:05:00
+
+      * Delete sellected certificates? [y|n]: yes
+
+        + Success: deleted 'LazySign' certificate(s).
+
+      * Exit Invoke-LazySign cmdlet [ok]..
    #>
 
    write-host "  => Action: delete '$Subject' cert." -ForegroundColor DarkYellow
    #Make sure all dependencies are met
-   If(-not($bool))
+   If($AdminShell -iMatch '^(False)$')
    {
       write-host "  x " -ForegroundColor Red -NoNewline
       write-host "Error: '" -ForegroundColor DarkGray -NoNewline
@@ -394,7 +410,7 @@ If($Action -ieq "del")
       write-host "Regex search" -ForegroundColor Red -NoNewline
       write-host "' detected, aborting .." -ForegroundColor DarkGray
       write-host "  + Warning: This function uses recursive search." -ForegroundColor DarkYellow
-      write-host "  + Warning: It requires strings bigger than 3 chars." -ForegroundColor DarkYellow
+      write-host "  + Warning: It requires strings bigger than 2 chars." -ForegroundColor DarkYellow
 
       write-host "`n* Exit Invoke-LazySign cmdlet [" -ForegroundColor Green -NoNewline
       write-host "ok" -ForegroundColor DarkYellow -NoNewline
@@ -430,13 +446,14 @@ If($Action -ieq "del")
    Remove-Item -Path "$Env:TMP\dave.log" -Force
 
 
+   #As a precaution, ask for comfirmation before deleting certificates.
    Write-Host "`n`n* Delete sellected certificates? [y|n]: " -ForegroundColor Red -NoNewline;
    $DelChoise = Read-Host;
    If($DelChoise -iMatch '^(y|yes)$')
    {
       ForEach($SetLocation in $LocationsList)
       {
-          Get-ChildItem -Path "$SetLocation" | Where-Object {$_.Subject -iMatch "$Subject"} | Remove-Item
+          Get-ChildItem -Path "$SetLocation" | Where-Object { $_.Subject -iMatch "^(CN=$Subject)" } | Remove-Item
       }
 
       write-host "`n  + " -ForegroundColor DarkYellow -NoNewline
