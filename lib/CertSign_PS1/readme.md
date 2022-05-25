@@ -14,7 +14,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/PSs
 **prerequesites checks:**
 ```powershell
 Get-ExecutionPolicy
-Get-Service -Name LanManServer
+[bool](Get-Service -Name LanManServer)
 ```
 
 ```powershell
@@ -84,8 +84,9 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSi
 #Make sure we have administrator privileges in shell
 [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")
 
-#Make sure the required modules are present\loaded
-(Get-Module -ListAvailable -Name *).ExportedCmdlets|findstr /C:"New-SelfSignedCertificate" /C:"Set-AuthenticodeSignature"
+#Make sure all the required modules are present\loaded
+[bool]((Get-Module -ListAvailable -Name *).ExportedCmdlets|findstr /C:"Set-AuthenticodeSignature")
+[bool]((Get-Module -ListAvailable -Name "PKI").ExportedCmdlets|findstr /C:"New-SelfSignedCertificate")
 ```
 
 
