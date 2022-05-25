@@ -86,7 +86,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSi
 
 #Make sure all the required modules are present\loaded
 [bool]((Get-Module -ListAvailable -Name "PKI").ExportedCmdlets|findstr /C:"New-SelfSignedCertificate")
-[bool]((Get-Module -ListAvailable -Name "Microsoft.PowerShell.Security").ExportedCmdlets|findstr /C:"Set-AuthenticodeSignaturef")
+[bool]((Get-Module -ListAvailable -Name "Microsoft.PowerShell.Security").ExportedCommands|findstr /C:"Set-AuthenticodeSignaturef")
 ```
 
 
