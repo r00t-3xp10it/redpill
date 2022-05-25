@@ -150,6 +150,7 @@ If($Action -ieq "query")
    Subject      : CN=AddTrust External CA Root, OU=AddTrust External TTP Network, O=AddTrust AB, C=SE
    Issuer       : CN=AddTrust External CA Root, OU=AddTrust External TTP Network, O=AddTrust AB, C=SE
    PSParentPath : Microsoft.PowerShell.Security\Certificate::LocalMachine\Root
+   Thumbprint   : 0563B8630D62D75ABBC8AB1E4BDFB5A899B24D43
    NotAfter     : 30/05/2020 11:48:38
    NotBefore    : 30/05/2000 11:48:38
 
@@ -172,7 +173,7 @@ If($Action -ieq "query")
       ## Query certlm.msc for certificate existance
       Get-ChildItem "$SetLocation" | Where-Object {
          $_.Issuer -iMatch "$Subject" -or $_.Subject -iMatch "^(CN=$Subject)"
-      }| Select-Object FriendlyName,Subject,Issuer,PSParentPath,NotAfter,NotBefore |
+      }| Select-Object FriendlyName,Subject,Issuer,PSParentPath,Thumbprint,NotAfter,NotBefore |
       Out-String -Stream | Select-Object -Skip 1 | Select-Object -SkipLast 2 | Format-List >> $Env:TMP\dave.log
    }
 
@@ -378,6 +379,7 @@ If($Action -ieq "del")
       Subject      : CN=LazySign-VW6I
       Issuer       : CN=LazySign-VW6I
       PSParentPath : Microsoft.PowerShell.Security\Certificate::LocalMachine\Root
+      Thumbprint   : 0563B8630D62D75ABBC8AB1E4BDFB5A899B24D43
       NotAfter     : 25/06/2022 18:15:00
       NotBefore    : 25/05/2022 18:05:00
 
@@ -424,7 +426,7 @@ If($Action -ieq "del")
    {
       Get-ChildItem "$SetLocation" | Where-Object {
          $_.Issuer -iMatch "$Subject" -or $_.Subject -iMatch "^(CN=$Subject)"
-      }| Select-Object FriendlyName,Subject,Issuer,PSParentPath,NotAfter,NotBefore |
+      }| Select-Object FriendlyName,Subject,Issuer,PSParentPath,Thumbprint,NotAfter,NotBefore |
       Out-String -Stream | Select-Object -SkipLast 2 | Format-List >> $Env:TMP\dave.log
    }
 
@@ -453,7 +455,7 @@ If($Action -ieq "del")
    {
       ForEach($SetLocation in $LocationsList)
       {
-          Get-ChildItem -Path "$SetLocation" | Where-Object { $_.Subject -iMatch "^(CN=$Subject)" } | Remove-Item
+          Get-ChildItem -Path "$SetLocation" | Where-Object { $_.Subject -iMatch "^(CN=$Subject)" } | Remove-Item -Force
       }
 
       write-host "`n  + " -ForegroundColor DarkYellow -NoNewline
