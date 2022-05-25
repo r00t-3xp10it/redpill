@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19043) x64 bits
    Required Dependencies: Administrator privileges
    Optional Dependencies: New-SelfSignedCertificate
-   PS cmdlet Dev version: v1.0.7
+   PS cmdlet Dev version: v1.0.8
 
 .DESCRIPTION
    This cmdlet allow users to sign windows cmdlets or scripts
@@ -93,7 +93,7 @@
 )
 
 
-$CmdletVersion = "v1.0.7"
+$CmdletVersion = "v1.0.8"
 #Global variable declarations
 $StoreLocation = "Cert:\LocalMachine\My"
 $ErrorActionPreference = "SilentlyContinue"
@@ -365,12 +365,16 @@ If($Action -ieq "del")
    <#
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - Delete certiicates from store
+      Helper - Delete certificates from Windows Store
+      As a precaution it asks for comfirmation before deleting certs.
 
    .NOTES
-      Administrator privileges required.
+      Warning: Administrator privileges required.
+      Warning: This function uses recursive search.
+      Warning: It requires strings bigger than 3 chars.
    #>
 
+   write-host "  => Action: delete '$Subject' cert." -ForegroundColor DarkYellow
    #Make sure all dependencies are met
    If(-not($bool))
    {
@@ -385,13 +389,14 @@ If($Action -ieq "del")
       return
    }
 
-   If($Subject -Match '\[')
+   If($Subject -Match '\[' -or $Subject.Length -lt 3)
    {
       write-host "`n  x " -ForegroundColor Red -NoNewline
       write-host "Error: '" -ForegroundColor DarkGray -NoNewline
       write-host "Regex search" -ForegroundColor Red -NoNewline
       write-host "' detected, aborting .." -ForegroundColor DarkGray
       write-host "  + Warning: This function uses recursive search." -ForegroundColor DarkYellow
+      write-host "  + Warning: It requires strings bigger than 3 chars." -ForegroundColor DarkYellow
 
       write-host "`n* Exit Invoke-LazySign cmdlet [" -ForegroundColor Green -NoNewline
       write-host "ok" -ForegroundColor DarkYellow -NoNewline
@@ -399,18 +404,22 @@ If($Action -ieq "del")
       return   
    }
 
+
    #Make sure certificate to delete exists
    ForEach($SetLocation in $LocationsList)
    {
-      $CheckMe = Get-ChildItem $SetLocation | Where-Object {$_.Subject -iMatch "^(CN=$Subject)"}
+      Get-ChildItem "$SetLocation" | Where-Object {
+         $_.Issuer -iMatch "$Subject" -or $_.Subject -iMatch "^(CN=$Subject)"
+      }| Select-Object FriendlyName,Subject,Issuer,PSParentPath,NotAfter,NotBefore |
+      Out-String -Stream | Select-Object -SkipLast 2 | Format-List >> $Env:TMP\dave.log
    }
 
-   If(-not($CheckMe))
+   If((Get-Content -Path "$Env:TMP\dave.log") -eq $null)
    {
       write-host "`n  x " -ForegroundColor Red -NoNewline
       write-host "Error: not found '" -ForegroundColor DarkGray -NoNewline
       write-host "$Subject" -ForegroundColor Red -NoNewline
-      write-host "' certificate.`n" -ForegroundColor DarkGray
+      write-host "' certificate(s).`n" -ForegroundColor DarkGray
 
       write-host "* Exit Invoke-LazySign cmdlet [" -ForegroundColor Green -NoNewline
       write-host "ok" -ForegroundColor DarkYellow -NoNewline
@@ -418,20 +427,25 @@ If($Action -ieq "del")
       return
    }
 
-   #Delete acertificate from store
-   ForEach($CertItem in $LocationsList)
+   #Output certificate information
+   Get-Content -Path "$Env:TMP\dave.log"
+   Remove-Item -Path "$Env:TMP\dave.log" -Force
+
+
+   Write-Host "`n`n* Delete sellected certificates? [y|n]: " -ForegroundColor Red -NoNewline;
+   $DelChoise = Read-Host;
+   If($DelChoise -iMatch '^(y|yes)$')
    {
-      Get-ChildItem -Path "$CertItem" | Where-Object {
-         $_.Issuer -Match "$Subject" -and $_.Subject -Match "^(CN=$Subject)"
-      } | Remove-Item -Force
+      ForEach($SetLocation in $LocationsList)
+      {
+          Get-ChildItem -Path "$SetLocation" | Where-Object {$_.Subject -iMatch "$Subject"} | Remove-Item
+      }
+
+      write-host "`n  + " -ForegroundColor DarkYellow -NoNewline
+      write-host "Success: deleted '" -ForegroundColor DarkGray -NoNewline
+      write-host "$Subject" -ForegroundColor DarkYellow -NoNewline
+      write-host "' certificate(s).`n" -ForegroundColor DarkGray 
    }
-
-
-   write-host "`n  + " -ForegroundColor DarkYellow -NoNewline
-   write-host "Success: deleted '" -ForegroundColor DarkGray -NoNewline
-   write-host "$Subject" -ForegroundColor DarkYellow -NoNewline
-   write-host "' certificate.`n" -ForegroundColor DarkGray 
-
 }
 
 
