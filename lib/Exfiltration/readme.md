@@ -68,3 +68,37 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfilt
 ```powershell
 .\List-AllMailboxAndPST.ps1
 ```
+
+<br />
+
+
+## Module Name
+   <b><i>WindowsUpdateLog.ps1</i></b>
+
+|Cmdlet Name|Description|Privileges|Notes|
+|---|---|---|---|
+|[WindowsUpdateLog](https://github.com/r00t-3xp10it/redpill/blob/main/bin/WindowsUpdateLog.ps1)|Convert ETL logfiles (WindowsUpdate) into readable data|User Land|\*\*\*|
+
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/WindowsUpdateLog.ps1" -OutFile "WindowsUpdateLog.ps1"
+```
+
+```powershell
+Get-Help .\WindowsUpdateLog.ps1 -full
+
+#Enumerate the first 100 windows update logs
+.\WindowsUpdateLog.ps1
+
+#Enumerate the first 8 windows update logs
+.\WindowsUpdateLog.ps1 -First '8'
+
+#Enumerate the first 100 windows update logs with '(Defender|FAILED|UDP)' strings
+.\WindowsUpdateLog.ps1 -Filter '(Defender|FAILED|UDP)'
+
+#Enumerate the first 100 windows update logs from the sellected directory
+.\WindowsUpdateLog.ps1 -ETLPath "$Env:SYSTEMDRIVE\ProgramData\USOShared\Logs\System"
+
+#Enumerate the first 30 windows update logs and create logfile
+.\WindowsUpdateLog.ps1 -first '30' -logfile 'true'
+
+```
