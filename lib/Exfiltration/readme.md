@@ -84,7 +84,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/Window
 ```
 
 ```powershell
-Get-Help .\WindowsUpdateLog.ps1 -full
+Get-Help .\WindowsUpdateLog.ps1 -Full
 
 #Enumerate the first 100 windows update logs
 .\WindowsUpdateLog.ps1
