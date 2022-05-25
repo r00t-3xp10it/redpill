@@ -55,6 +55,14 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-B
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/BypassAV/Invoke-ExclusionExtension.ps1" -OutFile "Invoke-ExclusionExtension.ps1"
 ```
 
+<br />
+
+**prerequesites checks:**
+```powershell
+#Make sure we have administrator privileges in shell
+[bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")
+```
+
 ```powershell
 Get-help .\Invoke-ExclusionExtension.ps1 -Force
 
