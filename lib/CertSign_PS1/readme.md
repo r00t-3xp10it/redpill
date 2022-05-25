@@ -124,13 +124,11 @@ inside signed binary\cmdlet will brake, rending the signed binary\cmdlet as 'NOT
 
 Do 'NOT' use Regex when invoking -Action 'del' to delete certificates from the Windows Store.
 Because Invoke-LazySign.ps1 cmdlet uses recursive search by default (deleting multiple certs)
+This function as a precaution it asks for comfirmation before deleting the certificate(s).
 
 This cmdlet will 'NOT' sign our script.ps1 if 'Set-ExecutionPolicy AllSigned,RemoteSigned' are set.
-Because ExecutionPolicy will prevent this cmdlet from running. If you wish to bypass the restrictions
+Because ExecutionPolicy will prevent this cmdlet from running. If you wish to bypass this restrictions
 then execute the 'PSscriptSigning.bat' batch module contained in this same repository (the first module)
-
-The PSscriptSigning.bat script can only be used to sign 'ONE' cmdlet at a time, because it uses
-the same Subject Name everytime it signs one cmdlet ( Subject: My_Code_Signing_Certificate )
 ```
 
 Article: https://github.com/r00t-3xp10it/hacking-material-books/blob/master/obfuscation/working-with-certificates.md
