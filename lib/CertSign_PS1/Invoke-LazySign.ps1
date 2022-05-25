@@ -250,8 +250,7 @@ If($Action -ieq "Sign")
    }
 
    #Make sure all cmdlets required by this function are installed\loaded
-   $SupportedVersion = (Get-Module -ListAvailable -Name "PKI").ExportedCmdlets|findstr /C:"New-SelfSignedCertificate"
-   If(-not($SupportedVersion))
+   If([bool]((Get-Module -ListAvailable -Name "PKI").ExportedCmdlets|findstr /C:"New-SelfSignedCertificate") -iMatch '^(False)$')
    {
       write-host "`n  x " -ForegroundColor Red -NoNewline
       write-host "error: cmdlet requires '" -ForegroundColor DarkGray -NoNewline
@@ -264,8 +263,7 @@ If($Action -ieq "Sign")
       return     
    }
 
-   $SupportedVersion = (Get-Module -ListAvailable -Name *).ExportedCmdlets|findstr /C:"Set-AuthenticodeSignature"
-   If(-not($SupportedVersion))
+   If([bool]((Get-Module -ListAvailable -Name "Microsoft.PowerShell.Security").ExportedCommands|findstr /C:"Set-AuthenticodeSignature") -iMatch '^(False)$')
    {
       write-host "`n  x " -ForegroundColor Red -NoNewline
       write-host "error: cmdlet requires '" -ForegroundColor DarkGray -NoNewline
