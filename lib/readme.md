@@ -28,7 +28,7 @@ Database
         |_ Dump-Browser
                       |_ DumpChromePasswords.ps1       Dumps URLs, usernames, and passwords from Chrome
                       |_ HarvestBrowserPasswords.exe   Dumps URLs, usernames, and passwords from major browsers
-                      |_ ChromePass.exe                Dumps usernames, passwords from chrome (Invoke-ExclusionExtension.ps1)
+                      |_ ChromePass.exe                Dumps usernames, passwords from chrome (Invoke-Exclusions.ps1)
         |_ EnableAllParentPrivileges
                       |_ EnableAllParentPrivileges.exe Enable All Parent Privileges ( whoami /priv )
         |_ Exfiltration
