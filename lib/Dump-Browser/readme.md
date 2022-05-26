@@ -66,7 +66,11 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-byp
 [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")
 
 #Make sure required modules are present\loaded
+[bool]((Get-Module -ListAvailable -Name ConfigDefender).ExportedCommands|findstr /C:"Get-MpPreference")
+
 [bool]((Get-Module -ListAvailable -Name ConfigDefender).ExportedCommands|findstr /C:"Set-MpPreference")
+
+[bool]((Get-Module -ListAvailable -Name "ConfigDefender").ExportedCommands|findstr /C:"Remove-MpPreference")
 ```
 
 ```powershell
