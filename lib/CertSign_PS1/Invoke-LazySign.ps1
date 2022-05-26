@@ -157,6 +157,11 @@ If($Action -ieq "query")
    * Exit Invoke-LazySign cmdlet [ok]..   
    #>
 
+   #ProgressBar settings
+   $CurrentItem = 0                   #ProgressBar
+   $PercentComplete = 0               #ProgressBar
+   $TotalItems = $LocationsList.Count #ProgressBar
+
    #Local function variable declarations
    write-host "  + " -ForegroundColor DarkYellow -NoNewline
    write-host "Store Location: " -ForegroundColor DarkGray -NoNewline
@@ -170,6 +175,13 @@ If($Action -ieq "query")
 
    ForEach($SetLocation in $LocationsList)
    {
+
+      $CurrentItem++
+      #ProgressBar of query percentage complete ...
+      Write-Progress -Activity "Query: '$SetLocation' certificates .." -Status "$PercentComplete% Complete:" -PercentComplete $PercentComplete
+      $PercentComplete = [int](($CurrentItem / $TotalItems) * 100)
+      Start-Sleep -Milliseconds 300
+
       ## Query certlm.msc for certificate existance
       Get-ChildItem "$SetLocation" | Where-Object {
          $_.Issuer -iMatch "$Subject" -or $_.Subject -iMatch "^(CN=$Subject)"
