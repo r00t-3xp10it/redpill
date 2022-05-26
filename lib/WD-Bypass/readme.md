@@ -14,15 +14,15 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-Byp
 **prerequesites checks:**
 ```powershell
 #Make sure Windows Defender service its running
-[bool](Get-Service -Name WinDefend)
+[bool](Get-Service -Name "WinDefend")
 
 #Make sure we have administrator privileges in shell
-[bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")
+[bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
 
 #Make sure required modules are present\loaded
-[bool]((Get-Module -ListAvailable -Name ConfigDefender).ExportedCommands|findstr /C:"Get-MpPreference")
+[bool]((Get-Module -ListAvailable -Name "ConfigDefender").ExportedCommands|findstr /C:"Get-MpPreference")
 
-[bool]((Get-Module -ListAvailable -Name ConfigDefender).ExportedCommands|findstr /C:"Set-MpPreference")
+[bool]((Get-Module -ListAvailable -Name "ConfigDefender").ExportedCommands|findstr /C:"Set-MpPreference")
 
 [bool]((Get-Module -ListAvailable -Name "ConfigDefender").ExportedCommands|findstr /C:"Remove-MpPreference")
 ```
