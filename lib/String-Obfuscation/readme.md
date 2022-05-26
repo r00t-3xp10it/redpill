@@ -126,3 +126,5 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/enc
 ```powershell
 .\Decrypt-String.ps1 -action "console" -EncryptedString "76492d1116743f0423413b16050a5345MgB8AHAARgBNAHgASABTAEIARQA5AEkAWgA5AFIAaQBkAGEAcQBKADkAdwBHAFEAPQA9AHwANQBhAGEANwBhADkAYQBhAGMANgAzADIAOQBmAGQAMwBmADEAMwAwADQAYwBmADgAZAA2AGIAYQBlADUAMABmAA=="
 ```
+
+Aericle: https://github.com/r00t-3xp10it/redpill/tree/main/bypass/encrypt_decrypt
