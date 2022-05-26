@@ -27,8 +27,11 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-Byp
 #Get full module information
 Get-help .\Invoke-Exclusions.ps1 -Force
 
-#Get Exclusions List
+#Get Exclusions List (terminal)
 .\Invoke-Exclusions.ps1 -action "query"
+
+#Get Exclusions List (GUI)
+.\Invoke-Exclusions.ps1 -action "query" -Gui "true"
 
 
 #Set-MpPreference -ExclusionExtension "exe" -Force
