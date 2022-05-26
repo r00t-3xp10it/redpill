@@ -128,4 +128,5 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/enc
 ```
 
 <br />
-**Article**: https://github.com/r00t-3xp10it/redpill/tree/main/bypass/encrypt_decrypt
+
+**Article:** https://github.com/r00t-3xp10it/redpill/tree/main/bypass/encrypt_decrypt
