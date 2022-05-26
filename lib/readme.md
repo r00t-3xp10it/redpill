@@ -44,6 +44,7 @@ Database
                       |_ CaptureServer.ps1             Captute HTTP credentials on local lan (spawns credential box)
                       |_ Start-SimpleHTTPServer.ps1    Simple HTTP pure powershell webserver     
                       |_ wget.vbs                      VBScript to download files from Local Lan
+                      |_ Invoke-ShortUrl.ps1           TinyUrl url generator ( dropper URL link )
         |_ Process-Spoofing
                       |_ PPIDSpoof.ps1                 Creates a process as a child of a specified process ID.
                       |_ SelectMyParent.exe            Creates a process as a child of a specified process ID.
