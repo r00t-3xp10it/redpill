@@ -69,7 +69,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/HTTP-S
 **prerequesites checks:**
 ```powershell
 #Make sure python (http.server) its available [optional]
-python -m http.server 8089 --bind 127.0.0.1
+[optional] python -m http.server 8089 --bind 127.0.0.1
 ```
 
 ```powershell
