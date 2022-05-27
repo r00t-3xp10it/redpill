@@ -1,5 +1,4 @@
-## Module Name
-   <b><i>PPIDSpoof.ps1</i></b>
+## PPIDSpoof.ps1
 
 |Function name|Description|Privileges|Notes|
 |---|---|---|---|
@@ -32,8 +31,7 @@ Start-Process -FilePath $Env:windir\System32\notepad.exe -PassThru | Start-ATHPr
 
 <br />
 
-## Module Name
-   <b><i>SelectMyParent.exe</i></b>
+## SelectMyParent.exe
 
 |Binary name|Description|Privileges|Notes|
 |---|---|---|---|
@@ -53,8 +51,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Proces
 <br />
 
 
-## Module Name
-   <b><i>spoof.exe</i></b>
+## spoof.exe
 
 |Binary name|Description|Privileges|Notes|
 |---|---|---|---|
