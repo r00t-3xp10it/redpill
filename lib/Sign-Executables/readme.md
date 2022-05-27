@@ -1,5 +1,4 @@
-## Module Name
-   <b><i>CarbonCopy.py</i></b>
+## CarbonCopy.py
 
 |Script Name|Description|Privileges|Notes|
 |---|---|---|---|
@@ -21,8 +20,7 @@ python3 CarbonCopy.py www.microsoft.com 443 prometheus.exe signed-prometheus.exe
 
 <br />
 
-## Module Name
-   <b><i>sigthief.py</i></b>
+## sigthief.py
 
 |Script Name|Description|Privileges|Notes|
 |---|---|---|---|
