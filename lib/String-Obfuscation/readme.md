@@ -133,8 +133,6 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/enc
 
 <br /><br />
 
-<br />
-
 ## Module Name
    <b><i>Convert-ROT47.ps1</i></b>
 
