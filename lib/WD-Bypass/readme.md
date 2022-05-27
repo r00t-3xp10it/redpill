@@ -2,7 +2,7 @@
 
 |Cmdlet name|Description|Privileges|Notes|
 |---|---|---|---|
-|Invoke-Exclusions|Add exclusions to Defender (Set-MpPreference) + Download\Execute -uri 'cmdlet'<br />Exclusion values accepted are : **'ExclusionPath, ExclusionProcess, ExclusionExtension'**|Administrator|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-Bypass/Invoke-Exclusions.png)|
+|Invoke-Exclusions|Add exclusions to Defender (Set-MpPreference) + Download\Execute -uri 'cmdlet'<br />Exclusion values accepted are : **'ExclusionPath, ExclusionProcess, ExclusionExtension'**|Administrator|[Screenshot1](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-Bypass/Invoke-Exclusions.png)<br />[Screenshot2](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-Bypass/Invoke-ExclusionsUrl.png)|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-Bypass/Invoke-Exclusions.ps1" -OutFile "Invoke-Exclusions.ps1"
