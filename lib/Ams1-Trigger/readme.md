@@ -1,5 +1,4 @@
-## Module Name
-   <b><i>amsitrigger_x64.exe</i></b>
+## amsitrigger_x64.exe
 
 |Binary Name|Description|Privileges|Notes|
 |---|---|---|---|
