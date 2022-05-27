@@ -1,5 +1,4 @@
-## Module Name
-   <b><i>DumpChromePasswords.ps1</i></b>
+## DumpChromePasswords.ps1
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
@@ -24,8 +23,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-B
 <br />
 
 
-## Module Name
-   <b><i>HarvestBrowserPasswords.exe</i></b>
+## HarvestBrowserPasswords.exe
 
 |Binary Name|Description|Privileges|Notes|
 |---|---|---|---|
@@ -44,8 +42,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-B
 <br />
 
 
-## Module Name
-   <b><i>ChromePass.exe - UNDER-DEVELOP (NOT-STABLE)</i></b>
+## ChromePass.exe - UNDER-DEVELOP (NOT-STABLE)
    
 |Binary Name|Description|Privileges|Notes|
 |---|---|---|---|
