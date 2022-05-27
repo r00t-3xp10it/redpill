@@ -1,5 +1,4 @@
-## Module Name
-   <b><i>screenshot.exe</i></b>
+## screenshot.exe
 
 |Binary Name|Description|Privileges|Notes|
 |---|---|---|---|
