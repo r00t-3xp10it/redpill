@@ -62,6 +62,7 @@ Database
                       |_ obfuscator.bat                Obfuscate batch scripts
                       |_ vbs_obfuscator.vbs            Obfuscate VBS scripts
                       |_ Encrypt-String.ps1            Encrypt commands\scripts using a secret key
+                      |_ Convert-ROT47.ps1             Rotate ascii chars by nº places (Caesar cipher - rot)
         |_ WD-Bypass
                       |_ Invoke-Exclusions.ps1         Add exclusions (Set-MpPreferences) + Download\Execute url cmdlet
 ```
