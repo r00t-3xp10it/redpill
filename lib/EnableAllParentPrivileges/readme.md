@@ -1,5 +1,4 @@
-## Module Name
-   <b><i>EnableAllParentPrivileges.exe</i></b>
+## EnableAllParentPrivileges.exe
 
 |Binary Name|Description|Privileges|Notes|
 |---|---|---|---|
