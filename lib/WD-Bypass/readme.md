@@ -1,5 +1,4 @@
-## Module Name
-   <b><i>Invoke-Exclusions.ps1</i></b>
+## Invoke-Exclusions.ps1
 
 |Cmdlet name|Description|Privileges|Notes|
 |---|---|---|---|
