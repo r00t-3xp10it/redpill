@@ -1,5 +1,4 @@
-## Module Name
-   <b><i>DLLSearch.ps1</i></b>
+## DLLSearch.ps1
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
@@ -18,8 +17,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfilt
 
 <br />
 
-## Module Name
-   <b><i>DecodeRDPCache.ps1</i></b>
+## DecodeRDPCache.ps1
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
@@ -35,8 +33,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfilt
 
 <br />
 
-## Module Name
-   <b><i>Find-AppLockerLogs.ps1</i></b>
+## Find-AppLockerLogs.ps1
 
 |Function Name|Description|Privileges|Notes|
 |---|---|---|---|
@@ -54,8 +51,7 @@ Find-AppLockerLogs
 <br />
 
 
-## Module Name
-   <b><i>List-AllMailboxAndPST.ps1</i></b>
+## List-AllMailboxAndPST.ps1
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
@@ -72,8 +68,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfilt
 <br />
 
 
-## Module Name
-   <b><i>WindowsUpdateLog.ps1</i></b>
+## WindowsUpdateLog.ps1
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
