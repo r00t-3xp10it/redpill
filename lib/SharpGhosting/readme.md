@@ -1,5 +1,4 @@
-## Module Name
-   <b><i>SharpGhosting.exe</i></b>
+## SharpGhosting.exe
 
 |Function name|Description|Privileges|Notes|
 |---|---|---|---|
