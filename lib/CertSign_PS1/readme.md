@@ -1,5 +1,4 @@
-## Module Name
-   <b><i>PSscriptSigning.bat</i></b>
+## PSscriptSigning.bat
 
 |Script Name|Description|Privileges|Notes|
 |---|---|---|---|
@@ -24,10 +23,10 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/PSs
 ```
 
 ```powershell
-# Execute the next cmdline to: auto-execute the PS1 after PSscriptSigning.bat have sign it ?
+#Execute the next cmdline to: auto-execute the PS1 after PSscriptSigning.bat have sign it ?
 [optional] Add-Content -Path "PSscriptSigning.bat" -Value "`npowershell -W 1 -File %PSsignPath%" -Force
 
-# Execute the batch script that signs our PS1 cmdlet
+#Execute the batch script that signs our PS1 cmdlet
 .\PSscriptSigning.bat
 ```
 
@@ -72,8 +71,7 @@ Article: https://github.com/r00t-3xp10it/hacking-material-books/blob/master/obfu
 
 <br /><br />
 
-## Module Name
-   <b><i>Invoke-LazySign.ps1</i></b>
+## Invoke-LazySign.ps1
 
 |Function Name|Description|Privileges|Notes|
 |---|---|---|---|
