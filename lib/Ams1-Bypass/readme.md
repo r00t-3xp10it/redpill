@@ -1,5 +1,4 @@
-## Module Name
-   <b><i>AMSBP.ps1</i></b>
+## AMSBP.ps1
 
 |Function name|Description|Privileges|Notes|
 |---|---|---|---|
@@ -16,8 +15,7 @@ AMSBP
 
 <br />
 
-## Module Name
-   <b><i>Disable-Amsi.ps1</i></b>
+## Disable-Amsi.ps1
    
 |Function Name|Description|Privileges|Notes|
 |---|---|---|---|
@@ -34,8 +32,7 @@ Disable-Amsi -DontDisableBlockLogging "true"
 
 <br />
 
-## Module Name
-   <b><i>Invoke-Bypass.ps1</i></b>
+## Invoke-Bypass.ps1
    
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
