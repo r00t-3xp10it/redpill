@@ -130,3 +130,29 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/enc
 <br />
 
 **Article:** https://github.com/r00t-3xp10it/redpill/tree/main/bypass/encrypt_decrypt
+
+<br /><br />
+
+<br />
+
+## Module Name
+   <b><i>Convert-ROT47.ps1</i></b>
+
+|Cmdlet Name|Description|Privileges|Notes|
+|---|---|---|---|
+|Convert-ROT47|Rotate ascii chars by nº places (Caesar cipher)|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/vbs_obfuscator.png)|
+
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Convert-ROT47.ps1" -OutFile "Convert-ROT47.ps1"
+```
+
+```powershell
+#Encrypt Text using from rot 5 to rot 10 char rotation
+.\Convert-ROT47.ps1 -Text "This is an encrypted string!" -Rot (5..10)
+
+#Encrypt Text using rot 4
+.\Convert-ROT47.ps1 -Text "This is an encrypted string!" -rot 4 -encrypt
+
+#Decrypt rot 4 strings
+.\Convert-ROT47.ps1 -Text "Xlmw mw er irgv}txih wxvmrk%" -rot 4 -decrypt
+```
