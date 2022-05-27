@@ -1,5 +1,4 @@
-## Module Name
-<b><i>FakeCmdLine.exe</i></b>
+## FakeCmdLine.exe
    
 |Function Name|Description|Privileges|Notes|
 |---|---|---|---|
