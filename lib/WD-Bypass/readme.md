@@ -55,3 +55,19 @@ Get-help .\Invoke-Exclusions.ps1 -Force
 #Remove-MpPreference -ExclusionProcess "cmd" Force
 .\Invoke-Exclusions.ps1 -action "del" -type "ExclusionProcess" -Exclude "cmd"
 ```
+
+<br />
+
+### Final Notes
+```powershell
+[DESCRIPTION]
+This cmdlet allow users to manage ( query, create, delete ) Windows
+Defender exclusions: ExclusionExtension, ExclusionProcess, ExclusionPath.
+The files covered by the exclusion definition will be excluded from Windows
+Defender Real-time protection, monitoring, Scheduled scans, On-demand scans.
+
+[NOTES]
+This cmdlet in addition to add\remove exclusions from windows defender
+allows its users to download binaries (PE) that are being detected by the
+anti-virus and run it through the exclusion selected (bypassing detection)
+```
