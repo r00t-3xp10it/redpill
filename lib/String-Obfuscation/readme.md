@@ -149,10 +149,29 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String
 ```powershell
 #Encrypt Text using from rot 5 to rot 10 char rotation
 .\Convert-ROT47.ps1 -Text "This is an encrypted string!" -Rot (5..10)
+#Outputs:
+#    Rot Text
+#    --- ----
+#      5 Vjku ku cp gpet{rvgf uvtkpi#
+#      6 Uijt jt bo fodszqufe tusjoh"
+#      7 This is an encrypted string!
+#      8 Sghr hr `m dmbqxosdc rsqhmf~
+#      9 Rfgq gq _l clapwnrcb qrpgle}
+#     10 Qefp fp ^k bk`ovmqba pqofkd|
+
 
 #Encrypt Text using rot 4
 .\Convert-ROT47.ps1 -Text "This is an encrypted string!" -rot 4 -encrypt
+#Outputs:
+#    Rot Text
+#    --- ----
+#      4 Xlmw mw er irgv}txih wxvmrk%
+
 
 #Decrypt rot 4 strings
 .\Convert-ROT47.ps1 -Text "Xlmw mw er irgv}txih wxvmrk%" -rot 4 -decrypt
+#Outputs:
+#    Rot Text
+#    --- ----
+#      4 This is an encrypted string!
 ```
