@@ -1,5 +1,4 @@
-## Module Name
-   <b><i>enc-rot13.ps1</i></b>
+## Enc-rot13.ps1
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
@@ -19,8 +18,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String
 
 <br />
 
-## Module Name
-   <b><i>Out-EncodedSpecialCharOnlyCommand.ps1</i></b>
+## Out-EncodedSpecialCharOnlyCommand.ps1
 
 |Function Name|Description|Privileges|Notes|
 |---|---|---|---|
@@ -37,8 +35,7 @@ Out-EncodedSpecialCharOnlyCommand -ScriptBlock {Write-Host 'Hello World!' -Foreg
 
 <br />
 
-## Module Name
-   <b><i>obfuscator.bat</i></b>
+## Obfuscator.bat
 
 |Script Name|Description|Privileges|Notes|
 |---|---|---|---|
@@ -54,8 +51,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String
 
 <br />
 
-## Module Name
-   <b><i>vbs_obfuscator.vbs</i></b>
+## vbs_obfuscator.vbs
 
 |Script Name|Description|Privileges|Notes|
 |---|---|---|---|
@@ -86,8 +82,7 @@ echo $parse > Buffer.vbs
 
 <br />
 
-## Module Name
-   <b><i>Encrypt-String.ps1</i></b>
+## Encrypt-String.ps1
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
@@ -133,8 +128,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/enc
 
 <br /><br />
 
-## Module Name
-   <b><i>Convert-ROT47.ps1</i></b>
+## Convert-ROT47.ps1
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
