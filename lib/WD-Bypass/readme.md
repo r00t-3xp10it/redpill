@@ -26,7 +26,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-Byp
 
 ```powershell
 #Get full module information
-Get-help .\Invoke-Exclusions.ps1 -Force
+Get-help .\Invoke-Exclusions.ps1 -Full
 
 #Get Exclusions List (terminal)
 .\Invoke-Exclusions.ps1 -action "query"
