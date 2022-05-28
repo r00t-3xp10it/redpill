@@ -70,4 +70,13 @@ Defender Real-time protection, monitoring, Scheduled scans, On-demand scans.
 This cmdlet in addition to add\remove exclusions from windows defender
 allows its users to download binaries (PE) that are being detected by the
 anti-virus and run it through the exclusion definition (bypassing detection)
+Use a comma (,) to split multiple exclusion entrys ( -exclude 'exe,vbs' )
+
+[Parameter URI limitations]
+This function creates the exclusion on Defender then downloads the -uri 'script\PE'
+to -exclude 'directory' and finally executes the script.ps1 OR the binary (PE) from
+the exclusion directory with the intent to evade detection ( download + execution )
+
+But 'execution' of payloads under -uri invocation is advised to be only under
+-type parameter 'ExclusionPath', because is exclusion is more comprehensive
 ```
