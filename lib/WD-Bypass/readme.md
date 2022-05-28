@@ -69,5 +69,5 @@ Defender Real-time protection, monitoring, Scheduled scans, On-demand scans.
 [NOTES]
 This cmdlet in addition to add\remove exclusions from windows defender
 allows its users to download binaries (PE) that are being detected by the
-anti-virus and run it through the exclusion selected (bypassing detection)
+anti-virus and run it through the exclusion definition (bypassing detection)
 ```
