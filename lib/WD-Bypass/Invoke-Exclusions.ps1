@@ -7,7 +7,7 @@
    Required Dependencies: Administrator privileges
    Optional Dependencies: Iwr, Get-MpPreference, Set-MpPreference,
                           Get-MpComputerStatus, Remove-MpPreference.
-   PS cmdlet Dev version: v1.0.5
+   PS cmdlet Dev version: v1.0.6
 
 .DESCRIPTION
    This cmdlet allow users to manage (query,create,delete) Defender exclusions:
@@ -123,7 +123,7 @@
 )
 
 
-$CmdletVersion = "v1.0.5"
+$CmdletVersion = "v1.0.6"
 #Global variable declarations
 #$ErrorActionPreference = "SilentlyContinue"
 $host.UI.RawUI.WindowTitle = "@Invoke-Exclusions $CmdletVersion {SSA@RedTeam}"
@@ -360,38 +360,72 @@ If($Action -iMatch "(add|exec)")
    }
 
    #CmdLet Internal Parameter incoorencies .. 
-   If($Type -iMatch "^(ExclusionExtension|ExclusionProcess)$" -and $Exclude -Match '\\' -and $Exclude -Match '\.')
+   If($Type -iMatch "^(ExclusionExtension|ExclusionProcess)$")
    {
       ## Function Limmitations
       # cmdline: Set-MpPreference -ExclusionExtension "exe" -Force
       # 1 - This exclusion must NOT contain paths {C:\path\path}
       # 2 - This exclusion must NOT contain extensions wiht a dot {.exe}
-      write-host "`n  x " -ForegroundColor Red -NoNewline
-      write-host "Error: This exclusion must NOT contain: '" -ForegroundColor DarkGray -NoNewline
-      write-host "Paths OR Extensions (with a dot) 444" -ForegroundColor Red -NoNewline
-      write-host "'" -ForegroundColor DarkGray
 
-      write-host "`n* Exit Invoke-Exclusions cmdlet [" -ForegroundColor Green -NoNewline
-      write-host "ok" -ForegroundColor DarkYellow -NoNewline
-      write-host "].." -ForegroundColor Green
-      return
+      If($Exclude -Match '\\')
+      {
+         write-host "`n  x " -ForegroundColor Red -NoNewline
+         write-host "Error: This exclusion must NOT contain: '" -ForegroundColor DarkGray -NoNewline
+         write-host "Path\to\exclusion" -ForegroundColor Red -NoNewline
+         write-host "'" -ForegroundColor DarkGray
+
+         write-host "`n* Exit Invoke-Exclusions cmdlet [" -ForegroundColor Green -NoNewline
+         write-host "ok" -ForegroundColor DarkYellow -NoNewline
+         write-host "].." -ForegroundColor Green
+         return      
+      }
+
+      If($Exclude -Match '\.')
+      {
+         write-host "`n  x " -ForegroundColor Red -NoNewline
+         write-host "Error: This exclusion must contain: '" -ForegroundColor DarkGray -NoNewline
+         write-host "extension without any dot" -ForegroundColor Red -NoNewline
+         write-host "' (.)" -ForegroundColor DarkGray
+
+         write-host "`n* Exit Invoke-Exclusions cmdlet [" -ForegroundColor Green -NoNewline
+         write-host "ok" -ForegroundColor DarkYellow -NoNewline
+         write-host "].." -ForegroundColor Green
+         return          
+      }
    }
 
-   If($Type -iMatch "ExclusionPath" -and $Exclude -NotMatch '\\' -and $Exclude -Match '\.')
+   If($Type -iMatch "ExclusionPath")
    {
       ## Function Limmitations
       # cmdline: Set-MpPreference -ExclusionPath "C:\Users\pedro\AppData\Local\Temp" -Force
       # 1 - This exclusion must contain paths {C:\path\path}
       # 2 - This exclusion must NOT contain extensions {.exe}
-      write-host "`n  x " -ForegroundColor Red -NoNewline
-      write-host "Error: This exclusion must contain: '" -ForegroundColor DarkGray -NoNewline
-      write-host "path\to\exclude" -ForegroundColor Red -NoNewline
-      write-host "' only." -ForegroundColor DarkGray
 
-      write-host "`n* Exit Invoke-Exclusions cmdlet [" -ForegroundColor Green -NoNewline
-      write-host "ok" -ForegroundColor DarkYellow -NoNewline
-      write-host "].." -ForegroundColor Green
-      return
+      If($Exclude -NotMatch '\\')
+      {
+         write-host "`n  x " -ForegroundColor Red -NoNewline
+         write-host "Error: This exclusion must contain: '" -ForegroundColor DarkGray -NoNewline
+         write-host "Path\to\exclusion" -ForegroundColor Red -NoNewline
+         write-host "'" -ForegroundColor DarkGray
+
+         write-host "`n* Exit Invoke-Exclusions cmdlet [" -ForegroundColor Green -NoNewline
+         write-host "ok" -ForegroundColor DarkYellow -NoNewline
+         write-host "].." -ForegroundColor Green
+         return      
+      }
+
+      If($Exclude -Match '\.')
+      {
+         write-host "`n  x " -ForegroundColor Red -NoNewline
+         write-host "Error: This exclusion must contain: '" -ForegroundColor DarkGray -NoNewline
+         write-host "extension without any dot" -ForegroundColor Red -NoNewline
+         write-host "' (.)" -ForegroundColor DarkGray
+
+         write-host "`n* Exit Invoke-Exclusions cmdlet [" -ForegroundColor Green -NoNewline
+         write-host "ok" -ForegroundColor DarkYellow -NoNewline
+         write-host "].." -ForegroundColor Green
+         return          
+      }
    }
 
    #ExclusionIpAddress
@@ -484,7 +518,7 @@ If($Action -iMatch "(add|exec)")
 
 
    #TimeOut to allow exclusion to became 'active'
-   Start-Sleep -Seconds $TimeOut
+   If($Action -iMatch '(exec)'){Start-Sleep -Seconds $TimeOut}
 
 
    if($Uri -ne "Off" -and $Type -iMatch "^(ExclusionPath)$")
