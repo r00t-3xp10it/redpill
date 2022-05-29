@@ -2,7 +2,7 @@
 
 |Script Name|Description|Privileges|Notes|
 |---|---|---|---|
-|WebCam|Capture video using target webcam|User Land|Credits: @AHLASaad \ @AvinabSaha<br />[Article](https://learnopencv.com/read-write-and-display-a-video-using-opencv-cpp-python)|
+|WebCam|Capture video (AVI) using default target webcam|User Land|Credits: @AHLASaad \ @AvinabSaha<br />[write-a-video-using-opencv-python](https://learnopencv.com/read-write-and-display-a-video-using-opencv-cpp-python)|
 
 <br />
 
@@ -33,10 +33,10 @@ pip3 install opencv-python
 sys.path.append("c:\\users\\pedro\\appdata\\local\\programs\\python\\python39\\lib\\site-packages")
 
 #Start capture
-Start-Process -WindowStyle hidden python3 -argumentlist "$Env:TMP\WebCam.py"
+Start-Process -WindowStyle hidden python3 -ArgumentList "$Env:TMP\WebCam.py"
 
 #Stop capture
-stop-process -name python3.9
+Stop-Process -Name "python3.9" -Force
 ```
 
 <br />
