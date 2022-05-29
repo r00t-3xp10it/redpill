@@ -16,6 +16,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam
 **prerequesites checks:**
 ```powershell
 #Check if Pthon3 its installed
+[bool](python3 -V)
 
 #Check if opencv its installed
 [bool](pip3 list|findstr /C:"opencv-python")
