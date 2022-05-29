@@ -4,11 +4,10 @@
 |---|---|---|---|
 |PSscriptSigning|Signs one PS1 script ( **certlm.msc - certificate** ) + Auto-Execute it ?<br />This allow us to execute our PS1 cmdlet even if set-executionpolicy<br />its set to only run signed cmdlets [( AllSigned, RemoteSigned )](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.security/set-executionpolicy?view=powershell-7.2)|Administrator|[PSscriptSigning.bat](https://github.com/r00t-3xp10it/redpill/blob/main/bypass/PSscriptSigning.bat)<br />[DeletePSscriptSignning.bat](https://github.com/r00t-3xp10it/redpill/blob/main/bypass/DeletePSscriptSignning.bat)<br />Dependencies: LanManServer|
 
+**downloadcmdLet:**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/PSscriptSigning.bat" -OutFile "PSscriptSigning.bat"
 ```
-
-<br />
 
 **prerequesites checks:**
 ```powershell
@@ -29,7 +28,6 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/PSs
 #Execute the batch script that signs our PS1 cmdlet
 .\PSscriptSigning.bat
 ```
-
 
 **check if (Subject: My_Code_Signing_Certificate) certificate exists:**
 ```powershell
@@ -77,11 +75,10 @@ Article: https://github.com/r00t-3xp10it/hacking-material-books/blob/master/obfu
 |---|---|---|---|
 |[Invoke-LazySign](https://github.com/r00t-3xp10it/redpill/blob/main/lib/CertSign_PS1/Invoke-LazySign.ps1)|Sign a Windows binary\Cmdlet with a self-signed certificate|Administrator|[Screenshot1](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSign_PS1/Invoke-LazySign.png)<br />[Screenshot2](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSign_PS1/SuperWork.png)|
 
+**downloadcmdLet:**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSign_PS1/Invoke-LazySign.ps1" -OutFile "Invoke-LazySign.ps1"
 ```
-
-<br />
 
 **prerequesites checks:**
 ```powershell
@@ -93,7 +90,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSi
 [bool]((Get-Module -ListAvailable -Name "Microsoft.PowerShell.Security").ExportedCommands|findstr /C:"Set-AuthenticodeSignature")
 ```
 
-
+**execute:**
 ```powershell
 Get-Help .\Invoke-LazySign.ps1 -full
 
