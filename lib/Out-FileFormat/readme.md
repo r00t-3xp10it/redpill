@@ -39,7 +39,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-Fi
    
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|SendToPasteBin|Get filepath contents and paste it to pastebin.|User Land||[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-FileFormat/SendToPasteBin.png)|
+|SendToPasteBin|Get filepath contents and paste it to pastebin.|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-FileFormat/SendToPasteBin.png)|
 
 **download cmdLet:**
 ```powershell
