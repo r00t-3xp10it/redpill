@@ -16,11 +16,11 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-Fi
 
 <br />
 
-## Out-shortcut.ps1 - Under Develop (not stable)
+## Out-shortcut.ps1
    
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|Out-shortcut|Creates an shortcut file that accepts cmdline arguments to execute|User Land|[Disable-Amsi cmdlet Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/Disable-Amsi.png)|
+|Out-shortcut|Creates an shortcut file that accepts cmdline arguments to execute|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-FileFormat/Out-Shortcut.png)|
 
 **download cmdLet:**
 ```powershell
