@@ -2,7 +2,7 @@
 
 |Function name|Description|Privileges|Notes|
 |---|---|---|---|
-|[Stream-TargetDesktop](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Stream-TargetDesktop/Stream-TargetDesktop.ps1)|Stream target desktop live|User Land|Dependencies: firefox browser with MJPEG (attacker)|
+|[Stream-TargetDesktop](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Stream-TargetDesktop/Stream-TargetDesktop.ps1)|Stream target desktop live|User Land|Dependencies: firefox browser with MJPEG (attacker PC)|
 
 <br />
 
