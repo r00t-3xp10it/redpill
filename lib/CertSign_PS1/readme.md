@@ -36,7 +36,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/PSs
 [auto] $List = @("Root","My");ForEach($Item in $List){Get-ChildItem Cert:\LocalMachine\$Item|Where-Object {$_.Issuer -match 'My_Code_Signing_Certificate'}}
 ```
 
-<br />
+<br /><br />
 
 **Delete certificate from store**
 ```powershell
