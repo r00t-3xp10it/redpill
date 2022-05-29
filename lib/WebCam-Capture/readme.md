@@ -1,12 +1,11 @@
-## Module Name
-   <b><i>AMSBP.ps1</i></b>
+## WebCam.py
 
-|Function name|Description|Privileges|Notes|
+|Script Name|Description|Privileges|Notes|
 |---|---|---|---|
-|AMSBP|Disable AMSI within current process|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/AMSBP.png)|
+|WebCam|Capture video using target webcam|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/AMSBP.png)|
 
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/AMSBP.ps1" -OutFile "AMSBP.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam-Capture/WebCam.py1" -OutFile "WebCam.py"
 ```
 
 ```powershell
