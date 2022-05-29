@@ -2,7 +2,7 @@
 
 |Function name|Description|Privileges|Notes|
 |---|---|---|---|
-|winpmem_mini_x86|Dump processes data|Administrator|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/AMSBP.png)|
+|winpmem_mini_x86|Dump processes data|Administrator|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Winpmem-mini/winpmem_mini.png)|
 
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Winpmem-mini/winpmem_mini_x86.exe" -OutFile "winpmem_mini_x86.exe"
