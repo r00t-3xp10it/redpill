@@ -8,7 +8,7 @@
 
 **downloadcmdLet:**
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Stream-TargetDesktop/Stream-TargetDesktop.ps1" -OutFile "Stream-TargetDesktop.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Stream-TargetDesktop/Stream-TargetDesktop.ps1" -OutFile "$Env:TMP\Stream-TargetDesktop.ps1"
 ```
 
 <br />
