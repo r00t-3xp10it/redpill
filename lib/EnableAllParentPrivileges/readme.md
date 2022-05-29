@@ -24,7 +24,7 @@ whoami /priv
 .\EnableAllParentPrivileges.exe
 ```
 
-**Remark:**
+**Final notes:**
 ```powershell
 [User Land] token will only Enable the follow privileges:
 
