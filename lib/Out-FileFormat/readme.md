@@ -1,4 +1,4 @@
-## Open-Directory.ps1
+## Open-Directory.ps1 - Under Develop (not stable)
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
@@ -16,7 +16,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-Fi
 
 <br />
 
-## Out-shortcut.ps1
+## Out-shortcut.ps1 - Under Develop (not stable)
    
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
