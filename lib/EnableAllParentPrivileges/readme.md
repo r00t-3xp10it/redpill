@@ -13,7 +13,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/Enab
 ```powershell
 
 #Administrator privileges required to Enable ALL privileges ..
-$token=(([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544");If($token){echo "token: Admin"}
+[bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")
 
 #Privileges information
 whoami /priv
