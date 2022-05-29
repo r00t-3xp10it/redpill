@@ -60,7 +60,7 @@ Database
         |_ Sign-Executables
                       |_ CarbonCopy.py                 Creates spoofed certificate of online website to sign PE
                       |_ sigthief.py                   Sign an PE for AV Evasion by cloning other PE certificate
-        |_ Sign-Executables
+        |_ Stream-TargetDesktop
                       |_ Stream-TargetDesktop.ps1      Sream target desktop live (attacker: firefox with MJPEG)   
         |_ String-Obfuscation
                       |_ enc-rot13.ps1                 Encrypt or decrypt strings using ROT13 cipher.
