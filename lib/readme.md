@@ -65,4 +65,6 @@ Database
                       |_ Convert-ROT47.ps1             Rotate ascii chars by nº places (Caesar cipher - rot)
         |_ WD-Bypass
                       |_ Invoke-Exclusions.ps1         Add exclusions (Set-MpPreferences) + Download\Execute url cmdlet
+        |_ winpmem-mini
+                      |_ winpmem_mini_x86.exe          Dumps raw image process data to disk
 ```
