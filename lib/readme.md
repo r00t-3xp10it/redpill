@@ -45,6 +45,10 @@ Database
                       |_ Start-SimpleHTTPServer.ps1    Simple HTTP pure powershell webserver     
                       |_ wget.vbs                      VBScript to download files from Local Lan
                       |_ Invoke-ShortUrl.ps1           TinyUrl url generator ( dropper URL link )
+        |_ Out-FileFormat
+                      |_ Open-Directory.ps1            Use GUI to open the sellected directory
+                      |_ Out-shortcut.ps1              Creates an shortcut that accepts cmdline args to execute.
+                      |_ SendToPasteBin.ps1            Get filepath contents and paste it to pastebin.
         |_ Process-Spoofing
                       |_ PPIDSpoof.ps1                 Creates a process as a child of a specified process ID.
                       |_ SelectMyParent.exe            Creates a process as a child of a specified process ID.
