@@ -1,8 +1,8 @@
-## Open-Directory.ps1 - Under Develop (not stable)
+## Open-Directory.ps1
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|Open-Directory|Use GUI to open the sellected directory|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/AMSBP.png)|
+|Open-Directory|Use GUI to open the sellected directory|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-FileFormat/Open-Directory.png)|
 
 **Download cmdLet:**
 ```powershell
