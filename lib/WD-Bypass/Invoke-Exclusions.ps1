@@ -470,7 +470,10 @@ If($Action -iMatch "(add|exec)")
    write-host "     Exclude     : $Exclude" -ForegroundColor DarkYellow
    write-host "     Uri         : $Uri"
    write-host "     Arguments   : $Arguments"
-   write-host "     ExecTimeOut : $TimeOut (seconds)"
+   If($Action -ieq "exec")
+   {
+      write-host "     ExecTimeOut : $TimeOut (seconds)"
+   }
 
    write-host "`n+ " -ForegroundColor DarkYellow -NoNewline
    write-host "Creating exclusion: '" -ForegroundColor DarkGray -NoNewline
