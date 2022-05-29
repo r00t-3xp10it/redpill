@@ -3,7 +3,6 @@ sys.path.append("c:\\users\\pedro\\appdata\\local\\programs\\python\\python39\\l
 import cv2
 import numpy as np
 
-
 # Create a VideoCapture object
 cap = cv2.VideoCapture(0)
 
