@@ -4,6 +4,9 @@
 |---|---|---|---|
 |[Invoke-Exclusions](https://github.com/r00t-3xp10it/redpill/blob/main/lib/WD-Bypass/Invoke-Exclusions.ps1)|Add exclusions to Defender (Set-MpPreference) + Download\Execute -uri 'cmdlet'<br />Types: **ExclusionPath, ExclusionProcess, ExclusionExtension, ExclusionIpAddress**|Administrator|[Screenshot1](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-Bypass/Invoke-Exclusions.png)<br />[Screenshot2](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-Bypass/Invoke-ExclusionsUrl.png)<br />[Screenshot3](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-Bypass/Invoke-ExclusionsUrlMimikarz.png)|
 
+<br />
+
+**download cmdLet:**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-Bypass/Invoke-Exclusions.ps1" -OutFile "Invoke-Exclusions.ps1"
 ```
@@ -24,6 +27,9 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-Byp
 [bool]((Get-Module -ListAvailable -Name "ConfigDefender").ExportedCommands|findstr /C:"Remove-MpPreference")
 ```
 
+<br />
+
+**execution:**
 ```powershell
 #Get full module information
 Get-help .\Invoke-Exclusions.ps1 -Full
@@ -67,7 +73,7 @@ Get-help .\Invoke-Exclusions.ps1 -Full
 
 <br />
 
-### Final Notes
+**Final Notes:**
 ```powershell
 [DESCRIPTION]
 This cmdlet allow users to manage ( query, create, delete ) Windows
