@@ -125,7 +125,7 @@
 
 $CmdletVersion = "v1.0.6"
 #Global variable declarations
-#$ErrorActionPreference = "SilentlyContinue"
+$ErrorActionPreference = "SilentlyContinue"
 $host.UI.RawUI.WindowTitle = "@Invoke-Exclusions $CmdletVersion {SSA@RedTeam}"
 $AdminShell = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")
 write-host "* Manage Windows Defender Exclusions." -ForegroundColor Green
