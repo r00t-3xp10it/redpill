@@ -28,7 +28,7 @@ Start firefox on: "http://${RemoteHost}:8081"
 
 
 #Stop stream (remote)
-$StreamPid = Get-Content -Path "$Env:TMP\mypid.log" -EA SilentlyContinue|Where-Object { $_ -ne '' }
+$StreamPid = Get-Content -Path "$Env:TMP\mypid.log" -EA SilentlyContinue|?{ $_ -ne '' }
 Stop-Process -id $StreamPid -EA SilentlyContinue -Force
 
 #CleanUp (remote)
