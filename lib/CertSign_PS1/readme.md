@@ -21,6 +21,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/PSs
 [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")
 ```
 
+**execute:**
 ```powershell
 #Execute the next cmdline to: auto-execute the PS1 after PSscriptSigning.bat have sign it ?
 [optional] Add-Content -Path "PSscriptSigning.bat" -Value "`npowershell -W 1 -File %PSsignPath%" -Force
@@ -35,13 +36,14 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/PSs
 [auto] $List = @("Root","My");ForEach($Item in $List){Get-ChildItem Cert:\LocalMachine\$Item|Where-Object {$_.Issuer -match 'My_Code_Signing_Certificate'}}
 ```
 
-<br /><br />
+<br />
 
 **Delete certificate from store**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/DeletePSscriptSignning.bat" -OutFile "DeletePSscriptSignning.bat"
 ```
 
+**execute:**
 ```powershell
 .\DeletePSscriptSignning.bat
 ```
@@ -51,8 +53,6 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/Del
 [manual] Certlm.msc
 [auto] Get-ChildItem Cert:\LocalMachine\Root | Where-Object {$_.Issuer -match 'My_Code_Signing_Certificate'}
 ```
-
-<br />
 
 ### Final Notes
 ```
@@ -109,8 +109,6 @@ Get-Help .\Invoke-LazySign.ps1 -full
 #Delete the 'LazySign-4zrH' certificate from windows store
 .\Invoke-LazySign.ps1 -Action 'del' -Subject "LazySign-4zrH"
 ```
-
-<br />
 
 ## Final Notes
 ```
