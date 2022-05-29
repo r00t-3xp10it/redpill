@@ -37,3 +37,10 @@ Start-Process -WindowStyle hidden python3 -argumentlist "$Env:TMP\WebCam.py"
 #Stop capture
 stop-process -name python3.9
 ```
+
+<br />
+
+**Final Notes:**
+```powershell
+Video recording its stored on WebCam.py current directory under the name: "outpy.avi"
+```
