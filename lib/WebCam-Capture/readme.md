@@ -1,4 +1,4 @@
-## WebCam.py
+## WebCam.py - Under Develop (Not stable)
 
 |Script Name|Description|Privileges|Notes|
 |---|---|---|---|
@@ -8,7 +8,7 @@
 
 **download script:**
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam-Capture/WebCam.py1" -OutFile "$Env:TMP\WebCam.py"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam-Capture/WebCam.py" -OutFile "$Env:TMP\WebCam.py"
 ```
 
 <br />
