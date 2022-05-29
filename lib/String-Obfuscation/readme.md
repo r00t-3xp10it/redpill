@@ -4,10 +4,12 @@
 |---|---|---|---|
 |enc-rot13|Encrypt or decrypt strings using ROT13 cipher.|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/enc-rot13.png)|
 
+**download cmdLet:**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/enc-rot13.ps1" -OutFile "enc-rot13.ps1"
 ```
 
+**execute:**
 ```powershell
 .\enc-rot13.ps1 -text "whoami"
 .\enc-rot13.ps1 -text "jubnzv"
@@ -24,10 +26,12 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String
 |---|---|---|---|
 |Out-EncodedSpecialCharOnlyCommand|Generates Special-Character-Only encoded payload<br />for a PowerShell command or script.|User Land|[Screenshot1](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/bhoanoon1.png)<br />[Screenshot2](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/2bhoanoon1.png)<br />[Screenshot3](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/output-to-file.png)|
 
+**download cmdLet:**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Out-EncodedSpecialCharOnlyCommand.ps1" -OutFile "Out-EncodedSpecialCharOnlyCommand.ps1"
 ```
 
+**execute:**
 ```powershell
 Import-Module -Name ".\Out-EncodedSpecialCharOnlyCommand.ps1" -Force
 Out-EncodedSpecialCharOnlyCommand -ScriptBlock {Write-Host 'Hello World!' -ForegroundColor Green; Write-Host 'Obfuscation Rocks!' -ForegroundColor Green} -NoProfile -NonInteractive -PassThru
@@ -41,10 +45,12 @@ Out-EncodedSpecialCharOnlyCommand -ScriptBlock {Write-Host 'Hello World!' -Foreg
 |---|---|---|---|
 |obfuscator|Encrypt batch scripts|User Land|Dependencies: [certutil](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/certutil) - [Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/obfuscator.png)|
 
+**download script:**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/obfuscator.bat" -OutFile "obfuscator.bat"
 ```
 
+**execute:**
 ```powershell
 .\obfuscator.bat Payload.bat
 ```
@@ -57,24 +63,21 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String
 |---|---|---|---|
 |vbs_obfuscator|Encrypt vbs scripts|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/vbs_obfuscator.png)|
 
+**download cmdLet:**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/vbs_obfuscator.vbs" -OutFile "vbs_obfuscator.vbs"
 ```
 
-**[Manual]**
 ```vbs
+#Manual
 cscript.exe vbs_obfuscator.vbs Payload.vbs
-```
 
-**[Automatic]**
-```vbs
+#Automatic
 cscript.exe vbs_obfuscator.vbs Payload.vbs > Buffer.vbs
 $parse = Get-Content Buffer.vbs
 echo $parse[3] > Buffer.vbs
-```
 
-**OR**
-```powershell
+- OR -
 cscript.exe vbs_obfuscator.vbs Payload.vbs > Buffer.vbs
 $parse = Get-Content Buffer.vbs|Select-String -Pattern "Execute chr"
 echo $parse > Buffer.vbs
@@ -88,37 +91,30 @@ echo $parse > Buffer.vbs
 |---|---|---|---|
 |Encrypt-String|Encrypt commands \| scripts using a secret key of 113 bytes|User Land|[Screenshot1](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Encrypt-String.png) - [Encrypt-String.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/lib/String-Obfuscation/Encrypt-String.ps1)<br />[Screenshot2](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Encrypt-Decrypt.png) - [Decrypt-String.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/bypass/encrypt_decrypt/Decrypt-String.ps1)|
 
+**download cmdLet:**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Encrypt-String.ps1" -OutFile "Encrypt-String.ps1"
 ```
 
-<br />
-
-**[Encrypt cmdline OnScreen]**
+**execute:**
 ```powershell
+#Encrypt cmdline OnScreen
 .\Encrypt-String.ps1 -action "console" -plaintextstring "whoami"
-```
 
-**[Encrypt PS1 script and build decrypt script]**
-```powershell
+#Encrypt PS1 script and build decrypt script
 .\Encrypt-String.ps1 -action "autodecrypt" -infile "Payload.ps1"
-```
 
-**[Encrypt 'whoami' command + send encrypted string to the recipient email address (encrypted chat)]**
-```powershell
+#Encrypt 'whoami' command + send encrypted string to the recipient email address (encrypted chat)
 .\Encrypt-String.ps1 -action "console" -plaintextstring "whoami" -SendTo "pedroubuntu@gmail.com"
 ```
 
-<br /><br />
-
+<br />
 
 **Decrypt Strings**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/encrypt_decrypt/Decrypt-String.ps1" -OutFile "Decrypt-String.ps1"
-```
 
-**[Decrypt cmdline OnScreen (encrypted chat)]**
-```powershell
+#Decrypt cmdline OnScreen (encrypted chat)
 .\Decrypt-String.ps1 -action "console" -EncryptedString "76492d1116743f0423413b16050a5345MgB8AHAARgBNAHgASABTAEIARQA5AEkAWgA5AFIAaQBkAGEAcQBKADkAdwBHAFEAPQA9AHwANQBhAGEANwBhADkAYQBhAGMANgAzADIAOQBmAGQAMwBmADEAMwAwADQAYwBmADgAZAA2AGIAYQBlADUAMABmAA=="
 ```
 
@@ -134,10 +130,12 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/enc
 |---|---|---|---|
 |Convert-ROT47|Rotate ascii chars by nº places (Caesar cipher)|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Convert-ROT47.png)|
 
+**download cmdLet:**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Convert-ROT47.ps1" -OutFile "Convert-ROT47.ps1"
 ```
 
+**execute:**
 ```powershell
 #Encrypt Text using from rot 5 to rot 10 char rotation
 .\Convert-ROT47.ps1 -Text "This is an encrypted string!" -Rot (5..10)
