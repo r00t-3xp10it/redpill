@@ -47,4 +47,5 @@ Stop-Process -Name "python3.9" -Force
 **Final Notes:**
 ```powershell
 Video recording its stored on WebCam.py current directory under the name: "outpy.avi"
+WebCam.py can be compiled to exe using pyinstaller: pyinstaller –onefile "WebCam.py"
 ```
