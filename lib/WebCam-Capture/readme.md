@@ -30,7 +30,7 @@ pip3 install opencv-python
 **execute:**
 ```powershell
 #Search for python 'site-packages' directory
-gci "$Env:LOCALAPPDATA\Programs" -Recurse -Force|?{$_.PSIsContainer -Match "True" -and $_ -iMatch 'site-packages'}
+gci "$Env:LOCALAPPDATA\Programs" -Recurse -Force|?{$_.PSIsContainer -Match "True" -and $_.Name -iMatch 'site-packages'}
 
 #Edit WebCam.py and change next cmdline to point to our 'python\site-packages' directory
 sys.path.append("c:\\users\\pedro\\appdata\\local\\programs\\python\\python39\\lib\\site-packages")
