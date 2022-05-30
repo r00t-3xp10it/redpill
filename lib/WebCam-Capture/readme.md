@@ -21,7 +21,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam
 #Check if opencv its installed
 [bool](pip3 list|findstr /C:"opencv-python")
 
-#Install opencv and numpy modules
+[OPTIONAL] #Install opencv and numpy modules
 pip3 install opencv-python
 ```
 
@@ -29,8 +29,10 @@ pip3 install opencv-python
 
 **execute:**
 ```powershell
+#Search for python 'site-packages' directory
+gci "$Env:LOCALAPPDATA\Programs" -Recurse -Force|?{$_.PSIsContainer -Match "True" -and $_ -iMatch 'site-packages'}
+
 #Edit WebCam.py and change next cmdline to point to our 'python\site-packages' directory
-#Search: gci "$Env:LOCALAPPDATA\Programs" -Recurse -Force|?{$_.PSIsContainer -Match "True" -and $_ -iMatch 'site-packages'}
 sys.path.append("c:\\users\\pedro\\appdata\\local\\programs\\python\\python39\\lib\\site-packages")
 
 #Start capture
