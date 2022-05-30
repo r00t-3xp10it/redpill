@@ -34,7 +34,7 @@ pip3 install opencv-python
 sys.path.append("c:\\users\\pedro\\appdata\\local\\programs\\python\\python39\\lib\\site-packages")
 
 #Start capture
-Start-Process -WindowStyle hidden python3 -ArgumentList "$Env:TMP\WebCam.py"
+cd $Env:TMP;Start-Process -WindowStyle hidden python3 -ArgumentList "WebCam.py"
 
 #Stop capture
 Stop-Process -Name "python3.9" -Force
