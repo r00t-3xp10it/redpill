@@ -1,21 +1,3 @@
-## Open-Directory.ps1
-
-|Cmdlet Name|Description|Privileges|Notes|
-|---|---|---|---|
-|Open-Directory|Use GUI to open the sellected directory|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-FileFormat/Open-Directory.png)|
-
-**Download cmdLet:**
-```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-FileFormat/Open-Directory.ps1" -OutFile "Open-Directory.ps1"
-```
-
-**execute:**
-```powershell
-.\Open-Directory.ps1
-```
-
-<br />
-
 ## Out-shortcut.ps1
    
 |Cmdlet Name|Description|Privileges|Notes|
