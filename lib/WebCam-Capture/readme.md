@@ -32,7 +32,7 @@ pip3 install opencv-python
 #Search for python 'site-packages' directory
 gci "$Env:LOCALAPPDATA\Programs" -Recurse -Force|?{$_.PSIsContainer -Match "True" -and $_.Name -iMatch 'site-packages'}
 
-#Edit WebCam.py and change next cmdline to point to our 'python\site-packages' directory
+#Edit WebCam.py and change next cmdline to point to your 'python\site-packages' directory
 #Remark: remmenber to add double backslashs to your path ( eg. C:\\path\\path\\path\\path )
 sys.path.append("c:\\users\\pedro\\appdata\\local\\programs\\python\\python39\\lib\\site-packages")
 
