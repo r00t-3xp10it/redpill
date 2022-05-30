@@ -1,4 +1,4 @@
-## WebCam.py - Under Develop (Not stable)
+## WebCam.py
 
 |Script Name|Description|Privileges|Notes|
 |---|---|---|---|
