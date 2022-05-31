@@ -501,13 +501,14 @@ If($Action -ieq "del")
    {
       ForEach($SetLocation in $LocationsList)
       {
-          Get-ChildItem -Path "$SetLocation" | Where-Object { $_.Subject -iMatch "^(CN=$Subject)" } | Remove-Item -Force
+          #NOTE: for some strange reason we can not use -Force param in Remove-Item here
+          Get-ChildItem $SetLocation | Where-Object { $_.Subject -Match "$Subject" } | Remove-Item
       }
 
       write-host "`n  + " -ForegroundColor DarkYellow -NoNewline
       write-host "Success: deleted '" -ForegroundColor DarkGray -NoNewline
       write-host "$Subject" -ForegroundColor DarkYellow -NoNewline
-      write-host "' certificate(s).`n" -ForegroundColor DarkGray 
+      write-host "' certificate(s).`n" -ForegroundColor DarkGray
    }
 }
 
