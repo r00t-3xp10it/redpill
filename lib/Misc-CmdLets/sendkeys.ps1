@@ -33,3 +33,6 @@ $Null = [WinAp]::ShowWindow($NewProc.MainWindowHandle,3)
 
 # Send shift + tab
 [System.Windows.Forms.SendKeys]::SendWait("+{TAB}")
+
+# Send Ctrl + C (abort)
+[System.Windows.Forms.SendKeys]::SendWait("^{c}") 
