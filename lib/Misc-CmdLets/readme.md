@@ -1,25 +1,3 @@
-## inspect-exe.ps1 - Under Develop ( not stable )
-
-|Cmdlet Name|Description|Privileges|Notes|
-|---|---|---|---|
-|inspect-exe|Prints basic information of an executable file|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/Open-Directory.png)|
-
-<br />
-
-**Download cmdLet:**
-```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/inspect-exe.ps1" -OutFile "inspect-exe.ps1"
-```
-
-<br />
-
-**execute:**
-```powershell
-.\inspect-exe.ps1 -PathToExe "Payload.exe"
-```
-
-<br />
-
 ## Open-Directory.ps1 - Under Develop ( not stable )
 
 |Cmdlet Name|Description|Privileges|Notes|
@@ -92,7 +70,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-C
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|sendkeys|Send keyboard presses to processes|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/Open-Directory.png)|
+|sendkeys|Example how to send keyboard presses to processes|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/Open-Directory.png)|
 
 <br />
 
