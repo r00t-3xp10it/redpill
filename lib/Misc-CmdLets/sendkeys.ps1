@@ -9,13 +9,23 @@
    PS cmdlet Dev version: v1.0.1
 
 .DESCRIPTION
-   This cmdlet allow users to 
+   Hackers often need to start background processes detached from
+   the parent (child\orphan) process and let them run until a CTRL+C
+   command is invoked to abort that same process. This cmdlet allows
+   its users to start those same processes and send a command (CTRL+C)
+   to abort the execution of the process at a predefined time (delay).
 
 .NOTES
    This cmdlet 
 
 .Parameter Program
    The program to start (default: $Env:WINDIR\System32\cmd.exe)
+
+.Parameter Style
+   The orphan process windowstyle (default: normal)
+
+.Parameter Arguments
+   The process arguments to execute (default: false)
 
 .Parameter SendKey
    The sendkey value to execute (default: ^{c})
@@ -39,14 +49,23 @@
    PS C:\> .\sendkeys.ps1 -Program "$Env:WINDIR\System32\cmd.exe" -SendKey "whoami+~"
    Start 'cmd.exe' program and send 'whoami+~' (whoami+ENTER) key to program
 
+.EXAMPLE
+   PS C:\> .\sendkeys.ps1 -Program "$Env:WINDIR\System32\cmd.exe" -SendKey "whoami+~" -style "hidden"
+   Start 'cmd.exe' program (hidden console) and send 'whoami+~' (WHOAMI+ENTER) key to program
+
 .OUTPUTS
    * Send Keys to running programs
+     + Start and capture process info.
+     + Success: sending key: '^{c}'
+   * Exit sendkeys cmdlet ..
 #>
 
 
 [CmdletBinding(PositionalBinding=$false)] param(
    [string]$Program="$Env:Windir\System32\cmd.exe",
+   [string]$Arguments="false",
    [string]$SendKey="^{c}",
+   [string]$Style="normal",
    [int]$ExecDelay='2'
 )
 
@@ -81,9 +100,64 @@ If(-not(Test-Path -Path "$Program"))
    return
 }
 
-#Start exe and capture process info
-write-host "  + Start exe and capture process info" -ForegroundColor DarkYellow
-$NewProc = Start-Process -FilePath "$Program" -PassThru
+
+#Start and capture process info
+write-host "  + Start and capture process info." -ForegroundColor DarkYellow
+If($Style -ieq "hidden")
+{
+   If($Arguments -ne "false")
+   {
+      #Execute program with arguments in a hidden console
+      If(($Program.Split('.')[-1]) -iMatch '^(exe)$')
+      {
+         $NewProc = Start-Process -WindowStyle Hidden powershell -File "$Program" -ArgumentList "$Arguments" -PassThru
+      }
+      Else
+      {
+         $NewProc = Start-Process -WindowStyle Hidden -FilePath "$Program" -ArgumentList "-File $Arguments" -PassThru      
+      }
+   }
+   Else
+   {
+      #Execute program without arguments in a hidden console
+      If(($Program.Split('.')[-1]) -iMatch '^(exe)$')
+      {
+         $NewProc = Start-Process -WindowStyle Hidden powershell -File "$Program" -PassThru
+      }
+      Else
+      {
+         $NewProc = Start-Process -WindowStyle Hidden -FilePath "-File $Program" -PassThru      
+      }  
+   }
+}
+Else
+{
+   #Execute program with arguments in a normal console
+   If($Arguments -ne "false")
+   {
+      If(($Program.Split('.')[-1]) -iMatch '^(exe)$')
+      {
+         $NewProc = Start-Process powershell -file "$Program" -ArgumentList "$Arguments" -PassThru
+      }
+      Else
+      {
+         $NewProc = Start-Process -FilePath "$Program" -ArgumentList "-File $Arguments" -PassThru      
+      }
+   }
+   Else
+   {
+      #Execute program without arguments in a normal console
+      If(($Program.Split('.')[-1]) -iMatch '^(exe)$')
+      {
+         $NewProc = Start-Process powershell -file "$Program" -PassThru      
+      }
+      Else
+      {
+         $NewProc = Start-Process powershell -ArgumentList "-File $Program" -PassThru         
+      }
+   
+   }
+}
 
 
 #Switch window focus to exe process
