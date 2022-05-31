@@ -9,14 +9,17 @@
    PS cmdlet Dev version: v1.0.1
 
 .DESCRIPTION
-   Hackers often need to start background processes detached from
-   the parent (child\orphan) process and let them run until a CTRL+C
-   command is invoked to abort that same process. This cmdlet allows
-   its users to start those same processes and send a command (CTRL+C)
-   to abort the execution of the process at a predefined time (delay).
+   Hackers often need to start background processes detached from the parent
+   process (child\orphan) and let them run until a CTRL+C command is invoked
+   to abort that same process. The problem resides that we can no longer send
+   commands to a orphan process, because the process is running detach from
+   the parent process.
+   
+   This cmdlet allows its users to start those same processes and send a command
+   (CTRL+C) to abort the execution of the process at a predefined time (execdelay)
 
 .NOTES
-   This cmdlet 
+   This cmdlet as nothing to say untill now ...
 
 .Parameter Program
    The program to start (default: $Env:WINDIR\System32\cmd.exe)
