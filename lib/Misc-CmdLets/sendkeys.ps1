@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-   Send keys to processes
+   Send keys to background processes
 
    Author: @r00t-3xp10it (ssa redteam)
    Tested Under: Windows 10 (19043) x64 bits
@@ -75,15 +75,6 @@ $ErrorActionPreference = "SilentlyContinue"
 write-host "`n* Send Keys to running programs" -ForegroundColor Green
 $Null = [System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms')
 
-If(-not(Test-Path -Path "$Program"))
-{
-   write-host "x " -ForegroundColor Red -NoNewline
-   write-host " notfound: '" -ForegroundColor DarkGray -NoNewline
-   write-host "$Program" -ForegroundColor Red -NoNewline
-   write-host "'" -ForegroundColor DarkGray
-   return
-}
-
 #Add static method for switching window focus
 Add-Type -Language CSharp -TypeDefinition @"
     using System;
@@ -99,6 +90,14 @@ Add-Type -Language CSharp -TypeDefinition @"
     }
 "@
 
+If(-not(Test-Path -Path "$Program"))
+{
+   write-host "x " -ForegroundColor Red -NoNewline
+   write-host " notfound: '" -ForegroundColor DarkGray -NoNewline
+   write-host "$Program" -ForegroundColor Red -NoNewline
+   write-host "'" -ForegroundColor DarkGray
+   return
+}
 
 #Start and capture process info
 write-host "  + Start and capture process info." -ForegroundColor DarkYellow
