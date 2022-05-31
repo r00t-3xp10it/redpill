@@ -28,7 +28,7 @@
    The process arguments to execute (default: false)
 
 .Parameter SendKey
-   The sendkey value to execute (default: ^{c})
+   The sendkey value to execute (default: whoami+~)
 
 .Parameter ExecDelay
    The delay time (sec) to sendkeys (default: 4)
@@ -64,9 +64,9 @@
 [CmdletBinding(PositionalBinding=$false)] param(
    [string]$Program="$Env:Windir\System32\cmd.exe",
    [string]$Arguments="false",
-   [string]$SendKey="^{c}",
+   [string]$SendKey="whoami+~",
    [string]$Style="normal",
-   [int]$ExecDelay='2'
+   [int]$ExecDelay='4'
 )
 
 
@@ -74,6 +74,15 @@ $ErrorActionPreference = "SilentlyContinue"
 #Load windows forms for sending keyboard presses
 write-host "`n* Send Keys to running programs" -ForegroundColor Green
 $Null = [System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms')
+
+If(-not(Test-Path -Path "$Program"))
+{
+   write-host "x " -ForegroundColor Red -NoNewline
+   write-host " notfound: '" -ForegroundColor DarkGray -NoNewline
+   write-host "$Program" -ForegroundColor Red -NoNewline
+   write-host "'" -ForegroundColor DarkGray
+   return
+}
 
 #Add static method for switching window focus
 Add-Type -Language CSharp -TypeDefinition @"
@@ -89,16 +98,6 @@ Add-Type -Language CSharp -TypeDefinition @"
       public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
     }
 "@
-
-
-If(-not(Test-Path -Path "$Program"))
-{
-   write-host "x " -ForegroundColor Red -NoNewline
-   write-host " notfound: '" -ForegroundColor DarkGray -NoNewline
-   write-host "$Program" -ForegroundColor Red -NoNewline
-   write-host "'" -ForegroundColor DarkGray
-   return
-}
 
 
 #Start and capture process info
