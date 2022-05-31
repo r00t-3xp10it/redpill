@@ -70,7 +70,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-C
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|sendkeys|Example how to send keyboard presses to processes|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/Open-Directory.png)|
+|sendkeys|Example how to send keyboard presses (keys) to processes|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/Open-Directory.png)|
 
 <br />
 
