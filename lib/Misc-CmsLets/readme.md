@@ -1,17 +1,17 @@
-redpill v1.2.6 - RedTeam database library
-
-## inspect-exe.ps1
+## inspect-exe.ps1 - Under Develop ( not stable )
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|inspect-exe|Prints basic information of an executable file|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc/Open-Directory.png)|
+|inspect-exe|Prints basic information of an executable file|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/Open-Directory.png)|
 
 <br />
 
 **Download cmdLet:**
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc/inspect-exe.ps1" -OutFile "inspect-exe.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/inspect-exe.ps1" -OutFile "inspect-exe.ps1"
 ```
+
+<br />
 
 **execute:**
 ```powershell
@@ -20,17 +20,17 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc/i
 
 <br />
 
-## Open-Directory.ps1
+## Open-Directory.ps1 - Under Develop ( not stable )
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|Open-Directory|Use GUI to open the sellected directory|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc/Open-Directory.png)|
+|Open-Directory|Use GUI to open the sellected directory|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/Open-Directory.png)|
 
 <br />
 
 **Download cmdLet:**
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc/Open-Directory.ps1" -OutFile "Open-Directory.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/Open-Directory.ps1" -OutFile "Open-Directory.ps1"
 ```
 
 <br >
@@ -42,17 +42,17 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc/O
 
 <br />
 
-## msgbox.ps1
+## msgbox.ps1 - Under Develop ( not stable )
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|msgbox|Example how to spawn a message box in pure powershell|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc/Open-Directory.png)|
+|msgbox|Example how to spawn a message box in pure powershell|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/Open-Directory.png)|
 
 <br />
 
 **Download cmdLet:**
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc/msgbox.ps1" -OutFile "msgbox.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/msgbox.ps1" -OutFile "msgbox.ps1"
 ```
 
 <br />
@@ -66,17 +66,17 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc/m
 
 <br />
 
-## progressbar.ps1
+## progressbar.ps1 - Under Develop ( not stable )
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|progressbar|Example how to spawn a progress bar in pure powershell|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc/Open-Directory.png)|
+|progressbar|Example how to spawn a progress bar in pure powershell|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/Open-Directory.png)|
 
 <br />
 
 **Download cmdLet:**
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc/progressbar.ps1" -OutFile "progressbar.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/progressbar.ps1" -OutFile "progressbar.ps1"
 ```
 
 <br />
@@ -88,17 +88,17 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc/p
 
 <br />
 
-## sendkeys.ps1
+## sendkeys.ps1 - Under Develop ( not stable )
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|sendkeys|Example how to spawn a progress bar in pure powershell|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc/Open-Directory.png)|
+|sendkeys|Example how to spawn a progress bar in pure powershell|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/Open-Directory.png)|
 
 <br />
 
 **Download cmdLet:**
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc/sendkeys.ps1" -OutFile "sendkeys.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/sendkeys.ps1" -OutFile "sendkeys.ps1"
 ```
 
 <br />
