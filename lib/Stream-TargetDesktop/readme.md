@@ -42,6 +42,5 @@ $StreamPid = Get-Content -Path "$Env:TMP\mypid.log" -EA SilentlyContinue|?{ $_ -
 Stop-Process -id $StreamPid -EA SilentlyContinue -Force
 
 #CleanUp (remote)
-Remove-Item -Path "$Env:TMP\trigger.ps1" -Force
 Remove-Item -Path "$Env:TMP\mypid.log" -Force
 ```
