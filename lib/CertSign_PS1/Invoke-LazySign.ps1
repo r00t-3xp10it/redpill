@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19043) x64 bits
    Required Dependencies: Administrator privileges
    Optional Dependencies: New-SelfSignedCertificate
-   PS cmdlet Dev version: v1.0.8
+   PS cmdlet Dev version: v1.0.9
 
 .DESCRIPTION
    This cmdlet allow users to sign windows cmdlets or scripts
@@ -35,6 +35,9 @@
 .Parameter NotAfter
    Auto-Delete cert after [?]months (default: 1)
 
+.Parameter Verb
+   Display script SIG code block? (default: false) 
+
 .EXAMPLE
    PS C:\> .\Invoke-LazySign.ps1 -Action "query" -Subject "[a-z 0-9]"
    Query for ALL certificates in 'Cert:\LocalMachine\My | Root' Store
@@ -50,6 +53,10 @@
 .EXAMPLE
    PS C:\> .\Invoke-LazySign.ps1 -Action "sign" -Subject "LazySign" -Target "Payload.ps1" -NotAfter "12"
    Sign cmdlet (Payload.ps1) with crafted certificate (Subject: LazySign-4zrH ExpiresIn: 12 months)
+
+.EXAMPLE
+   PS C:\> .\Invoke-LazySign.ps1 -Action "sign" -Subject "LazySign" -Target "Payload.ps1" -Verb "true"
+   Sign cmdlet with crafted certificate (Subject: LazySign ExpiresIn: 1 month) + display SIG code block
 
 .EXAMPLE
    PS C:\> .\Invoke-LazySign.ps1 -Action "del" -Subject "LazySign-4zrH"
@@ -88,12 +95,13 @@
    [string]$FriendlyName="SsaRedTeam",
    [string]$Subject="LazySign",
    [string]$Action="query",
+   [string]$Verb="false",
    [string]$Target="off",
    [int]$NotAfter='1'
 )
 
 
-$CmdletVersion = "v1.0.8"
+$CmdletVersion = "v1.0.9"
 #Global variable declarations
 $StoreLocation = "Cert:\LocalMachine\My"
 $ErrorActionPreference = "SilentlyContinue"
@@ -251,7 +259,7 @@ If($Action -ieq "Sign")
 
    If($AdminShell -iMatch '^(False)$')
    {
-      write-host "  x " -ForegroundColor Red -NoNewline
+      write-host "`n  x " -ForegroundColor Red -NoNewline
       write-host "Error: '" -ForegroundColor DarkGray -NoNewline
       write-host "Administrator" -ForegroundColor Red -NoNewline
       write-host "' privileges required." -ForegroundColor DarkGray
@@ -366,6 +374,32 @@ If($Action -ieq "Sign")
       }| Select-Object Thumbprint,Subject | Format-Table -AutoSize
    }
 
+   If($Verb -ieq "True")
+   {
+      <#
+      .DESCRIPTION
+         Normally the signature blocks inside scripts
+         have the length of 62 to 66 chars.Tthat this
+         function search to be abble to display block.
+
+      .OUTPUTS
+         # File: Payload.ps1 # SIG # Begin signature block
+         # MIIFZwYJKoZIhvcNAQcCoIIFWDCCBVQCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
+         # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
+         # ey0wkPUfomk6sacXc/aNmUjhALDYvuEBdhluxJ0nu0LBhJkn7CoV31Z6aw==
+         # SIG # End signature block
+      #>
+
+      $GetPE = $Target.Split('\\')[-1]
+      write-host "# File: " -NoNewline
+      write-host "$GetPE" -ForegroundColor DarkYellow -NoNewline
+      write-host " # SIG # Begin signature block"
+      Get-Content -Path "$Target" | Where-Object {
+         $_ -Match '^# ' -and $_.Length -ge 62 -and $_.Length -le 66
+      }
+      write-host "# SIG # End signature block" 
+      write-host ""
+   }
 }
 
 
