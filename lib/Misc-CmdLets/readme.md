@@ -83,5 +83,15 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-C
 
 **execute:**
 ```powershell
-.\sendkeys.ps1
+#Start 'cmd.exe' program and send '^{c}' (CTRL+C) key to program
+.\sendkeys.ps1 -Program "$Env:WINDIR\System32\cmd.exe" -SendKey "^{c}"
+
+#Start 'cmd.exe' program and send '+{TAB}' (SIFT+TAB) key to program
+.\sendkeys.ps1 -Program "$Env:WINDIR\System32\cmd.exe" -SendKey "+{TAB}"
+
+#Start 'cmd.exe' program and send '~' (ENTER) key to program
+.\sendkeys.ps1 -Program "$Env:WINDIR\System32\cmd.exe" -SendKey "~"
+
+#Start 'cmd.exe' program and send 'whoami+~' (whoami+ENTER) key to program
+.\sendkeys.ps1 -Program "$Env:WINDIR\System32\cmd.exe" -SendKey "whoami+~"
 ```
