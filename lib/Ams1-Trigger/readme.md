@@ -4,10 +4,13 @@
 |---|---|---|---|
 |amsitrigger_x64|Hunting for Malicious Strings that triggers AMSI detection inside cmdlets|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Trigger/Ams1-Trigger.png)|
 
+<br />
+
 **downloadcmdLet:**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Trigger/amsitrigger_x64.exe" -OutFile "amsitrigger_x64.exe"
 ```
+<br />
 
 **execute:**
 ```powershell
