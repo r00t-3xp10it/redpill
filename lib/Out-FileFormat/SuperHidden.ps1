@@ -95,8 +95,6 @@
 
 
 $ErrorActionPreference = "SilentlyContinue"
-#Disable Powershell Command Logging for current session.
-Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $IsClientAdmin = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
 If($Action -ieq "Query" -and $Directory -ieq "false")
 {
@@ -115,7 +113,7 @@ If($Action -ieq "Query" -and $Directory -ieq "false")
 }
 
 
-Write-Host "`n"
+Write-Host ""
 #Build ramdom search output DataTable!
 $supertable = New-Object System.Data.DataTable
 $supertable.Columns.Add("Attributes     ")|Out-Null
@@ -200,7 +198,7 @@ If($Action -ieq "Query")
       If(-not(Test-Path -Path "$Directory" -EA SilentlyContinue))
       {
          #Making sure that the directory input exists before go any further..
-         write-host "x " -ForegroundColor Red -NoNewline
+         write-host "  x " -ForegroundColor Red -NoNewline
          write-host " notfound: '" -ForegroundColor DarkGray -NoNewline
          write-host "$Directory" -ForegroundColor Red -NoNewline
          write-host "'`n" -ForegroundColor DarkGray
@@ -227,7 +225,7 @@ If($Action -ieq "Query")
 
          If(-not($SHdb))
          {
-            write-host "x " -ForegroundColor Red -NoNewline
+            write-host "  x " -ForegroundColor Red -NoNewline
             write-host " Error: fail to match the search criteria.`n" -ForegroundColor DarkGray
             return
          }
@@ -257,8 +255,8 @@ If($Action -ieq "Query")
 
          If(-not($SHdb))
          {
-            write-host "x " -ForegroundColor Red -NoNewline
-            write-host " Error: fail to match the search criteria-`n" -ForegroundColor DarkGray
+            write-host "  x " -ForegroundColor Red -NoNewline
+            write-host " Error: fail to match the search criteria`n" -ForegroundColor DarkGray
             return
          }
          Else
@@ -295,7 +293,7 @@ If($Action -ieq "Hidden")
       If($IsClientAdmin -iMatch 'False')
       {
          #Making sure that the directory structure does not start with C:\Windows if we have UserLand privs!
-         write-host "x " -ForegroundColor Red -NoNewline
+         write-host "  x " -ForegroundColor Red -NoNewline
          write-host " Error: Admin privileges required to manipulate directory.`n" -ForegroundColor DarkGray
          return
       }
@@ -311,7 +309,7 @@ If($Action -ieq "Hidden")
    try{#hidde sellected folder
       attrib +s +h $Directory\$FolderName
    }catch{#Fail to modify sellected directory attributes
-      write-host "x " -ForegroundColor Red -NoNewline
+      write-host "  x " -ForegroundColor Red -NoNewline
       write-host " Error: fail to change directory attributes.`n" -ForegroundColor DarkGray
       return
    }
@@ -323,7 +321,7 @@ If($Action -ieq "Hidden")
 
    If(-not($SHdb))
    {
-      write-host "x " -ForegroundColor Red -NoNewline
+      write-host "  x " -ForegroundColor Red -NoNewline
       write-host " Error: fail to match the search criteria.`n" -ForegroundColor DarkGray
       return
    }
@@ -357,7 +355,7 @@ If($Action -ieq "Visible")
    {
       If($IsClientAdmin -iMatch 'False')
       {
-         write-host "x " -ForegroundColor Red -NoNewline
+         write-host "  x " -ForegroundColor Red -NoNewline
          write-host " Error: Admin privileges required to manipulate directory.`n" -ForegroundColor DarkGray
          return
       }
@@ -373,7 +371,7 @@ If($Action -ieq "Visible")
    try{#UnHidde sellected folder
       attrib -s -h $Directory\$FolderName
    }catch{#Fail to modify sellected directory attributes
-      write-host "x " -ForegroundColor Red -NoNewline
+      write-host "  x " -ForegroundColor Red -NoNewline
       write-host " Error: fail to change directory attributes.`n" -ForegroundColor DarkGray
       return
    }
@@ -385,7 +383,7 @@ If($Action -ieq "Visible")
 
    If(-not($SHdb))
    {
-      write-host "x " -ForegroundColor Red -NoNewline
+      write-host "  x " -ForegroundColor Red -NoNewline
       write-host " Error: fail to match the search criteria.`n" -ForegroundColor DarkGray
       return
    }
@@ -412,7 +410,7 @@ If($Action -ieq "Delete")
    If($FolderName -ieq "false")
    {
       #Make sure that the folder to delete exists
-      write-host "x " -ForegroundColor Red -NoNewline
+      write-host "  x " -ForegroundColor Red -NoNewline
       write-host " Error: function requires -FolderName 'input'`n" -ForegroundColor DarkGray
       return
    }
@@ -420,7 +418,7 @@ If($Action -ieq "Delete")
    If($Directory -ieq "false")
    {
       #Make sure that the directory tree to delete exists
-      write-host "x " -ForegroundColor Red -NoNewline
+      write-host "  x " -ForegroundColor Red -NoNewline
       write-host " Error: function requires -Directory 'input'`n" -ForegroundColor DarkGray
       return
    }
@@ -431,7 +429,7 @@ If($Action -ieq "Delete")
       {
          ## Making sure that the directory structure does not
          # start with 'C:\Windows' if we have UserLand privs!
-         write-host "x " -ForegroundColor Red -NoNewline
+         write-host "  x " -ForegroundColor Red -NoNewline
          write-host " Error: Admin privileges required to manipulate directory.`n" -ForegroundColor DarkGray
          return
       }
@@ -440,7 +438,7 @@ If($Action -ieq "Delete")
    If(-not(Test-Path -Path "$Directory\$FolderName" -EA SilentlyContinue))
    {
       #Make sure that the directory\folder to delete exists
-      write-host "x " -ForegroundColor Red -NoNewline
+      write-host "  x " -ForegroundColor Red -NoNewline
       write-host " Notfound: '" -ForegroundColor DarkGray -NoNewline
       write-host "$Directory\$FolderName" -ForegroundColor Red -NoNewline
       write-host "'`n" -ForegroundColor DarkGray
@@ -450,7 +448,7 @@ If($Action -ieq "Delete")
    try{#delete sellected folder
       attrib -s -h $Directory\$FolderName
    }catch{#Fail to change directory attributes
-      write-host "x " -ForegroundColor Red -NoNewline
+      write-host "  x " -ForegroundColor Red -NoNewline
       write-host " Error: fail to change directory attributes.`n" -ForegroundColor DarkGray
       return
    }
@@ -459,12 +457,12 @@ If($Action -ieq "Delete")
    Remove-Item -Path "$Directory\$FolderName" -Recurse -Force
    If(-not(Test-Path -Path "$Directory\$FolderName" -EA SilentlyContinue))
    {
-      Write-Host "  + Super hidden '$FolderName' folder deleted .." -ForegroundColor Green
+      Write-Host "* Super hidden '$FolderName' folder deleted .." -ForegroundColor Green
    }
    Else
    {
       write-host "  x " -ForegroundColor Red -NoNewline
-      write-host " Error: fail to delete '$Directory\$FolderName'`n" -ForegroundColor DarkGray 
+      write-host " Error: fail to delete '$Directory\$FolderName'" -ForegroundColor DarkGray 
    }
 
    #Display directory contents now
@@ -474,7 +472,7 @@ If($Action -ieq "Delete")
 
    If(-not($SHdb))
    {
-      write-host "x " -ForegroundColor Red -NoNewline
+      write-host "  x " -ForegroundColor Red -NoNewline
       write-host " Error: none contents found inside current directory.`n" -ForegroundColor DarkGray
       return
    }
