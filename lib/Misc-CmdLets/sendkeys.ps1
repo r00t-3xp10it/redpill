@@ -4,7 +4,7 @@
 
    Author: @r00t-3xp10it (ssa redteam)
    Tested Under: Windows 10 (19043) x64 bits
-   Required Dependencies: none
+   Required Dependencies: Reflection.Assembly {native}
    Optional Dependencies: none
    PS cmdlet Dev version: v1.0.1
 
