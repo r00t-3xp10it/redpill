@@ -61,7 +61,7 @@ Get-Help .\SendToPasteBin.ps1 -full
    
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|[SuperHidden](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Out-FileFormat/SuperHidden.ps1)|Get filepath contents and paste it to pastebin.|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-FileFormat/SendToPasteBin.png)|
+|[SuperHidden](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Out-FileFormat/SuperHidden.ps1)| Query\Create\Delete super hidden system folders|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-FileFormat/SendToPasteBin.png)|
 
 <br />
 
