@@ -11,8 +11,9 @@
 .DESCRIPTION
    Hackers often need to start background processes detached from the parent
    process (child\orphan) and let them run until a CTRL+C command is invoked
-   to abort that same process. The issue resides that we can no longer access
-   the background process from our current console using conventional ways .. 
+   to abort that same process. There are 3 ways to achieve this, either we stop
+   the orphaned process by its PID identifier, or we stop the process by its Name,
+   or we stop the process using the sendkeys technique that this cmdlet demonstrates.
 
    Lets say we have one cmdlet running in background that requires a CTRL+C
    command to abort the execution and clean artifacts in the end. This cmdlet
@@ -60,8 +61,9 @@
 .OUTPUTS
    * Send Keys to running programs
      + Start and capture process info.
-     + Success: sending key: '^{c}'
-   * Exit sendkeys cmdlet ..
+     + Success, sending key: '^{c}'
+     + Process PID: '11864'
+   * Exit sendkeys cmdlet execution ..
 #>
 
 
@@ -195,9 +197,15 @@ Start-Sleep -Seconds $ExecDelay #Wait for program to start
 [System.Windows.Forms.SendKeys]::SendWait("$SendKey")
 If($?)
 {
-   write-host "  + Success: " -ForegroundColor DarkYellow -NoNewline
-   write-host "sending key: '" -ForegroundColor DarkGray -NoNewline
-   write-host "$SendKey" -ForegroundColor Green -NoNewline
+   $OrphanID = $NewProc.ID
+   write-host "  + " -ForegroundColor DarkYellow -NoNewline
+   write-host "Success, sending key: '" -ForegroundColor DarkGray -NoNewline
+   write-host "$SendKey" -ForegroundColor DarkYellow -NoNewline
+   write-host "'" -ForegroundColor DarkGray
+   
+   write-host "  + " -ForegroundColor DarkYellow -NoNewline
+   write-host "Process PID: '" -ForegroundColor DarkGray -NoNewline
+   write-host "$OrphanID" -ForegroundColor DarkYellow -NoNewline
    write-host "'" -ForegroundColor DarkGray
 }
 Else
@@ -208,4 +216,4 @@ Else
    write-host "'" -ForegroundColor DarkGray
 }
 
-write-host "* Exit sendkeys cmdlet ..`n" -ForegroundColor Green
+write-host "* Exit sendkeys cmdlet execution ..`n" -ForegroundColor Green
