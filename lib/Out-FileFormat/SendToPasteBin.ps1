@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Get filepath contents and paste it to pastebin.
     
