@@ -10,8 +10,6 @@
 .DESCRIPTION
 	Creates an shortcut file that accepts cmdline arguments to execute.
 
-.NOTES
-
 .Parameter target
    The absolucte path of appl\script to execute (default: notepad.exe)
 
@@ -33,7 +31,7 @@
 
 .OUTPUTS
    * Created new shortcut : 'C:\Users\pedro\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\Rat-x64.lnk'
-     => Target application: 'C:\Users\pedro\AppData\Local\Temp\Rat-x64.exe'
+     => Target application: 'C:\Users\pedro\AppData\Local\Temp\Rat-x64.exe'
 
 .LINK
 	https://github.com/fleschutz/PowerShell
@@ -116,8 +114,8 @@ try{
    $Sh.Description = "$description"
    $Sh.Save()
 
-   Write-Host "`n* Created new shortcut : '$FinalName'" -ForegroundColor Green
-   Write-Host "  => Target application: '$target'" -ForegroundColor Blue
+   Write-Host "`n* Created new shortcut : '$FinalName'" -ForegroundColor Green
+   Write-Host "  => Target application: '$target'" -ForegroundColor Blue
 }catch{#Error creating shortcut!
    Write-Error "`nError in line $($_.InvocationInfo.ScriptLineNumber): $($Error[0])"
 }
