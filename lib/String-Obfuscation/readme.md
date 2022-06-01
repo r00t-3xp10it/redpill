@@ -2,7 +2,7 @@
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|enc-rot13|Encrypt or decrypt strings using ROT13 cipher.|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/enc-rot13.png)|
+|[enc-rot13](https://github.com/r00t-3xp10it/redpill/blob/main/lib/String-Obfuscation/enc-rot13.ps1)|Encrypt or decrypt strings using ROT13 cipher.|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/enc-rot13.png)<br />Creates decrypt script if sellected **-output ps1**<br />|
 
 **download cmdLet:**
 ```powershell
@@ -128,7 +128,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/enc
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|[Convert-ROT47](https://github.com/r00t-3xp10it/redpill/blob/main/lib/String-Obfuscation/Convert-ROT47.ps1)|Rotate ascii chars by nº places (Caesar cipher)|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Convert-ROT47.png)|
+|[Convert-ROT47](https://github.com/r00t-3xp10it/redpill/blob/main/lib/String-Obfuscation/Convert-ROT47.ps1)|Rotate ascii chars by nº places (Caesar cipher)|User Land|Creates decrypt script if sellected **-action decryptme**<br />[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Convert-ROT47.png)|
 
 **download cmdLet:**
 ```powershell
