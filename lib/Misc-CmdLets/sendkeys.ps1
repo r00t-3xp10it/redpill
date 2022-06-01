@@ -57,6 +57,10 @@
 .EXAMPLE
    PS C:\> .\sendkeys.ps1 -Program "$Env:WINDIR\System32\cmd.exe" -SendKey "whoami+~" -style "hidden"
    Start 'cmd.exe' program (hidden console) and send 'whoami+~' (WHOAMI+ENTER) key to program
+   
+.EXAMPLE
+   PS C:\> .\sendkeys.ps1 -Program "$Env:WINDIR\System32\notepad.exe" -SendKey "hello world" -ExecDelay '1'
+   Start 'notepad.exe' program and send 'hello world' keys to program after one second of delay  
 
 .OUTPUTS
    * Send Keys to running programs
