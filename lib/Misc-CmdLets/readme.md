@@ -66,7 +66,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-C
 
 <br />
 
-## sendkeys.ps1 - Under Develop ( not stable )
+## sendkeys.ps1
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
