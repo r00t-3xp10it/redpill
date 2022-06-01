@@ -106,8 +106,7 @@ If(-not(Test-Path -Path "$Program"))
 
 
 <#
-   TODO: Start-Process -WindowStyle hidden python3 -ArgumentList "WebCam.py"
-   and replace all start-process ''nitched'' inside if statements by one $cmdline
+   TODO: Replace all start-process ''nitched'' inside IF statements by one $cmdline?
 #>
 
 #Start and capture process info
@@ -119,11 +118,15 @@ If($Style -ieq "hidden")
       #Execute program with arguments in a hidden console
       If(($Program.Split('.')[-1]) -iMatch '^(exe)$')
       {
-         $NewProc = Start-Process -WindowStyle Hidden powershell -File "$Program" -ArgumentList "$Arguments" -PassThru
+         $NewProc = Start-Process -WindowStyle Hidden -File "$Program $Arguments" -PassThru
+      }
+      ElseIf(($Program.Split('.')[-1]) -iMatch '^(py)$')
+      {
+         $NewProc = Start-Process -WindowStyle Hidden python3 -ArgumentList "$Program $Arguments" -PassThru       
       }
       Else
       {
-         $NewProc = Start-Process -WindowStyle Hidden -FilePath "$Program" -ArgumentList "-File $Arguments" -PassThru      
+         $NewProc = Start-Process -WindowStyle Hidden powershell -ArgumentList "-File $Program $Arguments" -PassThru      
       }
    }
    Else
@@ -131,11 +134,15 @@ If($Style -ieq "hidden")
       #Execute program without arguments in a hidden console
       If(($Program.Split('.')[-1]) -iMatch '^(exe)$')
       {
-         $NewProc = Start-Process -WindowStyle Hidden powershell -File "$Program" -PassThru
+         $NewProc = Start-Process -WindowStyle Hidden -File "$Program" -PassThru
       }
+      ElseIf(($Program.Split('.')[-1]) -iMatch '^(py)$')
+      {
+         $NewProc = Start-Process -WindowStyle Hidden python3 -ArgumentList "$Program" -PassThru       
+      }      
       Else
       {
-         $NewProc = Start-Process -WindowStyle Hidden -FilePath "-File $Program" -PassThru      
+         $NewProc = Start-Process -WindowStyle Hidden powershell -ArgumentList "-File $Program" -PassThru      
       }  
    }
 }
@@ -146,11 +153,15 @@ Else
    {
       If(($Program.Split('.')[-1]) -iMatch '^(exe)$')
       {
-         $NewProc = Start-Process powershell -file "$Program" -ArgumentList "$Arguments" -PassThru
+         $NewProc = Start-Process -file "$Program $Arguments" -PassThru
       }
+      ElseIf(($Program.Split('.')[-1]) -iMatch '^(py)$')
+      {
+         $NewProc = Start-Process python3 -ArgumentList "$Program $Arguments" -PassThru       
+      }      
       Else
       {
-         $NewProc = Start-Process -FilePath "$Program" -ArgumentList "-File $Arguments" -PassThru      
+         $NewProc = Start-Process powershell -ArgumentList "-File $Program $Arguments" -PassThru      
       }
    }
    Else
@@ -158,8 +169,12 @@ Else
       #Execute program without arguments in a normal console
       If(($Program.Split('.')[-1]) -iMatch '^(exe)$')
       {
-         $NewProc = Start-Process powershell -file "$Program" -PassThru      
+         $NewProc = Start-Process -file "$Program" -PassThru      
       }
+      ElseIf(($Program.Split('.')[-1]) -iMatch '^(py)$')
+      {
+         $NewProc = Start-Process python3 -ArgumentList "$Program" -PassThru       
+      }      
       Else
       {
          $NewProc = Start-Process powershell -ArgumentList "-File $Program" -PassThru         
