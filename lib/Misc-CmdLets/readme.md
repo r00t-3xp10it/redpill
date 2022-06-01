@@ -94,4 +94,10 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-C
 
 #Start 'cmd.exe' program and send 'whoami+~' (whoami+ENTER) key to program
 .\sendkeys.ps1 -Program "$Env:WINDIR\System32\cmd.exe" -SendKey "whoami+~"
+
+#Start 'cmd.exe' program (hidden console) and send 'whoami+~' (WHOAMI+ENTER) key to program
+.\sendkeys.ps1 -Program "$Env:WINDIR\System32\cmd.exe" -SendKey "whoami+~" -style "hidden"
+   
+#Start 'notepad.exe' program and send 'hello world' keys to program after one second of delay
+.\sendkeys.ps1 -Program "$Env:WINDIR\System32\notepad.exe" -SendKey "hello world" -ExecDelay '1'
 ```
