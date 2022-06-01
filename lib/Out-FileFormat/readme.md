@@ -77,29 +77,29 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-Fi
 Get-Help .\SuperHidden.ps1 -full
 
 #Search for 'Hidden, System' folders on predefined locations
-.\SuperHidden.ps1 -Action Query
+.\SuperHidden.ps1 -Action "Query"
 
 #Search for 'Hidden, System' folders on %TMP% location
-.\SuperHidden.ps1 -Action Query -Directory $Env:TMP
+.\SuperHidden.ps1 -Action "Query" -Directory "$Env:TMP"
    
 #Search for 'Hidden, System' folders on %TMP% location 'recursive' (sub-folders)
-.\SuperHidden.ps1 -Action Query -Directory $Env:TMP -Recursive true
+.\SuperHidden.ps1 -Action "Query" -Directory "$Env:TMP" -Recursive "true"
    
 #Search for folders with 'Hidden' attribute (not super Hidden, System) on %TMP%
-.\SuperHidden.ps1 -Action Query -Directory $Env:TMP -attributes Hidden
+.\SuperHidden.ps1 -Action "Query" -Directory "$Env:TMP" -attributes "Hidden"
    
 #Search for 'Hidden, System' folders on %TMP% location with the name of 'vault'
-.\SuperHidden.ps1 -Action Query -Directory $Env:TMP -FolderName vault
+.\SuperHidden.ps1 -Action "Query" -Directory "$Env:TMP" -FolderName "vault"
    
 #Create\Modify 'Hidden, System' folder on %TMP% location with the name of 'vault'
-.\SuperHidden.ps1 -Action Hidden -Directory $Env:TMP -FolderName vault
+.\SuperHidden.ps1 -Action "Hidden" -Directory "$Env:TMP" -FolderName "vault"
       
 #Create\modify 'VISIBLE, System' folder on %TMP% location with the name of 'vault'
-.\SuperHidden.ps1 -Action Visible -Directory $Env:TMP -FolderName vault
+.\SuperHidden.ps1 -Action "Visible" -Directory "$Env:TMP" -FolderName "vault"
        
 #Delete the super hidden 'Hidden, System' folder of %TMP% with the name of 'vault'
-.\SuperHidden.ps1 -Action Delete -Directory $Env:TMP -FolderName vault
+.\SuperHidden.ps1 -Action "Delete" -Directory "$Env:TMP" -FolderName "vault"
    
 #Search for 'Hidden' OR 'System' directorys on %TMP% location in 'recursive' mode (scan sub-folders)
-.\SuperHidden.ps1 -Action Query -Directory $Env:TMP -Attributes "(Hidden|System)" -Recursive true    
+.\SuperHidden.ps1 -Action "Query" -Directory "$Env:TMP" -Attributes "(Hidden|System)" -Recursive "true"    
 ``` 
