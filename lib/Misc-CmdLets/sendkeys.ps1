@@ -11,10 +11,9 @@
 .DESCRIPTION
    Hackers often need to start background processes detached from the parent
    process (child\orphan) and let them run until a CTRL+C command is invoked
-   to abort that same process. The problem resides that we can no longer send
-   commands to a orphan process, because the process is now running detach from
-   the parent process.
-   
+   to abort that same process. The issue resides that we can no longer access
+   the background process from our current console using conventional ways .. 
+
    Lets say we have one cmdlet running in background that requires a CTRL+C
    command to abort the execution and clean artifacts in the end. This cmdlet
    allows its users to start those processes and send a command (CTRL+C) to
