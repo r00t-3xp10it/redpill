@@ -104,6 +104,12 @@ If(-not(Test-Path -Path "$Program"))
    return
 }
 
+
+<#
+   TODO: Start-Process -WindowStyle hidden python3 -ArgumentList "WebCam.py"
+   and replace all start-process ''nitched'' inside if statements by one $cmdline
+#>
+
 #Start and capture process info
 write-host "  + Start and capture process info." -ForegroundColor DarkYellow
 If($Style -ieq "hidden")
