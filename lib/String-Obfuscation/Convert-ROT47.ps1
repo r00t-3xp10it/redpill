@@ -1,4 +1,4 @@
-﻿###############################################################################################################
+###############################################################################################################
 # Language     :  PowerShell 4.0
 # Filename     :  Convert-ROT47.ps1
 # Autor        :  BornToBeRoot (https://github.com/BornToBeRoot)
@@ -66,41 +66,52 @@
     Rot Text
     --- ----
       4 This is an encrypted string!
+
+.EXAMPLE
+    .\Convert-ROT47.ps1 -Text "whoami" -Rot "7" -Action "decryptme" -Encrypt
+    Convert text to rot7 and build the decrypt script (decryptme.ps1)
       
 .LINK
     https://github.com/BornToBeRoot/PowerShell/blob/master/Documentation/Script/Convert-ROT47.README.md
 #>
 
+
 [CmdletBinding(DefaultParameterSetName='Decrypt')]
 param (
     [Parameter(
         Position=0,
+        Mandatory=$false,
+        HelpMessage='execute the encrypted string?')]    
+        [String]$Action="Normal",
+
+    [Parameter(
+        Position=0,
         Mandatory=$true,
         HelpMessage='String which you want to encrypt or decrypt')]    
-    [String]$Text,
+        [String]$Text,
 
     [Parameter(
         Position=1,
         HelpMessage='Specify which rotation you want to use (Default=1..47)')]
-    [ValidateRange(1,47)]
-    [Int32[]]$Rot=1..47,
+        [ValidateRange(1,47)]
+        [Int32[]]$Rot=1..47,
 
     [Parameter(
         ParameterSetName='Encrypt',
         Position=2,
         HelpMessage='Encrypt a string')]
-    [switch]$Encrypt,
+        [switch]$Encrypt,
     
     [Parameter(
         ParameterSetName='Decrypt',
         Position=2,
         HelpMessage='Decrypt a string')]
-    [switch]$Decrypt,
+        [switch]$Decrypt,
 
     [Parameter(
         Position=3,
         HelpMessage='Use complete ascii table 0..255 chars (Default=33..126)')]
-    [switch]$UseAllAsciiChars
+        [switch]$UseAllAsciiChars
 )
 
 Begin{
@@ -197,9 +208,81 @@ Process{
             }
         } 
     
-        [pscustomobject] @{
-            Rot = $Rot2
-            Text = $ResultText
+        If($Action -ieq "decryptme")
+        {
+        
+$PS1DecriptRot = @("<#
+.SYNOPSIS
+   Author: r00t-3xp10it
+   Helper - execute rot cipher! 
+#>
+
+Begin{
+
+    [Int32[]]`$Rot=$Rot
+    [string]`$Text=`"$ResultText`"
+    [System.Collections.ArrayList]`$AsciiChars = @()
+     
+    `$CharsIndex = 1
+    `$StartAscii = 33
+    `$EndAscii = 126
+    #Add chars from ascii table
+    ForEach(`$i in `$StartAscii..`$EndAscii)
+    {
+        `$Char = [char]`$i
+        [pscustomobject]`$Result = @{
+            Index = `$CharsIndex
+            Char = `$Char
+        }   
+        [void]`$AsciiChars.Add(`$Result)
+        `$CharsIndex++
+    }
+}
+
+Process{
+    ForEach(`$Rot2 in `$Rot)
+    {        
+        `$ResultText = [String]::Empty
+        #Go through each char in string
+        ForEach(`$i in 0..(`$Text.Length -1))
+        {
+            `$CurrentChar = `$Text.Substring(`$i, 1)
+            If((`$AsciiChars.Char -ccontains `$CurrentChar) -and (`$CurrentChar -ne `" `")) # Upper chars
+            {
+               [int]`$NewIndex = (`$AsciiChars | Where-Object {`$_.Char -ceq `$CurrentChar}).Index - `$Rot2
+               If(`$NewIndex -lt 1)
+               {
+                  `$NewIndex += `$AsciiChars.Count                       
+                  `$ResultText +=  (`$AsciiChars | Where-Object {`$_.Index -eq `$NewIndex}).Char
+               }
+               Else 
+               {
+                  `$ResultText += (`$AsciiChars | Where-Object {`$_.Index -eq `$NewIndex}).Char    
+               }
+            }Else{`$ResultText += `$CurrentChar}
+        } 
+    
+       Try{#EXECUTE
+          echo `"`$ResultText`"|&(DIR Alias:/I*X)
+       }catch{Write-Host `"x Error: execution failed ..`" -ForeGroundColor red}
+    }
+}")
+
+           #Write Ps1 script to the sellected directory!
+           echo "$PS1DecriptRot"|Out-File "$pwd\Decryptme.ps1" -encoding ascii -force
+           Write-Host "*" -ForegroundColor Green -NoNewline;
+           Write-Host " written to: '" -ForegroundColor DarkGray -NoNewline;
+           Write-Host "$pwd\Decryptme.ps1" -ForegroundColor Green -NoNewline;
+           Write-Host "'`n" -ForegroundColor DarkGray;
+
+        
+        }
+        Else
+        {
+           [pscustomobject] @{
+               Rot = $Rot2
+               Text = $ResultText
+           }
         }
     }
 }
@@ -207,4 +290,3 @@ Process{
 End{
 
 }
-        
