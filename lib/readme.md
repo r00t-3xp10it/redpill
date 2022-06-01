@@ -48,6 +48,7 @@ Database
         |_ Out-FileFormat
                       |_ Out-shortcut.ps1              Creates an shortcut that accepts cmdline args to execute.
                       |_ SendToPasteBin.ps1            Get filepath contents and paste it to pastebin.
+                      |_ SuperHidden.ps1               Query\Create\Delete super hidden system folders
         |_ Process-Spoofing
                       |_ PPIDSpoof.ps1                 Creates a process as a child of a specified process ID.
                       |_ SelectMyParent.exe            Creates a process as a child of a specified process ID.
