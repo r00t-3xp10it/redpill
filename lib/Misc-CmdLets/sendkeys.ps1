@@ -195,7 +195,7 @@ $Null = [WinAp]::ShowWindow($NewProc.MainWindowHandle,3)
 #Sendkey
 $OrphanID = $NewProc.ID
 [System.Windows.Forms.SendKeys]::SendWait("$SendKey")
-If($LASTEXITCODE -eq 0)
+If($?)
 {
    write-host "  + " -ForegroundColor DarkYellow -NoNewline
    write-host "Success, sending key: '" -ForegroundColor DarkGray -NoNewline
