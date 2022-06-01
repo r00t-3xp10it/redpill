@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Query\Create\Delete super hidden system folders
 
@@ -102,15 +102,15 @@ If($Action -ieq "Query" -and $Directory -ieq "false")
 {
    If($Attributes -iMatch '^(Hidden)$')
    {
-      Write-Host "Searching hidden folders in common locations .." -ForegroundColor Blue 
+      Write-Host "* Searching hidden folders in common locations .." -ForegroundColor Blue 
    }
    ElseIf($Attributes -iMatch '^(Hidden, System)$')
    {
-      Write-Host "Searching super hidden folders in common locations .." -ForegroundColor Blue
+      Write-Host "* Searching super hidden folders in common locations .." -ForegroundColor Blue
    }
    Else
    {
-      Write-Host "Searching '$Attributes' folders in common locations .." -ForegroundColor Blue    
+      Write-Host "* Searching '$Attributes' folders in common locations .." -ForegroundColor Blue    
    }
 }
 
@@ -200,8 +200,11 @@ If($Action -ieq "Query")
       If(-not(Test-Path -Path "$Directory" -EA SilentlyContinue))
       {
          #Making sure that the directory input exists before go any further..
-         Write-Host "error: not found: '$Directory'`n" -ForegroundColor Red -BackgroundColor Black
-         exit #Exit SuperHidden
+         write-host "x " -ForegroundColor Red -NoNewline
+         write-host " notfound: '" -ForegroundColor DarkGray -NoNewline
+         write-host "$Directory" -ForegroundColor Red -NoNewline
+         write-host "'`n" -ForegroundColor DarkGray
+         return
       }
    
       If($FolderName -ne "false")
@@ -224,7 +227,9 @@ If($Action -ieq "Query")
 
          If(-not($SHdb))
          {
-            Write-Host "Error: fail to match the search criteria.`n" -ForegroundColor Red -BackgroundColor Black
+            write-host "x " -ForegroundColor Red -NoNewline
+            write-host " Error: fail to match the search criteria.`n" -ForegroundColor DarkGray
+            return
          }
          Else
          {
@@ -252,7 +257,9 @@ If($Action -ieq "Query")
 
          If(-not($SHdb))
          {
-            Write-Host "Error: fail to match the search criteria.`n" -ForegroundColor Red -BackgroundColor Black
+            write-host "x " -ForegroundColor Red -NoNewline
+            write-host " Error: fail to match the search criteria-`n" -ForegroundColor DarkGray
+            return
          }
          Else
          {
@@ -288,8 +295,9 @@ If($Action -ieq "Hidden")
       If($IsClientAdmin -iMatch 'False')
       {
          #Making sure that the directory structure does not start with C:\Windows if we have UserLand privs!
-         Write-Host "Error: Admin privileges required to manipulate sellected directory.`n" -ForegroundColor Red -BackgroundColor Black
-         exit #Exit @SuperHidden
+         write-host "x " -ForegroundColor Red -NoNewline
+         write-host " Error: Admin privileges required to manipulate directory.`n" -ForegroundColor DarkGray
+         return
       }
    }
 
@@ -303,8 +311,9 @@ If($Action -ieq "Hidden")
    try{#hidde sellected folder
       attrib +s +h $Directory\$FolderName
    }catch{#Fail to modify sellected directory attributes
-      Write-Host "Error: fail to change directory attributes.`n" -ForegroundColor Red -BackgroundColor Black
-      exit #Exit SuperHidden
+      write-host "x " -ForegroundColor Red -NoNewline
+      write-host " Error: fail to change directory attributes.`n" -ForegroundColor DarkGray
+      return
    }
 
    #Search for hidden,system folder created\modified..
@@ -314,7 +323,9 @@ If($Action -ieq "Hidden")
 
    If(-not($SHdb))
    {
-      Write-Host "Error: fail to match the search criteria.`n" -ForegroundColor Red -BackgroundColor Black
+      write-host "x " -ForegroundColor Red -NoNewline
+      write-host " Error: fail to match the search criteria.`n" -ForegroundColor DarkGray
+      return
    }
    Else
    {
@@ -346,9 +357,9 @@ If($Action -ieq "Visible")
    {
       If($IsClientAdmin -iMatch 'False')
       {
-         #Making sure that the directory structure does not start with C:\Windows if we have UserLand privs!
-         Write-Host "Error: Admin privileges required to manipulate sellected directory.`n" -ForegroundColor Red -BackgroundColor Black
-         exit #Exit @SuperHidden
+         write-host "x " -ForegroundColor Red -NoNewline
+         write-host " Error: Admin privileges required to manipulate directory.`n" -ForegroundColor DarkGray
+         return
       }
    }
 
@@ -362,8 +373,9 @@ If($Action -ieq "Visible")
    try{#UnHidde sellected folder
       attrib -s -h $Directory\$FolderName
    }catch{#Fail to modify sellected directory attributes
-      Write-Host "Error: fail to change directory attributes.`n" -ForegroundColor Red -BackgroundColor Black
-      exit #Exit SuperHidden
+      write-host "x " -ForegroundColor Red -NoNewline
+      write-host " Error: fail to change directory attributes.`n" -ForegroundColor DarkGray
+      return
    }
 
    #Search for VISIBLE,system folder created\modified..
@@ -373,7 +385,9 @@ If($Action -ieq "Visible")
 
    If(-not($SHdb))
    {
-      Write-Host "Error: fail to match the search criteria.`n" -ForegroundColor Red -BackgroundColor Black
+      write-host "x " -ForegroundColor Red -NoNewline
+      write-host " Error: fail to match the search criteria.`n" -ForegroundColor DarkGray
+      return
    }
    Else
    {
@@ -398,50 +412,59 @@ If($Action -ieq "Delete")
    If($FolderName -ieq "false")
    {
       #Make sure that the folder to delete exists
-      Write-Host "Error: The 'delete' function requires -FolderName input ..`n" -ForegroundColor Red -BackgroundColor Black
-      exit #Exit SuperHidden
+      write-host "x " -ForegroundColor Red -NoNewline
+      write-host " Error: function requires -FolderName 'input'`n" -ForegroundColor DarkGray
+      return
    }
 
    If($Directory -ieq "false")
    {
       #Make sure that the directory tree to delete exists
-      Write-Host "Error: The 'delete' function requires -Directory input ..`n" -ForegroundColor Red -BackgroundColor Black
-      exit #Exit SuperHidden
+      write-host "x " -ForegroundColor Red -NoNewline
+      write-host " Error: function requires -Directory 'input'`n" -ForegroundColor DarkGray
+      return
    }
 
    If($Directory -iMatch '^C:\\Windows' -or $Directory -iMatch '^C:\\Program Files')
    {
       If($IsClientAdmin -iMatch 'False')
       {
-         #Making sure that the directory structure does not start with C:\Windows if we have UserLand privs!
-         Write-Host "Error: Admin privileges required to manipulate sellected directory.`n" -ForegroundColor Red -BackgroundColor Black
-         exit #Exit @SuperHidden
+         ## Making sure that the directory structure does not
+         # start with 'C:\Windows' if we have UserLand privs!
+         write-host "x " -ForegroundColor Red -NoNewline
+         write-host " Error: Admin privileges required to manipulate directory.`n" -ForegroundColor DarkGray
+         return
       }
    }
 
    If(-not(Test-Path -Path "$Directory\$FolderName" -EA SilentlyContinue))
    {
       #Make sure that the directory\folder to delete exists
-      Write-Host "Error: not found '$Directory\$FolderName'`n" -ForegroundColor Red -BackgroundColor Black
-      exit #Exit SuperHidden
+      write-host "x " -ForegroundColor Red -NoNewline
+      write-host " Notfound: '" -ForegroundColor DarkGray -NoNewline
+      write-host "$Directory\$FolderName" -ForegroundColor Red -NoNewline
+      write-host "'`n" -ForegroundColor DarkGray
+      return
    }
 
    try{#delete sellected folder
       attrib -s -h $Directory\$FolderName
    }catch{#Fail to change directory attributes
-      Write-Host "Error: fail to change directory attributes.`n" -ForegroundColor Red -BackgroundColor Black
-      exit #Exit SuperHidden
+      write-host "x " -ForegroundColor Red -NoNewline
+      write-host " Error: fail to change directory attributes.`n" -ForegroundColor DarkGray
+      return
    }
 
    #Remove directory
    Remove-Item -Path "$Directory\$FolderName" -Recurse -Force
    If(-not(Test-Path -Path "$Directory\$FolderName" -EA SilentlyContinue))
    {
-      Write-Host "Super hidden '$FolderName' folder deleted .."
+      Write-Host "  + Super hidden '$FolderName' folder deleted .." -ForegroundColor Green
    }
    Else
    {
-      Write-Host "Error: fail to delete '$Directory\$FolderName' folder .."   
+      write-host "  x " -ForegroundColor Red -NoNewline
+      write-host " Error: fail to delete '$Directory\$FolderName'`n" -ForegroundColor DarkGray 
    }
 
    #Display directory contents now
@@ -451,7 +474,9 @@ If($Action -ieq "Delete")
 
    If(-not($SHdb))
    {
-      Write-Host "none contents found inside current directory.`n" -ForegroundColor Yellow
+      write-host "x " -ForegroundColor Red -NoNewline
+      write-host " Error: none contents found inside current directory.`n" -ForegroundColor DarkGray
+      return
    }
    Else
    {
