@@ -6,23 +6,20 @@
    Tested Under: Windows 10 (19043) x64 bits
    Required Dependencies: Reflection.Assembly {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.1
+   PS cmdlet Dev version: v1.0.2
 
 .DESCRIPTION
-   Hackers often need to start background processes detached from the parent
-   process (child\orphan) and let them run until a CTRL+C command is invoked
-   to abort that same process. There are 3 ways to achieve this, either we stop
-   the orphaned process by its PID identifier, or we stop the process by its Name,
-   or we stop the process using the sendkeys technique that this cmdlet demonstrates.
+   Hackers often need to start background processes and let them run until
+   a CTRL+C command is invoked to abort that same process. There are 3 ways
+   to achieve this, either we stop the process by its PID identifier, or we
+   stop the process by its Name, or we stop the process using the sendkeys
+   technique (Reflection.Assembly) that this cmdlet aims to demonstrate.
 
-   Lets say we have one cmdlet running in background that requires a CTRL+C
-   command to abort the execution and clean artifacts in the end. This cmdlet
-   allows its users to start those processes and send a command (CTRL+C) to
-   abort the execution of the process at a predefined time (-execdelay 'int')
+   This cmdlet allows its users to start processes and send a command (CTRL+C)
+   to abort the execution of the process at a predefined time (-execdelay 'int')
 
 .NOTES
-   iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam-Capture/WebCam.py" -OutFile "$Env:TMP\WebCam.py"
-   .\sendkeys.ps1 -program "$Env:TMP\WebCam.py" -sendKey "^{c}" -execdelay "20"
+   nothing to say until now ...
 
 .Parameter Program
    The program to start (default: $Env:WINDIR\System32\cmd.exe)
@@ -72,6 +69,7 @@
 #>
 
 
+#Global variable declarations
 [CmdletBinding(PositionalBinding=$false)] param(
    [string]$Program="$Env:Windir\System32\cmd.exe",
    [string]$Arguments="false",
@@ -110,10 +108,6 @@ If(-not(Test-Path -Path "$Program"))
    return
 }
 
-
-<#
-   TODO: Replace all start-process ''nitched'' inside IF statements by one $cmdline?
-#>
 
 #Start and capture process info
 write-host "  + Start and capture process info." -ForegroundColor DarkYellow
@@ -201,7 +195,7 @@ $Null = [WinAp]::ShowWindow($NewProc.MainWindowHandle,3)
 #Sendkey
 $OrphanID = $NewProc.ID
 [System.Windows.Forms.SendKeys]::SendWait("$SendKey")
-If($?)
+If($LASTEXITCODE -eq 0)
 {
    write-host "  + " -ForegroundColor DarkYellow -NoNewline
    write-host "Success, sending key: '" -ForegroundColor DarkGray -NoNewline
