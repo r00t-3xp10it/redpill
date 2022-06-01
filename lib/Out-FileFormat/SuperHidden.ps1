@@ -150,7 +150,8 @@ If($Action -ieq "Query")
       $CommonLocations = @(
          "$Env:TMP",
          "$Env:APPDATA",
-         "$Env:USERPROFILE",         
+         "$Env:OneDrive", 
+         "$Env:USERPROFILE",        
          "$Env:LOCALAPPDATA",
          "$Env:PROGRAMFILES",
          "${Env:PROGRAMFILES(X86)}",
