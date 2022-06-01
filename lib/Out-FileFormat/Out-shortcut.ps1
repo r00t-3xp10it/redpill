@@ -50,15 +50,30 @@
 
 Write-Host ""
 #Check cmdlet mandatory dependencies
+$ErrorActionPreference = "SilentlyContinue"
 If($target -iNotMatch '(.exe|.ps1|.bat)$')
 {
-   Write-Host "ERROR: -target [<string>] only accepts 'exe,ps1,bat' extensions!" -ForegroundColor Red -BackgroundColor Black
-   exit #Exit @new-shortcut
+   write-host "x " -ForegroundColor Red -NoNewline
+   write-host " Error: -target only accepts '" -ForegroundColor DarkGray -NoNewline
+   write-host "exe,ps1,bat" -ForegroundColor Red -NoNewline
+   write-host "' extensions." -ForegroundColor DarkGray
+   return
+}
+If(-not(Test-Path -Path "$target"))
+{
+   write-host "x " -ForegroundColor Red -NoNewline
+   write-host " Notfound: '" -ForegroundColor DarkGray -NoNewline
+   write-host "$target" -ForegroundColor Red -NoNewline
+   write-host "'`n" -ForegroundColor DarkGray
+   return
 }
 If(-not($Wdirectory))
 {
-   Write-Host "ERROR: -Wdirectory <'$Wdirectory'> not found!" -ForegroundColor Red -BackgroundColor Black
-   New-Item -Name "$Wdirectory" -ItemType folder -Force
+   write-host "+ " -ForegroundColor Darkellow -NoNewline
+   write-host " Notfound: '" -ForegroundColor DarkGray -NoNewline
+   write-host "$Wdirectory" -ForegroundColor Red -NoNewline
+   write-host "'`n" -ForegroundColor DarkGray
+   New-Item -Name "$Wdirectory" -ItemType folder -Force|Out-Null
 }
 
 
@@ -66,6 +81,14 @@ If(-not($Wdirectory))
 $RawTargetName = $target.Split('\')[-1] -replace '(.exe|.ps1|.bat)$','' # notepad
 $FinalName = "$shortcut"+"\$RawTargetName.lnk" -Join '' # C:\Users\pedro\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\notepad.lnk
 
+If(Test-Path -Path "$FinalName")
+{
+   write-host "x " -ForegroundColor Red -NoNewline
+   write-host " Duplicate entry detected: '" -ForegroundColor DarkGray -NoNewline
+   write-host "$FinalName" -ForegroundColor Red -NoNewline
+   write-host "'`n" -ForegroundColor DarkGray
+   return
+}
 
 try{
 
@@ -116,7 +139,8 @@ try{
 
    Write-Host "`n* Created new shortcut : '$FinalName'" -ForegroundColor Green
    Write-Host "  => Target application: '$target'" -ForegroundColor Blue
-}catch{#Error creating shortcut!
+}catch{
+   #Error creating shortcut!
    Write-Error "`nError in line $($_.InvocationInfo.ScriptLineNumber): $($Error[0])"
 }
 Write-Host ""
