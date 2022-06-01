@@ -2,7 +2,7 @@
    
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|Out-shortcut|Creates an shortcut file that accepts cmdline arguments to execute|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-FileFormat/Out-Shortcut.png)|
+|[Out-shortcut](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Out-FileFormat/Out-shortcut.ps1)|Creates an shortcut file that accepts cmdline arguments to execute|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-FileFormat/Out-Shortcut.png)|
 
 <br />
 
@@ -25,7 +25,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-Fi
    
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|SendToPasteBin|Get filepath contents and paste it to pastebin.|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-FileFormat/SendToPasteBin.png)|
+|[SendToPasteBin](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Out-FileFormat/SendToPasteBin.ps1)|Get filepath contents and paste it to pastebin.|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Out-FileFormat/SendToPasteBin.png)|
 
 <br />
 
