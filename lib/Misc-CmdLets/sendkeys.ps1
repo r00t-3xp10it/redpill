@@ -22,7 +22,7 @@
 
 .NOTES
    iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam-Capture/WebCam.py" -OutFile "$Env:TMP\WebCam.py"
-   .\sendkeys.ps1 -program "$Env:TMP\WebCam.py" -sendKey "^{c}" -execdelay "30" -style "hidden"
+   .\sendkeys.ps1 -program "$Env:TMP\WebCam.py" -sendKey "^{c}" -execdelay "20"
 
 .Parameter Program
    The program to start (default: $Env:WINDIR\System32\cmd.exe)
