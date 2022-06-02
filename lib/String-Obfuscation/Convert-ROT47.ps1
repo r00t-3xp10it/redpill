@@ -79,50 +79,60 @@
 [CmdletBinding(DefaultParameterSetName='Decrypt')]
 param (
     [Parameter(
-        Position=0,
         Mandatory=$false,
-        HelpMessage='execute the encrypted string?')]    
+        HelpMessage='Execute the encrypted string?')]    
         [String]$Action="Normal",
 
     [Parameter(
-        Position=0,
         Mandatory=$true,
         HelpMessage='String which you want to encrypt or decrypt')]    
         [String]$Text,
 
     [Parameter(
-        Position=1,
-        HelpMessage='Specify which rotation you want to use (Default=1..47)')]
-        [ValidateRange(1,47)]
-        [Int32[]]$Rot=1..47,
+        HelpMessage='Specify which rotation you want to use (Default=1..10)')]
+        [ValidateRange(1,10)]
+        [Int32[]]$Rot=1..10,
 
     [Parameter(
         ParameterSetName='Encrypt',
-        Position=2,
-        HelpMessage='Encrypt a string')]
+        HelpMessage='Encrypt a string?')]
         [switch]$Encrypt,
     
     [Parameter(
         ParameterSetName='Decrypt',
-        Position=2,
-        HelpMessage='Decrypt a string')]
+        HelpMessage='Decrypt a string?')]
         [switch]$Decrypt,
 
     [Parameter(
-        Position=3,
         HelpMessage='Use complete ascii table 0..255 chars (Default=33..126)')]
         [switch]$UseAllAsciiChars
 )
 
+
 Begin{
     [System.Collections.ArrayList]$AsciiChars = @()
      
-    $CharsIndex = 1
-    
+    $CharsIndex = 1    
     $StartAscii = 33
     $EndAscii = 126
+    $cmdletVersion = "v1.0.1"
 
-    # Use all ascii chars (useful for languages like german)
+    $Banner = @"
+
+    ________  ________  _________    
+   |\   __  \|\   __  \|\___   ___\   
+   \ \  \|\  \ \  \|\  \|___ \  \_| 
+    \ \   _  _\ \  \\\  \   \ \  \
+     \ \  \\  \\ \  \\\  \   \ \  \ 
+      \ \__\\ _\\ \_______\   \ \__\ 
+       \|__|\|__|\|_______|    \|__| $cmdletVersion
+        Convert-ROT47 Working Dir: '$pwd'
+
+"@;
+
+    Clear-Host
+    Write-Host "$Banner`n" -ForegroundColor Blue
+    #Use all ascii chars (useful for languages like german)
     if($UseAllAsciiChars)
     {
         $StartAscii = 0
@@ -131,78 +141,69 @@ Begin{
         Write-Host "Warning: Parameter -UseAllAsciiChars will use all chars from 0 to 255 in the ascii table. This may not work properly, but could be usefull to encrypt or decrypt languages like german with umlauts!" -ForegroundColor Yellow
     }
 
-    # Add chars from ascii table
-    foreach($i in $StartAscii..$EndAscii)
+    #Add chars from ascii table
+    ForEach($i in $StartAscii..$EndAscii)
     {
         $Char = [char]$i
-
         [pscustomobject]$Result = @{
             Index = $CharsIndex
             Char = $Char
         }   
 
         [void]$AsciiChars.Add($Result)
-
         $CharsIndex++
     }
 
-    # Default mode is "Decrypt"
-    if(($Encrypt -eq $false -and $Decrypt -eq $false) -or ($Decrypt)) 
+    #Default mode is "Decrypt"
+    If(($Encrypt -eq $false -and $Decrypt -eq $false) -or ($Decrypt)) 
     {        
         $Mode = "Decrypt"
     }    
-    else 
+    Else 
     {
         $Mode = "Encrypt"
     }
-
     Write-Verbose -Message "Mode is set to: $Mode"
 }
 
 Process{
-    foreach($Rot2 in $Rot)
+    ForEach($Rot2 in $Rot)
     {        
         $ResultText = [String]::Empty
-
-        # Go through each char in string
-        foreach($i in 0..($Text.Length -1))
+        #Go through each char in string
+        ForEach($i in 0..($Text.Length -1))
         {
             $CurrentChar = $Text.Substring($i, 1)
-
-            if(($AsciiChars.Char -ccontains $CurrentChar) -and ($CurrentChar -ne " ")) # Upper chars
+            If(($AsciiChars.Char -ccontains $CurrentChar) -and ($CurrentChar -ne " ")) # Upper chars
             {
-                if($Mode -eq  "Encrypt")
+                If($Mode -eq "Encrypt")
                 {                    
-                    [int]$NewIndex = ($AsciiChars | Where-Object {$_.Char -ceq $CurrentChar}).Index + $Rot2 
-                    
-                    if($NewIndex -gt $AsciiChars.Count)
+                    [int]$NewIndex = ($AsciiChars | Where-Object {$_.Char -ceq $CurrentChar}).Index + $Rot2
+                    If($NewIndex -gt $AsciiChars.Count)
                     {
                         $NewIndex -= $AsciiChars.Count                     
-                    
                         $ResultText +=  ($AsciiChars | Where-Object {$_.Index -eq $NewIndex}).Char
                     }
-                    else 
+                    Else 
                     {
                         $ResultText += ($AsciiChars | Where-Object {$_.Index -eq $NewIndex}).Char    
                     }
                 }
-                else 
+                Else 
                 {
-                    [int]$NewIndex = ($AsciiChars | Where-Object {$_.Char -ceq $CurrentChar}).Index - $Rot2 
-
-                    if($NewIndex -lt 1)
+                    [int]$NewIndex = ($AsciiChars | Where-Object {$_.Char -ceq $CurrentChar}).Index - $Rot2
+                    If($NewIndex -lt 1)
                     {
-                        $NewIndex += $AsciiChars.Count                     
-                    
+                        $NewIndex += $AsciiChars.Count
                         $ResultText +=  ($AsciiChars | Where-Object {$_.Index -eq $NewIndex}).Char
                     }
-                    else 
+                    Else 
                     {
                         $ResultText += ($AsciiChars | Where-Object {$_.Index -eq $NewIndex}).Char    
                     }
                 }   
             }
-            else 
+            Else 
             {
                 $ResultText += $CurrentChar  
             }
@@ -218,11 +219,10 @@ Process{
 $PS1DecriptRot = @("<#
 .SYNOPSIS
    Author: r00t-3xp10it
-   Helper - execute rot cipher! 
+   Helper - Execute rot$Rot cipher! 
 #>
 
 Begin{
-
     [Int32[]]`$Rot=$Rot
     [string]`$Text=`"$ResultText`"
     [System.Collections.ArrayList]`$AsciiChars = @()
