@@ -67,7 +67,7 @@
       4 This is an encrypted string!
 
 .EXAMPLE
-    .\Convert-ROT47.ps1 -Text "whoami" -Rot "7" -Action "decryptme" -Encrypt
+    .\Convert-ROT47.ps1 -Text "netstat -ano|findstr 'ESTABLISHED'|findstr /V '['" -Rot "7" -Action "decryptme" -Encrypt
     Convert text to rot7 and build the decrypt script (decryptme.ps1)
 
     * Raw String Length  : [49] chars
