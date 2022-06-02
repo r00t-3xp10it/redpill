@@ -208,6 +208,7 @@ Process{
             }
         } 
     
+
         If($Action -ieq "decryptme")
         {
         
@@ -270,9 +271,6 @@ Process{
        }Catch{Write-Host `"x Error: execution failed ..`" -ForeGroundColor red}
     }
 }")
-
-
-
 
            #Write Ps1 script to the sellected directory!
            echo "$PS1DecriptRot"|Out-File "$pwd\Decryptme.ps1" -encoding ascii -force
