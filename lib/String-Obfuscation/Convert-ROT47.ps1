@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (19043) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.1
+   PS cmdlet Dev version: v1.0.2
 
 .DESCRIPTION
     Rotate ascii chars by n places (Caesar cipher). You can encrypt with the parameter "-Encrypt"
@@ -69,7 +69,12 @@
 .EXAMPLE
     .\Convert-ROT47.ps1 -Text "whoami" -Rot "7" -Action "decryptme" -Encrypt
     Convert text to rot7 and build the decrypt script (decryptme.ps1)
-      
+
+    * Raw String Length  : [49] chars
+    * Text Raw String    : 'netstat -ano|findstr 'ESTABLISHED'|findstr /V '[''
+    * Converted String   : 'ul{z{h{ 4huv%mpukz{y .LZ[HISPZOLK.%mpukz{y 6] .b.'
+    * Decryption Routine : 'C:\Users\pedro\OneDrive\Ambiente de Trabalho\RedTeam-Library\String-Obfuscation\Decryptme.ps1'
+
 .LINK
    https://github.com/r00t-3xp10it/redpill/tree/main/lib/String-Obfuscation#convert-rot47ps1
    https://github.com/BornToBeRoot/PowerShell/blob/master/Documentation/Script/Convert-ROT47.README.md
@@ -115,7 +120,7 @@ Begin{
     $CharsIndex = 1    
     $StartAscii = 33
     $EndAscii = 126
-    $cmdletVersion = "v1.0.1"
+    $cmdletVersion = "v1.0.2"
 
     $Banner = @"
 
@@ -125,8 +130,8 @@ Begin{
     \ \   _  _\ \  \\\  \   \ \  \
      \ \  \\  \\ \  \\\  \   \ \  \ 
       \ \__\\ _\\ \_______\   \ \__\ 
-       \|__|\|__|\|_______|    \|__| $cmdletVersion
-        Convert-ROT47 Working Dir: '$pwd'
+       \|__|\|__|\|_______|    \|__|47 $cmdletVersion
+        Convert-ROT47:'$pwd'
 
 "@;
 
@@ -272,10 +277,21 @@ Process{
     }
 }")
 
+           $CounteMeOut = $Text.Length
            #Write Ps1 script to the sellected directory!
            echo "$PS1DecriptRot"|Out-File "$pwd\Decryptme.ps1" -encoding ascii -force
 
-           Write-Host "`n*" -ForegroundColor Green -NoNewline;
+           Write-Host "*" -ForegroundColor Green -NoNewline;
+           Write-Host " Raw String Length  : [" -ForegroundColor DarkGray -NoNewline;
+           Write-Host "$CounteMeOut" -NoNewline;
+           Write-Host "] chars" -ForegroundColor DarkGray;
+
+           Write-Host "`*" -ForegroundColor Green -NoNewline;
+           Write-Host " Text Raw String    : '" -ForegroundColor DarkGray -NoNewline;
+           Write-Host "$Text" -NoNewline;
+           Write-Host "'" -ForegroundColor DarkGray;
+
+           Write-Host "*" -ForegroundColor Green -NoNewline;
            Write-Host " Converted String   : '" -ForegroundColor DarkGray -NoNewline;
            Write-Host "$ResultText" -ForegroundColor DarkYellow -NoNewline;
            Write-Host "'" -ForegroundColor DarkGray;
