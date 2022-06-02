@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Encrypt or decrypt strings using ROT13 cipher.
     
@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.4.11
+   PS cmdlet Dev version: v1.4.12
    
 .DESCRIPTION
    ROT13 ("rotate by 13 places") is a simple letter substitution cipher that
@@ -94,7 +94,7 @@
 
 $Result = $null
 $Countlines = $null
-$cmdletVersion = "v1.4.11"
+$cmdletVersion = "v1.4.12"
 $ErrorActionPreference = "SilentlyContinue"
 #Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
@@ -207,6 +207,15 @@ try{
    ElseIf($Output -iMatch '^(ps1|psm1|psd1|powershell)$')
    {
 
+      If($text -iMatch '^(iex\(iwr\()')
+      {
+         $Rawcmdline = "powershell -Command `"`$rdata`""
+      }
+      Else
+      {
+         $Rawcmdline = "echo `"`$rdata`"|&(DIR Alias:/I*X)"   
+      }
+
 #ROT13-Decrypt script!
 $PS1DecriptRot = @("<#
 .SYNOPSIS
@@ -217,7 +226,7 @@ $PS1DecriptRot = @("<#
 
 `$Rotten13 = @(`"$Result`");`$rdata = `$null
 `$Rotten13.ToCharArray() | ForEach-Object {If((([int] `$_ -ge 97) -and ([int] `$_ -le 109)) -or (([int] `$_ -ge 65) -and ([int] `$_ -le 77))){`$rdata += [char] ([int] `$_ + 13)}ElseIf((([int] `$_ -ge 110) -and ([int] `$_ -le 122)) -or (([int] `$_ -ge 78) -and ([int] `$_ -le 90))){`$rdata += [char] ([int] `$_ - 13)}Else{`$rdata += `$_}}
-try{echo `"`$rdata`"|&(DIR Alias:/I*X)}catch{Write-Host `"convertion: `$rdata`" -ForeGroundColor Blue};Start-Sleep -Milliseconds 1400
+try{$Rawcmdline}catch{Write-Host `"convertion: `$rdata`" -ForeGroundColor Blue};Start-Sleep -Milliseconds 1400
 ")
 
       #Write Ps1 script to the sellected directory!
