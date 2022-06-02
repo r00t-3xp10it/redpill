@@ -1,14 +1,13 @@
-###############################################################################################################
-# Language     :  PowerShell 4.0
-# Filename     :  Convert-ROT47.ps1
-# Autor        :  BornToBeRoot (https://github.com/BornToBeRoot)
-# Description  :  Rotate ascii chars by n places (Caesar cipher)
-# Repository   :  https://github.com/BornToBeRoot/PowerShell
-###############################################################################################################
-
 <#
 .SYNOPSIS
     Rotate ascii chars by n places (Caesar cipher)
+
+   Author: @r00t-3xp10it
+   Addapted from: @BornToBeRoot
+   Tested Under: Windows 10 (19043) x64 bits
+   Required Dependencies: none
+   Optional Dependencies: none
+   PS cmdlet Dev version: v1.0.1
 
 .DESCRIPTION
     Rotate ascii chars by n places (Caesar cipher). You can encrypt with the parameter "-Encrypt"
@@ -18,14 +17,14 @@
     Try the parameter "-UseAllAsciiChars" if you have a string with umlauts which e.g. (German language). 
 
 .EXAMPLE
-    .\Convert-ROT47.ps1 -Text "This is an encrypted string!" -Rot 7
+    .\Convert-ROT47.ps1 -Text "This is an encrypted string!" -Rot 7 -Encrypt
 
     Rot Text
     --- ----
       7 [opz pz hu lujy"w{lk z{ypun(
 
 .EXAMPLE
-    .\Convert-ROT47.ps1 -Text '[opz pz hu lujy"w{lk z{ypun(' -Rot (5..10)
+    .\Convert-ROT47.ps1 -Text '[opz pz hu lujy"w{lk z{ypun(' -Rot (5..10) -Encrypt
 
     Rot Text
     --- ----
@@ -44,7 +43,7 @@
       3 Ehlvslho= Fçvdu0Yhuvfkoÿvvhoxqj 0 Vsudfkh Ghxwvfk$
 
 .EXAMPLE
-    .\Convert-ROT47.ps1 -Text "Ehlvslho= Fçvdu0Yhuvfkoÿvvhoxqj 0 Vsudfkh Ghxwvfk$" -Rot (1..4) -UseAllAsciiChars
+    .\Convert-ROT47.ps1 -Text "Ehlvslho= Fçvdu0Yhuvfkoÿvvhoxqj 0 Vsudfkh Ghxwvfk$" -Rot (1..4) -Encrypt -UseAllAsciiChars
 
     Rot Text
     --- ----
@@ -54,14 +53,14 @@
       4 Adhrohdk9 Bãr`q,Udqrbgkûrrdktmf , Roq`bgd Cdtsrbg
 
 .EXAMPLE
-    .\Convert-ROT47.ps1 -Text "This is an encrypted string!" -rot 4 -encrypt
+    .\Convert-ROT47.ps1 -Text "This is an encrypted string!" -rot 4 -Encrypt
 
     Rot Text
     --- ----
       4 Xlmw mw er irgv}txih wxvmrk%
 
 .EXAMPLE
-    .\Convert-ROT47.ps1 -Text "Xlmw mw er irgv}txih wxvmrk%" -rot 4 -decrypt
+    .\Convert-ROT47.ps1 -Text "Xlmw mw er irgv}txih wxvmrk%" -rot 4 -Decrypt
 
     Rot Text
     --- ----
@@ -72,7 +71,8 @@
     Convert text to rot7 and build the decrypt script (decryptme.ps1)
       
 .LINK
-    https://github.com/BornToBeRoot/PowerShell/blob/master/Documentation/Script/Convert-ROT47.README.md
+   https://github.com/r00t-3xp10it/redpill/tree/main/lib/String-Obfuscation#convert-rot47ps1
+   https://github.com/BornToBeRoot/PowerShell/blob/master/Documentation/Script/Convert-ROT47.README.md
 #>
 
 
@@ -274,19 +274,40 @@ Process{
 
            #Write Ps1 script to the sellected directory!
            echo "$PS1DecriptRot"|Out-File "$pwd\Decryptme.ps1" -encoding ascii -force
+
            Write-Host "`n*" -ForegroundColor Green -NoNewline;
-           Write-Host " written to: '" -ForegroundColor DarkGray -NoNewline;
+           Write-Host " Converted String   : '" -ForegroundColor DarkGray -NoNewline;
+           Write-Host "$ResultText" -ForegroundColor DarkYellow -NoNewline;
+           Write-Host "'" -ForegroundColor DarkGray;
+
+           Write-Host "*" -ForegroundColor Green -NoNewline;
+           Write-Host " Decryption Routine : '" -ForegroundColor DarkGray -NoNewline;
            Write-Host "$pwd\Decryptme.ps1" -ForegroundColor Green -NoNewline;
            Write-Host "'`n" -ForegroundColor DarkGray;
-
         
         }
         Else
         {
-           [pscustomobject] @{
-               Rot = $Rot2
-               Text = $ResultText
+
+           ## Display List format if string
+           # its bigger than 100 chars ..
+           If(($ResultText.Length) -ge 100)
+           {
+              write-host "`nRot  : " -NoNewline
+              write-host "$Rot" -ForegroundColor DarkGray
+              write-host "Text : " -NoNewline
+              write-host "$ResultText`n" -ForegroundColor DarkGray
            }
+           Else
+           {
+              ## Display Table if string
+              # its smaller than 100 chars
+              [pscustomobject] @{
+                  Rot = $Rot2
+                  Text = $ResultText
+              }
+           }
+
         }
     }
 }
