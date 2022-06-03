@@ -128,7 +128,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bypass/enc
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|[Convert-ROT47](https://github.com/r00t-3xp10it/redpill/blob/main/lib/String-Obfuscation/Convert-ROT47.ps1)|Rotate ascii chars by nº places (Caesar cipher)|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Convert-ROT47.png)<br />[Decryption Rountine CmdLet Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Convert-rot47_Decryption_auto.png)<br />[Decryption_Routine_CmdLet_Screenshot2](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Convert-rot47_AutoDecryption.png)<br />Creates decrypt script if sellected **-action 'decryptme'**|
+|[Convert-ROT47](https://github.com/r00t-3xp10it/redpill/blob/main/lib/String-Obfuscation/Convert-ROT47.ps1)|Rotate ascii chars by nº places (Caesar cipher)|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Convert-ROT47.png)<br />[Decryption Rountine CmdLet Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Convert-ROT47_Decryption.png)<br />[Decryption_Routine_CmdLet_Screenshot2](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String-Obfuscation/Convert-rot47_Decryption_auto.png)<br />Creates decrypt script if sellected **-action 'decryptme'**|
 
 **download cmdLet:**
 ```powershell
@@ -174,4 +174,12 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String
 #Convert script.ps1 to rot8 and build the decrypt script (decryptme.ps1)
 .\Convert-ROT47.ps1 -Infile "Payload.ps1" -Rot "8" -Action "decryptme" -Encrypt
 .\Decryptme.ps1
+```
+
+<br />
+
+**Final Notes:**
+```powershell
+[Remark]: When invoking -action 'decryptme' parameter. We need to test if 'decryptme.ps1'
+executes successfuly. If NOT then try to create it invoking a diferent ROT rotation.
 ```
