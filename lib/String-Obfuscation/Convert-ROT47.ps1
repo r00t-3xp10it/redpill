@@ -39,21 +39,21 @@
      10 Qefp fp ^k bk`ovmqba pqofkd|
 
 .EXAMPLE
-    .\Convert-ROT47.ps1 -Text 'Beispiel: Cäsar-Verschlüsselung - Sprache Deutsch!' -Rot 3 -Encrypt -UseAllAsciiChars
+    .\Convert-ROT47.ps1 -Text 'Beispiel: CÃ¤sar-VerschlÃ¼sselung - Sprache Deutsch!' -Rot 3 -Encrypt -UseAllAsciiChars
 
     Rot Text
     --- ----
-      3 Ehlvslho= Fçvdu0Yhuvfkoÿvvhoxqj 0 Vsudfkh Ghxwvfk$
+      3 Ehlvslho= FÃ§vdu0YhuvfkoÃ¿vvhoxqj 0 Vsudfkh Ghxwvfk$
 
 .EXAMPLE
-    .\Convert-ROT47.ps1 -Text 'Ehlvslho= Fçvdu0Yhuvfkoÿvvhoxqj 0 Vsudfkh Ghxwvfk$' -Rot (1..4) -Encrypt -UseAllAsciiChars
+    .\Convert-ROT47.ps1 -Text 'Ehlvslho= FÃ§vdu0YhuvfkoÃ¿vvhoxqj 0 Vsudfkh Ghxwvfk$' -Rot (1..4) -Encrypt -UseAllAsciiChars
 
     Rot Text
     --- ----
-      1 Dgkurkgn< Eæuct/Xgtuejnþuugnwpi / Urtcejg Fgwvuej#
-      2 Cfjtqjfm; Dåtbs.Wfstdimýttfmvoh . Tqsbdif Efvutdi"
-      3 Beispiel: Cäsar-Verschlüsselung - Sprache Deutsch!
-      4 Adhrohdk9 Bãr`q,Udqrbgkûrrdktmf , Roq`bgd Cdtsrbg
+      1 Dgkurkgn< EÃ¦uct/XgtuejnÃ¾uugnwpi / Urtcejg Fgwvuej#
+      2 Cfjtqjfm; DÃ¥tbs.WfstdimÃ½ttfmvoh . Tqsbdif Efvutdi"
+      3 Beispiel: CÃ¤sar-VerschlÃ¼sselung - Sprache Deutsch!
+      4 Adhrohdk9 BÃ£r`q,UdqrbgkÃ»rrdktmf , Roq`bgd Cdtsrbg
 
 .EXAMPLE
     .\Convert-ROT47.ps1 -Text 'This is an encrypted string!' -rot 4 -Encrypt
@@ -234,6 +234,7 @@ Begin{
           exit
        }
 
+       write-host "* Reading file contents ..." -ForegroundColor Green
        #Get the cmdline\string to convert to rot13 from txt\ps1 file!
        [string]$Text = [System.IO.File]::ReadAllText("$InFile")
     }
@@ -357,6 +358,7 @@ Process{
            Write-Host " Raw String Length  : [" -ForegroundColor DarkGray -NoNewline;
            Write-Host "$CharsCount" -NoNewline;
            Write-Host "] chars" -ForegroundColor DarkGray;
+           Start-Sleep -Milliseconds 700
 
            Write-Host "*" -ForegroundColor Green -NoNewline;
            Write-Host " Text Raw String    : '" -ForegroundColor DarkGray -NoNewline;
@@ -367,6 +369,7 @@ Process{
            Write-Host " Converted String   : '" -ForegroundColor DarkGray -NoNewline;
            Write-Host "$ResultText" -ForegroundColor DarkYellow -NoNewline;
            Write-Host "'" -ForegroundColor DarkGray;
+           Start-Sleep -Milliseconds 700
 
            Write-Host "*" -ForegroundColor Green -NoNewline;
            Write-Host " Decryption Routine : '" -ForegroundColor DarkGray -NoNewline;
@@ -374,11 +377,8 @@ Process{
            Write-Host "'" -ForegroundColor DarkGray;
 
            Write-Host "+" -ForegroundColor DarkYellow -NoNewline;
-           Write-Host " Obfuscation Remark : " -ForegroundColor DarkGray -NoNewline;
-           Write-Host "Test if 'decryptme.ps1' cmdlet executes." -ForegroundColor DarkYellow;
-           Write-Host "+" -ForegroundColor DarkYellow -NoNewline;
-           Write-Host " Obfuscation Remark : " -ForegroundColor DarkGray -NoNewline;
-           Write-Host "If NOT, try create it with a diferent ROT.`n" -ForegroundColor DarkYellow;
+           Write-Host " Remark: " -ForegroundColor DarkGray -NoNewline;
+           Write-Host "If 'decryptme.ps1' fails to execute. Create it with a diferent ROT.`n";
   
         }
         Else
@@ -388,10 +388,15 @@ Process{
            # its bigger than 100 chars ..
            If(($ResultText.Length) -ge 100)
            {
-              write-host "Rot  : [" -NoNewline
+              $CharsCount = $ResultText.Length
+              write-host "Rot    : [" -NoNewline
               write-host "$Rot2" -ForegroundColor Green -NoNewline
               write-host "]"
-              write-host "Text : " -NoNewline
+              Write-Host "Length : [" -NoNewline;
+              Write-Host "$CharsCount" -ForegroundColor Green -NoNewline
+              Write-Host "] chars"
+              Start-Sleep -Milliseconds 700
+              write-host "Text   : " -NoNewline
               write-host "$ResultText`n" -ForegroundColor DarkYellow
            }
            Else
