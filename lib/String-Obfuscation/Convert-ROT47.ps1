@@ -309,10 +309,11 @@ Process{
            # its bigger than 100 chars ..
            If(($ResultText.Length) -ge 100)
            {
-              write-host "`nRot  : " -NoNewline
-              write-host "$Rot" -ForegroundColor DarkGray
+              write-host "Rot  : [" -NoNewline
+              write-host "$Rot2" -ForegroundColor Green -NoNewline
+              write-host "]"
               write-host "Text : " -NoNewline
-              write-host "$ResultText`n" -ForegroundColor DarkGray
+              write-host "$ResultText`n" -ForegroundColor DarkYellow
            }
            Else
            {
