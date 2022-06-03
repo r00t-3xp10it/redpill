@@ -17,9 +17,10 @@
     Invoke -UseAllAsciiChars if you have a string with umlauts which e.g. (German language).
     Remark: When invoking -action 'decryptme' parameter. We need to test if 'decryptme.ps1'
     executes successfuly. If NOT then try to create it invoking a diferent ROT rotation.
+    Remark: Try to use single quotes ['] in -text 'string' parameter if possible.
 
 .EXAMPLE
-    .\Convert-ROT47.ps1 -Text "This is an encrypted string!" -Rot 7 -Encrypt
+    .\Convert-ROT47.ps1 -Text 'This is an encrypted string!' -Rot 7 -Encrypt
 
     Rot Text
     --- ----
@@ -38,14 +39,14 @@
      10 Qefp fp ^k bk`ovmqba pqofkd|
 
 .EXAMPLE
-    .\Convert-ROT47.ps1 -Text "Beispiel: Cäsar-Verschlüsselung - Sprache Deutsch!" -Rot 3 -Encrypt -UseAllAsciiChars
+    .\Convert-ROT47.ps1 -Text 'Beispiel: Cäsar-Verschlüsselung - Sprache Deutsch!' -Rot 3 -Encrypt -UseAllAsciiChars
 
     Rot Text
     --- ----
       3 Ehlvslho= Fçvdu0Yhuvfkoÿvvhoxqj 0 Vsudfkh Ghxwvfk$
 
 .EXAMPLE
-    .\Convert-ROT47.ps1 -Text "Ehlvslho= Fçvdu0Yhuvfkoÿvvhoxqj 0 Vsudfkh Ghxwvfk$" -Rot (1..4) -Encrypt -UseAllAsciiChars
+    .\Convert-ROT47.ps1 -Text 'Ehlvslho= Fçvdu0Yhuvfkoÿvvhoxqj 0 Vsudfkh Ghxwvfk$' -Rot (1..4) -Encrypt -UseAllAsciiChars
 
     Rot Text
     --- ----
@@ -55,14 +56,14 @@
       4 Adhrohdk9 Bãr`q,Udqrbgkûrrdktmf , Roq`bgd Cdtsrbg
 
 .EXAMPLE
-    .\Convert-ROT47.ps1 -Text "This is an encrypted string!" -rot 4 -Encrypt
+    .\Convert-ROT47.ps1 -Text 'This is an encrypted string!' -rot 4 -Encrypt
 
     Rot Text
     --- ----
       4 Xlmw mw er irgv}txih wxvmrk%
 
 .EXAMPLE
-    .\Convert-ROT47.ps1 -Text "Xlmw mw er irgv}txih wxvmrk%" -rot 4 -Decrypt
+    .\Convert-ROT47.ps1 -Text 'Xlmw mw er irgv}txih wxvmrk%' -rot 4 -Decrypt
 
     Rot Text
     --- ----
