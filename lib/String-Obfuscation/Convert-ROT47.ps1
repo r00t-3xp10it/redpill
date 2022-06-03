@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (19043) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.2
+   PS cmdlet Dev version: v1.0.4
 
 .DESCRIPTION
     Rotate ascii chars by n places (Caesar cipher). You can encrypt with the parameter "-Encrypt"
@@ -75,6 +75,16 @@
     * Converted String   : 'ul{z{h{ 4huv%mpukz{y .LZ[HISPZOLK.%mpukz{y 6] .b.'
     * Decryption Routine : 'C:\Users\pedro\OneDrive\Ambiente de Trabalho\RedTeam-Library\String-Obfuscation\Decryptme.ps1'
 
+.EXAMPLE
+    .\Convert-ROT47.ps1 -Infile "payload.ps1 -Rot "8" -Action "decryptme" -Encrypt
+    This function allow attackers to converts the contents of -infile 'path\to\file'
+    into a rot string, and builds the PS1 decrypt script that executes the sourcecode.
+
+    * Raw String Length  : [2538] chars
+    * Text Raw String    : 'blablabla'
+    * Converted String   : 'blablabla'
+    * Decryption Routine : 'C:\Users\pedro\OneDrive\Ambiente de Trabalho\RedTeam-Library\String-Obfuscation\Decryptme.ps1'
+
 .LINK
    https://github.com/r00t-3xp10it/redpill/tree/main/lib/String-Obfuscation#convert-rot47ps1
    https://github.com/BornToBeRoot/PowerShell/blob/master/Documentation/Script/Convert-ROT47.README.md
@@ -89,7 +99,12 @@ param (
         [String]$Action="Normal",
 
     [Parameter(
-        Mandatory=$true,
+        Mandatory=$false,
+        HelpMessage='Get sourcecode to convert from TXT\PS1?')]    
+        [String]$InFile="false",
+
+    [Parameter(
+        Mandatory=$false,
         HelpMessage='String which you want to encrypt or decrypt')]    
         [String]$Text,
 
@@ -120,7 +135,18 @@ Begin{
     $CharsIndex = 1    
     $StartAscii = 33
     $EndAscii = 126
-    $cmdletVersion = "v1.0.2"
+    $cmdletVersion = "v1.0.4"
+
+    If(-not($Text) -and $InFile -ieq "false")
+    {
+       Write-Host "`nx" -ForegroundColor Red -NoNewline;
+       Write-Host " Error: CmdLet requires " -ForegroundColor DarkGray -NoNewline;
+       Write-Host "-text 'string'" -ForegroundColor Red -NoNewline;
+       Write-Host " OR " -ForegroundColor DarkGray -NoNewline;
+       Write-Host "-infile 'file.ps1'" -ForegroundColor Red -NoNewline;
+       Write-Host " parameters.`n" -ForegroundColor DarkGray;
+       exit
+    }
 
     $Banner = @"
 
@@ -169,6 +195,41 @@ Begin{
         $Mode = "Encrypt"
     }
     Write-Verbose -Message "Mode is set to: $Mode"
+
+    If($InFile -ne "false")
+    {
+       <#
+       .SYNOPSIS
+          Author: @r00t-3xp10it
+          Helper - Get sourcecode to convert from TXT\PS1
+
+       .NOTES
+          This function allow attackers to converts the contents of -infile 'path\to\file'
+          into a rot strings, and builds the PS1 decrypt script that executes sourcecode.
+       #>
+
+       #Check for cmdlet dependencies!
+       If(-not(Test-Path -Path "$InFile" -EA SilentlyContinue))
+       {
+          Write-Host "`nx" -ForegroundColor Red -NoNewline;
+          Write-Host " Notfound: '" -ForegroundColor DarkGray -NoNewline;
+          Write-Host "$InFile" -ForegroundColor Red -NoNewline;
+          Write-Host "'`n" -ForegroundColor DarkGray;
+          exit
+       }
+       If($InFile -iNotMatch '(.ps1|.psm1|.psd1|.txt)$')
+       {
+          Write-Host "`nx" -ForegroundColor Red -NoNewline;
+          Write-Host " Error: This function only accepts '" -ForegroundColor DarkGray -NoNewline;
+          Write-Host ".ps1 OR .txt" -ForegroundColor Red -NoNewline;
+          Write-Host "'file formats.`n" -ForegroundColor DarkGray;
+          exit
+       }
+
+       #Get the cmdline\string to convert to rot13 from txt\ps1 file!
+       [string]$Text = [System.IO.File]::ReadAllText("$InFile")
+    }
+
 }
 
 Process{
