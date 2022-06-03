@@ -182,4 +182,6 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String
 ```powershell
 [Remark]: When invoking -action 'decryptme' parameter. We need to test if 'decryptme.ps1'
 executes successfuly. If NOT then try to create it invoking a diferent ROT rotation.
+
+[Remark]: Try to use single quotes ['] in -text 'string' parameter if possible.
 ```
