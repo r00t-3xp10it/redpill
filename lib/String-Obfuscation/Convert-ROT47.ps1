@@ -7,14 +7,16 @@
    Tested Under: Windows 10 (19043) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.4
+   PS cmdlet Dev version: v1.0.5
 
 .DESCRIPTION
     Rotate ascii chars by n places (Caesar cipher). You can encrypt with the parameter "-Encrypt"
     or decrypt with the parameter "-Decrypt", depens on what you need. Decryption is selected by default.
 
 .NOTES
-    Try the parameter "-UseAllAsciiChars" if you have a string with umlauts which e.g. (German language). 
+    Invoke -UseAllAsciiChars if you have a string with umlauts which e.g. (German language).
+    Remark: When invoking -action 'decryptme' parameter. We need to test if 'decryptme.ps1'
+    executes successfuly. If NOT then try to create it invoking a diferent ROT rotation.
 
 .EXAMPLE
     .\Convert-ROT47.ps1 -Text "This is an encrypted string!" -Rot 7 -Encrypt
@@ -135,7 +137,7 @@ Begin{
     $CharsIndex = 1    
     $StartAscii = 33
     $EndAscii = 126
-    $cmdletVersion = "v1.0.4"
+    $cmdletVersion = "v1.0.5"
 
     If(-not($Text) -and $InFile -ieq "false")
     {
@@ -175,6 +177,8 @@ Begin{
     #Add chars from ascii table
     ForEach($i in $StartAscii..$EndAscii)
     {
+        If($i -NotMatch '`')
+        {
         $Char = [char]$i
         [pscustomobject]$Result = @{
             Index = $CharsIndex
@@ -183,6 +187,7 @@ Begin{
 
         [void]$AsciiChars.Add($Result)
         $CharsIndex++
+        }
     }
 
     #Default mode is "Decrypt"
@@ -217,7 +222,7 @@ Begin{
           Write-Host "'`n" -ForegroundColor DarkGray;
           exit
        }
-       If($InFile -iNotMatch '(.ps1|.psm1|.psd1|.txt)$')
+       If($InFile -iNotMatch '(.ps1|.txt)$')
        {
           Write-Host "`nx" -ForegroundColor Red -NoNewline;
           Write-Host " Error: This function only accepts '" -ForegroundColor DarkGray -NoNewline;
@@ -239,6 +244,8 @@ Process{
         #Go through each char in string
         ForEach($i in 0..($Text.Length -1))
         {
+            If($i -NotMatch '`')
+            {
             $CurrentChar = $Text.Substring($i, 1)
             If(($AsciiChars.Char -ccontains $CurrentChar) -and ($CurrentChar -ne " ")) # Upper chars
             {
@@ -272,6 +279,7 @@ Process{
             Else 
             {
                 $ResultText += $CurrentChar  
+            }
             }
         } 
     
@@ -347,7 +355,7 @@ Process{
            Write-Host "$CharsCount" -NoNewline;
            Write-Host "] chars" -ForegroundColor DarkGray;
 
-           Write-Host "`*" -ForegroundColor Green -NoNewline;
+           Write-Host "*" -ForegroundColor Green -NoNewline;
            Write-Host " Text Raw String    : '" -ForegroundColor DarkGray -NoNewline;
            Write-Host "$Text" -NoNewline;
            Write-Host "'" -ForegroundColor DarkGray;
@@ -360,8 +368,15 @@ Process{
            Write-Host "*" -ForegroundColor Green -NoNewline;
            Write-Host " Decryption Routine : '" -ForegroundColor DarkGray -NoNewline;
            Write-Host "$pwd\Decryptme.ps1" -ForegroundColor Green -NoNewline;
-           Write-Host "'`n" -ForegroundColor DarkGray;
-        
+           Write-Host "'" -ForegroundColor DarkGray;
+
+           Write-Host "+" -ForegroundColor DarkYellow -NoNewline;
+           Write-Host " Obfuscation Remark : " -ForegroundColor DarkGray -NoNewline;
+           Write-Host "Test if 'decryptme.ps1' cmdlet executes." -ForegroundColor DarkYellow;
+           Write-Host "+" -ForegroundColor DarkYellow -NoNewline;
+           Write-Host " Obfuscation Remark : " -ForegroundColor DarkGray -NoNewline;
+           Write-Host "If NOT, try create it with a diferent ROT.`n" -ForegroundColor DarkYellow;
+  
         }
         Else
         {
