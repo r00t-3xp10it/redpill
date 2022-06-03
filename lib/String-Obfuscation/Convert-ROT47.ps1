@@ -147,6 +147,8 @@ Begin{
        Write-Host " OR " -ForegroundColor DarkGray -NoNewline;
        Write-Host "-infile 'file.ps1'" -ForegroundColor Red -NoNewline;
        Write-Host " parameters.`n" -ForegroundColor DarkGray;
+       Start-Sleep -Seconds 2
+       Get-help .\Convert-ROT47.ps1 -Examples
        exit
     }
 
