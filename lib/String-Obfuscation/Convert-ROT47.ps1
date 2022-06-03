@@ -273,17 +273,17 @@ Process{
     
        Try{#EXECUTE
           If(`$ResultText -iMatch '^(iex\(iwr\()'){Powershell -Command `"`$ResultText`"}Else{echo `"`$ResultText`"|&(DIR Alias:/I*X)}
-       }Catch{Write-Host `"x Error: execution failed ..`" -ForeGroundColor red}
+       }Catch{Write-Host `"x Error: deObfuscation execution failed ..`" -ForeGroundColor Red;Start-Sleep -Seconds 2}
     }
 }")
 
-           $CounteMeOut = $Text.Length
+           $CharsCount = $Text.Length
            #Write Ps1 script to the sellected directory!
            echo "$PS1DecriptRot"|Out-File "$pwd\Decryptme.ps1" -encoding ascii -force
 
            Write-Host "*" -ForegroundColor Green -NoNewline;
            Write-Host " Raw String Length  : [" -ForegroundColor DarkGray -NoNewline;
-           Write-Host "$CounteMeOut" -NoNewline;
+           Write-Host "$CharsCount" -NoNewline;
            Write-Host "] chars" -ForegroundColor DarkGray;
 
            Write-Host "`*" -ForegroundColor Green -NoNewline;
