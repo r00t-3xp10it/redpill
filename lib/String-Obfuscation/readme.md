@@ -167,7 +167,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String
 
 
 #Convert text to rot7 and build the decrypt script (decryptme.ps1)
-.\Convert-ROT47.ps1 -Text 'whoami' -Rot "7" -Action "decryptme" -Encrypt
+.\Convert-ROT47.ps1 -Text 'whoami /priv;echo ""' -Rot "7" -Action "decryptme" -Encrypt
 .\Decryptme.ps1
 
 
