@@ -94,9 +94,9 @@ param (
         [String]$Text,
 
     [Parameter(
-        HelpMessage='Specify which rotation you want to use (Default=1..10)')]
-        [ValidateRange(1,10)]
-        [Int32[]]$Rot=1..10,
+        HelpMessage='Specify which rotation you want to use (Default=1..47)')]
+        [ValidateRange(1,47)]
+        [Int32[]]$Rot=1..47,
 
     [Parameter(
         ParameterSetName='Encrypt',
