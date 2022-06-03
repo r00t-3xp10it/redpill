@@ -138,7 +138,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String
 **execute:**
 ```powershell
 #Encrypt Text using from rot 5 to rot 10 char rotation
-.\Convert-ROT47.ps1 -Text "This is an encrypted string!" -Rot (5..10)
+.\Convert-ROT47.ps1 -Text 'This is an encrypted string!' -Rot (5..10) -Encrypt
 #Outputs:
 #    Rot Text
 #    --- ----
@@ -151,7 +151,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String
 
 
 #Encrypt Text using rot 4
-.\Convert-ROT47.ps1 -Text "This is an encrypted string!" -rot 4 -encrypt
+.\Convert-ROT47.ps1 -Text 'This is an encrypted string!' -rot 4 -Encrypt
 #Outputs:
 #    Rot Text
 #    --- ----
@@ -159,7 +159,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String
 
 
 #Decrypt rot 4 strings
-.\Convert-ROT47.ps1 -Text "Xlmw mw er irgv}txih wxvmrk%" -rot 4 -decrypt
+.\Convert-ROT47.ps1 -Text 'Xlmw mw er irgv}txih wxvmrk%' -rot 4 -Decrypt
 #Outputs:
 #    Rot Text
 #    --- ----
@@ -167,12 +167,12 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String
 
 
 #Convert text to rot7 and build the decrypt script (decryptme.ps1)
-.\Convert-ROT47.ps1 -Text "whoami" -Rot "7" -Action "decryptme" -Encrypt
+.\Convert-ROT47.ps1 -Text 'whoami' -Rot "7" -Action "decryptme" -Encrypt
 .\Decryptme.ps1
 
 
 #Convert script.ps1 to rot8 and build the decrypt script (decryptme.ps1)
-.\Convert-ROT47.ps1 -Infile "Payload.ps1" -Rot "8" -Action "decryptme" -Encrypt
+.\Convert-ROT47.ps1 -Infile "$pwd\Payload.ps1" -Rot "8" -Action "decryptme" -Encrypt
 .\Decryptme.ps1
 ```
 
