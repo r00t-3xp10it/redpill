@@ -1,35 +1,35 @@
 <#
 .SYNOPSIS
-    Rotate ascii chars by n places (Caesar cipher)
+    Rotate ascii chars by nº places (Caesar cipher)
 
    Author: @r00t-3xp10it
    Addapted from: @BornToBeRoot
    Tested Under: Windows 10 (19043) x64 bits
    Required Dependencies: none
-   Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.7
+   Optional Dependencies: System.IO.File {nativw}
+   PS cmdlet Dev version: v1.0.8
 
 .DESCRIPTION
-    Rotate ascii chars by n places (Caesar cipher). You can encrypt with the parameter "-Encrypt"
-    or decrypt with the parameter "-Decrypt", depens on what you need. Decryption is selected by default.
+    Rotate ascii chars by nº places (Caesar cipher). You can encrypt invoking -Encrypt
+    parameter or decrypt it invoking parameter -Decrypt. Depends on what you need.
 
 .NOTES
-    Invoke -UseAllAsciiChars if you have a string with umlauts which e.g. (German language).
     Remark: When invoking -action 'decryptme' parameter. We need to test if 'decryptme.ps1'
-    executes successfuly. If NOT then try to create it invoking a diferent ROT rotation.
-    Remark: Try to use single quotes ['] in -text 'string' parameter if possible.
+    executes successfuly. If 'NOT' then try to create it invoking a diferent ROT rotation.
+    Remark: Try using single quotes ['] in -text 'string' parameter everytime its possible OR
+    else its required to escape special chars like: ` $ " on -Text 'string' -Decrypt function.
 
 .EXAMPLE
     .\Convert-ROT47.ps1 -Text 'This is an encrypted string!' -Rot (5..10) -Encrypt
 
     Rot Text
     --- ----
-      5 Vjku ku cp gpet{rvgf uvtkpi#
-      6 Uijt jt bo fodszqufe tusjoh"
+      5 Ymnx nx fs jshw~uyji xywnsl&
+      6 Znoy oy gt ktix!vzkj yzxotm'
       7 [opz pz hu lujy"w{lk z{ypun(
-      8 Sghr hr `m dmbqxosdc rsqhmf~
-      9 Rfgq gq _l clapwnrcb qrpgle}
-     10 Qefp fp ^k bk`ovmqba pqofkd|
+      8 \pq{ q{ iv mvkz#x|ml {|zqvo)
+      9 ]qr| r| jw nwl{$y}nm |}{rwp*
+     10 ^rs} s} kx oxm|%z~on }~|sxq+
 
 .EXAMPLE
     .\Convert-ROT47.ps1 -Text 'This is an encrypted string!' -rot 4 -Encrypt
@@ -44,13 +44,6 @@
     Rot Text
     --- ----
       4 This is an encrypted string!
-
-.EXAMPLE
-    .\Convert-ROT47.ps1 -Text 'Beispiel: CÃƒÆ’Ã‚Â¤sar-VerschlÃƒÆ’Ã‚Â¼sselung - Sprache Deutsch!' -Rot 3 -Encrypt -UseAllAsciiChars
-
-    Rot Text
-    --- ----
-      3 Ehlvslho= FÃƒÆ’Ã‚Â§vdu0YhuvfkoÃƒÆ’Ã‚Â¿vvhoxqj 0 Vsudfkh Ghxwvfk$
 
 .EXAMPLE
     .\Convert-ROT47.ps1 -Text "netstat -ano|findstr 'ESTABLISHED'|findstr /V '['" -Rot '7' -Action 'decryptme' -Encrypt
@@ -109,11 +102,7 @@ param (
     [Parameter(
         ParameterSetName='Decrypt',
         HelpMessage='Decrypt a string?')]
-        [switch]$Decrypt,
-
-    [Parameter(
-        HelpMessage='Use complete ascii table 0..255 chars (Default=33..126)')]
-        [switch]$UseAllAsciiChars
+        [switch]$Decrypt
 )
 
 
@@ -123,7 +112,7 @@ Begin{
     $CharsIndex = 1    
     $StartAscii = 33
     $EndAscii = 126
-    $cmdletVersion = "v1.0.7"
+    $cmdletVersion = "v1.0.8"
 
     If(-not($Text) -and $InFile -ieq "false")
     {
@@ -153,15 +142,6 @@ Begin{
 
     Clear-Host
     Write-Host "$Banner`n" -ForegroundColor Blue
-    #Use all ascii chars (useful for languages like german)
-    if($UseAllAsciiChars)
-    {
-        $StartAscii = 0
-        $EndAscii = 255
-
-        Write-Host "Warning: Parameter -UseAllAsciiChars will use all chars from 0 to 255 in the ascii table. This may not work properly, but could be usefull to encrypt or decrypt languages like german with umlauts!" -ForegroundColor Yellow
-    }
-
     #Add chars from ascii table
     ForEach($i in $StartAscii..$EndAscii)
     {
@@ -384,7 +364,7 @@ Process{
 
            Write-Host "+" -ForegroundColor DarkYellow -NoNewline;
            Write-Host " Remark: " -ForegroundColor DarkGray -NoNewline;
-           Write-Host "If 'decryptme.ps1' fails to execute. Create it with a diferent ROT.`n";
+           Write-Host "If 'decryptme.ps1' fails to execute. Create it with a diferent ROTation.`n";
   
         }
         Else
