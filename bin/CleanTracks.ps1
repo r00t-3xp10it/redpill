@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Cover tracks \ Clean artifacts {anti-forensic}
 
