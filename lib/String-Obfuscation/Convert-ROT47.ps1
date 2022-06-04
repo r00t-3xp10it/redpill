@@ -20,40 +20,16 @@
     Remark: Try to use single quotes ['] in -text 'string' parameter if possible.
 
 .EXAMPLE
-    .\Convert-ROT47.ps1 -Text 'This is an encrypted string!' -Rot 7 -Encrypt
-
-    Rot Text
-    --- ----
-      7 [opz pz hu lujy"w{lk z{ypun(
-
-.EXAMPLE
-    .\Convert-ROT47.ps1 -Text '[opz pz hu lujy"w{lk z{ypun(' -Rot (5..10) -Encrypt
+    .\Convert-ROT47.ps1 -Text 'This is an encrypted string!' -Rot (5..10) -Encrypt
 
     Rot Text
     --- ----
       5 Vjku ku cp gpet{rvgf uvtkpi#
       6 Uijt jt bo fodszqufe tusjoh"
-      7 This is an encrypted string!
+      7 [opz pz hu lujy"w{lk z{ypun(
       8 Sghr hr `m dmbqxosdc rsqhmf~
       9 Rfgq gq _l clapwnrcb qrpgle}
      10 Qefp fp ^k bk`ovmqba pqofkd|
-
-.EXAMPLE
-    .\Convert-ROT47.ps1 -Text 'Beispiel: CÃƒÂ¤sar-VerschlÃƒÂ¼sselung - Sprache Deutsch!' -Rot 3 -Encrypt -UseAllAsciiChars
-
-    Rot Text
-    --- ----
-      3 Ehlvslho= FÃƒÂ§vdu0YhuvfkoÃƒÂ¿vvhoxqj 0 Vsudfkh Ghxwvfk$
-
-.EXAMPLE
-    .\Convert-ROT47.ps1 -Text 'Ehlvslho= FÃƒÂ§vdu0YhuvfkoÃƒÂ¿vvhoxqj 0 Vsudfkh Ghxwvfk$' -Rot (1..4) -Encrypt -UseAllAsciiChars
-
-    Rot Text
-    --- ----
-      1 Dgkurkgn< EÃƒÂ¦uct/XgtuejnÃƒÂ¾uugnwpi / Urtcejg Fgwvuej#
-      2 Cfjtqjfm; DÃƒÂ¥tbs.WfstdimÃƒÂ½ttfmvoh . Tqsbdif Efvutdi"
-      3 Beispiel: CÃƒÂ¤sar-VerschlÃƒÂ¼sselung - Sprache Deutsch!
-      4 Adhrohdk9 BÃƒÂ£r`q,UdqrbgkÃƒÂ»rrdktmf , Roq`bgd Cdtsrbg
 
 .EXAMPLE
     .\Convert-ROT47.ps1 -Text 'This is an encrypted string!' -rot 4 -Encrypt
@@ -70,19 +46,28 @@
       4 This is an encrypted string!
 
 .EXAMPLE
-    .\Convert-ROT47.ps1 -Text "netstat -ano|findstr 'ESTABLISHED'|findstr /V '['" -Rot "7" -Action "decryptme" -Encrypt
+    .\Convert-ROT47.ps1 -Text 'Beispiel: CÃƒÆ’Ã‚Â¤sar-VerschlÃƒÆ’Ã‚Â¼sselung - Sprache Deutsch!' -Rot 3 -Encrypt -UseAllAsciiChars
+
+    Rot Text
+    --- ----
+      3 Ehlvslho= FÃƒÆ’Ã‚Â§vdu0YhuvfkoÃƒÆ’Ã‚Â¿vvhoxqj 0 Vsudfkh Ghxwvfk$
+
+.EXAMPLE
+    .\Convert-ROT47.ps1 -Text "netstat -ano|findstr 'ESTABLISHED'|findstr /V '['" -Rot '7' -Action 'decryptme' -Encrypt
     Convert text to rot7 and build the decrypt script (decryptme.ps1)
 
+    * ROT rotation       : [7] chars
     * Raw String Length  : [49] chars
     * Text Raw String    : 'netstat -ano|findstr 'ESTABLISHED'|findstr /V '[''
     * Converted String   : 'ul{z{h{ 4huv%mpukz{y .LZ[HISPZOLK.%mpukz{y 6] .b.'
     * Decryption Routine : 'C:\Users\pedro\OneDrive\Ambiente de Trabalho\RedTeam-Library\String-Obfuscation\Decryptme.ps1'
 
 .EXAMPLE
-    .\Convert-ROT47.ps1 -Infile "payload.ps1" -Rot "8" -Action "decryptme" -Encrypt
+    .\Convert-ROT47.ps1 -Infile "$pwd\payload.ps1" -Rot '8' -Action 'decryptme' -Encrypt
     This function allow attackers to converts the contents of -infile 'path\to\file'
     into a rot string, and builds the PS1 decrypt script that executes the sourcecode.
 
+    * ROT rotation       : [8] chars
     * Raw String Length  : [2538] chars
     * Text Raw String    : 'blablabla'
     * Converted String   : 'blablabla'
