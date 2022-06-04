@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (19043) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.5
+   PS cmdlet Dev version: v1.0.6
 
 .DESCRIPTION
     Rotate ascii chars by n places (Caesar cipher). You can encrypt with the parameter "-Encrypt"
@@ -39,21 +39,21 @@
      10 Qefp fp ^k bk`ovmqba pqofkd|
 
 .EXAMPLE
-    .\Convert-ROT47.ps1 -Text 'Beispiel: CÃ¤sar-VerschlÃ¼sselung - Sprache Deutsch!' -Rot 3 -Encrypt -UseAllAsciiChars
+    .\Convert-ROT47.ps1 -Text 'Beispiel: CÃƒÂ¤sar-VerschlÃƒÂ¼sselung - Sprache Deutsch!' -Rot 3 -Encrypt -UseAllAsciiChars
 
     Rot Text
     --- ----
-      3 Ehlvslho= FÃ§vdu0YhuvfkoÃ¿vvhoxqj 0 Vsudfkh Ghxwvfk$
+      3 Ehlvslho= FÃƒÂ§vdu0YhuvfkoÃƒÂ¿vvhoxqj 0 Vsudfkh Ghxwvfk$
 
 .EXAMPLE
-    .\Convert-ROT47.ps1 -Text 'Ehlvslho= FÃ§vdu0YhuvfkoÃ¿vvhoxqj 0 Vsudfkh Ghxwvfk$' -Rot (1..4) -Encrypt -UseAllAsciiChars
+    .\Convert-ROT47.ps1 -Text 'Ehlvslho= FÃƒÂ§vdu0YhuvfkoÃƒÂ¿vvhoxqj 0 Vsudfkh Ghxwvfk$' -Rot (1..4) -Encrypt -UseAllAsciiChars
 
     Rot Text
     --- ----
-      1 Dgkurkgn< EÃ¦uct/XgtuejnÃ¾uugnwpi / Urtcejg Fgwvuej#
-      2 Cfjtqjfm; DÃ¥tbs.WfstdimÃ½ttfmvoh . Tqsbdif Efvutdi"
-      3 Beispiel: CÃ¤sar-VerschlÃ¼sselung - Sprache Deutsch!
-      4 Adhrohdk9 BÃ£r`q,UdqrbgkÃ»rrdktmf , Roq`bgd Cdtsrbg
+      1 Dgkurkgn< EÃƒÂ¦uct/XgtuejnÃƒÂ¾uugnwpi / Urtcejg Fgwvuej#
+      2 Cfjtqjfm; DÃƒÂ¥tbs.WfstdimÃƒÂ½ttfmvoh . Tqsbdif Efvutdi"
+      3 Beispiel: CÃƒÂ¤sar-VerschlÃƒÂ¼sselung - Sprache Deutsch!
+      4 Adhrohdk9 BÃƒÂ£r`q,UdqrbgkÃƒÂ»rrdktmf , Roq`bgd Cdtsrbg
 
 .EXAMPLE
     .\Convert-ROT47.ps1 -Text 'This is an encrypted string!' -rot 4 -Encrypt
@@ -79,7 +79,7 @@
     * Decryption Routine : 'C:\Users\pedro\OneDrive\Ambiente de Trabalho\RedTeam-Library\String-Obfuscation\Decryptme.ps1'
 
 .EXAMPLE
-    .\Convert-ROT47.ps1 -Infile "payload.ps1 -Rot "8" -Action "decryptme" -Encrypt
+    .\Convert-ROT47.ps1 -Infile "payload.ps1" -Rot "8" -Action "decryptme" -Encrypt
     This function allow attackers to converts the contents of -infile 'path\to\file'
     into a rot string, and builds the PS1 decrypt script that executes the sourcecode.
 
@@ -138,7 +138,7 @@ Begin{
     $CharsIndex = 1    
     $StartAscii = 33
     $EndAscii = 126
-    $cmdletVersion = "v1.0.5"
+    $cmdletVersion = "v1.0.6"
 
     If(-not($Text) -and $InFile -ieq "false")
     {
@@ -180,8 +180,6 @@ Begin{
     #Add chars from ascii table
     ForEach($i in $StartAscii..$EndAscii)
     {
-        If($i -NotMatch '`')
-        {
         $Char = [char]$i
         [pscustomobject]$Result = @{
             Index = $CharsIndex
@@ -190,7 +188,6 @@ Begin{
 
         [void]$AsciiChars.Add($Result)
         $CharsIndex++
-        }
     }
 
     #Default mode is "Decrypt"
@@ -230,13 +227,29 @@ Begin{
           Write-Host "`nx" -ForegroundColor Red -NoNewline;
           Write-Host " Error: This function only accepts '" -ForegroundColor DarkGray -NoNewline;
           Write-Host ".ps1 OR .txt" -ForegroundColor Red -NoNewline;
-          Write-Host "'file formats.`n" -ForegroundColor DarkGray;
+          Write-Host "' file formats.`n" -ForegroundColor DarkGray;
           exit
        }
 
+       #ProgressBar settings
+       $ff = Get-content $InFile
+       $CurrentItem = 0                   #ProgressBar
+       $PercentComplete = 0               #ProgressBar
+       $TotalItems = $ff.Count            #ProgressBar
+
        write-host "* Reading file contents ..." -ForegroundColor Green
        #Get the cmdline\string to convert to rot13 from txt\ps1 file!
-       [string]$Text = [System.IO.File]::ReadAllText("$InFile")
+
+       ForEach($i in $ff)
+       {
+          $CurrentItem++
+          #ProgressBar of query percentage complete ...
+          Write-Progress -Activity "String: '$i'" -Status "$PercentComplete% Complete:" -PercentComplete $PercentComplete
+          $PercentComplete = [int](($CurrentItem / $TotalItems) * 100)
+
+          [string]$Text = [System.IO.File]::ReadAllText("$InFile")
+       }
+
     }
 
 }
@@ -248,8 +261,6 @@ Process{
         #Go through each char in string
         ForEach($i in 0..($Text.Length -1))
         {
-            If($i -NotMatch '`')
-            {
             $CurrentChar = $Text.Substring($i, 1)
             If(($AsciiChars.Char -ccontains $CurrentChar) -and ($CurrentChar -ne " ")) # Upper chars
             {
@@ -283,7 +294,6 @@ Process{
             Else 
             {
                 $ResultText += $CurrentChar  
-            }
             }
         } 
     
@@ -353,6 +363,11 @@ Process{
            $CharsCount = $Text.Length
            #Write Ps1 script to the sellected directory!
            echo "$PS1DecriptRot"|Out-File "$pwd\Decryptme.ps1" -encoding ascii -force
+
+           Write-Host "*" -ForegroundColor Green -NoNewline;
+           Write-Host " ROT rotation       : [" -ForegroundColor DarkGray -NoNewline;
+           Write-Host "$Rot2" -NoNewline;
+           Write-Host "] chars" -ForegroundColor DarkGray;
 
            Write-Host "*" -ForegroundColor Green -NoNewline;
            Write-Host " Raw String Length  : [" -ForegroundColor DarkGray -NoNewline;
