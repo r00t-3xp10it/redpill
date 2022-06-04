@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (19043) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.6
+   PS cmdlet Dev version: v1.0.7
 
 .DESCRIPTION
     Rotate ascii chars by n places (Caesar cipher). You can encrypt with the parameter "-Encrypt"
@@ -123,7 +123,7 @@ Begin{
     $CharsIndex = 1    
     $StartAscii = 33
     $EndAscii = 126
-    $cmdletVersion = "v1.0.6"
+    $cmdletVersion = "v1.0.7"
 
     If(-not($Text) -and $InFile -ieq "false")
     {
@@ -247,38 +247,41 @@ Process{
         ForEach($i in 0..($Text.Length -1))
         {
             $CurrentChar = $Text.Substring($i, 1)
-            If(($AsciiChars.Char -ccontains $CurrentChar) -and ($CurrentChar -ne " ")) # Upper chars
+            If($CurrentChar -NotMatch '96')
             {
-                If($Mode -eq "Encrypt")
-                {                    
-                    [int]$NewIndex = ($AsciiChars | Where-Object {$_.Char -ceq $CurrentChar}).Index + $Rot2
-                    If($NewIndex -gt $AsciiChars.Count)
-                    {
+               If(($AsciiChars.Char -ccontains $CurrentChar) -and ($CurrentChar -ne " ")) # Upper chars
+               {
+                  If($Mode -eq "Encrypt")
+                  {                    
+                     [int]$NewIndex = ($AsciiChars | Where-Object {$_.Char -ceq $CurrentChar}).Index + $Rot2
+                     If($NewIndex -gt $AsciiChars.Count)
+                     {
                         $NewIndex -= $AsciiChars.Count                     
                         $ResultText +=  ($AsciiChars | Where-Object {$_.Index -eq $NewIndex}).Char
-                    }
-                    Else 
-                    {
+                     }
+                     Else 
+                     {
                         $ResultText += ($AsciiChars | Where-Object {$_.Index -eq $NewIndex}).Char    
-                    }
-                }
-                Else 
-                {
-                    [int]$NewIndex = ($AsciiChars | Where-Object {$_.Char -ceq $CurrentChar}).Index - $Rot2
-                    If($NewIndex -lt 1)
-                    {
+                     }
+                  }
+                  Else 
+                  {
+                     [int]$NewIndex = ($AsciiChars | Where-Object {$_.Char -ceq $CurrentChar}).Index - $Rot2
+                     If($NewIndex -lt 1)
+                     {
                         $NewIndex += $AsciiChars.Count
                         $ResultText +=  ($AsciiChars | Where-Object {$_.Index -eq $NewIndex}).Char
-                    }
-                    Else 
-                    {
+                     }
+                     Else 
+                     {
                         $ResultText += ($AsciiChars | Where-Object {$_.Index -eq $NewIndex}).Char    
-                    }
-                }   
-            }
-            Else 
-            {
-                $ResultText += $CurrentChar  
+                     }
+                  }   
+               }
+               Else 
+               {
+                  $ResultText += $CurrentChar  
+               }
             }
         } 
     
@@ -287,7 +290,7 @@ Process{
         {
         
         #EScaping special chars in obfucated string
-        $ResultText = $ResultText -replace '"','`"'
+        $ResultText = $ResultText -replace '\$','`$' -replace '"','`"'
 
 $PS1DecriptRot = @("<#
 .SYNOPSIS
@@ -324,22 +327,25 @@ Process{
         ForEach(`$i in 0..(`$Text.Length -1))
         {
             `$CurrentChar = `$Text.Substring(`$i, 1)
-            If((`$AsciiChars.Char -ccontains `$CurrentChar) -and (`$CurrentChar -ne `" `")) # Upper chars
+            If(`$CurrentChar -NotMatch '96')
             {
-               [int]`$NewIndex = (`$AsciiChars | Where-Object {`$_.Char -ceq `$CurrentChar}).Index - `$Rot2
-               If(`$NewIndex -lt 1)
+               If((`$AsciiChars.Char -ccontains `$CurrentChar) -and (`$CurrentChar -ne `" `")) # Upper chars
                {
-                  `$NewIndex += `$AsciiChars.Count                       
-                  `$ResultText +=  (`$AsciiChars | Where-Object {`$_.Index -eq `$NewIndex}).Char
-               }
-               Else 
-               {
-                  `$ResultText += (`$AsciiChars | Where-Object {`$_.Index -eq `$NewIndex}).Char    
-               }
-            }Else{`$ResultText += `$CurrentChar}
+                  [int]`$NewIndex = (`$AsciiChars | Where-Object {`$_.Char -ceq `$CurrentChar}).Index - `$Rot2
+                  If(`$NewIndex -lt 1)
+                  {
+                     `$NewIndex += `$AsciiChars.Count                       
+                     `$ResultText +=  (`$AsciiChars | Where-Object {`$_.Index -eq `$NewIndex}).Char
+                  }
+                  Else 
+                  {
+                     `$ResultText += (`$AsciiChars | Where-Object {`$_.Index -eq `$NewIndex}).Char    
+                  }
+               }Else{`$ResultText += `$CurrentChar}
+            }
         } 
     
-       Try{#EXECUTE
+       Try{#EXECUTE CmdLet
           If(`$ResultText -iMatch '^(iex\(iwr\()'){Powershell -Command `"`$ResultText`"}Else{echo `"`$ResultText`"|&(DIR Alias:/I*X)}
        }Catch{Write-Host `"x Error: deObfuscation execution failed ..`" -ForeGroundColor Red;Start-Sleep -Seconds 2}
     }
