@@ -107,13 +107,14 @@ param (
 
 
 Begin{
-    $cmdletVersion = "v1.0.8"
-    $host.UI.RawUI.WindowTitle = "@Convert-ROT47 $CmdletVersion {SSA@RedTeam}"
-    [System.Collections.ArrayList]$AsciiChars = @()
      
     $CharsIndex = 1    
     $StartAscii = 33
     $EndAscii = 126
+
+    $cmdletVersion = "v1.0.8"
+    $host.UI.RawUI.WindowTitle = "@Convert-ROT47 $CmdletVersion {SSA@RedTeam}"
+    [System.Collections.ArrayList]$AsciiChars = @()
 
     If(-not($Text) -and $InFile -ieq "false")
     {
@@ -198,19 +199,19 @@ Begin{
        }
 
        #ProgressBar settings
-       $DataBase = Get-content $InFile
        $CurrentItem = 0                   #ProgressBar
        $PercentComplete = 0               #ProgressBar
+       $DataBase = Get-content "$InFile"  #ProgressBar
        $TotalItems = $DataBase.Count      #ProgressBar
 
        write-host "* Reading file contents ..." -ForegroundColor Green
        #Get the cmdline\string to convert to rot from txt\ps1 file!
 
-       ForEach($i in $DataBase)
+       ForEach($EachItem in $DataBase)
        {
           $CurrentItem++
           #ProgressBar of query percentage complete ...
-          Write-Progress -Activity "String: '$i'" -Status "$PercentComplete% Complete:" -PercentComplete $PercentComplete
+          Write-Progress -Activity "String: '$EachItem'" -Status "$PercentComplete% Complete:" -PercentComplete $PercentComplete
           $PercentComplete = [int](($CurrentItem / $TotalItems) * 100)
           [string]$Text = [System.IO.File]::ReadAllText("$InFile")
        }
@@ -227,41 +228,38 @@ Process{
         ForEach($i in 0..($Text.Length -1))
         {
             $CurrentChar = $Text.Substring($i, 1)
-            If($CurrentChar -NotMatch '96')
+            If(($AsciiChars.Char -ccontains $CurrentChar) -and ($CurrentChar -ne " ")) # Upper chars
             {
-               If(($AsciiChars.Char -ccontains $CurrentChar) -and ($CurrentChar -ne " ")) # Upper chars
-               {
-                  If($Mode -eq "Encrypt")
-                  {                    
-                     [int]$NewIndex = ($AsciiChars | Where-Object {$_.Char -ceq $CurrentChar}).Index + $Rot2
-                     If($NewIndex -gt $AsciiChars.Count)
-                     {
-                        $NewIndex -= $AsciiChars.Count                     
-                        $ResultText +=  ($AsciiChars | Where-Object {$_.Index -eq $NewIndex}).Char
-                     }
-                     Else 
-                     {
-                        $ResultText += ($AsciiChars | Where-Object {$_.Index -eq $NewIndex}).Char    
-                     }
+               If($Mode -eq "Encrypt")
+               {                    
+                  [int]$NewIndex = ($AsciiChars | Where-Object {$_.Char -ceq $CurrentChar}).Index + $Rot2
+                  If($NewIndex -gt $AsciiChars.Count)
+                  {
+                     $NewIndex -= $AsciiChars.Count                     
+                     $ResultText +=  ($AsciiChars | Where-Object {$_.Index -eq $NewIndex}).Char
                   }
                   Else 
                   {
-                     [int]$NewIndex = ($AsciiChars | Where-Object {$_.Char -ceq $CurrentChar}).Index - $Rot2
-                     If($NewIndex -lt 1)
-                     {
-                        $NewIndex += $AsciiChars.Count
-                        $ResultText +=  ($AsciiChars | Where-Object {$_.Index -eq $NewIndex}).Char
-                     }
-                     Else 
-                     {
-                        $ResultText += ($AsciiChars | Where-Object {$_.Index -eq $NewIndex}).Char    
-                     }
-                  }   
+                     $ResultText += ($AsciiChars | Where-Object {$_.Index -eq $NewIndex}).Char    
+                  }
                }
                Else 
                {
-                  $ResultText += $CurrentChar  
-               }
+                  [int]$NewIndex = ($AsciiChars | Where-Object {$_.Char -ceq $CurrentChar}).Index - $Rot2
+                  If($NewIndex -lt 1)
+                  {
+                     $NewIndex += $AsciiChars.Count
+                     $ResultText +=  ($AsciiChars | Where-Object {$_.Index -eq $NewIndex}).Char
+                  }
+                  Else 
+                  {
+                     $ResultText += ($AsciiChars | Where-Object {$_.Index -eq $NewIndex}).Char    
+                  }
+               }   
+            }
+            Else 
+            {
+               $ResultText += $CurrentChar  
             }
         } 
     
