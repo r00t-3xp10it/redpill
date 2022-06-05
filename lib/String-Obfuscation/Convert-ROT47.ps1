@@ -6,7 +6,7 @@
    Addapted from: @BornToBeRoot
    Tested Under: Windows 10 (19043) x64 bits
    Required Dependencies: none
-   Optional Dependencies: System.IO.File {nativw}
+   Optional Dependencies: System.IO.File {native}
    PS cmdlet Dev version: v1.0.8
 
 .DESCRIPTION
@@ -198,21 +198,20 @@ Begin{
        }
 
        #ProgressBar settings
-       $ff = Get-content $InFile
+       $DataBase = Get-content $InFile
        $CurrentItem = 0                   #ProgressBar
        $PercentComplete = 0               #ProgressBar
-       $TotalItems = $ff.Count            #ProgressBar
+       $TotalItems = $DataBase.Count      #ProgressBar
 
        write-host "* Reading file contents ..." -ForegroundColor Green
-       #Get the cmdline\string to convert to rot13 from txt\ps1 file!
+       #Get the cmdline\string to convert to rot from txt\ps1 file!
 
-       ForEach($i in $ff)
+       ForEach($i in $DataBase)
        {
           $CurrentItem++
           #ProgressBar of query percentage complete ...
           Write-Progress -Activity "String: '$i'" -Status "$PercentComplete% Complete:" -PercentComplete $PercentComplete
           $PercentComplete = [int](($CurrentItem / $TotalItems) * 100)
-
           [string]$Text = [System.IO.File]::ReadAllText("$InFile")
        }
 
@@ -365,12 +364,10 @@ Process{
 
            Write-Host "+" -ForegroundColor DarkYellow -NoNewline;
            Write-Host " Remark: " -ForegroundColor DarkGray -NoNewline;
-           Write-Host "If 'decryptme.ps1' fails to execute. Create it with a diferent ROTation.`n";
-  
+           Write-Host "If 'decryptme.ps1' fails to execute. Create it with a diferent ROTation.`n"
         }
         Else
         {
-
            ## Display List format if string
            # its bigger than 100 chars ..
            If(($ResultText.Length) -ge 100)
