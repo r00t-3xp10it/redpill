@@ -304,23 +304,20 @@ Process{
         #Go through each char in string
         ForEach(`$i in 0..(`$Text.Length -1))
         {
-            `$CurrentChar = `$Text.Substring(`$i, 1)
-            If(`$CurrentChar -NotMatch '96')
-            {
-               If((`$AsciiChars.Char -ccontains `$CurrentChar) -and (`$CurrentChar -ne `" `")) # Upper chars
-               {
-                  [int]`$NewIndex = (`$AsciiChars | Where-Object {`$_.Char -ceq `$CurrentChar}).Index - `$Rot2
-                  If(`$NewIndex -lt 1)
-                  {
-                     `$NewIndex += `$AsciiChars.Count                       
-                     `$ResultText +=  (`$AsciiChars | Where-Object {`$_.Index -eq `$NewIndex}).Char
-                  }
-                  Else 
-                  {
-                     `$ResultText += (`$AsciiChars | Where-Object {`$_.Index -eq `$NewIndex}).Char    
-                  }
-               }Else{`$ResultText += `$CurrentChar}
-            }
+           `$CurrentChar = `$Text.Substring(`$i, 1)
+           If((`$AsciiChars.Char -ccontains `$CurrentChar) -and (`$CurrentChar -ne `" `")) # Upper chars
+           {
+              [int]`$NewIndex = (`$AsciiChars | Where-Object {`$_.Char -ceq `$CurrentChar}).Index - `$Rot2
+              If(`$NewIndex -lt 1)
+              {
+                 `$NewIndex += `$AsciiChars.Count                       
+                 `$ResultText +=  (`$AsciiChars | Where-Object {`$_.Index -eq `$NewIndex}).Char
+              }
+              Else 
+              {
+                 `$ResultText += (`$AsciiChars | Where-Object {`$_.Index -eq `$NewIndex}).Char    
+              }
+           }Else{`$ResultText += `$CurrentChar}
         } 
     
        Try{#EXECUTE CmdLet
