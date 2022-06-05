@@ -14,6 +14,7 @@
     parameter (default) or decrypt invoking parameter -Decrypt. Depends on what you need.
 
 .NOTES
+    The -text 'string' parameter declaration its automatic copy to clipboard in the end.
     Remark: When invoking -action 'decryptme' parameter. We need to test if 'decryptme.ps1'
     executes successfuly. If 'NOT' then try to create it invoking a diferent ROT rotation.
     Remark: Try using single quotes ['] in -text 'string' parameter everytime its possible OR
@@ -144,7 +145,7 @@ Begin{
 
     Clear-Host
     Write-Host "$Banner`n" -ForegroundColor Blue
-    #Add chars from ascii table
+    #Adding chars from ascii table
     ForEach($i in $StartAscii..$EndAscii)
     {
         $Char = [char]$i
@@ -157,7 +158,7 @@ Begin{
         $CharsIndex++
     }
 
-    #Default mode is "Encrypt"
+    #Default mode is set to "Encrypt"
     If(($Encrypt -eq $false -and $Decrypt -eq $false) -or ($Encrypt)) 
     {        
         $Mode = "Encrypt"
@@ -166,7 +167,7 @@ Begin{
     {
         $Mode = "Decrypt"
     }
-    Write-Verbose -Message "Mode is set to: $Mode"
+
 
     If($InFile -ne "false")
     {
@@ -220,6 +221,7 @@ Begin{
 
 }
 
+
 Process{
     ForEach($Rot2 in $Rot)
     {        
@@ -262,13 +264,18 @@ Process{
                $ResultText += $CurrentChar  
             }
         } 
-    
+ 
 
         If($Action -ieq "decryptme")
         {
+           <#
+           .SYNOPSIS
+              Author: @r00t-3xp10it
+              Helper - Create decrypt script that exec string
+           #>
         
-        #EScaping special chars in obfucated string
-        $ResultText = $ResultText -replace '\$','`$' -replace '"','`"'
+           #EScaping special chars in obfucated string
+           $ResultText = $ResultText -replace '\$','`$' -replace '"','`"'
 
 $PS1DecriptRot = @("<#
 .SYNOPSIS
@@ -377,6 +384,8 @@ Process{
               Start-Sleep -Milliseconds 700
               write-host "Text   : " -NoNewline
               write-host "$ResultText`n" -ForegroundColor DarkYellow
+
+              Set-Clipboard -Value "$ResultText"
            }
            Else
            {
@@ -386,6 +395,8 @@ Process{
                   Rot = $Rot2
                   Text = $ResultText
               }
+
+              Set-Clipboard -Value "$ResultText"
            }
 
         }
