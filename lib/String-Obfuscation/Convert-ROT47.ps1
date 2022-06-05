@@ -11,7 +11,7 @@
 
 .DESCRIPTION
     Rotate ascii chars by nº places (Caesar cipher). You can encrypt invoking -Encrypt
-    parameter or decrypt it invoking parameter -Decrypt. Depends on what you need.
+    parameter (default) or decrypt invoking parameter -Decrypt. Depends on what you need.
 
 .NOTES
     Remark: When invoking -action 'decryptme' parameter. We need to test if 'decryptme.ps1'
@@ -72,7 +72,7 @@
 #>
 
 
-[CmdletBinding(DefaultParameterSetName='Decrypt')]
+[CmdletBinding(DefaultParameterSetName='Encrypt')]
 param (
     [Parameter(
         Mandatory=$false,
@@ -156,14 +156,14 @@ Begin{
         $CharsIndex++
     }
 
-    #Default mode is "Decrypt"
-    If(($Encrypt -eq $false -and $Decrypt -eq $false) -or ($Decrypt)) 
+    #Default mode is "Encrypt"
+    If(($Encrypt -eq $false -and $Decrypt -eq $false) -or ($Encrypt)) 
     {        
-        $Mode = "Decrypt"
+        $Mode = "Encrypt"
     }    
     Else 
     {
-        $Mode = "Encrypt"
+        $Mode = "Decrypt"
     }
     Write-Verbose -Message "Mode is set to: $Mode"
 
