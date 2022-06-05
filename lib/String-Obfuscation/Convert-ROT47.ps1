@@ -107,12 +107,13 @@ param (
 
 
 Begin{
+    $cmdletVersion = "v1.0.8"
+    $host.UI.RawUI.WindowTitle = "@Convert-ROT47 $CmdletVersion {SSA@RedTeam}"
     [System.Collections.ArrayList]$AsciiChars = @()
      
     $CharsIndex = 1    
     $StartAscii = 33
     $EndAscii = 126
-    $cmdletVersion = "v1.0.8"
 
     If(-not($Text) -and $InFile -ieq "false")
     {
