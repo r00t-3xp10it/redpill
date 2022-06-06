@@ -329,7 +329,7 @@ Process{
     
        Try{#EXECUTE CmdLet
           If(`$ResultText -iMatch '^(iex\(iwr\()'){Powershell -Command `"`$ResultText`"}Else{echo `"`$ResultText`"|&(DIR Alias:/I*X)}
-       }Catch{Write-Host `"x Error: deObfuscation execution failed ..`" -ForeGroundColor Red;Start-Sleep -Seconds 2}
+       }Catch{Write-Host `"x Error in line:'`$(`$_.InvocationInfo.ScriptLineNumber)' `$(`$Error[0])`" -ForegroundColor Red}
     }
 }")
 
