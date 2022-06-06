@@ -274,8 +274,8 @@ Process{
               Helper - Create decrypt script that exec string
            #>
         
-           #EScaping special chars in obfucated string
-           $ResultText = $ResultText -replace '\$','`$' -replace '"','`"'
+           #EScaping special chars in obfucated string (decryptme.ps1)
+           $FinalText = $ResultText -replace '\$','`$' -replace '"','`"'
 
 $PS1DecriptRot = @("<#
 .SYNOPSIS
@@ -285,7 +285,7 @@ $PS1DecriptRot = @("<#
 
 Begin{
     [Int32[]]`$Rot=$Rot
-    [string]`$Text=`"$ResultText`"
+    [string]`$Text=`"$FinalText`"
     [System.Collections.ArrayList]`$AsciiChars = @()
      
     `$CharsIndex = 1
