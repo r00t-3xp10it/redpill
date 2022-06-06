@@ -197,7 +197,9 @@ executes successfuly. If NOT then try to create it invoking a diferent ROT rotat
 [Remark]: Try to use single quotes ['] in -text 'string' parameter if possible OR
 else its required to escape special chars like: ` $ " on -Text 'string' -Decrypt function.
 
-[Example]: How to decrypt a string with special chars: [  `tu! u! mz qzo~'|"qp !"~uzs-  ]
+## Example: Of how to decrypt a string with special chars: [  `tu! u! mz qzo~'|"qp !"~uzs-  ]
+# Since the above string contains ['] ["] and [`] special chars, we need to invoke -Text "param"
+# enclosure under double quotes, and then escape the special chars using [`] escape character. 
 .\Convert-ROT47.ps1 -Text "``tu! u! mz qzo~'|`"qp !`"~uzs-" -Rot '12' -Decrypt
-
+# Remark: Take a closer look how [`] char needs to be escaped [``] ;)
 ```
