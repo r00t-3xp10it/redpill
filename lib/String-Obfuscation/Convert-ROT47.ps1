@@ -18,7 +18,7 @@
     Remark: When invoking -action 'decryptme' parameter. We need to test if 'decryptme.ps1'
     executes successfuly. If 'NOT' then try to create it invoking a diferent ROT rotation.
     Remark: Try using single quotes ['] in -text 'string' parameter everytime its possible OR
-    else its required to escape special chars like: ` $ " on -Text 'string' -Decrypt function.
+    else its required to escape special chars like: ` $ " in -Text 'string' -Decrypt invocation.
 
 .EXAMPLE
     .\Convert-ROT47.ps1 -Text 'This is an encrypted string!' -Rot (5..10) -Encrypt
@@ -266,7 +266,7 @@ Process{
         } 
  
 
-        If($Action -ieq "decryptme")
+        If($Encrypt -eq $true -and $Action -ieq "decryptme")
         {
            <#
            .SYNOPSIS
