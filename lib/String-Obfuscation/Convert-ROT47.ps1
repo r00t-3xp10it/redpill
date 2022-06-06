@@ -275,7 +275,7 @@ Process{
            #>
         
            #EScaping special chars in obfucated string (decryptme.ps1)
-           $FinalText = $ResultText -replace '\$','`$' -replace '`','``' -replace '"','`"'
+           $FinalText = $ResultText -replace '`','``' -replace '\$','`$' -replace '"','`"'
 
 $PS1DecriptRot = @("<#
 .SYNOPSIS
