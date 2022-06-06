@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Rotate ascii chars by nº places (Caesar cipher)
+    Rotate ascii chars by nÂº places (Caesar cipher)
 
    Author: @r00t-3xp10it
    Addapted from: @BornToBeRoot
@@ -10,7 +10,7 @@
    PS cmdlet Dev version: v1.0.8
 
 .DESCRIPTION
-    Rotate ascii chars by nº places (Caesar cipher). You can encrypt invoking -Encrypt
+    Rotate ascii chars by nÂº places (Caesar cipher). You can encrypt invoking -Encrypt
     parameter (default) or decrypt invoking parameter -Decrypt. Depends on what you need.
 
 .NOTES
@@ -275,7 +275,7 @@ Process{
            #>
         
            #EScaping special chars in obfucated string (decryptme.ps1)
-           $FinalText = $ResultText -replace '\$','`$' -replace '"','`"'
+           $FinalText = $ResultText -replace '\$','`$' -replace '`','``' -replace '"','`"'
 
 $PS1DecriptRot = @("<#
 .SYNOPSIS
