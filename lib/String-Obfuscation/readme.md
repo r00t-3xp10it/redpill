@@ -199,7 +199,13 @@ else its required to escape special chars like: ` $ " on -Text 'string' -Decrypt
 
 ## Example: Of how to decrypt a string with special chars: [  `tu! u! mz qzo~'|"qp !"~uzs-  ]
 # Since the above string contains ['] ["] and [`] special chars, we need to invoke -Text "param"
-# enclosure under double quotes, and then escape the special chars using [`] escape character. 
+# enclosure under double quotes, and then escape the special chars using [`] escape character.
+# Remark: Take a closer look how [`tu] string needs to be escaped [``tu] twice ;)
+
 .\Convert-ROT47.ps1 -Text "``tu! u! mz qzo~'|`"qp !`"~uzs-" -Rot '12' -Decrypt
-# Remark: Take a closer look how [`] char needs to be escaped [``] ;)
+#Outputs:
+#    Rot Text
+#    --- ----
+#      4 This is an encrypted string!
+
 ```
