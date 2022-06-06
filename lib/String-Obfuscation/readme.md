@@ -206,6 +206,6 @@ else its required to escape special chars like: ` $ " on -Text 'string' -Decrypt
 #Outputs:
 #    Rot Text
 #    --- ----
-#      4 This is an encrypted string!
+#     12 This is an encrypted string!
 
 ```
