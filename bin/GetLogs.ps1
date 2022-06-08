@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Enumerate\Read\DeleteAll eventvwr logfiles!
 
@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: none
    Optional Dependencies: wevtutil, UacMe.ps1
-   PS cmdlet Dev version: v1.5.20
+   PS cmdlet Dev version: v1.5.21
 
 .DESCRIPTION
    This cmdlet allow users to delete ALL eventvwr logfiles or to delete
@@ -24,7 +24,7 @@
    then this cmdlet will start scan pre-defined event paths and ID's numbers!
 
 .Parameter GetLogs
-   Accepts arguments: Enum, Verbose, Yara, DeleteAll
+   Accepts arguments: Enum, Verbose, Yara, DeleteAll, Paranoid
 
 .Parameter NewEst
    How many event logs to display int value (default: 3)
@@ -70,6 +70,10 @@
 .EXAMPLE
    PS C:\> .\GetLogs.ps1 -GetLogs DeleteAll
    Delete ALL eventvwr (categories) logs from snapIn!
+
+.EXAMPLE
+   PS C:\> .\GetLogs.ps1 -GetLogs Paranoid
+   Delete ALL eventvwr (categories) logs from snapIn (verbose)
 
 .EXAMPLE
    PS C:\> .\GetLogs.ps1 -GetLogs DeleteAll -Verb "Microsoft-Windows-Powershell/Operational"
@@ -528,7 +532,8 @@ If($GetLogs -ieq "Yara"){
 }
 
 
-If($GetLogs -ieq "DeleteAll"){
+If($GetLogs -ieq "DeleteAll" -or $GetLogs -ieq "Paranoid")
+{
 
    <#
    .SYNOPSIS
@@ -670,16 +675,27 @@ If($GetLogs -ieq "DeleteAll"){
 
       }Else{## Clean ALL logfiles from eventvwr snapIn!
 
-         wevtutil el | Where-Object { $_ -iNotMatch '^(Microsoft-Windows-LiveId/Analytic|Microsoft-Windows-LiveId/Operational|Microsoft-Windows-USBVideo/Analytic)$' } | Foreach-Object { wevtutil cl "$_" }
-         $regex = "system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-UAC/Operational|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational|Microsoft-Windows-Windows Defender/WHC|Microsoft-Windows-DeviceGuard/Operational"
-
+         If($GetLogs -ieq "Paranoid")
+         {
+            wevtutil el | Where-Object {
+               $_ -iNotMatch '^(Microsoft-Windows-LiveId/Analytic|Microsoft-Windows-LiveId/Operational|Microsoft-Windows-USBVideo/Analytic|Windows Networking Vpn Plugin Platform/Operational|Network Isolation Operational|Microsoft-Windows-Wordpad/Admin|Microsoft-Windows-wmbclass/Trace)$'
+            } | Foreach-Object { write-host "* " -ForegroundColor Green -NoNewline;write-host "Cleaning: $_";wevtutil cl "$_" }
+            $regex = "[a-z A-Z]"
+         }
+         Else
+         {
+            wevtutil el | Where-Object {
+               $_ -iNotMatch '^(Microsoft-Windows-LiveId/Analytic|Microsoft-Windows-LiveId/Operational|Microsoft-Windows-USBVideo/Analytic)$'
+            } | Foreach-Object { wevtutil cl "$_" }
+            $regex = "^(system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-UAC/Operational|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational|Microsoft-Windows-Windows Defender/WHC|Microsoft-Windows-DeviceGuard/Operational)$"         
+         }
       }
 
       Write-Host "";Start-Sleep -Seconds 2
       ## List Major event logs categories and the number of entries!
       # [shanty] Deprecated: Get-EventLog -List | Format-Table -AutoSize
       Get-WinEvent -ListLog * -ErrorAction Ignore | Where-Object {
-         $_.LogName -iMatch "^($regex)$" } | Format-Table -AutoSize |
+         $_.LogName -iMatch "$regex" } | Format-Table -AutoSize |
             Out-String -Stream | ForEach-Object {
                $stringformat = If($_ -Match '\s+(0|1)+\s+'){
                   @{ 'ForegroundColor' = 'Green' } }Else{ @{} }
