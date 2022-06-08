@@ -8,7 +8,7 @@
 
 **Download cmdlet:**
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/ETWpatch/eventK.exe" -OutFile "eventK.exe"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/ETWpatch/eventK.exe" -OutFile "eventK.exe"|Unblock-File
 ```
 
 <br />
