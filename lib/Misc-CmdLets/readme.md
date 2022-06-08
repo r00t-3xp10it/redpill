@@ -60,7 +60,8 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-C
 
 **execute:**
 ```powershell
-.\progressbar.ps1
+ .\progressbar.ps1 -Action 'Processes'
+ .\progressbar.ps1 -Action 'NetAdapters'
 ```
 
 <br />
