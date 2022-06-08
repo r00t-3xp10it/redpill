@@ -1,6 +1,9 @@
 <#
 .SYNOPSIS
-   Use GUI to open the sellected directory
+   Use GUI to open the sellected directory.
+   
+.EXAMPLE
+   PS C:\> .\Open-Directory.ps1
 #>
 
 [System.Reflection.Assembly]::LoadWithPartialName("System.windows.forms")|Out-Null
@@ -10,6 +13,6 @@ $OpenDirectoryDialog.ShowDialog()|Out-Null
 try{
    $Gui = $OpenDirectoryDialog.SelectedPath
    Invoke-Item -Path "$Gui" -EA SilentlyContinue
-}catch{
-   Write-Warning 'Open Directory Dialog was closed or cancelled without selecting a Directory'
+}Catch{
+   Write-Host "x Error in line:'$($_.InvocationInfo.ScriptLineNumber)' $($Error[0])" -ForeGroundColor Red
 }
