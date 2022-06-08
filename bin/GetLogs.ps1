@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Enumerate\Read\DeleteAll eventvwr logfiles!
 
@@ -133,19 +133,23 @@ If($GetLogs -ieq "Enum"){
    .OUTPUTS
       LogMode  MaximumSizeInBytes RecordCount LogName
       -------  ------------------ ----------- -------
-      Circular           15728640        3978 Windows PowerShell
-      Circular           20971520        1731 System
-      Circular            1052672           0 Internet Explorer
-      Circular           20971520        1122 Application
-      Circular            1052672        1729 Microsoft-Windows-WMI-Activity/Operational
-      Circular            1052672         520 Microsoft-Windows-Windows Defender/Operational
-      Circular           15728640         719 Microsoft-Windows-PowerShell/Operational
-      Circular            1052672         499 Microsoft-Windows-Bits-Client/Operational
+      Circular           15728640          14 Windows PowerShell                            
+      Circular           20971520           7 System                                        
+      Circular            1052672           0 Internet Explorer                             
+      Circular           20971520           0 Application                                   
+      Circular            1052672           2 Microsoft-Windows-WMI-Activity/Operational    
+      Circular            1052672           0 Microsoft-Windows-Windows Defender/WHC        
+      Circular            1052672           0 Microsoft-Windows-Windows Defender/Operational
+      Circular            1052672           0 Microsoft-Windows-UAC/Operational             
+      Circular           15728640           4 Microsoft-Windows-PowerShell/Operational      
+      Circular            1052672           0 Microsoft-Windows-DeviceGuard/Operational     
+      Circular            1052672          22 Microsoft-Windows-Bits-Client/Operational     
       Circular            1052672           0 Microsoft-Windows-AppLocker/EXE and DLL
    #>
 
    Write-Host "`n[+] Please Wait, Scanning Eventvwr registry! .." -ForegroundColor Green;Start-Sleep -Milliseconds 700
-   $regex = "system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational"
+   $regex = "system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-UAC/Operational|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational|Microsoft-Windows-Windows Defender/WHC|Microsoft-Windows-DeviceGuard/Operational"
+
    ## List Major event logs categories and the number of entries!
    # [shanty] Deprecated: Get-EventLog -List | Format-Table -AutoSize
    Get-WinEvent -ListLog * -ErrorAction Ignore | Where-Object {
@@ -205,7 +209,8 @@ If($GetLogs -ieq "Verbose"){
    #>
 
    Write-Host "`n[+] Please Wait, Scanning Eventvwr registry! .." -ForegroundColor Green;Start-Sleep -Milliseconds 700
-   $regex = "system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational"
+   $regex = "system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-UAC/Operational|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational|Microsoft-Windows-Windows Defender/WHC|Microsoft-Windows-DeviceGuard/Operational"
+
    ## List Major event logs categories and the number of entries!
    # [shanty] Deprecated: Get-EventLog -List | Format-Table -AutoSize
    Get-WinEvent -ListLog * -ErrorAction Ignore | Where-Object {
@@ -348,16 +353,19 @@ If($GetLogs -ieq "Yara"){
    If($NewEst -lt "1"){$NewEst = "3"}
 
    ## Categories list!
-   $Categories = @("system",
+   $Categories = @(
+      "system",
       "Windows Powershell",
+      "Microsoft-Windows-UAC/Operational",
       "Microsoft-Windows-NTLM/Operational",
+      "Microsoft-Windows-Windows Defender/WHC",
       "Microsoft-Windows-Applocker/EXE and DLL",
       "Microsoft-Windows-PowerShell/Operational",
       "Microsoft-Windows-Bits-Client/Operational",
       "Microsoft-Windows-WMI-Activity/Operational",
-      "Microsoft-Windows-Windows Defender/Operational"
+      "Microsoft-Windows-Windows Defender/Operational",
+      "Microsoft-Windows-DeviceGuard/Operational"
    )    
- 
 
    ## User Eventvwr Registry Path Input! (easter egg)
    # If sellected -verb "Microsoft-Windows-NetworkProfile/Operational" (or other path)
@@ -663,7 +671,7 @@ If($GetLogs -ieq "DeleteAll"){
       }Else{## Clean ALL logfiles from eventvwr snapIn!
 
          wevtutil el | Where-Object { $_ -iNotMatch '^(Microsoft-Windows-LiveId/Analytic|Microsoft-Windows-LiveId/Operational|Microsoft-Windows-USBVideo/Analytic)$' } | Foreach-Object { wevtutil cl "$_" }
-         $regex = "system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational"
+         $regex = "system|security|application|windows powershell|Internet Explorer|Microsoft-Windows-UAC/Operational|Microsoft-Windows-WMI-Activity/Operational|Microsoft-Windows-Applocker/EXE and DLL|Microsoft-Windows-PowerShell/Operational|Microsoft-Windows-Bits-Client/Operational|Microsoft-Windows-Windows Defender/Operational|Microsoft-Windows-Windows Defender/WHC|Microsoft-Windows-DeviceGuard/Operational"
 
       }
 
