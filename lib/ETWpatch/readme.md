@@ -1,5 +1,4 @@
-## Module Name
-   <b><i>EventK.exe</i></b>
+## EventK.exe
 
 |Binary Name|Description|Privileges|Notes|
 |---|---|---|---|
@@ -7,12 +6,14 @@
 
 <br />
 
+**Download cmdlet:**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/ETWpatch/EventK.exe" -OutFile "EventK.exe"
 ```
 
 <br />
 
+**Execute:**
 ```powershell
 .\EventK.exe
 ```
