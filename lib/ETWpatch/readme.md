@@ -70,6 +70,9 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetLog
 #List newest 3 (default) logfiles of 'NetworkProfile/Operational' categorie with Id: 10001
 .\GetLogs.ps1 -GetLogs 'Yara' -Verb "Microsoft-Windows-NetworkProfile/Operational" -id '10001'
 
+#Delete ALL eventvwr (categories) logs from snapIn! (verbose)
+.\GetLogs.ps1 -GetLogs 'Paranoid'
+
 #Delete ALL eventvwr (categories) logs from snapIn!
 .\GetLogs.ps1 -GetLogs 'DeleteAll'
 
