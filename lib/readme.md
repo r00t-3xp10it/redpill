@@ -48,6 +48,11 @@ Database
                       |_ Start-SimpleHTTPServer.ps1    Simple HTTP pure powershell webserver     
                       |_ wget.vbs                      VBScript to download files from Local Lan
                       |_ Invoke-ShortUrl.ps1           TinyUrl url generator ( dropper URL link )
+        |_ Misc-CmdLets
+                      |_ Open-Directory.ps1            Use GUI to open the sellected directory
+                      |_ msgbox.ps1                    Example how to spawn a message box in pure powershell
+                      |_ progressbar.ps1               Example how to spawn a progress bar in pure powershell
+                      |_ sendkeys.ps1                  Example how to send keyboard presses (keys) to processes
         |_ Out-FileFormat
                       |_ Out-shortcut.ps1              Creates an shortcut that accepts cmdline args to execute.
                       |_ SendToPasteBin.ps1            Get filepath contents and paste it to pastebin.
