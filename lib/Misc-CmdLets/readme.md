@@ -43,11 +43,11 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-C
 
 <br />
 
-## progressbar.ps1 - Under Develop ( not stable )
+## progressbar.ps1
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|progressbar|Example how to spawn a progress bar in pure powershell|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/Open-Directory.png)|
+|[progressbar](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Misc-CmdLets/progressbar.ps1)|Example how to spawn a progress bar in pure powershell|User Land|[Screenshot](https://naoha)|
 
 <br />
 
