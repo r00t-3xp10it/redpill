@@ -6,9 +6,6 @@
 
 <br />
 
-redpill v1.2.6 - RedTeam database library
-
-
 **Download cmdlet:**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/ETWpatch/eventK.exe" -OutFile "eventK.exe"
