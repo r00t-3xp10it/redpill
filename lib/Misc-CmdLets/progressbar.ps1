@@ -1,5 +1,5 @@
 <#
-.SNOPSIS
+.SYNOPSIS
    Author: @r00t-3xp10it
 
 .DESCRIPTION
