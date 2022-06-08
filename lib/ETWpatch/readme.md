@@ -32,3 +32,50 @@ is sent by the process, it will always succeed, without actually sending the mes
 ```
 
 Article: https://www.solomonsklash.io/windows-evasion-course-review.html
+
+<br />
+
+## GetLogs.ps1
+
+|Cmdlet Name|Description|Privileges|Notes|
+|---|---|---|---|
+|GetLogs|Enumerate \ Read \ Delete eventvwr logfiles (ETW)|User Land|[Screenshot](https://naoexiste)|
+
+<br />
+
+**Download cmdlet:**
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetLogs.ps1" -OutFile "GetLogs.ps1"
+```
+
+<br />
+
+**Execute:**
+```powershell
+#Lists ALL eventvwr categorie entrys
+.\GetLogs.ps1 -GetLogs 'Enum'
+
+#List newest 3 (default) Powershell\Application\System entrys
+.\GetLogs.ps1 -GetLogs 'Verbose'
+
+#List newest 8 Powershell\Application\System entrys
+.\GetLogs.ps1 -GetLogs 'Verbose' -NewEst '8'
+
+#List newest 28 logs using cmdlet default Id's and categories!
+.\GetLogs.ps1 -GetLogs 'Yara' -NewEst '28'
+   
+#List newest 13 logfiles with Id: 59 using cmdlet default categories!
+.\GetLogs.ps1 -GetLogs 'Yara' -NewEst '13' -Id '59'
+   
+#List newest 10 logfiles of 'system' categorie with id: 1
+.\GetLogs.ps1 -GetLogs 'Yara' -verb "system" -Id '1' -NewEst '10'
+
+#List newest 3 (default) logfiles of 'NetworkProfile/Operational' categorie with Id: 10001
+.\GetLogs.ps1 -GetLogs 'Yara' -Verb "Microsoft-Windows-NetworkProfile/Operational" -id '10001'
+
+#Delete ALL eventvwr (categories) logs from snapIn!
+.\GetLogs.ps1 -GetLogs 'DeleteAll'
+
+#Delete ONLY logfiles from "Microsoft-Windows-Powershell/Operational" eventvwr categorie!
+.\GetLogs.ps1 -GetLogs 'DeleteAll' -Verb "Microsoft-Windows-Powershell/Operational"
+```
