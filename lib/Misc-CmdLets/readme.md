@@ -24,7 +24,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-C
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|[msgbox](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Misc-CmdLets/msgbox.ps1)|Example how to spawn a message box in pure powershell|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/Open-Directory.png)|
+|[msgbox](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Misc-CmdLets/msgbox.ps1)|Example how to spawn a message box in pure powershell|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/msgbox.png)|
 
 <br />
 
