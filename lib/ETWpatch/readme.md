@@ -39,7 +39,7 @@ Article: https://www.solomonsklash.io/windows-evasion-course-review.html
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|GetLogs|Enumerate \ Read \ Delete eventvwr logfiles (ETW)|User Land|[Screenshot1](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/ETWpatch/GetLogs-enum.png)<br />[Screenshot2](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/ETWpatch/GetLogs-yara.png)|
+|[GetLogs](https://github.com/r00t-3xp10it/redpill/blob/main/bin/GetLogs.ps1)|Enumerate \ Read \ Delete eventvwr logfiles (ETW)|User Land (enum) \ Administrator (delete)|[Screenshot1](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/ETWpatch/GetLogs-enum.png)<br />[Screenshot2](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/ETWpatch/GetLogs-yara.png)|
 
 <br />
 
