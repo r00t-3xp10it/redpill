@@ -30,7 +30,8 @@ Database
                       |_ HarvestBrowserPasswords.exe   Dumps URLs, usernames, and passwords from major browsers
                       |_ ChromePass.exe                Dumps usernames, passwords from chrome (Invoke-Exclusions.ps1)
         |_ ETWpatch
-                      |_ EventK.exe                    Suspend thread in svchost.exe related to event logging                 
+                      |_ EventK.exe                    Suspend thread in svchost.exe related to event logging
+                      |_ Get-Logs.ps1                  Enumerate \ Read \ Delete eventvwr logfiles (ETW)
         |_ EnableAllParentPrivileges
                       |_ EnableAllParentPrivileges.exe Enable All Parent Privileges ( whoami /priv )
         |_ Exfiltration
