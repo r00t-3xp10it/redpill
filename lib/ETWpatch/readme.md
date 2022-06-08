@@ -3,7 +3,7 @@
 
 |Binary Name|Description|Privileges|Notes|
 |---|---|---|---|
-|EventK|Patch the ETWEventWrite function to prevent the creation of logfiles|Administrator|Suspend thread in svchost.exe related to event logging (@SolomonSklash)<br />[Screenshot](https://naoexiste)|
+|EventK|Patch the ETWEventWrite function to<br />prevent the creation of logfiles|Administrator|Suspend thread in svchost.exe related<br />to event logging (@SolomonSklash)<br />[Screenshot](https://naoexiste)|
 
 <br />
 
