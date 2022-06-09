@@ -45,7 +45,7 @@ python Sigthief.py -i "sigcheck.exe" -t "prometheus.exe" -o "signed-prometheus.e
 
 |Script Name|Description|Privileges|Notes|
 |---|---|---|---|
-|DigitalSignature-Hijack|Digitally sign all powershell scripts on the host as Microsoft|Administrator|Author: @netbiosX|
+|[DigitalSignature-Hijack](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Sign-Executables/DigitalSignature-Hijack.ps1)|Digitally sign all powershell scripts on the host as Microsoft|Administrator|Author: @netbiosX|
 
 **download script:**
 ```powershell
