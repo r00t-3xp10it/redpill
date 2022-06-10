@@ -41,6 +41,7 @@ Database
                       |_ List-AllMailboxAndPST.ps1     Uses the Outlook COM object to display the data stores 
                       |_ Read-ExcelFile-Using_COM.ps1  Read Outlook excel files sheet using COM object
                       |_ WindowsUpdateLog.ps1          Convert ETL logfiles (WindowsUpdate) into readable data
+                      |_ Get-PrefetchListing.ps1       Manage (query \ Delete) prefetch files (.pf)
         |_ Fake-Cmdline
                       |_ Fake-Cmdline.exe              Put any string into the child process Command Line field
         |_ HTTP-Server
