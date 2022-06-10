@@ -105,3 +105,25 @@ Get-Help .\WindowsUpdateLog.ps1 -Full
 .\WindowsUpdateLog.ps1 -first '30' -logfile 'true'
 
 ```
+
+<br />
+
+## Get-PrefetchListing.ps1
+
+|Cmdlet Name|Description|Privileges|Notes|
+|---|---|---|---|
+|[Get-PrefetchListing](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/Get-PrefetchListing.ps1)|Manage (query \ Delete) prefetch files (.pf)|User Land|\*\*\*|
+
+**download cmdLet:**
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/Get-PrefetchListing.ps1" -OutFile "Get-PrefetchListing.ps1"
+```
+
+**execute:**
+```powershell
+#Enumerate prefetch files
+.\Get-PrefetchListing.ps1 -action "Enum"
+
+#Delete prefetch files
+.\Get-PrefetchListing.ps1 -action "del"
+```
