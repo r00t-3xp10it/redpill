@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-   Get a list of prefetch files (.pf)
+   Manage prefetch files (.pf)
 
    Author: r00t-3xp10it
    Tested Under: Windows 10 (19044) x64 bits
@@ -9,8 +9,13 @@
    PS cmdlet Dev version: v1.0.2
 
 .DESCRIPTION
-   This cmdlet allow users to list prefetch files that leads
-   attackers to have a clear image of what its beeing executed
+   This cmdlet allow users to list prefetch files that migth lead
+   attackers to have a clear image of what its beeing executed, Or
+   simple to cover attacker tracks by deleting prefetch contents.
+   
+   Get-PrefetchListing cmdlet does not recursive search Or display
+   'folder names' that have been found inside prefetch directory.
+   It only manage (.pf) artifacts found inside prefetch directory.
 
 .Parameter Action
    accepts arguments: enum, del (default: enum)
@@ -32,6 +37,10 @@
 .EXAMPLE
    PS C:\> .\Get-PrefetchListing.ps1 -action 'del'
    Dellete all prefetch files (.pf)
+
+.EXAMPLE
+   PS C:\> .\Get-PrefetchListing.ps1 -action 'del' -exclude 'none'
+   Dellete all prefetch files (.pf) - paranoid mode
 
 .INPUTS
    None. You cannot pipe objects into Get-PrefetchListing.ps1
@@ -87,7 +96,7 @@ If($Action -ieq "Enum")
 {
 
    <#
-   .SNOPSIS
+   .SYNOPSIS
       Author: @r00t-3xp10it
       Helper - Enumerate prefetch (.pf) files
 
@@ -139,7 +148,7 @@ If($Action -ieq "Del")
 {
 
    <#
-   .SNOPSIS
+   .SYNOPSIS
       Author: @r00t-3xp10it
       Helper - Delete prefetch (.pf) files
 
@@ -184,6 +193,7 @@ If($Action -ieq "Del")
    }
 
 }
+
 
 write-host "[*] Done, exit Get-PrefetchListing." -ForegroundColor Green
 exit
