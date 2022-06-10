@@ -121,9 +121,20 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfilt
 
 **execute:**
 ```powershell
-#Enumerate prefetch files
+#Enumerate all prefetch (.pf) files
 .\Get-PrefetchListing.ps1 -action "Enum"
 
-#Delete prefetch files
+#Enumerate all prefetch (.pf) files of selected directory
+.\Get-PrefetchListing.ps1 -action "Enum" -prefetch "$Env:WINDIR\Prefetch"
+
+#Delete all prefetch (.pf) files
 .\Get-PrefetchListing.ps1 -action "del"
+```
+
+<br />
+
+**Final Notes:**
+```
+Get-PrefetchListing cmdlet does not recursive search or display 'folder names'
+that have been found inside prefetch directory. It only manage (.pf) artifacts. 
 ```
