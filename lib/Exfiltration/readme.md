@@ -112,7 +112,7 @@ Get-Help .\WindowsUpdateLog.ps1 -Full
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|[Get-PrefetchListing](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/Get-PrefetchListing.ps1)|Manage (query \ Delete) prefetch files (.pf)|User Land|\*\*\*|
+|[Get-PrefetchListing](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/Get-PrefetchListing.ps1)|Manage (query \ Delete) prefetch files (.pf)|User Land|[Screenshot1](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/Get-PrefetchListing.png)<br />[Screenshot2](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/Get-PrefetchListing_Del.png)|
 
 **download cmdLet:**
 ```powershell
