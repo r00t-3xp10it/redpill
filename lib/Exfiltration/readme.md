@@ -159,20 +159,20 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfilt
 #Get the Computer's geographical location
 .\Get-ComputerGeolocation.ps1
 
-#Enumerate all prefetch (.pf) files of selected directory
+#Get the Computer's geographical location (hidde public addr)
 .\Get-ComputerGeolocation.ps1 -publicaddr "false"
 ```
 
 <br />
 
 **Final Notes:**
-```
-.DESCRIPTION
+```powershell
+[DESCRIPTION]
    Retrieves the Computer Geolocation using 'GeoCoordinateWatcher' Or
    'curl\ipapi.co' API (aprox location) if the 'GeoCoordinateWatcher'
    API fails to retrieve the coordinates from the host device.
 
-.NOTES
+[NOTES]
    Administrator privileges are not required to resolve Geo Location
    using 'GeoCoordinateWatcher', but they are required if the cmdlet
    requires to create registry hive\keys in HKLM hive to 'allow' for
