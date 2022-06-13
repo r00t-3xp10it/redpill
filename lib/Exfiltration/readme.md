@@ -151,7 +151,7 @@ that have been found inside prefetch directory. It only manage (.pf) artifacts.
 
 **download cmdLet:**
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/Get-ComputerGeolocation.ps1" -OutFile "Get-ComputerGeolocation.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/Get-ComputerGeoLocation.ps1" -OutFile "Get-ComputerGeolocation.ps1"
 ```
 
 **execute:**
