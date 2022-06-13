@@ -147,7 +147,7 @@ that have been found inside prefetch directory. It only manage (.pf) artifacts.
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|[Get-ComputerGeolocation](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Exfiltration/Get-ComputerGeolocation.ps1)|Get the Computer's geographical location|User Land \ Administrator|[Screenshot1](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/Get-PrefetchListing.png)<br />[Screenshot2](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/Get-PrefetchListing_Del.png)|
+|[Get-ComputerGeolocation](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Exfiltration/Get-ComputerGeolocation.ps1)|Get the Computer's geographical location|User Land \ Administrator|[Screenshot1](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/watcher.png)<br />[Screenshot2](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/curl.png)|
 
 **download cmdLet:**
 ```powershell
@@ -167,6 +167,15 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfilt
 
 **Final Notes:**
 ```
-Get-PrefetchListing cmdlet does not recursive search or display 'folder names'
-that have been found inside prefetch directory. It only manage (.pf) artifacts. 
+.DESCRIPTION
+   Retrieves the Computer Geolocation using 'GeoCoordinateWatcher' Or
+   'curl\ipapi.co' API (aprox location) if the 'GeoCoordinateWatcher'
+   API fails to retrieve the coordinates from the host device.
+
+.NOTES
+   Administrator privileges are not required to resolve Geo Location
+   using 'GeoCoordinateWatcher', but they are required if the cmdlet
+   requires to create registry hive\keys in HKLM hive to 'allow' for
+   the GeoLocation on host device. Alternative 'curl\ipapi.co' API
+   does NOT require any dependencies beside access to network (iwr)
 ```
