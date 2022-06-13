@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Retrieves the Computer's geographical location
 
@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: Device.Location.GeoCoordinateWatcher
    Optional Dependencies: Curl\ipapi.co {native}
-   PS cmdlet Dev version: v1.0.3
+   PS cmdlet Dev version: v1.1.3
 
 .DESCRIPTION
    Retrieves the Computer Geolocation using 'GeoCoordinateWatcher' Or
@@ -21,12 +21,19 @@
    the GeoLocation on host device. Alternative 'curl\ipapi.co' API
    does NOT require any dependencies beside access to network (iwr)
 
+.Parameter Api
+   The API (default: GeoCoordinateWatcher)
+
 .Parameter PublicAddr
    Display public ip addr? (default: true)
 
 .EXAMPLE
    PS C:\> .\Get-ComputerGeolocation.ps1
    Get the Computer's geographical location
+
+.EXAMPLE
+   PS C:\> .\Get-ComputerGeolocation.ps1 -Api 'curl'
+   Get the Computer's geographical location (curl\ipapi.co API)
 
 .EXAMPLE
    PS C:\> .\Get-ComputerGeolocation.ps1 -PublicAddr 'false'
@@ -52,11 +59,12 @@
 
 #Global cmdlet parameters
 [CmdletBinding(PositionalBinding=$false)] param(
+   [string]$Api="GeoCoordinateWatcher",
    [string]$PublicAddr="true"
 )
 
 
-$CmdletVersion = "v1.0.3"
+$CmdletVersion = "v1.1.3"
 $ErrorActionPreference = "SilentlyContinue"
 $host.UI.RawUI.WindowTitle = "@Get-ComputerGeoLocation $CmdletVersion"
 $IsAdmin = (([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
@@ -77,13 +85,54 @@ write-host "' Geo Location." -ForegroundColor DarkGray
 Start-Sleep -Seconds 1
 
 
+IF($Api -ieq "curl")
+{
+
+   <#
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - Force Geo Location [curl\ipappi.co]
+
+   .OUTPUTS
+      * Resolving 'SKYNET' Geo Location.
+      + Resolving GeoLocation : 'curl\ipapi.co(aprox)' API
+
+      PublicIP    city    region country  capital latitude longitude
+      --------    ----    ------ -------  ------- -------- ---------
+      8.235.13.07 Amadora Lisbon Portugal Lisbon  38.752   -9.2279
+
+      * Uri: https://www.google.com/maps/dir/@38.752,-9.2279,15z
+   #>
+
+   write-host "+ " -ForegroundColor Yellow -NoNewline
+   write-host "Resolving GeoLocation : '" -ForegroundColor DarkGray -NoNewline
+   write-host "curl\ipapi.co" -ForegroundColor Yellow -NoNewline
+   write-host "(aprox)' API`n`n" -ForegroundColor DarkGray
+
+   #Download\Execute cmdlet from GitHub
+   iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GeoLocation.ps1" -OutFile "$Env:TMP\GeoLocation.ps1"|Unblock-File
+
+   If($PublicAddr -ieq "false")
+   {
+      powershell -File "$Env:TMP\GeoLocation.ps1" -HiddeMyAss 'true'
+   }
+   Else
+   {
+      powershell -File "$Env:TMP\GeoLocation.ps1"
+   }
+
+   write-host ""
+   exit
+}
+
+
 If($GeoWatcher.Permission -eq 'Denied')
 {
 
    <#
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - Retrieve Geo Location with curl\ipappi.co
+      Helper - Retrieve Geo Location [curl\ipappi.co]
 
    .OUTPUTS
       * Resolving 'SKYNET' Geo Location.
@@ -131,11 +180,11 @@ Else
    <#
    .SYNOPSIS
       Author: @colsw
-      Helper - Retrieve Geo Location with GeoCoordinateWatcher
+      Helper - Retrieve Geo Location [GeoCoordinateWatcher]
 
    .OUTPUTS
       * Resolving 'SKYNET' Geo Location.
-      * Win API: 'GeoCoordinateWatcher'
+      * Win32 API: 'GeoCoordinateWatcher'
                                                                                                                                                                                                                                                 Altitude         Latitude         Longitude                                                                             --------         --------         ---------                                                                                    0 38,7133088132117 -9,13080657585403
       Altitude Latitude         Longitude
       -------- --------         ---------
@@ -176,7 +225,7 @@ Else
 
 
    write-host "* " -ForegroundColor Green -NoNewline
-   write-host "Win API: '" -ForegroundColor DarkGray -NoNewline
+   write-host "Win32 API: '" -ForegroundColor DarkGray -NoNewline
    write-host "GeoCoordinateWatcher" -ForegroundColor DarkYellow -NoNewline
    write-host "'`n" -ForegroundColor DarkGray
 
