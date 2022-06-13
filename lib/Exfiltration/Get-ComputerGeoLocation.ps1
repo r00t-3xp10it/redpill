@@ -36,8 +36,8 @@
    Get the Computer's geographical location (curl\ipapi.co API)
 
 .EXAMPLE
-   PS C:\> .\Get-ComputerGeolocation.ps1 -PublicAddr 'false'
-   Get the Computer's geographical location (hidde public ip)
+   PS C:\> .\Get-ComputerGeolocation.ps1 -Api 'curl' -PublicAddr 'false'
+   Get the Computer's geographical location (API:curl + hidde public ip)
 
 .INPUTS
    None. You cannot pipe objects into Get-ComputerGeoLocation.ps1
