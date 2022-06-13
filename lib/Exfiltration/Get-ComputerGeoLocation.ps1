@@ -67,16 +67,6 @@
 $CmdletVersion = "v1.1.3"
 $ErrorActionPreference = "SilentlyContinue"
 $host.UI.RawUI.WindowTitle = "@Get-ComputerGeoLocation $CmdletVersion"
-$IsAdmin = (([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
-$RegistryPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location"
-
-Add-Type -AssemblyName System.Device #Required to access System.Device.Location namespace
-$GeoWatcher = New-Object System.Device.Location.GeoCoordinateWatcher #Create the required object
-$GeoWatcher.Start() #Begin resolving current locaton
-While(($GeoWatcher.Status -ne 'Ready') -and ($GeoWatcher.Permission -ne 'Denied'))
-{
-    Start-Sleep -Milliseconds 100 #Wait for discovery.
-}  
 
 write-host "`n* " -ForegroundColor Green -NoNewline
 write-host "Resolving '" -ForegroundColor DarkGray -NoNewline
@@ -123,6 +113,18 @@ IF($Api -ieq "curl")
 
    write-host ""
    exit
+}
+
+
+$IsAdmin = (([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
+$RegistryPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location"
+
+Add-Type -AssemblyName System.Device #Required to access System.Device.Location namespace
+$GeoWatcher = New-Object System.Device.Location.GeoCoordinateWatcher #Create the required object
+$GeoWatcher.Start() #Begin resolving current locaton
+While(($GeoWatcher.Status -ne 'Ready') -and ($GeoWatcher.Permission -ne 'Denied'))
+{
+    Start-Sleep -Milliseconds 100 #Wait for discovery.
 }
 
 
