@@ -44,7 +44,7 @@
 
 .OUTPUTS
    * Resolving 'SKYNET' Geo Location.
-   * Win API: 'GeoCoordinateWatcher'
+   * Win32API: 'GeoCoordinateWatcher'
                                                                                                                                                                                                                                                 Altitude         Latitude         Longitude                                                                             --------         --------         ---------                                                                                    0 38,7133088132117 -9,13080657585403
    Altitude Latitude         Longitude
    -------- --------         ---------
@@ -184,7 +184,7 @@ Else
 
    .OUTPUTS
       * Resolving 'SKYNET' Geo Location.
-      * Win32 API: 'GeoCoordinateWatcher'
+      * Win32API: 'GeoCoordinateWatcher'
                                                                                                                                                                                                                                                 Altitude         Latitude         Longitude                                                                             --------         --------         ---------                                                                                    0 38,7133088132117 -9,13080657585403
       Altitude Latitude         Longitude
       -------- --------         ---------
@@ -225,7 +225,7 @@ Else
 
 
    write-host "* " -ForegroundColor Green -NoNewline
-   write-host "Win32 API: '" -ForegroundColor DarkGray -NoNewline
+   write-host "Win32API: '" -ForegroundColor DarkGray -NoNewline
    write-host "GeoCoordinateWatcher" -ForegroundColor DarkYellow -NoNewline
    write-host "'`n" -ForegroundColor DarkGray
 
