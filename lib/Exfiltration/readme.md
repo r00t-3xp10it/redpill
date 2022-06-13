@@ -138,3 +138,35 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfilt
 Get-PrefetchListing cmdlet does not recursive search or display 'folder names'
 that have been found inside prefetch directory. It only manage (.pf) artifacts. 
 ```
+
+
+
+<br />
+
+## Get-ComputerGeolocation.ps1
+
+|Cmdlet Name|Description|Privileges|Notes|
+|---|---|---|---|
+|[Get-ComputerGeolocation](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Exfiltration/Get-ComputerGeolocation.ps1)|Get the Computer's geographical location|User Land \ Administrator|[Screenshot1](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/Get-PrefetchListing.png)<br />[Screenshot2](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/Get-PrefetchListing_Del.png)|
+
+**download cmdLet:**
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/Get-ComputerGeolocation.ps1" -OutFile "Get-ComputerGeolocation.ps1"
+```
+
+**execute:**
+```powershell
+#Get the Computer's geographical location
+.\Get-ComputerGeolocation.ps1
+
+#Enumerate all prefetch (.pf) files of selected directory
+.\Get-ComputerGeolocation.ps1 -publicaddr "false"
+```
+
+<br />
+
+**Final Notes:**
+```
+Get-PrefetchListing cmdlet does not recursive search or display 'folder names'
+that have been found inside prefetch directory. It only manage (.pf) artifacts. 
+```
