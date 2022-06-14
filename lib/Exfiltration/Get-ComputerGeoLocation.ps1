@@ -12,14 +12,12 @@
 .DESCRIPTION
    Retrieves the Computer Geolocation using 'GeoCoordinateWatcher' Or
    'curl\ipapi.co' API (aprox location) if the 'GeoCoordinateWatcher'
-   API fails to retrieve the coordinates from the host device.
+   API fails to retrieve the coordinates from host device. (default)
 
 .NOTES
-   Administrator privileges are not required to resolve Geo Location
-   using 'GeoCoordinateWatcher', but they are required if the cmdlet
-   requires to create registry hive\keys in HKLM hive to 'allow' for
-   the GeoLocation on host device. Alternative 'curl\ipapi.co' API
-   does NOT require any dependencies beside access to network (iwr)
+   GeoCoordinateWatcher API does not require administrator privileges
+   to resolve address. But its required if cmdlet needs to create the
+   comrrespondent registry hive\keys that 'allow' GeoLocation on host.
 
 .Parameter Api
    The API (default: GeoCoordinateWatcher)
@@ -85,7 +83,7 @@ IF($Api -ieq "curl")
 
    .OUTPUTS
       * Resolving 'SKYNET' Geo Location.
-      + Resolving GeoLocation : 'curl\ipapi.co(aprox)' API
+      * Win32API : 'curl\ipapi.co(aprox)'
 
       PublicIP    city    region country  capital latitude longitude
       --------    ----    ------ -------  ------- -------- ---------
@@ -94,10 +92,10 @@ IF($Api -ieq "curl")
       * Uri: https://www.google.com/maps/dir/@38.752,-9.2279,15z
    #>
 
-   write-host "+ " -ForegroundColor Yellow -NoNewline
-   write-host "Resolving GeoLocation : '" -ForegroundColor DarkGray -NoNewline
+   write-host "* " -ForegroundColor Green -NoNewline
+   write-host "Win32API : '" -ForegroundColor DarkGray -NoNewline
    write-host "curl\ipapi.co" -ForegroundColor Yellow -NoNewline
-   write-host "(aprox)' API`n`n" -ForegroundColor DarkGray
+   write-host "(aprox)'`n`n" -ForegroundColor DarkGray
 
    #Download\Execute cmdlet from GitHub
    iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GeoLocation.ps1" -OutFile "$Env:TMP\GeoLocation.ps1"|Unblock-File
