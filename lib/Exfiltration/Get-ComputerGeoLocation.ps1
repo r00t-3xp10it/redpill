@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: Device.Location.GeoCoordinateWatcher
    Optional Dependencies: Curl\ipapi.co {native}
-   PS cmdlet Dev version: v1.1.3
+   PS cmdlet Dev version: v1.1.4
 
 .DESCRIPTION
    Retrieves the Computer Geolocation using 'GeoCoordinateWatcher' Or
@@ -43,10 +43,11 @@
 .OUTPUTS
    * Resolving 'SKYNET' Geo Location.
    * Win32API: 'GeoCoordinateWatcher'
+   * TimeStamp '14:junho:2022'
                                                                                                                                                                                                                                                 Altitude         Latitude         Longitude                                                                             --------         --------         ---------                                                                                    0 38,7133088132117 -9,13080657585403
-   Altitude Latitude         Longitude
-   -------- --------         ---------
-          0 38,7133088132117 -9,13080657585403
+   HostName Altitude Latitude         Longitude
+   -------- -------- --------         ---------
+   SKYNET          0 38,7133088132117 -9,13080657585403
 
    * Uri: https://www.google.com/maps/dir/@38.7133088132117,-9.13080657585403
 
@@ -62,7 +63,8 @@
 )
 
 
-$CmdletVersion = "v1.1.3"
+$CmdletVersion = "v1.1.4"
+$TimeStamp = (Date -Format 'dd:MMMM:yyyy')
 $ErrorActionPreference = "SilentlyContinue"
 $host.UI.RawUI.WindowTitle = "@Get-ComputerGeoLocation $CmdletVersion"
 
@@ -83,7 +85,8 @@ IF($Api -ieq "curl")
 
    .OUTPUTS
       * Resolving 'SKYNET' Geo Location.
-      * Win32API : 'curl\ipapi.co(aprox)'
+      * Win32API: 'curl\ipapi.co(aprox)'
+      * TimeStamp '14:junho:2022'
 
       PublicIP    city    region country  capital latitude longitude
       --------    ----    ------ -------  ------- -------- ---------
@@ -93,9 +96,14 @@ IF($Api -ieq "curl")
    #>
 
    write-host "* " -ForegroundColor Green -NoNewline
-   write-host "Win32API : '" -ForegroundColor DarkGray -NoNewline
+   write-host "Win32API: '" -ForegroundColor DarkGray -NoNewline
    write-host "curl\ipapi.co" -ForegroundColor Yellow -NoNewline
-   write-host "(aprox)'`n`n" -ForegroundColor DarkGray
+   write-host "(aprox)'" -ForegroundColor DarkGray
+
+   write-host "* " -ForegroundColor Green -NoNewline
+   write-host "TimeStamp '" -ForegroundColor DarkGray -NoNewline
+   write-host "$TimeStamp" -ForegroundColor DarkYellow -NoNewline
+   write-host "'`n`n" -ForegroundColor DarkGray -NoNewline
 
    #Download\Execute cmdlet from GitHub
    iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GeoLocation.ps1" -OutFile "$Env:TMP\GeoLocation.ps1"|Unblock-File
@@ -109,6 +117,8 @@ IF($Api -ieq "curl")
       powershell -File "$Env:TMP\GeoLocation.ps1"
    }
 
+   #cleanUp
+   Remove-Item -Path "$Env:TMP\GeoLocation.ps1" -Force
    write-host ""
    exit
 }
@@ -138,6 +148,7 @@ If($GeoWatcher.Permission -eq 'Denied')
       * Resolving 'SKYNET' Geo Location.
       x Error: Access Denied  : 'GeoCoordinateWatcher' API
       + Resolving GeoLocation : 'curl\ipapi.co(aprox)' API
+      * TimeStamp             : '14:junho:2022'
 
       PublicIP    city    region country  capital latitude longitude
       --------    ----    ------ -------  ------- -------- ---------
@@ -155,7 +166,12 @@ If($GeoWatcher.Permission -eq 'Denied')
    write-host "+ " -ForegroundColor Yellow -NoNewline
    write-host "Resolving GeoLocation : '" -ForegroundColor DarkGray -NoNewline
    write-host "curl\ipapi.co" -ForegroundColor Yellow -NoNewline
-   write-host "(aprox)' API`n`n" -ForegroundColor DarkGray
+   write-host "(aprox)' API" -ForegroundColor DarkGray
+
+   write-host "* " -ForegroundColor Green -NoNewline
+   write-host "TimeStamp             : '" -ForegroundColor DarkGray -NoNewline
+   write-host "$TimeStamp" -ForegroundColor DarkYellow -NoNewline
+   write-host "'`n`n" -ForegroundColor DarkGray -NoNewline
 
    #Download\Execute cmdlet from GitHub
    iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GeoLocation.ps1" -OutFile "$Env:TMP\GeoLocation.ps1"|Unblock-File
@@ -185,10 +201,11 @@ Else
    .OUTPUTS
       * Resolving 'SKYNET' Geo Location.
       * Win32API: 'GeoCoordinateWatcher'
+      * TimeStamp '14:junho:2022'
                                                                                                                                                                                                                                                 Altitude         Latitude         Longitude                                                                             --------         --------         ---------                                                                                    0 38,7133088132117 -9,13080657585403
-      Altitude Latitude         Longitude
-      -------- --------         ---------
-             0 38,7133088132117 -9,13080657585403
+      HostName Altitude Latitude         Longitude
+      -------- -------- --------         ---------
+      SKYNET          0 38,7133088132117 -9,13080657585403
 
       * Uri: https://www.google.com/maps/dir/@38.7133088132117,-9.13080657585403
    #>   
@@ -227,11 +244,16 @@ Else
    write-host "* " -ForegroundColor Green -NoNewline
    write-host "Win32API: '" -ForegroundColor DarkGray -NoNewline
    write-host "GeoCoordinateWatcher" -ForegroundColor DarkYellow -NoNewline
+   write-host "'" -ForegroundColor DarkGray
+
+   write-host "* " -ForegroundColor Green -NoNewline
+   write-host "TimeStamp '" -ForegroundColor DarkGray -NoNewline
+   write-host "$TimeStamp" -ForegroundColor DarkYellow -NoNewline
    write-host "'`n" -ForegroundColor DarkGray
 
    $Lati = ($GeoWatcher.Position.Location).Latitude
    $Long = ($GeoWatcher.Position.Location).Longitude
-   $GeoWatcher.Position.Location | Select-Object Altitude,Latitude,Longitude | Format-Table -AutoSize
+   $GeoWatcher.Position.Location | Select-Object @{Name='HostName';Expression={"$Env:COMPUTERNAME"}},Altitude,Latitude,Longitude | Format-Table -AutoSize
 
    write-host "* Uri: " -ForegroundColor Blue -NoNewline
    write-host "https://www.google.com/maps/dir/@$Lati,$Long`n" -ForegroundColor Green
