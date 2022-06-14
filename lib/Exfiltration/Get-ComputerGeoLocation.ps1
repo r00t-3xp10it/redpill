@@ -82,7 +82,7 @@ IF($Api -ieq "curl")
    <#
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - Geo Location [curl\ipappi.co]
+      Helper - Retrieve Geo Location [curl\ipappi.co]
 
    .OUTPUTS
       * Resolving 'SKYNET' Geo Location.
@@ -127,7 +127,7 @@ IF($Api -ieq "curl")
 }
 
 
-$HomeLocation = (Get-WinHomeLocation).HomeLocation
+#Local function variable declarations
 $IsAdmin = (([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
 $RegistryPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location"
 
@@ -259,6 +259,7 @@ Else
 
    $Lati = ($GeoWatcher.Position.Location).Latitude
    $Long = ($GeoWatcher.Position.Location).Longitude
+   $HomeLocation = (Get-WinHomeLocation).HomeLocation
 
    $GeoWatcher.Position.Location |
       Select-Object @{Name='HostName';Expression={"$Env:COMPUTERNAME"}},@{Name='Country';Expression={"$HomeLocation"}},Latitude,Longitude |
