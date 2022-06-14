@@ -43,7 +43,7 @@
 .OUTPUTS
    * Resolving 'SKYNET' Geo Location.
    * Win32API: 'GeoCoordinateWatcher'
-   * TimeStamp '14:junho:2022'
+   * TimeStamp '14/junho/2022'
                                                                                                                                                                                                                                                 Altitude         Latitude         Longitude                                                                             --------         --------         ---------                                                                                    0 38,7133088132117 -9,13080657585403
    HostName Country          Latitude         Longitude
    -------- -------          --------         ---------
@@ -65,7 +65,7 @@
 
 
 $CmdletVersion = "v1.1.5"
-$TimeStamp = (Date -Format 'dd:MMMM:yyyy')
+$TimeStamp = (Date -Format 'dd/MMMM/yyyy')
 $ErrorActionPreference = "SilentlyContinue"
 $host.UI.RawUI.WindowTitle = "@Get-ComputerGeoLocation $CmdletVersion"
 
@@ -87,7 +87,7 @@ IF($Api -ieq "curl")
    .OUTPUTS
       * Resolving 'SKYNET' Geo Location.
       * Win32API: 'curl\ipapi.co(aprox)'
-      * TimeStamp '14:junho:2022'
+      * TimeStamp '14/junho/2022'
 
       PublicIP    city    region country  capital latitude longitude
       --------    ----    ------ -------  ------- -------- ---------
@@ -152,7 +152,7 @@ If($GeoWatcher.Permission -eq 'Denied')
       * Resolving 'SKYNET' Geo Location.
       x Error: Access Denied  : 'GeoCoordinateWatcher' API
       + Resolving GeoLocation : 'curl\ipapi.co(aprox)' API
-      * TimeStamp             : '14:junho:2022'
+      * TimeStamp             : '14/junho/2022'
 
       PublicIP    city    region country  capital latitude longitude
       --------    ----    ------ -------  ------- -------- ---------
@@ -207,7 +207,7 @@ Else
    .OUTPUTS
       * Resolving 'SKYNET' Geo Location.
       * Win32API: 'GeoCoordinateWatcher'
-      * TimeStamp '14:junho:2022'
+      * TimeStamp '14/junho/2022'
                                                                                                                                                                                                                                                 Altitude         Latitude         Longitude                                                                             --------         --------         ---------                                                                                    0 38,7133088132117 -9,13080657585403
       HostName Country  Latitude         Longitude
       -------- -------  --------         ---------
