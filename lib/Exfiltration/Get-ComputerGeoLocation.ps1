@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: Device.Location.GeoCoordinateWatcher
    Optional Dependencies: Curl\ipapi.co {native}
-   PS cmdlet Dev version: v1.1.4
+   PS cmdlet Dev version: v1.1.5
 
 .DESCRIPTION
    Retrieves the Computer Geolocation using 'GeoCoordinateWatcher' Or
@@ -45,13 +45,14 @@
    * Win32API: 'GeoCoordinateWatcher'
    * TimeStamp '14:junho:2022'
                                                                                                                                                                                                                                                 Altitude         Latitude         Longitude                                                                             --------         --------         ---------                                                                                    0 38,7133088132117 -9,13080657585403
-   HostName Altitude Latitude         Longitude
-   -------- -------- --------         ---------
-   SKYNET          0 38,7133088132117 -9,13080657585403
+   HostName Country          Latitude         Longitude
+   -------- -------          --------         ---------
+   SKYNET   Portugal 38,7130834464767 -9,13077362163375
 
    * Uri: https://www.google.com/maps/dir/@38.7133088132117,-9.13080657585403
 
 .LINK
+   https://docs.microsoft.com/en-us/powershell/module/international/get-winhomelocation
    https://stackoverflow.com/questions/46287792/powershell-getting-gps-coordinates-in-windows-10-using-windows-location-api
 #>
 
@@ -63,7 +64,7 @@
 )
 
 
-$CmdletVersion = "v1.1.4"
+$CmdletVersion = "v1.1.5"
 $TimeStamp = (Date -Format 'dd:MMMM:yyyy')
 $ErrorActionPreference = "SilentlyContinue"
 $host.UI.RawUI.WindowTitle = "@Get-ComputerGeoLocation $CmdletVersion"
@@ -81,7 +82,7 @@ IF($Api -ieq "curl")
    <#
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - Force Geo Location [curl\ipappi.co]
+      Helper - Geo Location [curl\ipappi.co]
 
    .OUTPUTS
       * Resolving 'SKYNET' Geo Location.
@@ -103,27 +104,30 @@ IF($Api -ieq "curl")
    write-host "* " -ForegroundColor Green -NoNewline
    write-host "TimeStamp '" -ForegroundColor DarkGray -NoNewline
    write-host "$TimeStamp" -ForegroundColor DarkYellow -NoNewline
-   write-host "'`n`n" -ForegroundColor DarkGray -NoNewline
+   write-host "'`n`n" -ForegroundColor DarkGray
 
    #Download\Execute cmdlet from GitHub
    iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GeoLocation.ps1" -OutFile "$Env:TMP\GeoLocation.ps1"|Unblock-File
 
    If($PublicAddr -ieq "false")
    {
-      powershell -File "$Env:TMP\GeoLocation.ps1" -HiddeMyAss 'true'
+      ## My wife PC does not show Table correctly
+      # when invoking powershell with -file argument
+      &"$Env:TMP\GeoLocation.ps1" -HiddeMyAss 'true'
    }
    Else
    {
-      powershell -File "$Env:TMP\GeoLocation.ps1"
+      &"$Env:TMP\GeoLocation.ps1"
    }
 
-   #cleanUp
+   #CleanUp
    Remove-Item -Path "$Env:TMP\GeoLocation.ps1" -Force
    write-host ""
    exit
 }
 
 
+$HomeLocation = (Get-WinHomeLocation).HomeLocation
 $IsAdmin = (([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
 $RegistryPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location"
 
@@ -178,14 +182,16 @@ If($GeoWatcher.Permission -eq 'Denied')
 
    If($PublicAddr -ieq "false")
    {
-      powershell -File "$Env:TMP\GeoLocation.ps1" -HiddeMyAss 'true'
+      ## My wife PC does not show Table correctly
+      # when invoking powershell with -file argument
+      &"$Env:TMP\GeoLocation.ps1" -HiddeMyAss 'true'
    }
    Else
    {
-      powershell -File "$Env:TMP\GeoLocation.ps1"
+      &"$Env:TMP\GeoLocation.ps1"
    }
    
-   #cleanUp
+   #CleanUp
    Remove-Item -Path "$Env:TMP\GeoLocation.ps1" -Force
    write-host ""  
 
@@ -203,9 +209,9 @@ Else
       * Win32API: 'GeoCoordinateWatcher'
       * TimeStamp '14:junho:2022'
                                                                                                                                                                                                                                                 Altitude         Latitude         Longitude                                                                             --------         --------         ---------                                                                                    0 38,7133088132117 -9,13080657585403
-      HostName Altitude Latitude         Longitude
-      -------- -------- --------         ---------
-      SKYNET          0 38,7133088132117 -9,13080657585403
+      HostName Country  Latitude         Longitude
+      -------- -------  --------         ---------
+      SKYNET   Portugal 38,7133088132117 -9,13080657585403
 
       * Uri: https://www.google.com/maps/dir/@38.7133088132117,-9.13080657585403
    #>   
@@ -253,7 +259,10 @@ Else
 
    $Lati = ($GeoWatcher.Position.Location).Latitude
    $Long = ($GeoWatcher.Position.Location).Longitude
-   $GeoWatcher.Position.Location | Select-Object @{Name='HostName';Expression={"$Env:COMPUTERNAME"}},Altitude,Latitude,Longitude | Format-Table -AutoSize
+
+   $GeoWatcher.Position.Location |
+      Select-Object @{Name='HostName';Expression={"$Env:COMPUTERNAME"}},@{Name='Country';Expression={"$HomeLocation"}},Latitude,Longitude |
+      Format-Table -AutoSize
 
    write-host "* Uri: " -ForegroundColor Blue -NoNewline
    write-host "https://www.google.com/maps/dir/@$Lati,$Long`n" -ForegroundColor Green
