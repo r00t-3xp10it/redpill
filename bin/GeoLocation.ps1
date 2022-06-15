@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19043) x64 bits
    Required Dependencies: curl\ipapi.co {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.2
+   PS cmdlet Dev version: v1.0.3
 
 .DESCRIPTION
    CmdLet to resolve local host geo location and public ip addr.
@@ -135,9 +135,9 @@ If($GeoLocation)
 
    #GoogleMaps Location Uri link
    Write-Host "* Org: " -ForegroundColor Blue -BackgroundColor Black -NoNewline
-   Write-Host "$GeoDate" -BackgroundColor Black;
-   Write-Host "* Uri: " -ForegroundColor Blue -BackgroundColor Black -NoNewline;
-   Write-Host "https://www.google.com/maps/dir/@$lati,$long,15z" -ForegroundColor Green -BackgroundColor Black;
+   Write-Host "$GeoDate" -BackgroundColor Black
+   Write-Host "* Uri: " -ForegroundColor Blue -BackgroundColor Black -NoNewline
+   Write-Host "https://www.google.com/maps/dir/@$lati,$long,15z" -ForegroundColor Green -BackgroundColor Black
 
 }
 Else
