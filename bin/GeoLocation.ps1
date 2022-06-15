@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Resolve local host geo location {Local Lan}
 
