@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19043) x64 bits
    Required Dependencies: curl\ipapi.co {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.3
+   PS cmdlet Dev version: v1.0.4
 
 .DESCRIPTION
    CmdLet to resolve local host geo location and public ip addr.
@@ -47,8 +47,7 @@
 
 $ErrorActionPreference = "SilentlyContinue"
 
-## Get Public Ip addr GeoLocation
-# Build GeoLocation DataTable!
+#Build GeoLocation DataTable!
 $geotable = New-Object System.Data.DataTable
 $geotable.Columns.Add("PublicIP")|Out-Null
 $geotable.Columns.Add("city")|Out-Null
@@ -112,20 +111,24 @@ If($GeoLocation)
                       "$long"        ## longitude
    )|Out-Null
 
-   #Parse DataTable data OnScreen
+   #Display Data Table OnScreen
    $geotable | Format-Table -AutoSize
 
    $Organisation = (curl "https://ipapi.co/json/" -EA SilentlyContinue).RawContent | findstr /C:"org"
    $GeoDate = $Organisation -replace '"','' -replace 'org:','' -replace '(^\s+|\s+$)',''
 
-   #GoogleMaps Location Uri link
    Write-Host "* Org: " -ForegroundColor Blue -BackgroundColor Black -NoNewline
    Write-Host "$GeoDate" -BackgroundColor Black
+
+   #GoogleMaps Location Uri link
    Write-Host "* Uri: " -ForegroundColor Blue -BackgroundColor Black -NoNewline
    Write-Host "https://www.google.com/maps/dir/@$lati,$long,15z" -ForegroundColor Green -BackgroundColor Black
 
 }
 Else
 {
-   Write-Host "`n* Error: fail to resolve data from curl\ipapi.co!" -ForegroundColor Red -BackgroundColor Black
+   Write-Host "`nx Error: " -ForegroundColor Red -NoNewline
+   Write-Host "fail to resolve data from: '" -ForegroundColor DarkGray -NoNewline
+   Write-Host "curl\ipapi.co" -ForegroundColor Red -NoNewline
+   Write-Host "'`n" -ForegroundColor DarkGray
 }
