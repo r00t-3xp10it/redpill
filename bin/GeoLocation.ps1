@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Resolve local host geo location {Local Lan}
 
@@ -128,7 +128,14 @@ If($GeoLocation)
    }
 
 
+   $Organisation = (curl "https://ipapi.co/$PublicAddr/json/" -EA SilentlyContinue).RawContent |
+      findstr /C:"org" | findstr /V "iso3 tld calling area population region_code country_code"
+
+   $GeoDate = $Organisation -replace '"','' -replace 'org:','' -replace '(^\s+|\s+$)',''
+
    #GoogleMaps Location Uri link
+   Write-Host "* Org: " -ForegroundColor Blue -BackgroundColor Black -NoNewline
+   Write-Host "$GeoDate" -BackgroundColor Black;
    Write-Host "* Uri: " -ForegroundColor Blue -BackgroundColor Black -NoNewline;
    Write-Host "https://www.google.com/maps/dir/@$lati,$long,15z" -ForegroundColor Green -BackgroundColor Black;
 
