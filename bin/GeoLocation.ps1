@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Resolve local host geo location {Local Lan}
 
@@ -112,23 +112,10 @@ If($GeoLocation)
                       "$long"        ## longitude
    )|Out-Null
 
-   #Parse DataTable data OnScreen (NetAdapter)
-   $geotable | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {
-      $stringformat = If($_ -Match '^(PublicIP)')
-      {
-         @{ 'ForegroundColor' = 'Green' }
-      }
-      Else
-      {
-         @{ 'ForegroundColor' = 'White' }
-      }
-      Write-Host @stringformat $_
-   }
+   #Parse DataTable data OnScreen
+   $geotable | Format-Table -AutoSize
 
-
-   $Organisation = (curl "https://ipapi.co/$PublicAddr/json/" -EA SilentlyContinue).RawContent |
-      findstr /C:"org" | findstr /V "iso3 tld calling area population region_code country_code"
-
+   $Organisation = (curl "https://ipapi.co/json/" -EA SilentlyContinue).RawContent | findstr /C:"org"
    $GeoDate = $Organisation -replace '"','' -replace 'org:','' -replace '(^\s+|\s+$)',''
 
    #GoogleMaps Location Uri link
