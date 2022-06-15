@@ -107,21 +107,21 @@ IF($Api -ieq "curl")
    write-host "'`n`n" -ForegroundColor DarkGray
 
    #Download\Execute cmdlet from GitHub
-   iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GeoLocation.ps1" -OutFile "$Env:TMP\GeoLocation.ps1"|Unblock-File
+   iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GeoLocation.ps1" -OutFile "GeoLocation.ps1"|Unblock-File
 
    If($PublicAddr -ieq "false")
    {
       ## My wife PC does not show Table correctly
       # when invoking powershell with -file argument
-      &"$Env:TMP\GeoLocation.ps1" -HiddeMyAss 'true'
+      .\GeoLocation.ps1 -HiddeMyAss 'true'
    }
    Else
    {
-      &"$Env:TMP\GeoLocation.ps1"
+      .\GeoLocation.ps1
    }
 
    #CleanUp
-   Remove-Item -Path "$Env:TMP\GeoLocation.ps1" -Force
+   Remove-Item -Path "GeoLocation.ps1" -Force
    write-host ""
    exit
 }
@@ -178,21 +178,21 @@ If($GeoWatcher.Permission -eq 'Denied')
    write-host "'`n`n" -ForegroundColor DarkGray -NoNewline
 
    #Download\Execute cmdlet from GitHub
-   iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GeoLocation.ps1" -OutFile "$Env:TMP\GeoLocation.ps1"|Unblock-File
+   iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GeoLocation.ps1" -OutFile "GeoLocation.ps1"|Unblock-File
 
    If($PublicAddr -ieq "false")
    {
       ## My wife PC does not show Table correctly
       # when invoking powershell with -file argument
-      &"$Env:TMP\GeoLocation.ps1" -HiddeMyAss 'true'
+      .\GeoLocation.ps1 -HiddeMyAss 'true'
    }
    Else
    {
-      &"$Env:TMP\GeoLocation.ps1"
+      .\GeoLocation.ps1
    }
    
    #CleanUp
-   Remove-Item -Path "$Env:TMP\GeoLocation.ps1" -Force
+   Remove-Item -Path "GeoLocation.ps1" -Force
    write-host ""  
 
 }
