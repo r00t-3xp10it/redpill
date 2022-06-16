@@ -138,7 +138,10 @@ If(-not(Test-Path -Path "$RegistryPath") -and ($Api -ne "curl"))
    {
       write-host "x " -ForegroundColor Red -NoNewline
       write-host "Error: " -ForegroundColor DarkGray -NoNewline
-      write-host "Admin privs required to create hive ..`n" -ForegroundColor Red
+      write-host "Admin privs required to create reg hive .." -ForegroundColor Red
+      write-host "+ " -ForegroundColor DarkYellow -NoNewline
+      write-host "Alternative: " -ForegroundColor DarkGray -NoNewline
+      write-host ".\Get-ComputerGeoLocation.ps1 -api 'curl'`n" -ForegroundColor DarkYellow
       exit
    }
 
@@ -158,7 +161,10 @@ If((Get-ItemProperty -Path "$RegistryPath").Value -iNotMatch 'allow' -and ($Api 
    {
       write-host "x " -ForegroundColor Red -NoNewline
       write-host "Error: " -ForegroundColor DarkGray -NoNewline
-      write-host "Admin privs required to create key ..`n" -ForegroundColor Red
+      write-host "Admin privs required to create reg key .." -ForegroundColor Red
+      write-host "+ " -ForegroundColor DarkYellow -NoNewline
+      write-host "Alternative: " -ForegroundColor DarkGray -NoNewline
+      write-host ".\Get-ComputerGeoLocation.ps1 -api 'curl'`n" -ForegroundColor DarkYellow
       exit
    }
 
