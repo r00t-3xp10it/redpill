@@ -272,7 +272,7 @@ Else
 
    write-host "* " -ForegroundColor Green -NoNewline
    write-host "Win32API: '" -ForegroundColor DarkGray -NoNewline
-   write-host "GeoCoordinateWatcher" -ForegroundColor DarkYellow -NoNewline
+   write-host "GeoCoordinateWatcher" -ForegroundColor Yellow -NoNewline
    write-host "'" -ForegroundColor DarkGray
 
    write-host "* " -ForegroundColor Green -NoNewline
