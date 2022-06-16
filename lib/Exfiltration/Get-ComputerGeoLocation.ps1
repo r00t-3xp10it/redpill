@@ -213,9 +213,16 @@ If(-not(Test-Path -Path "$RegistryPath") -and ($Api -ne "curl"))
       write-host "x " -ForegroundColor Red -NoNewline
       write-host "Error: " -ForegroundColor DarkGray -NoNewline
       write-host "Admin privs required to create reg hive .." -ForegroundColor Red
+      Start-Sleep -Milliseconds 600
    }
    Else
    {
+      write-host "  x " -ForegroundColor Red -NoNewline
+      write-host "Error: device location reg key: '" -ForegroundColor DarkGray -NoNewline
+      write-host "Missing" -ForegroundColor Red -NoNewline
+      write-host "'" -ForegroundColor DarkGray
+      Start-Sleep -Milliseconds 600
+
       write-host "  + " -ForegroundColor DarkYellow -NoNewline
       write-host "Activate: device location in:'" -ForegroundColor DarkGray -NoNewline
       write-host "regedit" -ForegroundColor DarkYellow -NoNewline
@@ -234,13 +241,21 @@ If((Get-ItemProperty -Path "$RegistryPath").Value -iNotMatch 'allow' -and ($Api 
       write-host "x " -ForegroundColor Red -NoNewline
       write-host "Error: " -ForegroundColor DarkGray -NoNewline
       write-host "Admin privs required to create reg key .." -ForegroundColor Red
+      Start-Sleep -Milliseconds 600
    }
    Else
    {
+      write-host "  x " -ForegroundColor Red -NoNewline
+      write-host "Error: device location set to: '" -ForegroundColor DarkGray -NoNewline
+      write-host "Deny" -ForegroundColor Red -NoNewline
+      write-host "'" -ForegroundColor DarkGray
+      Start-Sleep -Milliseconds 600
+
       write-host "  + " -ForegroundColor DarkYellow -NoNewline
       write-host "Activate: device location to:'" -ForegroundColor DarkGray -NoNewline
       write-host "allow" -ForegroundColor DarkYellow -NoNewline
       write-host "'" -ForegroundColor DarkGray
+      Start-Sleep -Milliseconds 600
 
       write-host "  + " -ForegroundColor DarkYellow -NoNewline
       write-host "Registry: '" -ForegroundColor DarkGray -NoNewline
