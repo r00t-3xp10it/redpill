@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: Device.Location.GeoCoordinateWatcher
    Optional Dependencies: Curl\ipapi.co {native}
-   PS cmdlet Dev version: v1.1.6
+   PS cmdlet Dev version: v1.1.7
 
 .DESCRIPTION
    Retrieves the Computer Geolocation using 'GeoCoordinateWatcher' Or
@@ -18,6 +18,8 @@
    GeoCoordinateWatcher API does not require administrator privileges
    to resolve address. But its required if cmdlet needs to create the
    comrrespondent registry hive\keys that 'allow' GeoLocation on host.
+   As an alternative the -api 'curl' parameter argument can be used to
+   resolve host address without the need of administrator privileges.
 
 .Parameter Api
    The API (default: GeoCoordinateWatcher)
@@ -64,7 +66,7 @@
 )
 
 
-$CmdletVersion = "v1.1.6"
+$CmdletVersion = "v1.1.7"
 $TimeStamp = (Date -Format 'dd/MMMM/yyyy')
 $ErrorActionPreference = "SilentlyContinue"
 $host.UI.RawUI.WindowTitle = "@Get-ComputerGeoLocation $CmdletVersion"
@@ -139,20 +141,18 @@ If(-not(Test-Path -Path "$RegistryPath") -and ($Api -ne "curl"))
       write-host "x " -ForegroundColor Red -NoNewline
       write-host "Error: " -ForegroundColor DarkGray -NoNewline
       write-host "Admin privs required to create reg hive .." -ForegroundColor Red
-      write-host "+ " -ForegroundColor DarkYellow -NoNewline
-      write-host "Alternative: " -ForegroundColor DarkGray -NoNewline
-      write-host ".\Get-ComputerGeoLocation.ps1 -api 'curl'`n" -ForegroundColor DarkYellow
-      exit
    }
+   Else
+   {
+      write-host "  + " -ForegroundColor DarkYellow -NoNewline
+      write-host "Activate: device location in:'" -ForegroundColor DarkGray -NoNewline
+      write-host "regedit" -ForegroundColor DarkYellow -NoNewline
+      write-host "'" -ForegroundColor DarkGray
 
-   write-host "  + " -ForegroundColor DarkYellow -NoNewline
-   write-host "Activate: device location in:'" -ForegroundColor DarkGray -NoNewline
-   write-host "regedit" -ForegroundColor DarkYellow -NoNewline
-   write-host "'" -ForegroundColor DarkGray
-
-   #Create the new registry hive
-   New-Item -Path "$RegistryPath" -Force|Out-Null
-   Start-Sleep -Milliseconds 1000 #Give extra time for registry refresh
+      #Create the new registry hive
+      New-Item -Path "$RegistryPath" -Force|Out-Null
+      Start-Sleep -Milliseconds 1000 #Give extra time for registry refresh
+   }
 }
 
 If((Get-ItemProperty -Path "$RegistryPath").Value -iNotMatch 'allow' -and ($Api -ne "curl"))
@@ -162,25 +162,23 @@ If((Get-ItemProperty -Path "$RegistryPath").Value -iNotMatch 'allow' -and ($Api 
       write-host "x " -ForegroundColor Red -NoNewline
       write-host "Error: " -ForegroundColor DarkGray -NoNewline
       write-host "Admin privs required to create reg key .." -ForegroundColor Red
-      write-host "+ " -ForegroundColor DarkYellow -NoNewline
-      write-host "Alternative: " -ForegroundColor DarkGray -NoNewline
-      write-host ".\Get-ComputerGeoLocation.ps1 -api 'curl'`n" -ForegroundColor DarkYellow
-      exit
    }
+   Else
+   {
+      write-host "  + " -ForegroundColor DarkYellow -NoNewline
+      write-host "Activate: device location to:'" -ForegroundColor DarkGray -NoNewline
+      write-host "allow" -ForegroundColor DarkYellow -NoNewline
+      write-host "'" -ForegroundColor DarkGray
 
-   write-host "  + " -ForegroundColor DarkYellow -NoNewline
-   write-host "Activate: device location to:'" -ForegroundColor DarkGray -NoNewline
-   write-host "allow" -ForegroundColor DarkYellow -NoNewline
-   write-host "'" -ForegroundColor DarkGray
+      write-host "  + " -ForegroundColor DarkYellow -NoNewline
+      write-host "Registry: '" -ForegroundColor DarkGray -NoNewline
+      write-host "$RegistryPath" -ForegroundColor Blue -NoNewline
+      write-host "'" -ForegroundColor DarkGray
 
-   write-host "  + " -ForegroundColor DarkYellow -NoNewline
-   write-host "Registry: '" -ForegroundColor DarkGray -NoNewline
-   write-host "$RegistryPath" -ForegroundColor Blue -NoNewline
-   write-host "'" -ForegroundColor DarkGray
-
-   #Modify location registry key
-   New-ItemProperty -Path "$RegistryPath" -Name "value" -Value "allow" -PropertyType "String" -Force|Out-Null
-   Start-Sleep -Milliseconds 1500 #Give extra time for registry refresh
+      #Modify location registry key
+      New-ItemProperty -Path "$RegistryPath" -Name "value" -Value "allow" -PropertyType "String" -Force|Out-Null
+      Start-Sleep -Milliseconds 1500 #Give extra time for registry refresh
+   }
 }
 
 
@@ -260,6 +258,8 @@ Else
 
    .OUTPUTS
       * Resolving 'SKYNET' Geo Location.
+        + Activate: devive location to:'allow'
+        + Registry:'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location'
       * Win32API: 'GeoCoordinateWatcher'
       * TimeStamp '14/junho/2022'
                                                                                                                                                                                                                                                 Altitude         Latitude         Longitude                                                                             --------         --------         ---------                                                                                    0 38,7133088132117 -9,13080657585403
