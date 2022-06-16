@@ -61,6 +61,7 @@
    * Uri: https://www.google.com/maps/dir/@38.7133088132117,-9.13080657585403
 
 .LINK
+   http://woshub.com/get-external-ip-powershell/#google_vignette
    https://docs.microsoft.com/en-us/powershell/module/international/get-winhomelocation
    https://stackoverflow.com/questions/46287792/powershell-getting-gps-coordinates-in-windows-10-using-windows-location-api
 #>
@@ -92,6 +93,10 @@ If($Api -ieq "curl")
    .SYNOPSIS
       Author: @r00t-3xp10it
       Helper - Retrieve Geo Location [curl\ipappi.co]
+
+   .NOTES
+      Does not require: Administrator privileges token
+      Does not require: 'allow access to the location of this device'
 
    .OUTPUTS
       * Resolving 'SKYNET' Geo Location.
@@ -144,6 +149,10 @@ IF($Api -ieq "ifconfig")
       Author: @r00t-3xp10it
       Helper - Retrieve Geo Location [ifconfig.me]
 
+   .NOTES
+      Does not require: Administrator privileges token
+      Does not require: 'allow access to the location of this device'
+
    .OUTPUTS
       * Resolving 'SKYNET' Geo Location.
       * Win32API: 'ifconfig.me (aprox)'
@@ -171,12 +180,12 @@ IF($Api -ieq "ifconfig")
    write-host "$TimeStamp" -ForegroundColor DarkYellow -NoNewline
    write-host "'" -ForegroundColor DarkGray
 
-   $GeoDateLoc = (Invoke-WebRequest -Uri "http://ipinfo.io").Content | findstr /C:"loc"
+   $GeoDateLoc = (Invoke-WebRequest -Uri "http://ipinfo.io" -UseBasicParsing).Content | findstr /C:"loc"
    $Coordinates = $GeoDateLoc -replace '"','' -replace 'loc:','' -replace '(,)$','' -replace '(^\s+|\s+$)',''
 
    Try{
       write-host ""
-      Invoke-RestMethod -Uri ('http://ipinfo.io/'+(Invoke-WebRequest -uri "http://ifconfig.me/ip").Content) |
+      Invoke-RestMethod -Uri ('http://ipinfo.io/'+(Invoke-WebRequest -uri "http://ifconfig.me/ip" -UseBasicParsing).Content) |
          select-Object ip,loc,country,city,postal,timezone,hostname,org | Format-List
    }Catch{
       Write-Host "`nx " -ForegroundColor Red -NoNewline
@@ -263,6 +272,10 @@ If($GeoWatcher.Permission -eq 'Denied')
       Author: @r00t-3xp10it
       Helper - Retrieve Geo Location [curl\ipappi.co]
 
+   .NOTES
+      Does not require: Administrator privileges token
+      Does not require: 'allow access to the location of this device'
+
    .OUTPUTS
       * Resolving 'SKYNET' Geo Location.
       x Error: Access Denied  : 'GeoCoordinateWatcher' API
@@ -318,6 +331,10 @@ Else
    .SYNOPSIS
       Author: @colsw
       Helper - Retrieve Geo Location [GeoCoordinateWatcher]
+
+   .NOTES
+      Requires: 'allow access to the location of this device'
+      Requires: Administrator privs to activate device location.
 
    .OUTPUTS
       * Resolving 'SKYNET' Geo Location.
