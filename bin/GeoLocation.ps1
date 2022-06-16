@@ -3,10 +3,10 @@
    Resolve local host geo location {Local Lan}
 
    Author: @r00t-3xp10it
-   Tested Under: Windows 10 (19043) x64 bits
+   Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: curl\ipapi.co {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.4
+   PS cmdlet Dev version: v1.0.5
 
 .DESCRIPTION
    CmdLet to resolve local host geo location and public ip addr.
@@ -45,8 +45,6 @@
 )
 
 
-$ErrorActionPreference = "SilentlyContinue"
-
 #Build GeoLocation DataTable!
 $geotable = New-Object System.Data.DataTable
 $geotable.Columns.Add("PublicIP")|Out-Null
@@ -58,24 +56,31 @@ $geotable.Columns.Add("latitude")|Out-Null
 $geotable.Columns.Add("longitude")|Out-Null
 
 
-try{
+$ErrorActionPreference = "SilentlyContinue"
+$PublicAddr = (Invoke-WebRequest -Uri "http://ifconfig.me/ip").Content
+#Make sure '$PublicAddr' have returned one ip addr.
+If($PublicAddr -NotMatch '^(\d+\.+\d+\.+\d+\.+\d)')
+{
    $PublicAddr = (curl ifconfig.me).Content
-}catch{##Error resolving public ip address
-   Write-Host "   => Error: fail to resolve '${Env:COMPUTERNAME}' public IP address!" -ForegroundColor Red -BackgroundColor Black
-   exit #Exit @GetLocation
 }
 
 
-If($PublicAddr)
+If($PublicAddr -Match '^(\d+\.+\d+\.+\d+\.+\d)')
 {
 
    <#
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - Get the Public IP address from curl\ipapi.co!
+      Helper - Resolve Geo Location [curl\ipapi.co]
    #>
 
    $GeoLocation = (curl "https://ipapi.co/$PublicAddr/json/" -EA SilentlyContinue).RawContent |
+      findstr /C:"city" /C:"region" /C:"country_" /C:"latitude" /C:"longitude" |
+      findstr /V "iso3 tld calling area population region_code country_code"
+}
+Else
+{
+   $GeoLocation = (curl "https://ipapi.co/json/" -EA SilentlyContinue).RawContent |
       findstr /C:"city" /C:"region" /C:"country_" /C:"latitude" /C:"longitude" |
       findstr /V "iso3 tld calling area population region_code country_code"
 }
