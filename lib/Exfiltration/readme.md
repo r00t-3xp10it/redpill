@@ -157,13 +157,17 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfilt
 **execute:**
 ```powershell
 #Get the Computer's geographical location
+#Invoking 'GeoCoordinateWatcher' Or 'Curl' API's
 .\Get-ComputerGeolocation.ps1
 
-#Get the Computer's geographical location (curl\ipapi.co)
+#Get the Computer's geographical location (API:curl\ipapi.co)
 .\Get-ComputerGeolocation.ps1 -api "curl"
 
-#Get the Computer's geographical location (API:curl + hidde public addr)
+#Get the Computer's geographical location (API:curl\ipapi.co + hidde public addr)
 .\Get-ComputerGeolocation.ps1 -api "curl" -publicaddr "false"
+
+#Get the Computer's geographical location (API:ifconfig.me)
+.\Get-ComputerGeolocation.ps1 -api "ifconfig"
 ```
 
 <br />
@@ -173,12 +177,13 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfilt
 [DESCRIPTION]
    Retrieves the Computer Geolocation using 'GeoCoordinateWatcher' Or
    'curl\ipapi.co' API (aprox location) if the 'GeoCoordinateWatcher'
-   API fails to retrieve the coordinates from the host device.
+   API fails to retrieve the coordinates from host device. (default)
 
 [NOTES]
-   Administrator privileges are not required to resolve Geo Location
-   using 'GeoCoordinateWatcher', but they are required if the cmdlet
-   requires to create registry hive\keys in HKLM hive to 'allow' for
-   the GeoLocation on host device. Alternative 'curl\ipapi.co' API
-   does NOT require any dependencies beside access to network (iwr)
+   GeoCoordinateWatcher API does not require administrator privileges
+   to resolve address. But its required if cmdlet needs to create the
+   comrrespondent registry hive\keys that 'allow' GeoLocation on host.
+
+   Alternatively -api 'curl' Or -api 'ifconfig' API's can be invoked
+   to resolve address location without the need of admin privileges.
 ```
