@@ -229,7 +229,7 @@ If($GeoWatcher.Permission -eq 'Denied')
    write-host "* " -ForegroundColor Green -NoNewline
    write-host "TimeStamp             : '" -ForegroundColor DarkGray -NoNewline
    write-host "$TimeStamp" -ForegroundColor DarkYellow -NoNewline
-   write-host "'`n`n" -ForegroundColor DarkGray -NoNewline
+   write-host "'`n`n" -ForegroundColor DarkGray
 
    #Download\Execute cmdlet from GitHub
    iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GeoLocation.ps1" -OutFile "GeoLocation.ps1"|Unblock-File
