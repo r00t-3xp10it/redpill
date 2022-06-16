@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: Device.Location.GeoCoordinateWatcher
    Optional Dependencies: Curl\ipapi.co {native}
-   PS cmdlet Dev version: v1.1.5
+   PS cmdlet Dev version: v1.1.6
 
 .DESCRIPTION
    Retrieves the Computer Geolocation using 'GeoCoordinateWatcher' Or
@@ -31,7 +31,7 @@
 
 .EXAMPLE
    PS C:\> .\Get-ComputerGeolocation.ps1 -Api 'curl'
-   Get the Computer's geographical location (curl\ipapi.co API)
+   Get the Computer's geographical location (API: curl\ipapi.co)
 
 .EXAMPLE
    PS C:\> .\Get-ComputerGeolocation.ps1 -Api 'curl' -PublicAddr 'false'
@@ -64,7 +64,7 @@
 )
 
 
-$CmdletVersion = "v1.1.5"
+$CmdletVersion = "v1.1.6"
 $TimeStamp = (Date -Format 'dd/MMMM/yyyy')
 $ErrorActionPreference = "SilentlyContinue"
 $host.UI.RawUI.WindowTitle = "@Get-ComputerGeoLocation $CmdletVersion"
@@ -131,12 +131,60 @@ IF($Api -ieq "curl")
 $IsAdmin = (([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
 $RegistryPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location"
 
+#Dependencies Tests {GeoCoordinateWatcher}
+If(-not(Test-Path -Path "$RegistryPath") -and ($Api -ne "curl"))
+{
+   If(-not($IsAdmin))
+   {
+      write-host "x " -ForegroundColor Red -NoNewline
+      write-host "Error: " -ForegroundColor DarkGray -NoNewline
+      write-host "Admin privs required to create hive ..`n" -ForegroundColor Red
+      exit
+   }
+
+   write-host "  + " -ForegroundColor DarkYellow -NoNewline
+   write-host "Activate: device location in:'" -ForegroundColor DarkGray -NoNewline
+   write-host "regedit" -ForegroundColor DarkYellow -NoNewline
+   write-host "'" -ForegroundColor DarkGray
+
+   #Create the new registry hive
+   New-Item -Path "$RegistryPath" -Force|Out-Null
+   Start-Sleep -Milliseconds 1000 #Give extra time for registry refresh
+}
+
+If((Get-ItemProperty -Path "$RegistryPath").Value -iNotMatch 'allow' -and ($Api -ne "curl"))
+{
+   If(-not($IsAdmin))
+   {
+      write-host "x " -ForegroundColor Red -NoNewline
+      write-host "Error: " -ForegroundColor DarkGray -NoNewline
+      write-host "Admin privs required to create key ..`n" -ForegroundColor Red
+      exit
+   }
+
+   write-host "  + " -ForegroundColor DarkYellow -NoNewline
+   write-host "Activate: device location to:'" -ForegroundColor DarkGray -NoNewline
+   write-host "allow" -ForegroundColor DarkYellow -NoNewline
+   write-host "'" -ForegroundColor DarkGray
+
+   write-host "  + " -ForegroundColor DarkYellow -NoNewline
+   write-host "Registry: '" -ForegroundColor DarkGray -NoNewline
+   write-host "$RegistryPath" -ForegroundColor Blue -NoNewline
+   write-host "'" -ForegroundColor DarkGray
+
+   #Modify location registry key
+   New-ItemProperty -Path "$RegistryPath" -Name "value" -Value "allow" -PropertyType "String" -Force|Out-Null
+   Start-Sleep -Milliseconds 1500 #Give extra time for registry refresh
+}
+
+
+#Add assembly
 Add-Type -AssemblyName System.Device #Required to access System.Device.Location namespace
 $GeoWatcher = New-Object System.Device.Location.GeoCoordinateWatcher #Create the required object
 $GeoWatcher.Start() #Begin resolving current locaton
 While(($GeoWatcher.Status -ne 'Ready') -and ($GeoWatcher.Permission -ne 'Denied'))
 {
-    Start-Sleep -Milliseconds 100 #Wait for discovery.
+    Start-Sleep -Milliseconds 150 #Wait for discovery.
 }
 
 
@@ -175,7 +223,7 @@ If($GeoWatcher.Permission -eq 'Denied')
    write-host "* " -ForegroundColor Green -NoNewline
    write-host "TimeStamp             : '" -ForegroundColor DarkGray -NoNewline
    write-host "$TimeStamp" -ForegroundColor DarkYellow -NoNewline
-   write-host "'`n" -ForegroundColor DarkGray -NoNewline
+   write-host "'`n`n" -ForegroundColor DarkGray -NoNewline
 
    #Download\Execute cmdlet from GitHub
    iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GeoLocation.ps1" -OutFile "GeoLocation.ps1"|Unblock-File
@@ -216,37 +264,6 @@ Else
       * Uri: https://www.google.com/maps/dir/@38.7133088132117,-9.13080657585403
    #>   
 
-   #Tests
-   If(-not(Test-Path -Path "$RegistryPath"))
-   {
-      If(-not($IsAdmin))
-      {
-         write-host "x " -ForegroundColor Red -NoNewline
-         write-host "Error: " -ForegroundColor DarkGray -NoNewline
-         write-host "Admin privs required to create hive ..`n" -ForegroundColor Red
-         exit
-      }
-
-      #Create new registry hive
-      New-Item -Path "$RegistryPath" -Force|Out-Null
-   }
-
-   If((Get-ItemProperty -Path "$RegistryPath").Value -iNotMatch 'allow')
-   {
-      If(-not($IsAdmin))
-      {
-         write-host "x " -ForegroundColor Red -NoNewline
-         write-host "Error: " -ForegroundColor DarkGray -NoNewline
-         write-host "Admin privs required to create key ..`n" -ForegroundColor Red
-         exit
-      }
-
-      #Modify registry key
-      New-ItemProperty -Path "$RegistryPath" -Name "value" -Value "allow" -PropertyType "String" -Force|Out-Null
-      Start-Sleep -Seconds 1 #Give extra time for registry refresh
-   }
-
-
    write-host "* " -ForegroundColor Green -NoNewline
    write-host "Win32API: '" -ForegroundColor DarkGray -NoNewline
    write-host "GeoCoordinateWatcher" -ForegroundColor DarkYellow -NoNewline
@@ -262,7 +279,7 @@ Else
    $HomeLocation = (Get-WinHomeLocation).HomeLocation
 
    $GeoWatcher.Position.Location |
-      Select-Object @{Name='HostName';Expression={"$Env:COMPUTERNAME"}},@{Name='Country';Expression={"$HomeLocation"}},Latitude,Longitude |
+      Select-Object @{Name='HostName';Expression={"$Env:COMPUTERNAME"}},@{Name='Country';Expression={$HomeLocation}},Latitude,Longitude |
       Format-Table -AutoSize
 
    write-host "* Uri: " -ForegroundColor Blue -NoNewline
