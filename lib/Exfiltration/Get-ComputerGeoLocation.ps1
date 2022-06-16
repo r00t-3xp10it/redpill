@@ -6,8 +6,8 @@
    Addapted from: @colsw {stackoverflow}
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: Device.Location.GeoCoordinateWatcher
-   Optional Dependencies: Curl\ipapi.co {native}
-   PS cmdlet Dev version: v1.1.7
+   Optional Dependencies: Curl\ipapi.co, Invoke-RestMethod {native}
+   PS cmdlet Dev version: v1.1.8
 
 .DESCRIPTION
    Retrieves the Computer Geolocation using 'GeoCoordinateWatcher' Or
@@ -18,11 +18,13 @@
    GeoCoordinateWatcher API does not require administrator privileges
    to resolve address. But its required if cmdlet needs to create the
    comrrespondent registry hive\keys that 'allow' GeoLocation on host.
-   As an alternative the -api 'curl' parameter argument can be used to
-   resolve host address without the need of administrator privileges.
+
+   Alternatively -api 'curl' Or -api 'ifconfig' API's can be invoked
+   to resolve address location without the need of admin privileges.
 
 .Parameter Api
-   The API (default: GeoCoordinateWatcher)
+   accepts arguments: GeoCoordinateWatcher, curl, ifconfig
+   The default API to use (default: GeoCoordinateWatcher)
 
 .Parameter PublicAddr
    Display public ip addr? (default: true)
@@ -30,6 +32,11 @@
 .EXAMPLE
    PS C:\> .\Get-ComputerGeolocation.ps1
    Get the Computer's geographical location
+   Remark: GeoCoordinateWatcher or Curl API's
+
+.EXAMPLE
+   PS C:\> .\Get-ComputerGeolocation.ps1 -Api 'ifconfig'
+   Get the Computer's geographical location (API: ifconfig.me)
 
 .EXAMPLE
    PS C:\> .\Get-ComputerGeolocation.ps1 -Api 'curl'
@@ -37,7 +44,7 @@
 
 .EXAMPLE
    PS C:\> .\Get-ComputerGeolocation.ps1 -Api 'curl' -PublicAddr 'false'
-   Get the Computer's geographical location (API:curl + hidde public ip)
+   Get the Computer's geographical location (API:curl\ipapi.co + hidde public ip)
 
 .INPUTS
    None. You cannot pipe objects into Get-ComputerGeoLocation.ps1
@@ -66,7 +73,7 @@
 )
 
 
-$CmdletVersion = "v1.1.7"
+$CmdletVersion = "v1.1.8"
 $TimeStamp = (Date -Format 'dd/MMMM/yyyy')
 $ErrorActionPreference = "SilentlyContinue"
 $host.UI.RawUI.WindowTitle = "@Get-ComputerGeoLocation $CmdletVersion"
@@ -78,7 +85,7 @@ write-host "' Geo Location." -ForegroundColor DarkGray
 Start-Sleep -Seconds 1
 
 
-IF($Api -ieq "curl")
+If($Api -ieq "curl")
 {
 
    <#
@@ -124,6 +131,62 @@ IF($Api -ieq "curl")
 
    #CleanUp
    Remove-Item -Path "GeoLocation.ps1" -Force
+   write-host ""
+   exit
+}
+
+
+IF($Api -ieq "ifconfig")
+{
+
+   <#
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - Retrieve Geo Location [ifconfig.me]
+
+   .OUTPUTS
+      * Resolving 'SKYNET' Geo Location.
+      * Win32API: 'ifconfig.me (aprox)'
+      * TimeStamp '14/junho/2022'
+
+      ip       : 8.235.13.07
+      loc      : 38.7167,-9.1333
+      country  : PT
+      city     : Lisbon
+      postal   : 1000-001
+      timezone : Europe/Lisbon
+      hostname : 8.235.13.07.rev.vodafone.pt
+      org      : AS14358 Vodafone Portugal - Communicacoes Pessoais S.A.
+
+      * Uri: https://www.google.com/maps/dir/@38.7167,-9.1333
+   #>
+
+   write-host "* " -ForegroundColor Green -NoNewline
+   write-host "Win32API: '" -ForegroundColor DarkGray -NoNewline
+   write-host "ifconfig.me " -ForegroundColor Yellow -NoNewline
+   write-host "(aprox)'" -ForegroundColor DarkGray
+
+   write-host "* " -ForegroundColor Green -NoNewline
+   write-host "TimeStamp '" -ForegroundColor DarkGray -NoNewline
+   write-host "$TimeStamp" -ForegroundColor DarkYellow -NoNewline
+   write-host "'" -ForegroundColor DarkGray
+
+   $GeoDateLoc = (Invoke-WebRequest -Uri "http://ipinfo.io").Content | findstr /C:"loc"
+   $Coordinates = $GeoDateLoc -replace '"','' -replace 'loc:','' -replace '(,)$','' -replace '(^\s+|\s+$)',''
+
+   Try{
+      write-host ""
+      Invoke-RestMethod -Uri ('http://ipinfo.ioo/'+(Invoke-WebRequest -uri "http://ifconfig.me/ip").Content) |
+         select-Object ip,loc,country,city,postal,timezone,hostname,org | Format-List
+   }Catch{
+      Write-Host "`nx " -ForegroundColor Red -NoNewline
+      Write-Host "Error: " -ForegroundColor DarkGray -NoNewline
+      Write-Host "$($Error[0])`n" -ForegroundColor Red
+      exit
+   }
+
+   write-host "* Uri: " -ForegroundColor Blue -NoNewline
+   write-host "https://www.google.com/maps/dir/@$Coordinates`n" -ForegroundColor Green
    write-host ""
    exit
 }
