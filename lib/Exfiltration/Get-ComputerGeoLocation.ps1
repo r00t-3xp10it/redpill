@@ -176,7 +176,7 @@ IF($Api -ieq "ifconfig")
 
    Try{
       write-host ""
-      Invoke-RestMethod -Uri ('http://ipinfo.ioo/'+(Invoke-WebRequest -uri "http://ifconfig.me/ip").Content) |
+      Invoke-RestMethod -Uri ('http://ipinfo.io/'+(Invoke-WebRequest -uri "http://ifconfig.me/ip").Content) |
          select-Object ip,loc,country,city,postal,timezone,hostname,org | Format-List
    }Catch{
       Write-Host "`nx " -ForegroundColor Red -NoNewline
