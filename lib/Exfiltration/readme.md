@@ -147,7 +147,7 @@ that have been found inside prefetch directory. It only manage (.pf) artifacts.
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|[Get-ComputerGeolocation](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Exfiltration/Get-ComputerGeoLocation.ps1)|Get the Computer's geographical location|User Land \ Administrator|[Screenshot1](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/watcher.png)<br />[Screenshot2](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/curl.png)<br />[Screenshot3](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/GeoLocation_force.png)|
+|[Get-ComputerGeolocation](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Exfiltration/Get-ComputerGeoLocation.ps1)|Get the Computer's geographical location|User Land \ Administrator|[Screenshot1](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/GeoLocation_default.png)<br />[Screenshot2](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/GeoLocation_Ifconfig.png)<br />[Screenshot3](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/GeoLocation_Curl.png)<br />[Screenshot4](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/GeoLocation_Ifconfig.png)|
 
 **download cmdLet:**
 ```powershell
