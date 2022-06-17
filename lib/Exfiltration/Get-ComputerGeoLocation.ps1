@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: Device.Location.GeoCoordinateWatcher
    Optional Dependencies: Curl\ipapi.co, Invoke-RestMethod {native}
-   PS cmdlet Dev version: v1.1.8
+   PS cmdlet Dev version: v1.2.8
 
 .DESCRIPTION
    Retrieves the Computer Geolocation using 'GeoCoordinateWatcher' Or
@@ -21,10 +21,15 @@
 
    Alternatively -api 'curl' Or -api 'ifconfig' API's can be invoked
    to resolve address location without the need of admin privileges.
+   Remark: Parameter -detail 'true' (verbose outputs) its available
+   by invoking 'GeoCoordinateWatcher' Or 'ifconfig' API's
 
 .Parameter Api
    accepts arguments: GeoCoordinateWatcher, curl, ifconfig
    The default API to use (default: GeoCoordinateWatcher)
+
+.Parameter Detail
+   Display verbose results? (default: false)
 
 .Parameter PublicAddr
    Display public ip addr? (default: true)
@@ -37,6 +42,10 @@
 .EXAMPLE
    PS C:\> .\Get-ComputerGeolocation.ps1 -Api 'ifconfig'
    Get the Computer's geographical location (API: ifconfig.me)
+
+.EXAMPLE
+   PS C:\> .\Get-ComputerGeolocation.ps1 -Api 'ifconfig' -Detail 'true'
+   Get the Computer's geographical location (API: ifconfig.me) verbose outputs
 
 .EXAMPLE
    PS C:\> .\Get-ComputerGeolocation.ps1 -Api 'curl'
@@ -53,6 +62,7 @@
    * Resolving 'SKYNET' Geo Location.
    * Win32API: 'GeoCoordinateWatcher'
    * TimeStamp '14/junho/2022'
+   * Adaptor : 'WI-FI'
                                                                                                                                                                                                                                                 Altitude         Latitude         Longitude                                                                             --------         --------         ---------                                                                                    0 38,7133088132117 -9,13080657585403
    HostName Country          Latitude         Longitude
    -------- -------          --------         ---------
@@ -70,14 +80,16 @@
 #Global cmdlet parameters
 [CmdletBinding(PositionalBinding=$false)] param(
    [string]$Api="GeoCoordinateWatcher",
-   [string]$PublicAddr="true"
+   [string]$PublicAddr="true",
+   [string]$Detail="false"
 )
 
 
-$CmdletVersion = "v1.1.8"
+$CmdletVersion = "v1.2.8"
 $TimeStamp = (Date -Format 'dd/MMMM/yyyy')
 $ErrorActionPreference = "SilentlyContinue"
 $host.UI.RawUI.WindowTitle = "@Get-ComputerGeoLocation $CmdletVersion"
+$NetAdaptor = (Get-NetAdapter|Select Name,Status,LinkSpeed|?{$_.Status -eq "Up" -and $_.LinkSpeed -gt 1}).Name
 
 write-host "`n* " -ForegroundColor Green -NoNewline
 write-host "Resolving '" -ForegroundColor DarkGray -NoNewline
@@ -102,6 +114,7 @@ If($Api -ieq "curl")
       * Resolving 'SKYNET' Geo Location.
       * Win32API: 'curl\ipapi.co(aprox)'
       * TimeStamp '14/junho/2022'
+      * Adaptor : 'WI-FI'
 
       PublicIP    city    region country  capital latitude longitude
       --------    ----    ------ -------  ------- -------- ---------
@@ -109,6 +122,14 @@ If($Api -ieq "curl")
 
       * Uri: https://www.google.com/maps/dir/@38.752,-9.2279,15z
    #>
+
+   If($Detail -ieq "true")
+   {
+      write-host "x " -ForegroundColor Red -NoNewline
+      write-host "Error: " -ForegroundColor DarkGray -NoNewline
+      write-host "-detail parameter as no use in this function." -ForegroundColor Red
+      Start-Sleep -Milliseconds 700  
+   }
 
    write-host "* " -ForegroundColor Green -NoNewline
    write-host "Win32API: '" -ForegroundColor DarkGray -NoNewline
@@ -118,6 +139,11 @@ If($Api -ieq "curl")
    write-host "* " -ForegroundColor Green -NoNewline
    write-host "TimeStamp '" -ForegroundColor DarkGray -NoNewline
    write-host "$TimeStamp" -ForegroundColor DarkYellow -NoNewline
+   write-host "'" -ForegroundColor DarkGray
+
+   write-host "* " -ForegroundColor Green -NoNewline
+   write-host "Adaptor : '" -ForegroundColor DarkGray -NoNewline
+   write-host "$NetAdaptor" -ForegroundColor DarkYellow -NoNewline
    write-host "'`n" -ForegroundColor DarkGray
 
    #Download\Execute cmdlet from GitHub
@@ -157,11 +183,13 @@ IF($Api -ieq "ifconfig")
       * Resolving 'SKYNET' Geo Location.
       * Win32API: 'ifconfig.me (aprox)'
       * TimeStamp '14/junho/2022'
+      * Adaptor : 'WI-FI'
 
       ip       : 8.235.13.07
       loc      : 38.7167,-9.1333
       country  : PT
       city     : Lisbon
+      region   : Lisbon
       postal   : 1000-001
       timezone : Europe/Lisbon
       hostname : 8.235.13.07.rev.vodafone.pt
@@ -180,13 +208,28 @@ IF($Api -ieq "ifconfig")
    write-host "$TimeStamp" -ForegroundColor DarkYellow -NoNewline
    write-host "'" -ForegroundColor DarkGray
 
+   write-host "* " -ForegroundColor Green -NoNewline
+   write-host "Adaptor : '" -ForegroundColor DarkGray -NoNewline
+   write-host "$NetAdaptor" -ForegroundColor DarkYellow -NoNewline
+   write-host "'" -ForegroundColor DarkGray
+
    $GeoDateLoc = (Invoke-WebRequest -Uri "http://ipinfo.io" -UseBasicParsing).Content | findstr /C:"loc"
    $Coordinates = $GeoDateLoc -replace '"','' -replace 'loc:','' -replace '(,)$','' -replace '(^\s+|\s+$)',''
 
    Try{
       write-host ""
-      Invoke-RestMethod -Uri ('http://ipinfo.io/'+(Invoke-WebRequest -uri "http://ifconfig.me/ip" -UseBasicParsing).Content) |
-         select-Object ip,loc,country,city,postal,timezone,hostname,org | Format-List
+      If($Detail -ieq "true")
+      {
+         #Verbose Outputs {List}
+         Invoke-RestMethod -Uri ('http://ipinfo.io/'+(Invoke-WebRequest -uri "http://ifconfig.me/ip" -UseBasicParsing).Content) |
+            Select-Object ip,loc,country,city,region,postal,timezone,hostname,org | Format-List
+      }
+      Else
+      {
+         #Normal Outputs {Table}
+         Invoke-RestMethod -Uri ('http://ipinfo.io/'+(Invoke-WebRequest -uri "http://ifconfig.me/ip" -UseBasicParsing).Content) |
+            Select-Object @{Name='Hostname';Expression={"$Env:COMPUTERNAME"}},country,city,region,loc | Format-Table      
+      }
    }Catch{
       Write-Host "`nx " -ForegroundColor Red -NoNewline
       Write-Host "Error: " -ForegroundColor DarkGray -NoNewline
@@ -296,6 +339,7 @@ If($GeoWatcher.Permission -eq 'Denied')
       x Error: Access Denied  : 'GeoCoordinateWatcher' API
       + Resolving GeoLocation : 'curl\ipapi.co(aprox)' API
       * TimeStamp             : '14/junho/2022'
+      * Adaptor               : 'WI-FI'
 
       PublicIP    city    region country  capital latitude longitude
       --------    ----    ------ -------  ------- -------- ---------
@@ -303,6 +347,14 @@ If($GeoWatcher.Permission -eq 'Denied')
 
       * Uri: https://www.google.com/maps/dir/@38.752,-9.2279,15z
    #>
+
+   If($Detail -ieq "true")
+   {
+      write-host "x " -ForegroundColor Red -NoNewline
+      write-host "Error: " -ForegroundColor DarkGray -NoNewline
+      write-host "-detail parameter as no use in this function." -ForegroundColor Red
+      Start-Sleep -Milliseconds 700  
+   }
 
    Write-host "x Error: " -ForegroundColor Red -NoNewline
    write-host "Access Denied  : '" -ForegroundColor DarkGray -NoNewline
@@ -318,6 +370,11 @@ If($GeoWatcher.Permission -eq 'Denied')
    write-host "* " -ForegroundColor Green -NoNewline
    write-host "TimeStamp             : '" -ForegroundColor DarkGray -NoNewline
    write-host "$TimeStamp" -ForegroundColor DarkYellow -NoNewline
+   write-host "'" -ForegroundColor DarkGray
+
+   write-host "* " -ForegroundColor Green -NoNewline
+   write-host "Adaptor               : '" -ForegroundColor DarkGray -NoNewline
+   write-host "$NetAdaptor" -ForegroundColor DarkYellow -NoNewline
    write-host "'`n`n" -ForegroundColor DarkGray
 
    #Download\Execute cmdlet from GitHub
@@ -357,6 +414,7 @@ Else
         + Registry:'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location'
       * Win32API: 'GeoCoordinateWatcher'
       * TimeStamp '14/junho/2022'
+      * Adaptor : 'WI-FI'
                                                                                                                                                                                                                                                 Altitude         Latitude         Longitude                                                                             --------         --------         ---------                                                                                    0 38,7133088132117 -9,13080657585403
       HostName Country  Latitude         Longitude
       -------- -------  --------         ---------
@@ -373,15 +431,31 @@ Else
    write-host "* " -ForegroundColor Green -NoNewline
    write-host "TimeStamp '" -ForegroundColor DarkGray -NoNewline
    write-host "$TimeStamp" -ForegroundColor DarkYellow -NoNewline
+   write-host "'" -ForegroundColor DarkGray
+
+   write-host "* " -ForegroundColor Green -NoNewline
+   write-host "Adaptor : '" -ForegroundColor DarkGray -NoNewline
+   write-host "$NetAdaptor" -ForegroundColor DarkYellow -NoNewline
    write-host "'`n" -ForegroundColor DarkGray
 
    $Lati = ($GeoWatcher.Position.Location).Latitude
    $Long = ($GeoWatcher.Position.Location).Longitude
    $HomeLocation = (Get-WinHomeLocation).HomeLocation
 
-   $GeoWatcher.Position.Location |
-      Select-Object @{Name='HostName';Expression={"$Env:COMPUTERNAME"}},@{Name='Country';Expression={$HomeLocation}},Latitude,Longitude |
-      Format-Table -AutoSize
+   If($Detail -ieq "true")
+   {
+      #Verbose Outputs {List}
+      $GeoWatcher.Position.Location |
+         Select-Object Speed,Course,Altitude,IsUnknown,Latitude,Longitude |
+         Format-List
+   }
+   Else
+   {
+      #Normal Outputs {Table}
+      $GeoWatcher.Position.Location |
+         Select-Object @{Name='HostName';Expression={"$Env:COMPUTERNAME"}},@{Name='Country';Expression={$HomeLocation}},Latitude,Longitude |
+         Format-Table -AutoSize
+   }
 
    write-host "* Uri: " -ForegroundColor Blue -NoNewline
    write-host "https://www.google.com/maps/dir/@$Lati,$Long`n" -ForegroundColor Green
