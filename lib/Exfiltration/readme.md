@@ -168,6 +168,12 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfilt
 
 #Get the Computer's geographical location (API:ifconfig.me)
 .\Get-ComputerGeolocation.ps1 -api "ifconfig"
+
+#Get the Computer's geographical location (API: ifconfig.me) verbose outputs
+.\Get-ComputerGeolocation.ps1 -Api 'ifconfig' -Detail 'true'
+
+#Get the Computer's geographical location (API: GeoCoordinateWatcher) verbose outputs
+.\Get-ComputerGeolocation.ps1 -Api 'GeoCoordinateWatcher' -Detail 'true'
 ```
 
 <br />
@@ -186,4 +192,6 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfilt
 
    Alternatively -api 'curl' Or -api 'ifconfig' API's can be invoked
    to resolve address location without the need of admin privileges.
+   Remark: Parameter -detail 'true' (verbose outputs) its available
+   by invoking 'GeoCoordinateWatcher' Or 'ifconfig' API's functions.   
 ```
