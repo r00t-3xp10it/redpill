@@ -25,6 +25,7 @@ Database
                       |_ PSscriptSigning.bat           Signs one PS1 script ( certlm.msc - certificate )
                       |_ DeletePSscriptSignning.bat    Delete certificate added by previous script from store
                       |_ Invoke-LazySign.ps1           Script that Sign a Windows binary with a self-signed cert
+                      |_ DigitalSignature-Hijack.ps1   Digitally sign all PS1 scripts on the host as Microsoft                      
         |_ Dump-Browser
                       |_ DumpChromePasswords.ps1       Dumps URLs, usernames, and passwords from Chrome
                       |_ HarvestBrowserPasswords.exe   Dumps URLs, usernames, and passwords from major browsers
@@ -70,7 +71,6 @@ Database
         |_ Sign-Executables
                       |_ CarbonCopy.py                 Creates spoofed certificate of online website to sign PE
                       |_ sigthief.py                   Sign an PE for AV Evasion by cloning other PE certificate
-                      |_ DigitalSignature-Hijack.ps1   Digitally sign all PS1 scripts on the host as Microsoft
         |_ Stream-TargetDesktop
                       |_ Stream-TargetDesktop.ps1      Sream target desktop live (attacker: firefox with MJPEG)   
         |_ String-Obfuscation
