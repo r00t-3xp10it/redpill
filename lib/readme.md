@@ -71,6 +71,7 @@ Database
         |_ Sign-Executables
                       |_ CarbonCopy.py                 Creates spoofed certificate of online website to sign PE
                       |_ sigthief.py                   Sign an PE for AV Evasion by cloning other PE certificate
+                      |_ SigFlip.exe                   A tool to sign an Executable (PE) for AV Evasion.
         |_ Stream-TargetDesktop
                       |_ Stream-TargetDesktop.ps1      Sream target desktop live (attacker: firefox with MJPEG)   
         |_ String-Obfuscation
