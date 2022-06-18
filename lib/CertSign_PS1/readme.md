@@ -154,7 +154,7 @@ Article: https://github.com/r00t-3xp10it/hacking-material-books/blob/master/obfu
 
 |Script Name|Description|Privileges|Notes|
 |---|---|---|---|
-|[DigitalSignature-Hijack](https://github.com/r00t-3xp10it/redpill/blob/main/lib/CertSign_PS1/DigitalSignature-Hijack.ps1)|Digitally sign all powershell scripts on the host as Microsoft|Administrator|Author: @netbiosX|
+|[DigitalSignature-Hijack](https://github.com/r00t-3xp10it/redpill/blob/main/lib/CertSign_PS1/DigitalSignature-Hijack.ps1)|Digitally sign **ALL** powershell scripts on the host as Microsoft|Administrator|Author: @netbiosX|
 
 **download script:**
 ```powershell
