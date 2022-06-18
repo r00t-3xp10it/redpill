@@ -147,3 +147,22 @@ then execute the 'PSscriptSigning.bat' batch module contained in this same repos
 ```
 
 Article: https://github.com/r00t-3xp10it/hacking-material-books/blob/master/obfuscation/working-with-certificates.md
+
+<br />
+
+## DigitalSignature-Hijack.ps1
+
+|Script Name|Description|Privileges|Notes|
+|---|---|---|---|
+|[DigitalSignature-Hijack](https://github.com/r00t-3xp10it/redpill/blob/main/lib/CertSign_PS1/DigitalSignature-Hijack.ps1)|Digitally sign all powershell scripts on the host as Microsoft|Administrator|Author: @netbiosX|
+
+**download script:**
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/CertSign_PS1/DigitalSignature-Hijack.ps1" -OutFile "DigitalSignature-Hijack.ps1"
+```
+
+**execute:**
+```powershell   
+.\DigitalSignature-Hijack.ps1
+```
+
