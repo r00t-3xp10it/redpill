@@ -5,8 +5,8 @@
    Author: @r00t-3xp10it
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: curl\ipapi.co {native}
-   Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.5
+   Optional Dependencies: Invoke-WebRequest {native}
+   PS cmdlet Dev version: v1.0.6
 
 .DESCRIPTION
    CmdLet to resolve local host geo location and public ip addr.
@@ -74,13 +74,13 @@ If($PublicAddr -Match '^(\d+\.+\d+\.+\d+\.+\d)')
       Helper - Resolve Geo Location [curl\ipapi.co]
    #>
 
-   $GeoLocation = (curl "https://ipapi.co/$PublicAddr/json/" -EA SilentlyContinue).RawContent |
+   $GeoLocation = (Invoke-WebRequest -Uri "https://ipapi.co/$PublicAddr/json/").RawContent |
       findstr /C:"city" /C:"region" /C:"country_" /C:"latitude" /C:"longitude" |
       findstr /V "iso3 tld calling area population region_code country_code"
 }
 Else
 {
-   $GeoLocation = (curl "https://ipapi.co/json/" -EA SilentlyContinue).RawContent |
+   $GeoLocation = (Invoke-WebRequest -Uri "https://ipapi.co/json/").RawContent |
       findstr /C:"city" /C:"region" /C:"country_" /C:"latitude" /C:"longitude" |
       findstr /V "iso3 tld calling area population region_code country_code"
 }
@@ -119,7 +119,7 @@ If($GeoLocation)
    #Display Data Table OnScreen
    $geotable | Format-Table -AutoSize
 
-   $Organisation = (curl "https://ipapi.co/json/" -EA SilentlyContinue).RawContent | findstr /C:"org"
+   $Organisation = (Invoke-WebRequest -Uri "https://ipapi.co/json/").RawContent | findstr /C:"org"
    $GeoDate = $Organisation -replace '"','' -replace 'org:','' -replace '(^\s+|\s+$)',''
 
    Write-Host "* Org: " -ForegroundColor Blue -BackgroundColor Black -NoNewline
