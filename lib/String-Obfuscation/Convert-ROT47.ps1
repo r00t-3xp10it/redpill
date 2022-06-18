@@ -328,7 +328,7 @@ Process{
         } 
     
        Try{#EXECUTE CmdLet
-          If(`$ResultText -iMatch '^(iex\(iwr\()'){Powershell -Command `"`$ResultText`"}Else{echo `"`$ResultText`"|&(DIR Alias:/I*X)}
+          If(`$ResultText -iMatch '^(IEX|Invoke-Expression)'){Powershell -Command `"`$ResultText`"}Else{echo `"`$ResultText`"|&(DIR Alias:/I*X)}
        }Catch{Write-Host `"x Error in line:'`$(`$_.InvocationInfo.ScriptLineNumber)' `$(`$Error[0])`" -ForegroundColor Red}
     }
 }")
