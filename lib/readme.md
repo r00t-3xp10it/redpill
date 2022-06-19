@@ -56,7 +56,6 @@ Database
                       |_ msgbox.ps1                    Example how to spawn a message box in pure powershell
                       |_ progressbar.ps1               Example how to spawn a progress bar in pure powershell
                       |_ sendkeys.ps1                  Example how to send keyboard presses (keys) to processes
-                      |_ Mitre-T1202.ps1               MITRE ATT&CK T1202: Indirect Command Execution
         |_ Out-FileFormat
                       |_ Out-shortcut.ps1              Creates an shortcut that accepts cmdline args to execute.
                       |_ SendToPasteBin.ps1            Get filepath contents and paste it to pastebin.
@@ -65,6 +64,7 @@ Database
                       |_ PPIDSpoof.ps1                 Creates a process as a child of a specified process ID.
                       |_ SelectMyParent.exe            Creates a process as a child of a specified process ID.
                       |_ spoof.exe                     Creates a process as a child of a specified process ID.
+                      |_ Mitre-T1202.ps1               MITRE ATT&CK T1202: Indirect Command Execution                      
         |_ Screenshot
                       |_ Screenshot.exe                Capture desktop screenshot ( silent )
         |_ SharpGhosting
