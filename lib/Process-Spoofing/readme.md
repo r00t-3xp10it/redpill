@@ -62,3 +62,26 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Proces
 .\spoof.exe <process-to-use> <pid-to-spoof>
 .\spoof.exe pentestlab.exe 1116
 ```
+
+<br />
+
+## Mitre-T1202.ps1
+
+|Cmdlet Name|Description|Privileges|Notes|
+|---|---|---|---|
+|[Mitre-T1202](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Process-Spoofing/Mitre-T1202.ps1)| MITRE ATT&CK T1202: Indirect Command Execution|User Land|\*\*\*|
+
+<br />
+
+**Download cmdLet:**
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Process-Spoofing/Mitre-T1202.ps1" -OutFile "Mitre-T1202.ps1"
+```
+
+<br />
+
+**execute:**
+```powershell
+#Spawn 'mspaint.exe' with 'wlrmdr.exe' as parent process.
+.\Mitre-T1202.ps1 -Seconds "0" -Binary "mspaint.exe"
+```
