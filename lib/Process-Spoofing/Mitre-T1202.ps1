@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: wlrmdr.exe {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.1
+   PS cmdlet Dev version: v1.0.2
 
 .DESCRIPTION
    This cmdlet allow users to spawn processes
@@ -30,6 +30,7 @@
 .OUTPUTS
    * MITRE ATT&CK T1202: Indirect Command Execution.
    * Exec 'mspaint.exe' with wlrmdr.exe as parent process.
+   * Successful executed: 'mspaint.exe' with PID: '2544'
 
 .LINK
    https://lolbas-project.github.io/lolbas/Binaries/Wlrmdr
@@ -42,7 +43,7 @@
 )
 
 
-$CmdletVersion = "v1.0.1"
+$CmdletVersion = "v1.0.2"
 #Global variable declarations
 #$ErrorActionPreference = "SilentlyContinue"
 $HostDistro = [System.Environment]::OSVersion.Version.Major
@@ -98,7 +99,7 @@ If((Get-Process -Name "$RawBinary"|Select *).Responding -Match 'True')
    $PPId = (Get-Process -Name "$RawBinary"|Select-Object *).Id|Select-Object -Last 1
    write-host "* Successful executed: '" -ForegroundColor Green -NoNewline
    write-host "$Binary" -ForegroundColor DarkYellow -NoNewline
-   write-host "' PID: '" -ForegroundColor Green -NoNewline
+   write-host "' with PID: '" -ForegroundColor Green -NoNewline
    write-host "$PPId" -ForegroundColor DarkYellow -NoNewline
    write-host "'`n" -ForegroundColor Green
 }
