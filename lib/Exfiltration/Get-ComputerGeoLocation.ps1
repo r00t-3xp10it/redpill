@@ -347,6 +347,7 @@ If($GeoWatcher.Permission -eq 'Denied')
       * Resolving 'SKYNET' Geo Location.
       x Error: Access Denied  : 'GeoCoordinateWatcher' API
       + Resolving GeoLocation : 'curl\ipapi.co(aprox)' API
+      x Error: -detail parameter as no use in this function.
       * TimeStamp             : '14/junho/2022'
       * Adaptor               : 'WI-FI'
 
@@ -356,14 +357,6 @@ If($GeoWatcher.Permission -eq 'Denied')
 
       * Uri: https://www.google.com/maps/dir/@38.752,-9.2279,15z
    #>
-
-   If($Detail -ieq "true")
-   {
-      write-host "x " -ForegroundColor Red -NoNewline
-      write-host "Error: " -ForegroundColor DarkGray -NoNewline
-      write-host "-detail parameter as no use in this function." -ForegroundColor Red
-      Start-Sleep -Milliseconds 700  
-   }
 
    Write-host "x Error: " -ForegroundColor Red -NoNewline
    write-host "Access Denied  : '" -ForegroundColor DarkGray -NoNewline
@@ -375,6 +368,14 @@ If($GeoWatcher.Permission -eq 'Denied')
    write-host "Resolving GeoLocation : '" -ForegroundColor DarkGray -NoNewline
    write-host "curl\ipapi.co" -ForegroundColor Yellow -NoNewline
    write-host "(aprox)' API" -ForegroundColor DarkGray
+
+   If($Detail -ieq "true")
+   {
+      write-host "x " -ForegroundColor Red -NoNewline
+      write-host "Error: " -ForegroundColor DarkGray -NoNewline
+      write-host "-detail parameter as no use in this function." -ForegroundColor Red
+      Start-Sleep -Milliseconds 700  
+   }
 
    write-host "* " -ForegroundColor Green -NoNewline
    write-host "TimeStamp             : '" -ForegroundColor DarkGray -NoNewline
