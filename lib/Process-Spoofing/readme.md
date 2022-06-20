@@ -80,6 +80,13 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Proces
 
 <br />
 
+**prerequesites checks:**
+```powershell
+[bool](Test-Path -Path "$Env:WINDIR\System32\wlrmdr.exe")
+```
+
+<br />
+
 **execute:**
 ```powershell
 #Spawn 'mspaint.exe' with 'wlrmdr.exe' as parent process.
