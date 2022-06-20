@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: wlrmdr.exe {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.2
+   PS cmdlet Dev version: v1.0.3
 
 .DESCRIPTION
    This cmdlet allow users to spawn processes
@@ -21,7 +21,7 @@
    The child process to spawn (default: calc.exe)
 
 .Parameter DelayExec
-   The delay time of child execution (default: 0)
+   Delay time (milliseconds) of child execution (default: 100)
 
 .EXAMPLE
    PS C:\> .\Mitre-T1202.ps1 -Binary "mspaint.exe" -DelayExec "1000"
@@ -29,7 +29,7 @@
 
 .OUTPUTS
    * MITRE ATT&CK T1202: Indirect Command Execution.
-   * Exec 'mspaint.exe' with wlrmdr.exe as parent process.
+   * Exec 'mspaint.exe' with 'wlrmdr.exe' as parent process.
    * Successful executed: 'mspaint.exe' with PID: '2544'
 
 .LINK
@@ -45,7 +45,7 @@
 
 $CmdletVersion = "v1.0.2"
 #Global variable declarations
-#$ErrorActionPreference = "SilentlyContinue"
+$ErrorActionPreference = "SilentlyContinue"
 $HostDistro = [System.Environment]::OSVersion.Version.Major
 $host.UI.RawUI.WindowTitle = "@T1202 $CmdletVersion {SSA@RedTeam}"
 write-host "`n* MITRE ATT&CK T1202: Indirect Command Execution." -ForegroundColor Green
@@ -91,7 +91,7 @@ If($Binary -Match '(.exe)$')
    $RawBinary = $Binary -replace '(.exe)$',''
 }
 
-$NewTimer = [int]$DelayExec+1300
+$NewTimer = [int]$DelayExec+1400
 Start-Sleep -Milliseconds $NewTimer
 #Check if inputed process name is running..
 If((Get-Process -Name "$RawBinary"|Select *).Responding -Match 'True')
