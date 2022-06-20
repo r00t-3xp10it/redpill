@@ -456,7 +456,7 @@ Else
    {
       #Verbose Outputs {List}
       $GeoWatcher.Position.Location |
-         Select-Object Speed,Course,Altitude,IsUnknown,Latitude,Longitude |
+         Select-Object @{Name='HostName';Expression={"$Env:COMPUTERNAME"}},@{Name='Country';Expression={$HomeLocation}},Speed,Course,Altitude,IsUnknown,Latitude,Longitude |
          Format-List
    }
    Else
