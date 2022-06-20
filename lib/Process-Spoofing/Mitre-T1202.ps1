@@ -103,3 +103,7 @@ If((Get-Process -Name "$RawBinary"|Select *).Responding -Match 'True')
    write-host "$PPId" -ForegroundColor DarkYellow -NoNewline
    write-host "'`n" -ForegroundColor Green
 }
+Else
+{
+   write-host ""
+}
