@@ -69,7 +69,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Proces
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|[Mitre-T1202](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Process-Spoofing/Mitre-T1202.ps1)| MITRE ATT&CK T1202: Indirect Command Execution|User Land|\*\*\*|
+|[Mitre-T1202](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Process-Spoofing/Mitre-T1202.ps1)| MITRE ATT&CK T1202: Indirect Command Execution|User Land|[LOLBINS](https://lolbas-project.github.io)|
 
 <br />
 
