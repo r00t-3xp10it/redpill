@@ -213,6 +213,15 @@ IF($Api -ieq "ifconfig")
    write-host "$NetAdaptor" -ForegroundColor DarkYellow -NoNewline
    write-host "'" -ForegroundColor DarkGray
 
+   #Domain checks @Shanty bugreport
+   If((Invoke-WebRequest -Uri "http://ipinfo.io").Content -iMatch '^(<!DOCTYPE html>|Invoke-WebRequest: A connection attempt failed)')
+   {
+      write-host "`nx " -ForegroundColor Red -NoNewline
+      write-host "http://ipinfo.io: " -ForegroundColor DarkGray -NoNewline
+      write-host "Invoke-WebRequest: A connection attempt failed.`n" -ForegroundColor Red
+      return
+   }
+
    $GeoDateLoc = (Invoke-WebRequest -Uri "http://ipinfo.io" -UseBasicParsing).Content | findstr /C:"loc"
    $Coordinates = $GeoDateLoc -replace '"','' -replace 'loc:','' -replace '(,)$','' -replace '(^\s+|\s+$)',''
 
