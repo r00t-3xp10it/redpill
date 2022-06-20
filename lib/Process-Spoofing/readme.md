@@ -90,5 +90,8 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Proces
 **execute:**
 ```powershell
 #Spawn 'mspaint.exe' with 'wlrmdr.exe' as parent process.
-.\Mitre-T1202.ps1 -Seconds "0" -Binary "mspaint.exe"
+.\Mitre-T1202.ps1 -Binary "mspaint.exe"
+
+#Spawn 'mspaint.exe' (after 1000 milliseconds) with 'wlrmdr.exe' as parent process.
+.\Mitre-T1202.ps1 -Binary "mspaint.exe" -DelayExec "1000"
 ```
