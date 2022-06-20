@@ -1,9 +1,9 @@
-﻿<#
+<#
 .SYNOPSIS
    MITRE ATT&CK T1202: Indirect Command Execution
 
    Author: @r00t-3xp10it
-   Addapted from: @0gtweet
+   Disclosure by: @0gtweet
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: wlrmdr.exe {native}
    Optional Dependencies: none
@@ -11,17 +11,17 @@
 
 .DESCRIPTION
    This cmdlet allow users to spawn processes
-   with wlrmdr.exe as the parent process.
+   with wlrmdr.exe (LOLBIN) as parent process.
 
 .NOTES
    Privileges required: UserLand
-   Distros supported are: Windows 10, Windows 11
+   Vulnerable: Windows 10, Windows 11
 
 .Parameter Binary
-   The process to spawn (default: calc.exe)
+   The child process to spawn (default: calc.exe)
 
 .Parameter Seconds
-   The delay time for execution (default: 0)
+   The delay time of child execution (default: 0)
 
 .EXAMPLE
    PS C:\> .\Mitre-T1202.ps1 -Binary "mspaint.exe" -Seconds "1000"
@@ -69,4 +69,3 @@ Try{#Execute calc.exe with wlrmdr.exe as parent process
    Write-Host "$($Error[0])" -ForegroundColor Red
    Return
 }
-
