@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-   MITRE ATT&CK T1202: Indirect Command Execution
+   [MITRE T1202] Indirect Command Execution.
 
    Author: @r00t-3xp10it
    Disclosure by: @0gtweet
