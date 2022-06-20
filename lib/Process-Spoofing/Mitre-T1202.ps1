@@ -91,7 +91,7 @@ If($Binary -Match '(.exe)$')
    $RawBinary = $Binary -replace '(.exe)$',''
 }
 
-$NewTimer = [int]$DelayExec+600
+$NewTimer = [int]$DelayExec+1300
 Start-Sleep -Milliseconds $NewTimer
 #Check if inputed process name is running..
 If((Get-Process -Name "$RawBinary"|Select *).Responding -Match 'True')
