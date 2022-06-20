@@ -20,11 +20,11 @@
 .Parameter Binary
    The child process to spawn (default: calc.exe)
 
-.Parameter Seconds
+.Parameter DelayExec
    The delay time of child execution (default: 0)
 
 .EXAMPLE
-   PS C:\> .\Mitre-T1202.ps1 -Binary "mspaint.exe" -Seconds "1000"
+   PS C:\> .\Mitre-T1202.ps1 -Binary "mspaint.exe" -DelayExec "1000"
    Spawn 'mspaint.exe' with 'wlrmdr.exe' as parent process.
 
 .OUTPUTS
@@ -38,34 +38,66 @@
 
 [CmdletBinding(PositionalBinding=$false)] param(
    [string]$Binary="calc.exe",
-   [int]$Seconds='0'
+   [int]$DelayExec='100'
 )
 
 
 $CmdletVersion = "v1.0.1"
 #Global variable declarations
 $ErrorActionPreference = "SilentlyContinue"
+$HostDistro = [System.Environment]::OSVersion.Version.Major
 $host.UI.RawUI.WindowTitle = "@T1202 $CmdletVersion {SSA@RedTeam}"
 write-host "`n* MITRE ATT&CK T1202: Indirect Command Execution." -ForegroundColor Green
 Start-Sleep -Seconds 1
+
+#Make sure all dependencies are meet
+If($HostDistro -NotMatch '^(10|11)$')
+{   
+   Write-Host "x " -ForegroundColor Red -NoNewline
+   Write-Host "Error: Windows [" -ForegroundColor DarkGray -NoNewline
+   Write-Host "$HostDistro" -ForegroundColor Red -NoNewline
+   Write-Host "] version not supported.`n" -ForegroundColor Red 
+   return
+}
 
 If(-not(Test-Path -Path "$Env:WINDIR\System32\wlrmdr.exe"))
 {
    Write-Host "x " -ForegroundColor Red -NoNewline
    Write-Host "Error: " -ForegroundColor DarkGray -NoNewline
-   Write-Host "$($Error[0])" -ForegroundColor Red
+   Write-Host "$($Error[0])`n" -ForegroundColor Red
    return
 }
 
-write-host "* Exec '" -ForegroundColor Green -NoNewline
+write-host "* " -ForegroundColor Green -NoNewline
+write-host "Exec '" -ForegroundColor DarkGray -NoNewline
 write-host "$Binary" -ForegroundColor DarkYellow -NoNewline
-write-host "' with wlrmdr as parent process." -ForegroundColor Green
+write-host "' with '" -ForegroundColor DarkGray -NoNewline
+write-host "wlrmdr" -ForegroundColor Green -NoNewline
+write-host "' as parent process." -ForegroundColor DarkGray
 
 Try{#Execute calc.exe with wlrmdr.exe as parent process
-   wlrmdr.exe -s $Seconds -f 0 -t 0 -m 0 -a 11 -u "$Binary"
+   wlrmdr.exe -s $DelayExec -f 0 -t 0 -m 0 -a 11 -u "$Binary"
 }Catch{
    Write-Host "x " -ForegroundColor Red -NoNewline
    Write-Host "Error: " -ForegroundColor DarkGray -NoNewline
-   Write-Host "$($Error[0])" -ForegroundColor Red
+   Write-Host "$($Error[0])`n" -ForegroundColor Red
    Return
+}
+
+If($Binary -Match '(.exe)$')
+{
+   $RawBinary = $Binary -replace '.exe',''
+}
+
+$NewTimer = [int]$DelayExec+600
+Start-Sleep -Milliseconds $NewTimer
+#Check if inputed process name is running..
+If((Get-Process -Name "$RawBinary"|Select *).Responding -Match 'True')
+{
+   $PPId = (Get-Process -Name "$RawBinary"|Select-Object *).Id
+   write-host "* Successful executed: '" -ForegroundColor Green -NoNewline
+   write-host "$Binary" -ForegroundColor DarkYellow -NoNewline
+   write-host "' PID: '" -ForegroundColor Green -NoNewline
+   write-host "$PPId" -ForegroundColor DarkYellow -NoNewline
+   write-host "'`n" -ForegroundColor Green
 }
