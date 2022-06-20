@@ -192,6 +192,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfilt
 
    Alternatively -api 'curl' Or -api 'ifconfig' API's can be invoked
    to resolve address location without the need of admin privileges.
+   
    Remark: Parameter -detail 'true' (verbose outputs) its available
    by invoking 'GeoCoordinateWatcher' Or 'ifconfig' API's functions.   
 ```
