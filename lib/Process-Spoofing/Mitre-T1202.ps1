@@ -44,7 +44,7 @@
 
 $CmdletVersion = "v1.0.1"
 #Global variable declarations
-$ErrorActionPreference = "SilentlyContinue"
+#$ErrorActionPreference = "SilentlyContinue"
 $HostDistro = [System.Environment]::OSVersion.Version.Major
 $host.UI.RawUI.WindowTitle = "@T1202 $CmdletVersion {SSA@RedTeam}"
 write-host "`n* MITRE ATT&CK T1202: Indirect Command Execution." -ForegroundColor Green
@@ -84,9 +84,10 @@ Try{#Execute calc.exe with wlrmdr.exe as parent process
    Return
 }
 
+
 If($Binary -Match '(.exe)$')
 {
-   $RawBinary = $Binary -replace '.exe',''
+   $RawBinary = $Binary -replace '(.exe)$',''
 }
 
 $NewTimer = [int]$DelayExec+600
@@ -94,7 +95,7 @@ Start-Sleep -Milliseconds $NewTimer
 #Check if inputed process name is running..
 If((Get-Process -Name "$RawBinary"|Select *).Responding -Match 'True')
 {
-   $PPId = (Get-Process -Name "$RawBinary"|Select-Object *).Id
+   $PPId = (Get-Process -Name "$RawBinary"|Select-Object *).Id|Select-Object -Last 1
    write-host "* Successful executed: '" -ForegroundColor Green -NoNewline
    write-host "$Binary" -ForegroundColor DarkYellow -NoNewline
    write-host "' PID: '" -ForegroundColor Green -NoNewline
