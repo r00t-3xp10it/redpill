@@ -64,7 +64,7 @@ WebCam.py can be compiled to exe using pyinstaller: pyinstaller –onefile "WebC
 
 **download script:**
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam-Capture/Invoke-WebCamAvi.ps1" -OutFile "$Env:TMP\Invoke-WebCamAvi.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam-Capture/Invoke-webcamAvi.ps1" -OutFile "$Env:TMP\Invoke-webcamAvi.ps1"
 ```
 
 <br />
@@ -72,22 +72,22 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam
 **run cmdlet:**
 ```powershell
 #Get module help
-Get-Help .\Invoke-WebCamAvi.ps1 -full
+Get-Help .\Invoke-webcamAvi.ps1 -full
 
 #Record webcam live stream for 15 seconds time
-.\Invoke-WebCamAvi.ps1 -RecTime '15'
+.\Invoke-webcamAvi.ps11 -RecTime '15'
 
 #Record webcam live and use %TMP% as working directory
-.\Invoke-WebCamAvi.ps1 -WorkingDir "$Env:TMP"
+.\Invoke-webcamAvi.ps1 -WorkingDir "$Env:TMP"
 
 #Record webcam live and auto-start AVI file after finish?
-.\Invoke-WebCamAvi.ps1 -AutoView 'true'
+.\Invoke-webcamAvi.ps1 -AutoView 'true'
 ```
 
 <br />
 
 **Final Notes:**
 ```powershell
-Invoke-WebCamAvi cmdlet automates the execution of 'WebCam.py' and all is dependencies.
+Invoke-webcamAvi cmdlet automates the execution of 'WebCam.py' and all is dependencies.
 Video recording its stored oncmdlet working directory under the name of: "outpy.avi"
 ```
