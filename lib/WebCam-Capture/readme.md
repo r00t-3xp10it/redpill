@@ -82,6 +82,9 @@ Get-Help .\Invoke-webcamAvi.ps1 -full
 
 #Record webcam live and auto-start AVI file after finish?
 .\Invoke-webcamAvi.ps1 -AutoView 'true'
+
+#Bypass cmdlet internal tests and force execution?
+.\Invoke-WebCamAvi.ps1 -force 'true'
 ```
 
 <br />
