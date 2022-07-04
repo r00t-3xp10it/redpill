@@ -75,7 +75,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam
 Get-Help .\Invoke-webcamAvi.ps1 -full
 
 #Record webcam live stream for 15 seconds time
-.\Invoke-webcamAvi.ps11 -RecTime '15'
+.\Invoke-webcamAvi.ps1 -RecTime '15'
 
 #Record webcam live and use %TMP% as working directory
 .\Invoke-webcamAvi.ps1 -WorkingDir "$Env:TMP"
