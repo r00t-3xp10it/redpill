@@ -89,5 +89,5 @@ Get-Help .\Invoke-WebCamAvi.ps1 -full
 **Final Notes:**
 ```powershell
 Invoke-WebCamAvi cmdlet automates the execution of 'WebCam.py' and all is dependencies.
-Video recording its stored on WebCam.py current directory under the name: "outpy.avi"
+Video recording its stored oncmdlet working directory under the name of: "outpy.avi"
 ```
