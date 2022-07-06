@@ -83,7 +83,7 @@ Get-Help .\Invoke-Bypass.ps1 -full
    
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|ScanInterception_x64|Unchain AMS1 by patching the provider's unmonitored memory space|User Land|3 bypass technics available (manual)|
+|[ScanInterception_x64](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Ams1-Bypass/ScanInterception_x64.ps1)|Unchain AMS1 by patching the provider's unmonitored memory space|User Land|Author: [@maorkor](https://github.com/deepinstinct)|
 
 <br />
 
