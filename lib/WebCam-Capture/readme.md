@@ -69,6 +69,17 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam
 
 <br />
 
+**Prerequesites tests:**
+```powershell
+#Mandatory requirement
+[bool](python3 -V)
+
+#cmdlet will auto-install the opencv-python package
+[bool](pip3 list|findstr /C:"opencv-python")
+```
+
+<br />
+
 **run cmdlet:**
 ```powershell
 #Get module help
