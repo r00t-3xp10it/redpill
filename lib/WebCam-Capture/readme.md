@@ -102,5 +102,5 @@ Get-Help .\Invoke-webcamAvi.ps1 -full
 Remark: Python3 its mandatory requiremente to run cmdlet..
 Invoke-webcamAvi cmdlet automates the execution of 'WebCam.py' and python packages dependencies.
 
-Video recording (silent) its stored on cmdlet working directory under the name of: "outpy.avi"
+Video recording (silent) its stored on cmdlet working directory under the name of: "meterpeter.avi"
 ```
