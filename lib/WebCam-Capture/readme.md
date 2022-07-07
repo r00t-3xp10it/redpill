@@ -74,7 +74,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam
 #Mandatory requirement
 [bool](python3 -V)
 
-#cmdlet will auto-install the opencv-python package
+# [OPTIONAL] cmdlet will auto-silent-install opencv-python package if missing.
 [bool](pip3 list|findstr /C:"opencv-python")
 ```
 
