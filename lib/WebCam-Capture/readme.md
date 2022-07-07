@@ -88,6 +88,9 @@ Get-Help .\Invoke-webcamAvi.ps1 -full
 #Record webcam live and use %TMP% as working directory
 .\Invoke-webcamAvi.ps1 -WorkingDir "$Env:TMP"
 
+#Record webcam live and rename avi file name
+.\Invoke-webcamAvi.ps1 -FileName "capture.avi"
+
 #Record webcam live and auto-start AVI file after finish?
 .\Invoke-webcamAvi.ps1 -AutoView 'true'
 
