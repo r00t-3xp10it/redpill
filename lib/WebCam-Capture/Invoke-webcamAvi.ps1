@@ -152,7 +152,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam
 
 #Config python script
 $ReplaceMe = Get-Content -Path "$WorkingDir\WebCam.py"
-$MyPath = (Get-ChildItem -Path "$Env:LOCALAPPDATA\Programs" -Recurse -Force|Where-Object {$_.PSIsContainer -Match "True" -and $_.Name -iMatch 'site-packages'}).FullName
+$MyPath = (Get-ChildItem -Path "$Env:LOCALAPPDATA\Programs\python" -Recurse -Force|Where-Object {$_.PSIsContainer -Match "True" -and $_.Name -iMatch 'site-packages'}).FullName
 If(-not($MyPath) -and ($Force -ieq "false"))
 {
    write-host "x " -ForegroundColor Red -NoNewline
