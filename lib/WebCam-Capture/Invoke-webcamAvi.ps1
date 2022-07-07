@@ -209,7 +209,7 @@ Stop-Process -Name "python3.*" -Force
 write-host "  + " -ForegroundColor DarkYellow -NoNewline
 write-host "Comverting webcam raw data to AVI format."
 Start-Sleep -Seconds 7 #Give some time to allow avi to finish
-#Remove-Item -Path "$WorkingDir\WebCam.py" -Force
+Remove-Item -Path "$WorkingDir\WebCam.py" -Force
 write-host "* " -ForegroundColor Green -NoNewline
 write-host "Storage: '" -ForegroundColor DarkGray -NoNewline
 write-host "${WorkingDir}\${FileName}" -ForegroundColor Green -NoNewline
