@@ -79,11 +79,12 @@ $ErrorActionPreference = "SilentlyContinue"
 $host.UI.RawUI.WindowTitle = "@Invoke-WebCamAvi $cmdletver"
 write-host "`n* " -ForegroundColor Green -NoNewline
 write-host "Recording webcam live in avi format." -ForegroundColor Green
+Start-Process -WindowStyle Hidden powershell -ArgumentList "[bool](python3 -V) > pyver.log" -Wait
 
 
 #Check if Python3 its installed
-$pythonTest = [bool](python3 -V)
-If($pythonTest -iNotMatch 'True')
+$pythonTest = Get-Content -Path "pyver.log"
+If(-not(Test-Path -Path "pyver.log") -or ($pythonTest -iNotMatch 'True') -or ($pythonTest -eq $null))
 {
    write-host "x " -ForegroundColor Red -NoNewline
    write-host "Error: " -ForegroundColor DarkGray -NoNewline
@@ -110,7 +111,7 @@ If($Force -ieq "false")
       write-host "x " -ForegroundColor Red -NoNewline
       write-host "Error: " -ForegroundColor DarkGray -NoNewline
       write-host "Module requires opencv-python installed." -ForegroundColor Red
-      Start-Sleep -Seconds 1
+      Start-Sleep -Seconds 2
 
       write-host "  => " -ForegroundColor Yellow -NoNewline
       write-host "Installing:'" -ForegroundColor DarkGray -NoNewline
@@ -121,8 +122,10 @@ If($Force -ieq "false")
    }
 }
 
-
+#Cleanup
 Remove-Item -Path "opencv.log" -Force
+Remove-Item -Path "opencv.log" -Force
+
 If(Test-Path -Path "$WorkingDir\outpy.avi")
 {
    #Delete old avi file
@@ -134,8 +137,8 @@ If($Force -ieq "false")
    If($RecTime -gt 60 -or $RecTime -lt 5)
    {
       write-host "  x " -ForegroundColor Red -NoNewline
-      write-host "Error: " -ForegroundColor DarkGray -NoNewline
-      write-host "RecTime config, default to 10 sec." -ForegroundColor DarkYellow
+      write-host "NotOptimal: " -ForegroundColor DarkGray -NoNewline
+      write-host "RecTime, defaulting to 10 sec." -ForegroundColor DarkYellow
       [int]$RecTime = '10'
    }
 }
