@@ -72,7 +72,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam
 **Prerequesites tests:**
 ```powershell
 #Mandatory requirement
-[bool](python3 -V)
+[bool](python -V)
 ```
 
 <br />
@@ -102,8 +102,7 @@ Get-Help .\Invoke-webcamAvi.ps1 -full
 
 **Final Notes:**
 ```powershell
-Remark: Python3 its mandatory requiremente to run cmdlet..
+Remark: Python its mandatory requiremente to run cmdlet..
 Invoke-webcamAvi cmdlet automates the execution of 'WebCam.py' and python packages dependencies.
-
 Video recording (silent) its stored on cmdlet working directory under the name of: "meterpeter.avi"
 ```
