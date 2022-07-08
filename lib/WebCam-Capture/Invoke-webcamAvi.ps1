@@ -87,12 +87,12 @@ $ErrorActionPreference = "SilentlyContinue"
 $host.UI.RawUI.WindowTitle = "@Invoke-WebCamAvi $cmdletver"
 write-host "`n* " -ForegroundColor Green -NoNewline
 write-host "Recording webcam live in avi format." -ForegroundColor Green
-Start-Process -WindowStyle Hidden powershell -ArgumentList "[bool](python3 -V) > pyver.log" -Wait
+Start-Process -WindowStyle Hidden powershell -ArgumentList "[bool](python3 -V) > $WorkingDir\pyver.log" -Wait
 
 
 #Check if Python3 its installed
-$pythonTest = Get-Content -Path "pyver.log"
-If(-not(Test-Path -Path "pyver.log") -or ($pythonTest -iNotMatch 'True') -or ($pythonTest -eq $null))
+$pythonTest = Get-Content -Path "$WorkingDir\pyver.log"
+If(-not(Test-Path -Path "$WorkingDir\pyver.log") -or ($pythonTest -iNotMatch 'True') -or ($pythonTest -eq $null))
 {
    write-host "x " -ForegroundColor Red -NoNewline
    write-host "Error: " -ForegroundColor DarkGray -NoNewline
@@ -101,8 +101,8 @@ If(-not(Test-Path -Path "pyver.log") -or ($pythonTest -iNotMatch 'True') -or ($p
 }
 
 #Make sure opencv-python its installed { bypass tests invoking -force 'true' }
-Start-Process -WindowStyle Hidden powershell -ArgumentList "[bool](pip3 list|findstr /C:`"opencv-python`") > opencv.log" -Wait
-If(-not(Test-Path -Path "opencv.log") -and ($Force -ieq "false"))
+Start-Process -WindowStyle Hidden powershell -ArgumentList "[bool](pip3 list|findstr /C:`"opencv-python`") > $WorkingDir\opencv.log" -Wait
+If(-not(Test-Path -Path "$WorkingDir\opencv.log") -and ($Force -ieq "false"))
 {
    write-host "x " -ForegroundColor Red -NoNewline
    write-host "Error: " -ForegroundColor DarkGray -NoNewline
@@ -112,7 +112,7 @@ If(-not(Test-Path -Path "opencv.log") -and ($Force -ieq "false"))
 
 If($Force -ieq "false")
 {
-   $OPenCVTest = Get-Content -Path "opencv.log" -Raw
+   $OPenCVTest = Get-Content -Path "$WorkingDir\opencv.log"
    If(-not($OPenCVTest) -or ($OPenCVTest -iNotMatch 'True'))
    {
       write-host "x " -ForegroundColor Red -NoNewline
@@ -207,7 +207,7 @@ write-host "Comverting webcam raw data to AVI format."
 Start-Sleep -Seconds 7 #Give some time to allow avi to finish
 
 #Make sure video.avi file was created
-If(-not(Test-Path -Path "${WorkingDir}\${FileName}"))
+If(-not(Test-Path -Path "${WorkingDir}\${FileName}") -and ($Force -ieq "false"))
 {
    write-host "x " -ForegroundColor Red -NoNewline
    write-host "fail to create: '" -ForegroundColor DarkGray -NoNewline
@@ -228,8 +228,8 @@ If(-not(Test-Path -Path "${WorkingDir}\${FileName}"))
    {
       write-host "x " -ForegroundColor Red -NoNewline
       write-host "fail to create: '" -ForegroundColor DarkGray -NoNewline
-      write-host "${WorkingDir}\${FileName}" -ForegroundColor Red -NoNewline
-      write-host "'" -ForegroundColor DarkGray      
+      write-host "${FileName}" -ForegroundColor Red -NoNewline
+      write-host "' (technic:2)" -ForegroundColor DarkGray      
    }
    Else
    {
@@ -238,6 +238,13 @@ If(-not(Test-Path -Path "${WorkingDir}\${FileName}"))
       write-host "${WorkingDir}\${FileName}" -ForegroundColor Green -NoNewline
       write-host "'" -ForegroundColor DarkGray      
    }
+}
+ElseIf(-not(Test-Path -Path "${WorkingDir}\${FileName}") -and ($Force -ieq "true"))
+{
+   write-host "x " -ForegroundColor Red -NoNewline
+   write-host "fail to create: '" -ForegroundColor DarkGray -NoNewline
+   write-host "${WorkingDir}\${FileName}" -ForegroundColor Red -NoNewline
+   write-host "' (technic:2)" -ForegroundColor DarkGray
 }
 Else
 {
@@ -258,8 +265,8 @@ If($AutoView -ieq "true")
 
 
 #Cleanup
-Remove-Item -Path "pyver.log" -Force
-Remove-Item -Path "opencv.log" -Force
+Remove-Item -Path "$WorkingDir\pyver.log" -Force
+Remove-Item -Path "$WorkingDir\opencv.log" -Force
 Remove-Item -Path "$WorkingDir\WebCam.py" -Force
 
 cd $StartPath
