@@ -124,7 +124,7 @@ If($Force -ieq "false")
       write-host "Installing:'" -ForegroundColor DarkGray -NoNewline
       write-host "pip install opencv-python" -ForegroundColor Green -NoNewline
       write-host "'`n" -ForegroundColor DarkGray
-      echo y|pip3 install opencv-python --exists-action ignore #Auto-Install dependencies
+      echo y|pip install opencv-python --exists-action ignore #Auto-Install dependencies
       write-host ""
    }
 }
