@@ -216,7 +216,7 @@ If(-not(Test-Path -Path "${WorkingDir}\${FileName}") -and ($Force -ieq "false"))
    write-host "x " -ForegroundColor Red -NoNewline
    write-host "fail to create: '" -ForegroundColor DarkGray -NoNewline
    write-host "${WorkingDir}\${FileName}" -ForegroundColor Red -NoNewline
-   write-host "'" -ForegroundColor DarkGray
+   write-host "' (technic:1)" -ForegroundColor DarkGray
 
    write-host "+ Trying alternative execution method.." -ForegroundColor DarkYellow
    $ParseRawData = Get-Content -Path "$WorkingDir\WebCam.py"|Select-Object -Skip 2
@@ -228,7 +228,7 @@ If(-not(Test-Path -Path "${WorkingDir}\${FileName}") -and ($Force -ieq "false"))
    Stop-Process -Name "python*" -Force
 
    Start-Sleep -Milliseconds 1300
-   If(-not(Test-Path -Path "${WorkingDir}\${FileName}"))
+   If(-not(Test-Path -Path "${WorkingDir}\${FileName}") -and ($Force -ieq "true"))
    {
       write-host "x " -ForegroundColor Red -NoNewline
       write-host "fail to create: '" -ForegroundColor DarkGray -NoNewline
@@ -243,7 +243,7 @@ If(-not(Test-Path -Path "${WorkingDir}\${FileName}") -and ($Force -ieq "false"))
       write-host "'" -ForegroundColor DarkGray      
    }
 }
-ElseIf(-not(Test-Path -Path "${WorkingDir}\${FileName}") -and ($Force -ieq "true"))
+ElseIf(-not(Test-Path -Path "${WorkingDir}\${FileName}"))
 {
    write-host "x " -ForegroundColor Red -NoNewline
    write-host "fail to create: '" -ForegroundColor DarkGray -NoNewline
