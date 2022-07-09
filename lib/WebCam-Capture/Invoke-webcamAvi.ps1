@@ -228,7 +228,7 @@ If(-not(Test-Path -Path "${WorkingDir}\${FileName}") -and ($Force -ieq "false"))
    Stop-Process -Name "python*" -Force
 
    Start-Sleep -Milliseconds 1300
-   If(-not(Test-Path -Path "${WorkingDir}\${FileName}") -and ($Force -ieq "true"))
+   If(-not(Test-Path -Path "${WorkingDir}\${FileName}"))
    {
       write-host "x " -ForegroundColor Red -NoNewline
       write-host "fail to create: '" -ForegroundColor DarkGray -NoNewline
@@ -243,7 +243,7 @@ If(-not(Test-Path -Path "${WorkingDir}\${FileName}") -and ($Force -ieq "false"))
       write-host "'" -ForegroundColor DarkGray      
    }
 }
-ElseIf(-not(Test-Path -Path "${WorkingDir}\${FileName}"))
+ElseIf(-not(Test-Path -Path "${WorkingDir}\${FileName}") -and ($Force -ieq "true"))
 {
    write-host "x " -ForegroundColor Red -NoNewline
    write-host "fail to create: '" -ForegroundColor DarkGray -NoNewline
@@ -252,10 +252,11 @@ ElseIf(-not(Test-Path -Path "${WorkingDir}\${FileName}"))
 }
 Else
 {
+   If($Force -ieq "false"){$i = "1"}Else{$i = "2"}
    write-host "* " -ForegroundColor Green -NoNewline
    write-host "Storage: '" -ForegroundColor DarkGray -NoNewline
    write-host "${WorkingDir}\${FileName}" -ForegroundColor Green -NoNewline
-   write-host "'" -ForegroundColor DarkGray
+   write-host "' (technic:$i)" -ForegroundColor DarkGray
 }
 
 
@@ -263,7 +264,7 @@ If($AutoView -ieq "true")
 {
    #Auto-Start video file
    write-host "* " -ForegroundColor Green -NoNewline
-   write-host "[local]: Auto-Start of AVI video file."
+   write-host " [action] Auto-Start of ${FileName} video file."
    Start-Process "${WorkingDir}\${FileName}"
 }
 
