@@ -129,10 +129,10 @@ If($Force -ieq "false")
    }
 }
 
-If(Test-Path -Path "$WorkingDir\outpy.avi")
+If(Test-Path -Path "${WorkingDir}\${FileName}")
 {
    #Delete old avi file
-   Remove-Item -Path "$WorkingDir\outpy.avi" -Force
+   Remove-Item -Path "${WorkingDir}\${FileName}" -Force
 }
 
 If($Force -ieq "false")
@@ -170,7 +170,7 @@ If(-not($RegInstallPath) -or ($RegInstallPath -eq $null))
 }
 
 
-##Get python3 site-packages directory { bypass tests invoking -force 'true' }
+##Get python 'site-packages' directory { bypass tests invoking -force 'true' }
 $PythonInstallPath = (Get-ChildItem -Path "$RegInstallPath" -Recurse -Force|Where-Object {$_.PSIsContainer -Match "True" -and $_.Name -iMatch 'site-packages'}).FullName
 If(-not($PythonInstallPath) -or ($Force -ieq "true"))
 {
