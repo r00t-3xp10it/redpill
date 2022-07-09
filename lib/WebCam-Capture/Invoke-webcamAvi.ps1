@@ -99,7 +99,7 @@ If(-not(Test-Path -Path "$WorkingDir"))
 }
 
 #Check if Python its installed { mandatory dependencie }
-Start-Process -WindowStyle Hidden powershell -ArgumentList "[bool](python -V) > $WorkingDir\pyver.log" -Wait
+Start-Process -WindowStyle Hidden powershell -ArgumentList "[bool](python -V) > '$WorkingDir\pyver.log'" -Wait
 $pythonTest = Get-Content -Path "$WorkingDir\pyver.log"
 If(-not(Test-Path -Path "$WorkingDir\pyver.log") -or ($pythonTest -iNotMatch 'True') -or ($pythonTest -eq $null))
 {
@@ -110,7 +110,7 @@ If(-not(Test-Path -Path "$WorkingDir\pyver.log") -or ($pythonTest -iNotMatch 'Tr
 }
 
 #Make sure opencv-python its installed { bypass tests invoking -force 'true' }
-Start-Process -WindowStyle Hidden powershell -ArgumentList "[bool](pip list|findstr /C:`"opencv-python`") > $WorkingDir\opencv.log" -Wait
+Start-Process -WindowStyle Hidden powershell -ArgumentList "[bool](pip list|findstr /C:`"opencv-python`") > '$WorkingDir\opencv.log'" -Wait
 If(-not(Test-Path -Path "$WorkingDir\opencv.log") -and ($Force -ieq "false"))
 {
    write-host "x " -ForegroundColor Red -NoNewline
@@ -197,7 +197,7 @@ Else
 ((Get-Content -Path "$WorkingDir\WebCam.py" -Raw) -Replace "outpy.avi","$FileName")|Set-Content -Path "$WorkingDir\WebCam.py" -Force
 
 
-cd $WorkingDir
+cd "$WorkingDir"
 #Start live capture
 write-host "  + " -ForegroundColor DarkYellow -NoNewline
 write-host "Starting live capture for '" -NoNewline
@@ -283,6 +283,6 @@ Remove-Item -Path "$WorkingDir\pyver.log" -Force
 Remove-Item -Path "$WorkingDir\opencv.log" -Force
 Remove-Item -Path "$WorkingDir\WebCam.py" -Force
 
-cd $StartPath
+cd "$StartPath"
 write-host ""
 exit
