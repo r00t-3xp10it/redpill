@@ -156,8 +156,7 @@ If($Force -ieq "false")
 }
 
 
-## Raw Python Script in the case..
-# we dont have network connection.
+#Raw Python Script
 $RawPythonScript = @("import sys
 sys.path.append(`"c:\\users\\pedro\\appdata\\local\\programs\\python\\python39\\lib\\site-packages`")
 import cv2
@@ -190,30 +189,12 @@ out.release()
 cv2.destroyAllWindows()")
 
 
-#Check for network connection { Only LinkSpeed(s) above: 40 mpbs are accepted }
-$TestConnection = [bool](Get-NetAdapter|Select-Object *|Where-Object { $_.Status -ieq 'Up' -and $_.TransmitLinkSpeed -gt 40000000 })
-If($TestConnection -iNotMatch 'True')
-{
-   #Create WebCam.py insted of downloading it ..
-   write-host "  x " -ForegroundColor Red -NoNewline
-   write-host "Network-Connection: " -ForegroundColor DarkGray -NoNewline
-   write-host "fail to found any UP interface." -ForegroundColor Red
-   Start-Sleep -Seconds 1
+write-host "  * " -ForegroundColor Green -NoNewline
+write-host "Creating: " -NoNewline
+write-host "$WorkingDir\WebCam.py" -ForegroundColor Green
 
-   write-host "  * " -ForegroundColor Green -NoNewline
-   write-host "Creating: " -NoNewline
-   write-host "$WorkingDir\WebCam.py" -ForegroundColor Green
-
-   #Create WebCam.py script
-   echo $RawPythonScript|Out-File "$WorkingDir\WebCam.py" -Encoding string -Force
-}
-Else
-{
-   #Download WebCam.py script from github ..
-   write-host "  + " -ForegroundColor DarkYellow -NoNewline
-   write-host "Downloading python script from github."
-   iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam-Capture/WebCam.py" -OutFile "$WorkingDir\WebCam.py"|Unblock-File
-}
+#Create WebCam.py script
+echo $RawPythonScript|Out-File "$WorkingDir\WebCam.py" -Encoding string -Force
 
 
 #Config WebCam.py python script
