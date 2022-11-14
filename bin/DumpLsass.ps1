@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Dumps LSASS, SAM, SYSTEM, SECURITY metadata
 
@@ -10,7 +10,7 @@
 
 .DESCRIPTION
    Dumps LSASS, SAM, SYSTEM, SECURITY metadata into %tmp%
-   Remark: uUse mimi`ka`tz or samdump2 to decode metadata.
+   Remark: Use mimi`ka`tz or samdump2 to decode metadata.
    Remark: CmdLet creates Windows Defender Folder Exclusion,
    But deletes it after dumping lsass process metadata.
 
