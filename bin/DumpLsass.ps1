@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Dumps LSASS, SAM, SYSTEM, SECURITY metadata
 
