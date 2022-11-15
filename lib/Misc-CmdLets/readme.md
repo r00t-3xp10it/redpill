@@ -101,3 +101,44 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-C
 #Start 'notepad.exe' program and send 'hello world' keys to program after one second of delay
 .\sendkeys.ps1 -Program "$Env:WINDIR\System32\notepad.exe" -SendKey "hello world" -ExecDelay '1'
 ```
+
+
+
+<br />
+
+## Prank2.ps1
+
+|Cmdlet Name|Description|Privileges|Notes|
+|---|---|---|---|
+|[Prank2](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Misc-CmdLets/Prank2.ps1)|Do A Barrel Roll Loop Prank|User Land|\*\*\*|
+
+<br />
+
+**Download cmdLet:**
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/Prank2.ps1" -OutFile "Prank2.ps1"
+```
+
+<br />
+
+**execute:**
+```powershell
+#Access cmdlet help menu
+Get-Help .\Prank2.ps1 -Full
+
+#Cmdlet demonstration mode
+.\Prank2.ps1 -AutoDel "OFF"
+
+#Execute cmdlet in a hidden windows (stealth mode)
+powershell -WindowStyle Hidden -File "Prank2.ps1"
+
+#Start the prank after 3 seconds, exec the prank a max of 5 times with 20 seconds loops
+powershell -WindowStyle Hidden -File "Prank2.ps1" -StartDelay "3" -LoopRange "5" -LoopDelay "20"
+
+#Start the prank after 3 secs, exec the prank a max of 10 times, with 20 seconds delay before each loop and auto-close msgbox after 15 secs
+powershell -WindowStyle Hidden -File "Prank2.ps1" -StartDelay "3" -LoopRange "10" -LoopDelay "20" -MsgBoxClose "15"
+
+#Start the Prank after 15 minuts, exec the prank a max of 20 times with 30 seconds delay before each loop
+powershell -WindowStyle Hidden -File "Prank2.ps1" -StartDelay '800' -LoopRange '20' -LoopDelay '30'
+```
+
