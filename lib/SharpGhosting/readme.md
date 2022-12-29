@@ -2,11 +2,11 @@
 
 |Function name|Description|Privileges|Notes|
 |---|---|---|---|
-|SharpGhosting|Spawn the **child** process disassosiated from **parent** process<br />And hidde **parent** process name from TaskManager display|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/SharpGhosting/processghosting.png)|
+|SharpGhost|Spawn the **child** process disassosiated from **parent** process<br />And hidde **parent** process name from TaskManager display|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/SharpGhosting/processghosting.png)|
 
 **download cmdLet:**
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/SharpGhosting/SharpGhosting.exe" -OutFile "SharpGhosting.exe"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/SharpGhosting/SharpGhost.exe" -OutFile "SharpGhost.exe"
 ```
 
 **Usage:**
@@ -17,7 +17,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/SharpG
 
 **execute:**
 ```powershell
-.\SharpGhosting.exe -real 'C:\windows\system32\cmd.exe'
-.\SharpGhosting.exe -real 'C:\windows\system32\cmd.exe' -fake 'C:\windows\temp\fakefile'
-.\SharpGhosting.exe -real 'C:\windows\system32\cmd.exe' -fake 'C:\windows\temp\fakefile.exe'
+.\SharpGhost.exe -real 'C:\windows\system32\cmd.exe'
+.\SharpGhost.exe -real 'C:\windows\system32\cmd.exe' -fake 'C:\windows\temp\fakefile'
+.\SharpGhost.exe -real 'C:\windows\system32\cmd.exe' -fake 'C:\windows\temp\fakefile.exe'
 ```
