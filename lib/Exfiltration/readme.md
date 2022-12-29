@@ -203,7 +203,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfilt
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|eviltree_x64|Search credentials in files|UserLand|[eviltree_x64](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Exfiltration/eviltree1.png)<br />[eviltree_x64](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Exfiltration/eviltree2.png)|
+|eviltree_x64|Search credentials in files|UserLand|[eviltree_x64](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/eviltree1.png)<br />[eviltree_x64](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/eviltree2.png)|
 
 **download cmdLet:**
 ```powershell
