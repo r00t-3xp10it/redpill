@@ -218,7 +218,15 @@ password=r00t3xp10it
 
 **execute:**
 ```powershell
+# binary help
+.\eviltree_x64.exe -h
+
+# Search for 'password,username,login,token' strings
 .\eviltree_x64.exe -r "$Env:TMP" -k "password,username,login,token" -v -q
+
+# Search for 'passw,passwo,passwor,password' regex syntax
 .\eviltree_x64.exe -r "$Env:TMP" -x ".{0,3}passw.{0,3}[=]{1}.{0,18}" -v -q
+
+# Search for 'user,usern,userna,usernam,username,passw,passwo,passwor,password' regex
 .\eviltree_x64.exe -r "$Env:TMP" -x "(.{0,3}user.{0,4}[=]{1}.{0,18}|.{0,3}passw.{0,3}[=]{1}.{0,18})" -v -q
 ```
