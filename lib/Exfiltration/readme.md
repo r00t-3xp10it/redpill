@@ -220,5 +220,5 @@ password=r00t3xp10it
 ```powershell
 .\eviltree_x64.exe -r "$Env:TMP" -k "passw,user,login,token" -v -q
 .\eviltree_x64.exe -r "$Env:TMP" -x ".{0,3}passw.{0,3}[=]{1}.{0,18}" -v -q
-.\eviltree_x64.exe -r "$Env:TMP" -x "(.{0,3}passw.{0,3}[=]{1}.{0,18}|.{0,3}user.{0,4}[=]{1}.{0,18})" -v -q
+.\eviltree_x64.exe -r "$Env:TMP" -x "(.{0,3}user.{0,4}[=]{1}.{0,18}|.{0,3}passw.{0,3}[=]{1}.{0,18})" -v -q
 ```
