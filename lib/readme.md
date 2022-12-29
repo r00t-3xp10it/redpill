@@ -44,6 +44,7 @@ Database
                       |_ WindowsUpdateLog.ps1          Convert ETL logfiles (WindowsUpdate) into readable data
                       |_ Get-PrefetchListing.ps1       Manage (query \ Delete) prefetch files (.pf)
                       |_ Get-ComputerGeoLocation.ps1   Retrieves the Computer's geographical location
+                      |_ eviltree_x64.exe              Search for credentials in files (pass or regex)
         |_ Fake-Cmdline
                       |_ Fake-Cmdline.exe              Put any string into the child process Command Line field
         |_ HTTP-Server
@@ -51,6 +52,8 @@ Database
                       |_ Start-SimpleHTTPServer.ps1    Simple HTTP pure powershell webserver     
                       |_ wget.vbs                      VBScript to download files from Local Lan
                       |_ Invoke-ShortUrl.ps1           TinyUrl url generator ( dropper URL link )
+        |_ LPE
+                      |_ PrintNotifyPotato-NET2.exe    Local privilege escalation (admin => Nt Authority\System)
         |_ Misc-CmdLets
                       |_ Open-Directory.ps1            Use GUI to open the sellected directory
                       |_ msgbox.ps1                    Example how to spawn a message box in pure powershell
