@@ -259,5 +259,5 @@ Get-Help .\Invoke-VaultCmd.ps1 -full
 .\Invoke-VaultCmd.ps1 -action "dumpall"
 
 #Delete resource 'MyCredential' with 'BillGates' username and comrrespondent creds from vault
-.\Invoke-VaultCmd.ps1 -action "delete" -resource "MyCredential" -username "BillGates"
+.\Invoke-VaultCmd.ps1 -action "delete" -resource "MyCredential" -username "SKYNET\pedro"
 ```
