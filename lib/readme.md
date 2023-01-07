@@ -45,6 +45,7 @@ Database
                       |_ Get-PrefetchListing.ps1       Manage (query \ Delete) prefetch files (.pf)
                       |_ Get-ComputerGeoLocation.ps1   Retrieves the Computer's geographical location
                       |_ eviltree_x64.exe              Search for credentials in files (pass or regex)
+                      |_ Invoke-VaultCmd.ps1           Manage Windows Password Vault Items
         |_ Fake-Cmdline
                       |_ Fake-Cmdline.exe              Put any string into the child process Command Line field
         |_ HTTP-Server
