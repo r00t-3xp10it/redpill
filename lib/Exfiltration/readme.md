@@ -256,7 +256,7 @@ Get-Help .\Invoke-VaultCmd.ps1 -full
 .\Invoke-VaultCmd.ps1 -action "create" -resource "MyCredential" -username "SKYNET\pedro" -password "r00t3xp10it"
 
 #Dump ALL generic passwords [plain text] from vault
-.\Invoke-VaultCmd.ps1 -action "dumpall"
+.\Invoke-VaultCmd.ps1 -action "dump"
 
 #Delete resource 'MyCredential' with 'BillGates' username and comrrespondent creds from vault
 .\Invoke-VaultCmd.ps1 -action "delete" -resource "MyCredential" -username "SKYNET\pedro"
