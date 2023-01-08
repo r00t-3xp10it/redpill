@@ -237,7 +237,7 @@ password=r00t3xp10it
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|[Invoke-VaultCmd](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Exfiltration/Invoke-VaultCmd.ps1)|Manage Windows Password Vault Items|UserLand|...|
+|[Invoke-VaultCmd](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Exfiltration/Invoke-VaultCmd.ps1)|Manage Windows Password Vault Items|UserLand|[screenshot1](https://user-images.githubusercontent.com/23490060/211175252-6bc1556b-2168-477c-afaf-df6d394478ad.png)<br />[screenshot2](https://user-images.githubusercontent.com/23490060/211175355-3d284911-1948-4ee3-a8dc-3a19742fa878.png)<br />[screenshot3](https://user-images.githubusercontent.com/23490060/211176317-6e394401-1ea4-4f84-bc23-790448660d14.png)|
 
 **download cmdLet:**
 ```powershell
