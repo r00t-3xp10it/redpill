@@ -258,6 +258,9 @@ Get-Help .\Invoke-VaultCmd.ps1 -full
 #Dump ALL generic passwords [plain text] from vault
 .\Invoke-VaultCmd.ps1 -action "dump"
 
+#Dump DPAPI secrets (undecoded) to Invoke-VaultCmd.report
+.\Invoke-VaultCmd.ps1 -action DPAPI -log
+
 #Delete resource 'MyCredential' with 'BillGates' username and comrrespondent creds from vault
 .\Invoke-VaultCmd.ps1 -action "delete" -resource "MyCredential" -username "SKYNET\pedro"
 ```
