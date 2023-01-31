@@ -91,11 +91,8 @@ Get-Help .\Invoke-webcamAvi.ps1 -full
 #Record webcam live and rename avi file name
 .\Invoke-webcamAvi.ps1 -FileName "capture.avi"
 
-#Record webcam live and auto-start AVI file after finish?
-.\Invoke-webcamAvi.ps1 -AutoView 'true'
-
-#Bypass cmdlet internal tests and force execution?
-.\Invoke-WebCamAvi.ps1 -force 'true'
+#silent install of python3 dependencies if missing.
+.\Invoke-WebCamAvi.ps1 -forceinstall
 ```
 
 <br />
