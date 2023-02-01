@@ -91,13 +91,18 @@ Get-Help .\Invoke-webcamAvi.ps1 -full
 #Record webcam live and rename avi file name
 .\Invoke-webcamAvi.ps1 -FileName "capture.avi"
 
-#silent install of python3 dependencies if missing.
+#Silent install of python3 dependencies if missing.
 .\Invoke-WebCamAvi.ps1 -forceinstall
 
   -- Final Notes --
   
 #Invoke -reclimmit 'int' to bypass max_rec_time restrictions
 .\Invoke-WebCamAvi.ps1 -rectime '240' -reclimmit '240'
+
+## Start webcam record at selected time frame ..
+# Warning: -starttime input format requires 4 digits user inputs.
+# The first two digits reffers to HOUR and the last two to MINUTS
+.\Invoke-WebCamAvi.ps1 -starttime '09:07'
 
 #Execute cmdlet in a hidden terminal window for 60 seconds ( child detach from parent process - orphan )
 PS C:\> Start-Process -WindowStyle hidden powershell -argumentlist "-file Invoke-WebCamAvi.ps1 -rectime '60'"
