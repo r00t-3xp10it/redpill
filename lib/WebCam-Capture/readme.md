@@ -62,6 +62,24 @@ WebCam.py can be compiled to exe using pyinstaller: pyinstaller –onefile "WebC
 
 <br />
 
+```
+Auxiliary Module of meterpeter v2.10.13 that uses python3 opencv-python pacakge
+to record video files (AVI format) using the default webcam attached to computer.
+```
+
+|Parameter name|Description|Default value|Remark|
+|---|---|---|---|
+|RecTime|Camera record time in seconds|15|accepts values from '10' up to '120' seconds (default)|
+|FileName|Video.avi file name|meterpeter.avi|\*\*\*|
+|WorkingDir|Cmdlet working directory|$Env:TMP|cmdlet will store files on sellected directory|
+|RecLimmit|Record time limmit in seconds|120|Bypass cmdlet default MAX record time limmit|
+|StartTime|Start record at selected time|off|Requires the first two digits to be 'HOURS'<br />and the last two digits to be 'MINUTS' eg. 09:07|
+|ForceInstall|Silent install dependencies switch.|\*\*\*|Silent install python 3 dependencies if missing|
+|AutoDel|AutoDelete cmdlet in the end switch.|\*\*\*|Auto-Delete Invoke-WebCamAvi cmdlet in the end|
+
+
+<br />
+
 **download script:**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam-Capture/Invoke-webcamAvi.ps1" -OutFile "Invoke-webcamAvi.ps1"
