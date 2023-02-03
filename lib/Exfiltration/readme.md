@@ -245,9 +245,9 @@ password=r00t3xp10it
 |Resource or Url|URL or windows credential|user input|https://www.siliconvalley/classified.portal|
 |UserName|credential username|User input|DOMAIN\USERNAME|
 |Password|credential password|user input|r00t3xp10it|
-|Help|cmdlet description help|\*\*\*|\*\*\*|
-|Log|creates cmdlet logfiles|\*\*\*|\*\*\*|
-|Secure|set password to PScredential<br />parameter used in create and dump|\*\*\*|\*\*\*|
+|Help|cmdlet description help|Parameter Switch|Parameter Switch|
+|Log|creates cmdlet logfiles|Parameter Switch|Parameter Switch|
+|Secure|set password to PScredential<br />switch used in [create] and [dump]|Parameter Switch|Parameter Switch|
 
 <br />
 
