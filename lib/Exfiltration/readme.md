@@ -239,6 +239,18 @@ password=r00t3xp10it
 |---|---|---|---|
 |[Invoke-VaultCmd](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Exfiltration/Invoke-VaultCmd.ps1)|Manage Windows Password Vault Items|UserLand|[screenshot1](https://user-images.githubusercontent.com/23490060/211175252-6bc1556b-2168-477c-afaf-df6d394478ad.png)<br />[screenshot2](https://user-images.githubusercontent.com/23490060/211175355-3d284911-1948-4ee3-a8dc-3a19742fa878.png)<br />[screenshot3](https://user-images.githubusercontent.com/23490060/211176317-6e394401-1ea4-4f84-bc23-790448660d14.png)|
 
+|Parameter|Description|value|Default value|
+|---|---|---|---|
+|Action|\*\*\*|Check, Create, Dump, DPAPI, Delete|help|
+|Resource or Url|URL or windows credential|user input|https://www.siliconvalley/classified.portal|
+|UserName|credential username|User input|DOMAIN\USERNAME|
+|Password|credential password|user input|r00t3xp10it|
+|Help|cmdlet description help|\*\*\*|\*\*\*|
+|Log|creates cmdlet logfiles|\*\*\*|\*\*\*|
+|Secure|set password to PScredential<br />parameter used in create and dump|\*\*\*|\*\*\*|
+
+<br />
+
 **download cmdLet:**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/Invoke-VaultCmd.ps1" -OutFile "Invoke-VaultCmd.ps1"
