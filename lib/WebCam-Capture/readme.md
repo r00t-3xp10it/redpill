@@ -60,12 +60,6 @@ WebCam.py can be compiled to exe using pyinstaller: pyinstaller –onefile "WebC
 |---|---|---|---|
 |[Invoke-WebCamAvi](https://github.com/r00t-3xp10it/redpill/blob/main/lib/WebCam-Capture/Invoke-webcamAvi.ps1)|Capture video (AVI) using default target webcam|User Land|Credits: @AHLASaad \ @AvinabSaha<br />[write-a-video-using-opencv-python](https://learnopencv.com/read-write-and-display-a-video-using-opencv-cpp-python)|
 
-<br />
-
-```
-Auxiliary Module of meterpeter v2.10.13 that uses python3 opencv-python pacakge
-to record video files (AVI format) using the default webcam attached to computer.
-```
 
 |Parameter name|Description|Default value|Remark|
 |---|---|---|---|
@@ -74,8 +68,8 @@ to record video files (AVI format) using the default webcam attached to computer
 |WorkingDir|Cmdlet working directory|$Env:TMP|cmdlet will store files on sellected directory|
 |RecLimmit|Record time limmit in seconds|120|Bypass cmdlet default MAX record time limmit|
 |StartTime|Start record at selected time|off|Requires the first two digits to be 'HOURS'<br />and the last two digits to be 'MINUTS' eg. 09:07|
-|ForceInstall|Silent install dependencies switch.|\*\*\*|Silent install python 3 dependencies if missing|
-|AutoDel|AutoDelete cmdlet in the end switch.|\*\*\*|Auto-Delete Invoke-WebCamAvi cmdlet in the end|
+|ForceInstall|Silent install dependencies switch.|Switch|Silent install python 3 dependencies if missing|
+|AutoDel|AutoDelete cmdlet in the end switch.|Switch|Auto-Delete Invoke-WebCamAvi cmdlet in the end|
 
 
 <br />
@@ -124,6 +118,9 @@ Get-Help .\Invoke-webcamAvi.ps1 -full
 
 #Execute cmdlet in a hidden terminal window for 60 seconds ( child detach from parent process - orphan )
 PS C:\> Start-Process -WindowStyle hidden powershell -argumentlist "-file Invoke-WebCamAvi.ps1 -rectime '60'"
+
+#Execute cmdlet in a hidden windows, but only starts capture at '09:07' hours ( child detach from parent process - orphan )
+PS C:\> Start-Process -WindowStyle hidden powershell -argumentlist "-file Invoke-WebCamAvi.ps1 -starttime '09:07' -rectime '60'"
 ```
 
 <br />
