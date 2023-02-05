@@ -320,4 +320,6 @@ Stop-Process -Id "$PPID" -Force
 
 #Manual read logfile entrys
 Get-Content -Path "$pwd\Browser.report"
+#OR get only the windows title strings
+Get-Content -Path "$pwd\Browser.report"|Select-String -Pattern 'Windows Title   :'
 ```
