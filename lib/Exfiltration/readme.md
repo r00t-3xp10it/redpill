@@ -277,8 +277,6 @@ Get-Help .\Invoke-VaultCmd.ps1 -full
 .\Invoke-VaultCmd.ps1 -action "delete" -resource "MyCredential" -username "SKYNET\pedro"
 ```
 
-
-
 <br />
 
 ## BroserLogger.ps1
@@ -311,10 +309,15 @@ Get-Help .\browserLogger.ps1 -full
 #Store results on logfile ($pwd\Browser.report)
 .\BrowserLogger.ps1 -log
 
+[background execution]
+
 #Execute cmdlet in background even if none browsers are found 'active' and store results on $pwd\Browser.report
 PS C:\> Start-Process -WindowStyle hidden powershell -argumentlist "-file BrowserLogger.ps1 -force 'true' -log"
 
 #Manual stop cmdlet process thats running in background
 $PPID = (Get-Content -Path "$pwd\Browser.report"|Select-String -Pattern '\s*Process Id+\s*:+\s') -replace '\s*Process Id+\s*:+\s',''
 Stop-Process -Id "$PPID" -Force
+
+#Manual read logfile entrys
+Get-Content -Path "$pwd\Browser.report"
 ```
