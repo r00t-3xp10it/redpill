@@ -283,7 +283,7 @@ Get-Help .\Invoke-VaultCmd.ps1 -full
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|[BroserLogger](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Exfiltration/browserLogger.ps1)|Spy target active tab browsing history (windows title)|UserLand|[screenshot](https://user-images.githubusercontent.com/23490060/216802415-192429ed-66d3-479d-a9a9-1a2aa974a12c.png)|
+|[browserLogger](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Exfiltration/browserLogger.ps1)|Spy target active tab browsing history (window title)|UserLand|[screenshot](https://user-images.githubusercontent.com/23490060/216802415-192429ed-66d3-479d-a9a9-1a2aa974a12c.png)|
 
 |Parameter|Description|Default value|
 |---|---|---|
@@ -320,6 +320,7 @@ Stop-Process -Id "$PPID" -Force
 
 #Manual read logfile entrys
 Get-Content -Path "$pwd\Browser.report"
+
 #OR get only the windows title strings
 Get-Content -Path "$pwd\Browser.report"|Select-String -Pattern 'Windows Title   :'
 ```
