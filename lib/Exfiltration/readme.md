@@ -309,6 +309,10 @@ Get-Help .\browserLogger.ps1 -full
 #Store results on logfile ($pwd\Browser.report)
 .\BrowserLogger.ps1 -log
 
+#Start capture at selected -starttime 'HOURS:MINUTS'
+.\BrowserLogger.ps1 -starttime '09:07'
+
+
 [background execution]
 
 #Execute cmdlet in background even if none browsers are found 'active' and store results on $pwd\Browser.report
