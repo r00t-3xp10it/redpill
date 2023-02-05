@@ -315,6 +315,6 @@ Get-Help .\browserLogger.ps1 -full
 PS C:\> Start-Process -WindowStyle hidden powershell -argumentlist "-file BrowserLogger.ps1 -force 'true' -log"
 
 #Manual stop cmdlet process thats running in background
-$ProcessID = (Get-Content -Path "$pwd\Browser.report"|Select-String -Pattern '\s*Process Id+\s*:+\s') -replace '\s*Process Id+\s*:+\s',''
-Stop-Process -Id "$ProcessID" -Force
+$PPID = (Get-Content -Path "$pwd\Browser.report"|Select-String -Pattern '\s*Process Id+\s*:+\s') -replace '\s*Process Id+\s*:+\s',''
+Stop-Process -Id "$PPID" -Force
 ```
