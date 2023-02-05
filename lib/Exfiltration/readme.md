@@ -291,7 +291,7 @@ Get-Help .\Invoke-VaultCmd.ps1 -full
 |---|---|---|
 |Delay|Delay time (seconds) between captures|3|
 |Log|Switch that creates cmdlet results logfile|\*\*\*|
-|Force|Bypass: none supported browsers found active|false|
+|Force|Bypass: <b><i>'none supported browsers found active'</b></i> internal tests|false|
 
 <br />
 
@@ -308,9 +308,13 @@ Get-Help .\browserLogger.ps1 -full
 #Enumerate with 5 secs between captures
 .\BrowserLogger.ps1 -delay '5'
 
-#store results on logfile ($pwd\Browser.report)
+#Store results on logfile ($pwd\Browser.report)
 .\BrowserLogger.ps1 -log
 
 #Execute cmdlet in background even if none browsers are found 'active' and store results on $pwd\Browser.report
 PS C:\> Start-Process -WindowStyle hidden powershell -argumentlist "-file BrowserLogger.ps1 -force 'true' -log"
+
+#Manual stop cmdlet process thats running in background
+$ProcessID = (Get-Content -Path "$pwd\Browser.report"|Select-String -Pattern '  Process Id      : ') -replace '  Process Id      : ',''
+Stop-Process -Id "$ProcessID" -Force
 ```
