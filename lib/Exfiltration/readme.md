@@ -279,7 +279,7 @@ Get-Help .\Invoke-VaultCmd.ps1 -full
 
 <br />
 
-## BroserLogger.ps1
+## BrowserLogger.ps1
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
