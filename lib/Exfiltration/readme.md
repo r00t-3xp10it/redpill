@@ -289,6 +289,7 @@ Get-Help .\Invoke-VaultCmd.ps1 -full
 |---|---|---|
 |Delay|Delay time (seconds) between captures|3|
 |Log|Switch that creates cmdlet results logfile|\*\*\*|
+|starttime|Start capture at selected time <b><i>'HH:mm'</b></i>|false|
 |Force|Bypass: <b><i>'none supported browsers found active'</b></i> internal tests|false|
 
 <br />
