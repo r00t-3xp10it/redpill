@@ -283,7 +283,7 @@ Get-Help .\Invoke-VaultCmd.ps1 -full
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|[browserLogger](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Exfiltration/browserLogger.ps1)|Spy target active tab browsing history (window title)|UserLand|[screenshot](https://user-images.githubusercontent.com/23490060/216802415-192429ed-66d3-479d-a9a9-1a2aa974a12c.png)|
+|[browserLogger](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Exfiltration/browserLogger.ps1)|Spy target active tab browsing history (window title)|UserLand|[screenshot1](https://user-images.githubusercontent.com/23490060/216802415-192429ed-66d3-479d-a9a9-1a2aa974a12c.png)<br />[screenshot2](https://user-images.githubusercontent.com/23490060/216854063-fb9a4956-304e-4ac9-a0a4-37065ab9f0f1.png)|
 
 |Parameter|Description|Default value|
 |---|---|---|
