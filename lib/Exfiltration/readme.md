@@ -321,7 +321,10 @@ Get-Help .\browserLogger.ps1 -full
 [background execution]
 
 #Execute cmdlet in background even if none browsers are found 'active' and store results on $pwd\Browser.report
-PS C:\> Start-Process -WindowStyle hidden powershell -argumentlist "-file BrowserLogger.ps1 -force 'true' -log";exit
+Start-Process -WindowStyle hidden powershell -argumentlist "-file BrowserLogger.ps1 -force 'true' -log";exit
+
+#Execute cmdlet in background (at: 19:07 hours) even if none browsers are found 'active' and store results on $pwd\Browser.report
+Start-Process -WindowStyle hidden powershell -argumentlist "-file BrowserLogger.ps1 -starttime 19:07 -force 'true' -log -history";exit
 
 #Manual stop cmdlet process thats running in background
 $PPID = (Get-Content -Path "$pwd\Browser.report"|Select-String -Pattern '\s*Process Id+\s*:+\s') -replace '\s*Process Id+\s*:+\s',''
