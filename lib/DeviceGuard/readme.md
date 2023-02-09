@@ -2,7 +2,7 @@
 
 |Script Name|Description|Privileges|Notes|
 |---|---|---|---|
-|[BypassCredGuard](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/BypassCredGuard.exe)|Credential Guard Bypass Via Patching Wdigest Memory|Administrator|Credits: @wh0nsq|
+|[BypassCredGuard](https://github.com/r00t-3xp10it/redpill/blob/main/lib/DeviceGuard/DeviceGuard.ps1)|Credential Guard Bypass Via Patching Wdigest Memory|Administrator|Credits: @wh0nsq|
 
 <br />
 
