@@ -12,7 +12,7 @@
 |ManyCats|Switch that downloads\executes Mimikatz to dump credentials|<b><i>false</i></b>|
 |RunAs|Switch that promps user for credential input and store it in memory|<b><i>false</i></b>|
 |DcName|Switch of RunAs command that accepts USER@DOMAIN or DOMAIN\USER<br />Remark: this function requires <b><i>-RunAs</i></b> parameter switch declaration|<b><i>$Env:COMPUTERNAME\\$Env:USERNAME</i></b>|
-|Module|Mimikatz selection of modules to run<br />Remark: this function requires <b><i>-WDigest 'true'</i></b> and <b><i>-manycats</i></b> parameters|<b><i>sekurlsa::wdigest exit</i></b>|
+|Module|Mimikatz selection of dump::modules to run|<b><i>sekurlsa::wdigest exit</i></b>|
 
 <br />
 
