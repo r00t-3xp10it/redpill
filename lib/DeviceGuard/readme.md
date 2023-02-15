@@ -15,7 +15,7 @@
 |Module|Mimikatz selection of dump::modules to auto-run|<b><i>sekurlsa::wdigest exit</i></b>|
 
 <b><i>* Invoke-WDigest.ps1 cmdlet only bypasses mimikatz detection if windows defender its the only AV running in target system.</i></b><br />
-Execute [GetCounterMeasures.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/bin/GetCounterMeasures.ps1) cmdlet to [enumerate common security processes](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/DeviceGuard/getcountermeaures.png) running before executing Invoke-WDigest.ps1
+
 
 <br />
 
@@ -65,6 +65,12 @@ REMARK
 <br />
 
 ![poc](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/DeviceGuard/Invoke-WDigest2.png)
+
+<br />
+
+![ProactiveDefense](https://user-images.githubusercontent.com/23490060/219057639-902cc82a-43a3-4391-9927-4b55e532a78c.png)
+
+
 
 <br />
 
