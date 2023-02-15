@@ -62,3 +62,8 @@ REMARK
 <br />
 
 ![poc](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/DeviceGuard/Invoke-WDigest2.png)
+
+<br />
+
+<b><i>REMARK:</i></b>
+<b><i>Invoke-WDigest.ps1 cmdlet only bypasses mimikatz detection if windows defender its the only AV running in target system ..</i></b>
