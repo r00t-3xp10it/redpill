@@ -14,7 +14,8 @@
 |DcName|Switch of RunAs command that accepts USER@DOMAIN or DOMAIN\USER<br />Remark: this function requires <b><i>-RunAs</i></b> parameter switch declaration|<b><i>$Env:COMPUTERNAME\\$Env:USERNAME</i></b>|
 |Module|Mimikatz selection of dump::modules to run|<b><i>sekurlsa::wdigest exit</i></b>|
 
-<b><i>* Invoke-WDigest.ps1 cmdlet only bypasses mimikatz detection if windows defender its the only AV running in target system</i></b>
+<b><i>* Invoke-WDigest.ps1 cmdlet only bypasses mimikatz detection if windows defender its the only AV running in target system</i></b><br />
+Execute [GetCounterMeasures.ps1](https://github.com/r00t-3xp10it/redpill/blob/main/bin/GetCounterMeasures.ps1) cmdlet to enumerated common security processes running! before executing Invoke-WDigest.ps1
 
 <br />
 
