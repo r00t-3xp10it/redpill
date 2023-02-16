@@ -260,6 +260,8 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfilt
 ```powershell
 #cmdlet help
 Get-Help .\Invoke-VaultCmd.ps1 -full
+# OR
+.\Invoke-VaultCmd.ps1
 
 #Check for stored Resource_names with creds
 .\Invoke-VaultCmd.ps1 -action "check"
