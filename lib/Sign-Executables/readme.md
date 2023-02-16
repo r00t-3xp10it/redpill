@@ -63,3 +63,27 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Sign-E
 #build Signed Shellcode Executable { embebbed shellcode.bin on Signed-original.exe }
 .\SigFlip.exe -i "original.exe" "x64-stageless.bin" "Signed-original.exe"
 ```
+
+
+
+
+
+<br />
+
+## upx.exe
+
+|Binary Name|Description|Privileges|Notes|
+|---|---|---|---|
+|upx|compress or expand executable filess|User Land|[Author: Markus Oberhumer, Laszlo Molnar & John Reiser](https://upx.github.io)|
+
+**download script:**
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Sign-Executables/upx.exe" -OutFile "upx.exe"
+```
+
+**execute:**
+```powershell 
+# Pack original PE
+.\upx.exe --best "program.exe"
+```
+
