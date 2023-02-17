@@ -54,9 +54,14 @@ WORKFLOW
    - mimikatz will auto-execute 'mimikatz sekurlsa::wdigest exit' to dump credentials
 
 REMARK
-   RunAs parameter switch exists for demonstration effects, and can not be
-   used remotely because it requires target user interaction (prompt cred)
-   and resource UserName password knowledge ..
+
+   RunAs parameter switch allows me to pause this cmdlet execution until
+   one credential its inputed, then starts cmd.exe with suplied credential
+   in a minimized windows (detach from parent). Child process its necessary
+   for m[i]mika[t]z 'sekurlsa::wdigest' to dump the credential from Memory.
+   
+  [Downside] Cmdlet does not continue execution while the cred its not input.
+  From one remote atacker point of view thats bad ( cmdlet execution paused )
 ```
 
 <br />
