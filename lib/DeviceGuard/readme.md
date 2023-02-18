@@ -15,7 +15,6 @@
 |Module|Mimikatz selection of dump::modules to auto-run|<b><i>sekurlsa::wdigest exit</i></b>|
 
 <b><i>* Invoke-WDigest.ps1 cmdlet only bypasses mimikatz detection if windows defender its the only AV running in target system.</i></b><br />
-<b><i>Remark: Cmdlet will clean eventvwr ( mimikatz event::clear ) security logs if invoked -manycats together with -module parameter.</i></b>
 
 
 <br />
