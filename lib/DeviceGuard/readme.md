@@ -67,11 +67,15 @@ REMARK
 
 <br />
 
-![poc](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/DeviceGuard/Invoke-WDigest.png)
+![POC1](https://user-images.githubusercontent.com/23490060/219876542-b4e29d8c-fb39-47ec-ae36-6513154e8aa3.png)
 
 <br />
 
-![poc](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/DeviceGuard/Invoke-WDigest2.png)
+![POC2](https://user-images.githubusercontent.com/23490060/219876558-6f68d5cb-e0b7-4bd2-b6e1-689dd8f62792.png)
+
+<br />
+
+![POC3](https://user-images.githubusercontent.com/23490060/219876572-e28d1c22-b6a6-456c-a710-2af8e75f339b.png)
 
 <br />
 
