@@ -68,22 +68,18 @@ REMARK
 
 <br />
 
+<b><i>Execute Mimikatz (interactive shell) without WDigest caching</i></b><br />
 ![POC1](https://user-images.githubusercontent.com/23490060/219876542-b4e29d8c-fb39-47ec-ae36-6513154e8aa3.png)
 
 <br />
 
+<b><i>WDigest caching + dump (-runas) created credential with mimikatz</i></b><br />
 ![POC2](https://user-images.githubusercontent.com/23490060/219876558-6f68d5cb-e0b7-4bd2-b6e1-689dd8f62792.png)
-
-<br />
 
 ![POC3](https://user-images.githubusercontent.com/23490060/219876572-e28d1c22-b6a6-456c-a710-2af8e75f339b.png)
 
 <br />
 
+<b><i>Invoke-WDigest.ps1 only bypasses mimikatz detection if windows defender its the only AV running in target system</i></b><br />
 ![ProactiveDefense](https://user-images.githubusercontent.com/23490060/219057639-902cc82a-43a3-4391-9927-4b55e532a78c.png)
 
-
-
-<br />
-
-<b><i>REMARK:Invoke-WDigest.ps1 cmdlet only bypasses mimikatz detection if windows defender its the only AV running in target system ..</i></b>
