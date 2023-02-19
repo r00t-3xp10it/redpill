@@ -71,7 +71,7 @@ REMARK
 <br />
 
 <b><i>Execute Mimikatz (interactive shell) without WDigest caching</i></b><br />
-![POC1](https://user-images.githubusercontent.com/23490060/219876542-b4e29d8c-fb39-47ec-ae36-6513154e8aa3.png)
+![interactive](https://user-images.githubusercontent.com/23490060/219967042-4559b463-5e3e-470d-8ffe-5111eae7f015.png)
 
 <br />
 
