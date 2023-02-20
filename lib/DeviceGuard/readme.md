@@ -48,7 +48,7 @@ Get-Help .\Invoke-WDigest.ps1 -full
 .\Invoke-WDigest.ps1 -wdigest 'true' -manycats -module 'auto'
 
 # Dump browsers credentials without WDiget catching
-.\Invoke-WDigest.ps1 -wdigest 'false' -manycats -module 'auto'
+.\Invoke-WDigest.ps1 -wdigest 'false' -manycats -module 'browser'
 
 
 [WDIGEST CATCHING FAST DEMONSTRATION]
