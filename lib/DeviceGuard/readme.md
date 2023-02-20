@@ -47,6 +47,9 @@ Get-Help .\Invoke-WDigest.ps1 -full
 #  Ativate WDigest caching + Exec Mimikatz pre-sellection of dump::modules
 .\Invoke-WDigest.ps1 -wdigest 'true' -manycats -module 'auto'
 
+# Dump browsers credentials without WDiget catching
+.\Invoke-WDigest.ps1 -wdigest 'true' -manycats -module 'auto'
+
 
 [WDIGEST CATCHING FAST DEMONSTRATION]
 
@@ -79,6 +82,12 @@ REMARK
 ![POC2](https://user-images.githubusercontent.com/23490060/219876558-6f68d5cb-e0b7-4bd2-b6e1-689dd8f62792.png)
 
 ![POC3](https://user-images.githubusercontent.com/23490060/219876572-e28d1c22-b6a6-456c-a710-2af8e75f339b.png)
+
+<br />
+
+<b><i>Dump browsers credentials without WDiget catching</i></b>
+![browerdump](https://user-images.githubusercontent.com/23490060/220169798-fd57ff03-3d75-4468-85f9-348f38de933a.png)
+
 
 <br />
 
