@@ -2,7 +2,7 @@
 
 |Script Name|Description|Privileges|Notes|
 |---|---|---|---|
-|[Invoke-WDigest](https://github.com/r00t-3xp10it/redpill/blob/main/lib/DeviceGuard/Invoke-WDigest.ps1)|Credential Guard Bypass Via Patching Wdigest Memory|Administrator|Credits: @wh0nsq, @BenjaminDelpy|
+|[Invoke-WDigest](https://github.com/r00t-3xp10it/redpill/blob/main/lib/DeviceGuard/Invoke-WDigest.ps1)|Credential Guard Bypass Via Patching Wdigest Memory|Administrator|Credits: @wh0nsq, @Benjamin_Delpy|
 
 <br />
 
@@ -85,7 +85,8 @@ REMARK
 
 <br />
 
-<b><i>Dump browsers credentials without WDiget catching</i></b>
+<b><i>Dump browsers credentials without WDiget catching</i></b><br />
+<b><i>Remark: This module requires -WDigest 'false' and -manycats parameters ( mandatory )</i></b>
 ![browerdump](https://user-images.githubusercontent.com/23490060/220169798-fd57ff03-3d75-4468-85f9-348f38de933a.png)
 
 
