@@ -13,6 +13,7 @@
 |RunAs|Switch that prompts user for credential input and store it in memory|<b><i>false</i></b>|
 |DcName|Switch of RunAs command that accepts USER@DOMAIN or DOMAIN\USER<br />Remark: this function requires <b><i>-RunAs</i></b> parameter switch declaration|<b><i>$Env:COMPUTERNAME\\$Env:USERNAME</i></b>|
 |Module|Mimikatz selection of dump::modules to auto-run|<b><i>sekurlsa::wdigest exit</i></b>|
+|BrowserCreds|Dunp browers credentials [clear-text]|<b><i>false</i></b>|
 |Banner|Print Invoke-WDigest cmdlet banner?|true|
 
 <b><i>* Invoke-WDigest.ps1 cmdlet only bypasses mimikatz detection if windows defender its the only AV running in target system.</i></b><br />
@@ -48,7 +49,7 @@ Get-Help .\Invoke-WDigest.ps1 -full
 .\Invoke-WDigest.ps1 -wdigest 'true' -manycats -module 'auto'
 
 # Dump browsers credentials without WDiget catching
-.\Invoke-WDigest.ps1 -wdigest 'false' -manycats -module 'browser'
+.\Invoke-WDigest.ps1 -wdigest 'false' -browsercreds
 
 
 [WDIGEST CATCHING FAST DEMONSTRATION]
@@ -86,8 +87,7 @@ REMARK
 <br />
 
 <b><i>Dump browsers credentials without WDiget catching</i></b><br />
-<b><i>Remark: This module requires -WDigest 'false' and -manycats parameters ( mandatory )</i></b>
-![browerdump](https://user-images.githubusercontent.com/23490060/220169798-fd57ff03-3d75-4468-85f9-348f38de933a.png)
+![brcreds](https://user-images.githubusercontent.com/23490060/221413695-a227e1c3-fa2d-43e0-9f50-44b0157a5af0.png)
 
 
 <br />
