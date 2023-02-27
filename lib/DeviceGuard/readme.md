@@ -1,10 +1,10 @@
 ## Invoke-WDigest.ps1
 
-|Script Name|Description|Privileges|Notes|
+|Script Name|Description|Privileges|Credits|
 |---|---|---|---|
-|[Invoke-WDigest](https://github.com/r00t-3xp10it/redpill/blob/main/lib/DeviceGuard/Invoke-WDigest.ps1)|Credential Guard Bypass Via Patching Wdigest Memory|Administrator|Credits: @wh0nsq, @Benjamin_Delpy|
+|[Invoke-WDigest](https://github.com/r00t-3xp10it/redpill/blob/main/lib/DeviceGuard/Invoke-WDigest.ps1)|Credential Guard Bypass Via Patching Wdigest Memory|Administrator|@wh0nsq, @Benjamin_Delpy, @nirsoft|
 
-<br />
+<br /><br />
 
 |Parameter|Description|Defaul value|
 |---|---|---|
@@ -13,13 +13,12 @@
 |RunAs|Switch that prompts user for credential input and store it in memory|<b><i>false</i></b>|
 |DcName|Switch of RunAs command that accepts USER@DOMAIN or DOMAIN\USER<br />Remark: this function requires <b><i>-RunAs</i></b> parameter switch declaration|<b><i>$Env:COMPUTERNAME\\$Env:USERNAME</i></b>|
 |Module|Mimikatz selection of dump::modules to auto-run|<b><i>sekurlsa::wdigest exit</i></b>|
-|BrowserCreds|Dunp browers credentials [clear-text]|<b><i>false</i></b>|
+|BrowserCreds|Dump installed browers\outlook credentials [clear-text]|<b><i>false</i></b>|
 |Banner|Print Invoke-WDigest cmdlet banner?|true|
 
 <b><i>* Invoke-WDigest.ps1 cmdlet only bypasses mimikatz detection if windows defender its the only AV running in target system.</i></b><br />
 
-
-<br />
+<br /><br />
 
 **download Invoke-WDigest.ps1:**
 ```powershell
@@ -52,7 +51,7 @@ Get-Help .\Invoke-WDigest.ps1 -full
 .\Invoke-WDigest.ps1 -wdigest 'false' -browsercreds
 
 
-[WDIGEST CATCHING FAST DEMONSTRATION]
+[WDIGEST MEMORY CATCHING - FAST DEMONSTRATION]
 
 ## WDigest caching + dump (-runas) created credential with mimikatz
 .\Invoke-WDigest.ps1 -WDigest 'true' -manycats -runas
@@ -60,16 +59,15 @@ Get-Help .\Invoke-WDigest.ps1 -full
 WORKFLOW
    - Invoke-WDigest.ps1 Ativates WDigest caching in memory
    - Invoke-WDigest.ps1 prompts user to enter credential to start cmd.exe
+     - [Downside] -runas switch pauses cmdlet execution waiting for credential input.
    - WDigest will store (runas) credential input by user in clear-text in memory
    - mimikatz will auto-execute 'mimikatz sekurlsa::wdigest exit' to dump credentials
 
 REMARK
    RunAs parameter switch allows me to pause this cmdlet execution until
    one credential its inputed, then starts cmd.exe with suplied credential
-   in a minimized windows (detach from parent). Child process its necessary
+   in a hidden windows (detach from parent). Child process its necessary
    for mimikatz 'sekurlsa::wdigest' to dump the credential from Memory.
-   
-   [Downside] -runas switch pauses cmdlet execution waiting for credential input.
 ```
 
 <br />
@@ -98,4 +96,4 @@ REMARK
 
 <br />
 
-[Mimikatz modules list](https://tools.thehacker.recipes/mimikatz/modules)
+- [Mimikatz modules list](https://tools.thehacker.recipes/mimikatz/modules)
