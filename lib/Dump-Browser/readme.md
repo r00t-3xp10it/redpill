@@ -146,11 +146,11 @@ Warning: Invoke-Exclusions will 'NOT' delete itself or WebBrowserPassView.exe (d
 
 <br />
 
-## mspass.exe.exe
+## mspass.exe
    
 |Binary Name|Description|Privileges|Notes|
 |---|---|---|---|
-|mspass.exe|dumps usernames, passwords of messeger applications|UserLand|[Invoke-Exclusions.ps1](https://github.com/r00t-3xp10it/redpill/tree/main/lib/WD-Bypass#module-name) - Evade AV detection<br />[mspass - nirsoft](https://www.nirsoft.net/utils/mspass.html)|
+|mspass.exe|dumps usernames, passwords of messenger applications|UserLand|[Invoke-Exclusions.ps1](https://github.com/r00t-3xp10it/redpill/tree/main/lib/WD-Bypass#module-name) - Evade AV detection<br />[mspass - nirsoft](https://www.nirsoft.net/utils/mspass.html)|
 
 <br />
 
