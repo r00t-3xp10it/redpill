@@ -51,6 +51,7 @@ Get-Help .\Invoke-WDigest.ps1 -full
 .\Invoke-WDigest.ps1 -wdigest 'false' -browsercreds
 
 
+
 [WDIGEST MEMORY CATCHING - FAST DEMONSTRATION]
 
 ## WDigest caching + dump (-runas) created credential with mimikatz
@@ -61,13 +62,13 @@ WORKFLOW
    - Invoke-WDigest.ps1 prompts user to enter credential to start cmd.exe
      - [Downside] -runas switch pauses cmdlet execution waiting for credential input.
    - WDigest will store (runas) credential input by user in clear-text in memory
+     - [Downside] -runas command (wdigest) only stores 'valid' credentials in-memory.   
    - mimikatz will auto-execute 'mimikatz sekurlsa::wdigest exit' to dump credentials
 
 REMARK
-   RunAs parameter switch allows me to pause this cmdlet execution until
-   one credential its inputed, then starts cmd.exe with suplied credential
-   in a hidden windows (detach from parent). Child process its necessary
-   for mimikatz 'sekurlsa::wdigest' to dump the credential from Memory.
+   RunAs parameter switch pauses this cmdlet execution until one credential its inputed,
+   then starts cmd.exe with suplied credential in a hidden windows (detach from parent).
+   Child process its necessary for mimikatz 'sekurlsa::wdigest' dump the cred from Memory.
 ```
 
 <br />
