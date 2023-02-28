@@ -86,7 +86,8 @@ REMARK
 <br />
 
 <b><i>Dump browsers credentials without WDiget catching</i></b><br />
-![brcreds](https://user-images.githubusercontent.com/23490060/221413695-a227e1c3-fa2d-43e0-9f50-44b0157a5af0.png)
+![brcreds](https://user-images.githubusercontent.com/23490060/221413695-a227e1c3-fa2d-43e0-9f50-44b0157a5af0.png)<br />
+![outlook](https://user-images.githubusercontent.com/23490060/221729426-e7363d4b-fef1-4155-9383-06bbe1479f00.png)
 
 
 <br />
