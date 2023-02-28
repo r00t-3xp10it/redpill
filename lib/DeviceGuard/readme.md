@@ -93,7 +93,7 @@ REMARK
 <br />
 
 <b><i>Invoke-WDigest.ps1 only bypasses mimikatz detection if windows defender its the only AV running in target system</i></b><br />
-![ProactiveDefense](https://user-images.githubusercontent.com/23490060/219057639-902cc82a-43a3-4391-9927-4b55e532a78c.png)
+![kapersky](https://user-images.githubusercontent.com/23490060/221858219-efb0ca86-4222-47af-8827-7923c7f10656.png)
 
 
 <br />
