@@ -12,12 +12,13 @@
 |Parameter|Description|Defaul value|
 |---|---|---|
 |WDigest|Activate WDigest credential caching in Memory?|<b><i>true</i></b>|
-|ManyCats|Switch that downloads\executes Mimikatz to dump credentials |<b><i>false</i></b>|
-|RunAs|Switch that prompts user for credential input and store it in memory|<b><i>false</i></b>|
+|ManyCats|Switch that downloads\executes Mimikatz to dump credentials |<b><i>[Switch]</i></b>|
+|RunAs|Switch that prompts user for credential input and store it in memory|<b><i>[Switch]</i></b>|
 |DcName|Switch of RunAs command that accepts USER@DOMAIN or DOMAIN\USER<br />Remark: this function requires <b><i>-RunAs</i></b> parameter switch declaration|<b><i>$Env:COMPUTERNAME\\$Env:USERNAME</i></b>|
 |Module|Mimikatz selection of dump::modules to auto-run|<b><i>sekurlsa::wdigest exit</i></b>|
-|BrowserCreds|Dump installed browers\outlook credentials [clear-text]|<b><i>false</i></b>|
-|Banner|Print Invoke-WDigest cmdlet banner?|true|
+|BrowserCreds|Switch that dumps installed browers\outlook credentials [clear-text]|<b><i>[Switch]</i></b>|
+|Banner|Print Invoke-WDigest cmdlet banner?|<b><i>true</i></b>|
+|DebugMe|Switch that prints onscreen cmdlet error messages|<b><i>[Switch]</i></b>|
 
 <br /><br />
 
