@@ -107,6 +107,7 @@ WORKFLOW
 <br />
 
 > **Warning**: Invoke-WDigest.ps1 cmdlet only bypasses Anti-Virus detection if windows defender its the only AV running in target system.<br />
+
 ![kapersky](https://user-images.githubusercontent.com/23490060/221858219-efb0ca86-4222-47af-8827-7923c7f10656.png)
 
 
