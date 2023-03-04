@@ -25,7 +25,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/LPE/Pr
 
 |Function name|Description|Privileges|Screenshot|Credits|
 |---|---|---|---|---|
-|SpoolTrigger|Local privilege escalation|Administrator|[SpoolTrigger](https://user-images.githubusercontent.com/23490060/222120179-ae2e2b14-fe3e-453e-a494-dcf1c84dd270.jpg)|@404death|
+|SpoolTrigger|Local privilege escalation|Administrator (from Admin to NT Authority\System)|[SpoolTrigger](https://user-images.githubusercontent.com/23490060/222120179-ae2e2b14-fe3e-453e-a494-dcf1c84dd270.jpg)|@404death|
 
 <br />
 
