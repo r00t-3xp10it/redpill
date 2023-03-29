@@ -105,6 +105,8 @@ amsiutils
 amsiutils
 ```   
 
+<br />
+
 ## patch-amsi-x64-powershell.ps1
    
 |Cmdlet Name|Description|Privileges|Notes|
