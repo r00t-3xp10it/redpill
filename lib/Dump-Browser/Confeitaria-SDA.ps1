@@ -76,10 +76,8 @@ Start "https://www.facebook.com/events/create/?acontext=%7B`"event_action_histor
 ## Make sure shell is running with administrator privileges before continue
 If([bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544") -iNotMatch '^(True)$')
 {
-   ## Relaunch the shell as an elevated process
-   write-host "[x] Triggering RUNAS to elevate privileges." -ForegroundColor Red
-   Start-Process powershell.exe "-File",('"{0}"' -f $MyInvocation.MyCommand.Path) -Verb RunAs
-   exit
+   write-host "[x] Administrator privileges required!`n" -ForegroundColor Red
+   return
 }
 
 
