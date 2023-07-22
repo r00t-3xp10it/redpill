@@ -20,7 +20,7 @@
    2 - username: pedro_testing
    3 - password: angelapastebin
 
-   Browsers suportados: Chrome,Chromium,Firefox,MEdge,Savari.
+   Browsers suportados: Chrome,Chromium,Firefox,MEdge,Safari.
    Remark: Este script foi escrito para a sua execuçao passar
    despercebida ao windows defender antivirus mas provalvelmente
    sera detectado se o alvo estiver outro antivirus instalado.
