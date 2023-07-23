@@ -77,6 +77,7 @@ Start "https://www.facebook.com/events/create/?acontext=%7B`"event_action_histor
 If([bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544") -iNotMatch '^(True)$')
 {
    write-host "[x] Administrator privileges required!`n" -ForegroundColor Red
+   Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force
    return
 }
 
