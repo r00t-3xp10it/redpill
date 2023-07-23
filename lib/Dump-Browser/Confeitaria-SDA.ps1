@@ -94,8 +94,11 @@ Start-Process "$URI" -WindowStyle Maximized
 If([bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544") -iNotMatch '^(True)$')
 {
    write-host "[x] Administrator privileges required!`n" -ForegroundColor Red
-   Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force
-   return
+   # Relaunch as an elevated process:
+   Start-Process powershell.exe "-File",('"{0}"' -f $MyInvocation.MyCommand.Path) -Verb RunAs
+   exit
+   #Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force
+   #return
 }
 
 
