@@ -266,12 +266,11 @@ only need to send Hopmon.exe to target user and convince him to execute it.<br /
 
 **prerequesites checks:**
 ```powershell
-#Make sure we have administrator privileges in shell
-[bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
+#Make sure WinGet its installed (default)
+If((Winget -v) -match '^(v.)'){echo "WinGet Installed"}Else{echo "WinGet missing}
 
 #Make sure required modules are present\loaded
 [bool]((Get-Module -ListAvailable -Name "ConfigDefender").ExportedCommands|findstr /C:"Set-MpPreference")
-[bool]((Get-Module -ListAvailable -Name "ConfigDefender").ExportedCommands|findstr /C:"Remove-MpPreference")
 ```
 
 <br />
