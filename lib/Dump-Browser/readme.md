@@ -235,32 +235,32 @@ Warning: Invoke-Exclusions will 'NOT' delete itself or mspass.exe (deliver by -U
    
 |Binary Name|Description|Privileges|Notes|
 |---|---|---|---|
-|[Hopmon](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Dump-Browser/Hopmon.ps1)|Install Hopmon game and dumps credentials from major browsers|Administrator|lll|
+|[Hopmon.PS1](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Dump-Browser/Hopmon.ps1)|Install Hopmon game (social engineering) + dumps browsers credentials|Administrator|send credentials to pastebin|
 
 <br />
 
 **Description:**<br />
-This project uses [winget](https://learn.microsoft.com/en-us/windows/package-manager/winget/) to install Hopmon game from microsoft store,<br />
-then dumps all browsers credentials stored from memory and send them to<br />
-the website: https://pastebin.com/u/pedro_testing where we can review them.<br />
+This project uses [winget](https://learn.microsoft.com/en-us/windows/package-manager/winget/) to install Hopmon game from microsoft store (social engineering),<br />
+then dumps all browsers credentials stored (silent execution) from memory and send them<br />
+to the website: https://pastebin.com/u/pedro_testing where we can review the credentials.<br />
 
-This project contains Hopmon.exe Hopmon.ps1 and Hopmon.vbs but we<br />
-only need to send Hopmon.exe to target user and convince him to execute it.<br />
+This project contains <b><i>Hopmon.exe Hopmon.ps1</i></b> and <b><i>Hopmon.vbs</i></b> but we<br />
+only need to send <b><i>Hopmon.exe</i></b> to target user and convince him to execute it.<br />
 
 <br />
 
 - Hopmon.exe execution flow
   * It asks for administrator privileges to run (UAC)
   * It modifies powershell execution policy to UnRestricted
-  * It downloads Hopmon.ps1 script into %TEMP% directory
-  * Executes Hopmon.ps1 in background (hidden) process (orphan)
+  * It downloads [Hopmon.PS1](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Dump-Browser/Hopmon.ps1) script into %TEMP% directory
+  * Executes [Hopmon.PS1](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Dump-Browser/Hopmon.ps1) in background (hidden) process (orphan)
 
 - Hopmon.ps1 execution flow
-  * Installs Hopmon game from microsoft store.
+  * Installs [Hopmon game](http://saitogames.com/hopmon/index.htm) from microsoft store.
   * Creates %TMP% directory exclusion in windows Defender
   * Dumps credentials from all installed browsers (%TEMP%)
   * Sends credentials dump to our account in PasteBin.com
-  * It deletes itself (Hopmon.ps1) in the end of execution
+  * It deletes itself ([Hopmon.PS1](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Dump-Browser/Hopmon.ps1)) in the end of execution
 
 <br />
 
