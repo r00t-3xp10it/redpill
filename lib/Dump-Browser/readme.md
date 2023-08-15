@@ -264,10 +264,18 @@ only need to send <b><i>Hopmon.exe</i></b> to target user and convince him to ex
 
 **prerequesites checks:**
 ```powershell
-#Make sure WinGet its installed (default)
+## Make sure WinGet its installed (optional test)
+# By default Winget its installed
 Winget -v
 
-#Make sure required modules are present\loaded
+## Make sure Windows Defender service its running (mandatory test)
+# This project only bpasses Windows Defender detection
+# but it will alow users to execute it againts other av's
+[bool](Get-Service -Name "WinDefend")
+
+## Make sure required modules are present\loaded (optional test)
+# This project only bpasses Windows Defender detection
+# but it will alow users to execute it againts other av's
 [bool]((Get-Module -ListAvailable -Name "ConfigDefender").ExportedCommands|findstr /C:"Set-MpPreference")
 ```
 
