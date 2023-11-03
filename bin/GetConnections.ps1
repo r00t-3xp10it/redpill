@@ -77,24 +77,26 @@ $ErrorActionPreference = "SilentlyContinue"
 #Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 
-#Display Network NetAdapter settings!
-Get-NetAdapter | Select-Object Name,Status,LinkSpeed,DeviceID |
-Format-Table -AutoSize | Out-String -Stream | ForEach-Object {
-   $stringformat = If($_ -Match '^(Name)')
-   {
-      @{ 'ForegroundColor' = 'Green' }
+If($Action -ieq "verbose")
+{
+   #Display Network NetAdapter settings!
+   Get-NetAdapter | Select-Object Name,Status,LinkSpeed,DeviceID |
+   Format-Table -AutoSize | Out-String -Stream | ForEach-Object {
+      $stringformat = If($_ -Match '^(Name)')
+      {
+         @{ 'ForegroundColor' = 'Green' }
+      }
+      ElseIf($_ -Match '(Up)')
+      {
+         @{ 'ForegroundColor' = 'Yellow' }   
+      }
+      Else
+      {
+         @{ 'ForeGroundColor' = 'white' }
+      }
+      Write-Host @stringformat $_
    }
-   ElseIf($_ -Match '(Up)')
-   {
-      @{ 'ForegroundColor' = 'Yellow' }   
-   }
-   Else
-   {
-      @{ 'ForeGroundColor' = 'white' }
-   }
-   Write-Host @stringformat $_
 }
-
 
 #Build TCP connections DataTable!
 $tcptable = New-Object System.Data.DataTable
@@ -117,14 +119,12 @@ If($Action -ieq "false" -or $Action -eq $null)
 ElseIf($Action -ieq "verbose")
 {
    #Detailed Enumeration settings! {exclude: IPv6}
-   Write-Host "* Listing TCP\UDP ESTABLISHED\LISTENING connections!" -ForeGroundColor Green
    $Filter = "UDP LISTENING ESTABLISHED"     #List LISTENING\ESTABLISHED UDP\TCP connections!
    $Exclude = "[ ::"                         #Exclude from querys IPv6 protocol connections!
 }
 ElseIf($Action -ieq "Enum")
 {
    #Default scan settings! {exclude: UDP|IPv6|LocalHost}
-   Write-Host "* Listing TCP ESTABLISHED connections!" -ForeGroundColor Green
    $Filter = "ESTABLISHED"                   #List only ESTABLISHED TCP connections!
    $Exclude = "[ :: UDP 0.0.0.0:0 127.0.0.1" #Exclude from querys UDP|IPv6|LocalHost connections!
 }
