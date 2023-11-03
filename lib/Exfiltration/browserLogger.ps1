@@ -150,7 +150,7 @@ If($StartTime -Match '^(\d+\d+:+\d+\d)$')
 If($log.IsPresent)
 {
    ## Create logfile
-   echo "Browser active tab title enumeration.`n" > "$pwd\Browser.report"
+   echo "Browser active tab title enumeration.`n" > "$Env:TMP\Browser.report"
 }
 
 
@@ -165,7 +165,7 @@ If($History.IsPresent)
 
    ## Regex string to search inside files
    $Regex = '([a-zA-Z]{3,})://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)*?'
-   echo " - Enumerating browsers URL History." >> "$pwd\Browser.report"
+   echo " - Enumerating browsers URL History." >> "$Env:TMP\Browser.report"
 
    ## Get Edge History
    $MsEdgeHistory = "$Env:LOCALAPPDATA\Microsoft\Edge\User Data\Default\History" 
@@ -178,7 +178,7 @@ If($History.IsPresent)
 
       If($log.IsPresent)
       {
-         echo " Browser: Edge    History: None history entrys found." >> "$pwd\Browser.report"
+         echo " Browser: Edge    History: None history entrys found." >> "$Env:TMP\Browser.report"
       }
    }
    Else
@@ -195,7 +195,7 @@ If($History.IsPresent)
 
             If($log.IsPresent)
             {
-               echo " Browser: Edge    History: $_" >> "$pwd\Browser.report"
+               echo " Browser: Edge    History: $_" >> "$Env:TMP\Browser.report"
             }
          } 
       }
@@ -212,7 +212,7 @@ If($History.IsPresent)
 
       If($log.IsPresent)
       {
-         echo " Browser: Opera   History: None history entrys found." >> "$pwd\Browser.report"
+         echo " Browser: Opera   History: None history entrys found." >> "$Env:TMP\Browser.report"
       }
    } 
    Else
@@ -229,7 +229,7 @@ If($History.IsPresent)
 
             If($log.IsPresent)
             {
-               echo " Browser: Opera   History: $_" >> "$pwd\Browser.report"
+               echo " Browser: Opera   History: $_" >> "$Env:TMP\Browser.report"
             }
          }
       }
@@ -246,7 +246,7 @@ If($History.IsPresent)
 
       If($log.IsPresent)
       {
-         echo " Browser: Firefox History: None history entrys found." >> "$pwd\Browser.report"
+         echo " Browser: Firefox History: None history entrys found." >> "$Env:TMP\Browser.report"
       }
    } 
    Else
@@ -263,7 +263,7 @@ If($History.IsPresent)
 
             If($log.IsPresent)
             {
-               echo " Browser: Firefox History: $_" >> "$pwd\Browser.report"
+               echo " Browser: Firefox History: $_" >> "$Env:TMP\Browser.report"
             }
          } 
       } 
@@ -280,7 +280,7 @@ If($History.IsPresent)
 
       If($log.IsPresent)
       {
-         echo " Browser: Chrome  History: None history entrys found." >> "$pwd\Browser.report"
+         echo " Browser: Chrome  History: None history entrys found." >> "$Env:TMP\Browser.report"
       }
    } 
    Else
@@ -297,7 +297,7 @@ If($History.IsPresent)
 
             If($log.IsPresent)
             {
-               echo " Browser: Chrome  History: $_" >> "$pwd\Browser.report"
+               echo " Browser: Chrome  History: $_" >> "$Env:TMP\Browser.report"
             }
          } 
       }
@@ -314,7 +314,7 @@ If($History.IsPresent)
 
       If($log.IsPresent)
       {
-         echo " Browser: Brave   History: None history entrys found." >> "$pwd\Browser.report"
+         echo " Browser: Brave   History: None history entrys found." >> "$Env:TMP\Browser.report"
       }
    } 
    Else
@@ -331,7 +331,7 @@ If($History.IsPresent)
 
             If($log.IsPresent)
             {
-               echo " Browser: Brave   History: $_" >> "$pwd\Browser.report"
+               echo " Browser: Brave   History: $_" >> "$Env:TMP\Browser.report"
             }
          } 
       }
@@ -339,7 +339,7 @@ If($History.IsPresent)
 
    If($log.IsPresent)
    {
-      echo "" >> "$pwd\Browser.report"
+      echo "" >> "$Env:TMP\Browser.report"
    }
    write-host ""
 }
@@ -384,13 +384,13 @@ write-host "  Capture Delay   : $Delay (seconds)"
 If($log.IsPresent)
 {
    write-host "  Logfile         : " -NoNewline
-   write-host "$pwd\Browser.report" -ForegroundColor Red
+   write-host "$Env:TMP\Browser.report" -ForegroundColor Red
 
    ## Write on logfile
-   echo "`n  Process Id      : $PPID" >> "$pwd\Browser.report"
-   echo "  Start Capture   : $StartDate" >> "$pwd\Browser.report"
-   echo "  Capture Delay   : $Delay (seconds)" >> "$pwd\Browser.report"
-   echo "  Logfile         : $pwd\Browser.report" >> "$pwd\Browser.report"
+   echo "`n  Process Id      : $PPID" >> "$Env:TMP\Browser.report"
+   echo "  Start Capture   : $StartDate" >> "$Env:TMP\Browser.report"
+   echo "  Capture Delay   : $Delay (seconds)" >> "$Env:TMP\Browser.report"
+   echo "  Logfile         : $Env:TMP\Browser.report" >> "$Env:TMP\Browser.report"
 
 }
 
@@ -431,11 +431,11 @@ while($true)
          If($log.IsPresent)
          {
             ## Add entrys found to logfile
-            echo "`n  Browser Name    : $BrowserName" >> "$pwd\Browser.report"
-            echo "  Capture Time    : $CurrentDate" >> "$pwd\Browser.report"
-            echo "  Product Version : $Browservers" >> "$pwd\Browser.report"
-            echo "  Product Path    : $BrowserPath" >> "$pwd\Browser.report"
-            echo "  Windows Title   : $WindowTitle" >> "$pwd\Browser.report"      
+            echo "`n  Browser Name    : $BrowserName" >> "$Env:TMP\Browser.report"
+            echo "  Capture Time    : $CurrentDate" >> "$Env:TMP\Browser.report"
+            echo "  Product Version : $Browservers" >> "$Env:TMP\Browser.report"
+            echo "  Product Path    : $BrowserPath" >> "$Env:TMP\Browser.report"
+            echo "  Windows Title   : $WindowTitle" >> "$Env:TMP\Browser.report"      
          }
       }
    }
