@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: schtasks
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.
+   PS cmdlet Dev version: v1.0.3
 
 .DESCRIPTION
    Cmdlet of meterpeter C2 v2.10.13 release that
@@ -88,7 +88,7 @@
 )
 
 
-$CmdletVersion = "v1.0.2"
+$CmdletVersion = "v1.0.3"
 $ErrorActionPreference = "SilentlyContinue"
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
