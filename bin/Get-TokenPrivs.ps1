@@ -166,7 +166,7 @@ $BuffOffset = $TokenInformation.ToInt64()
 $PrivCount = [System.Runtime.InteropServices.Marshal]::ReadInt32($BuffOffset)
 $BuffOffset = $BuffOffset + 4 # Offset privilege count
 
-echo "`nProcess Token has $PrivCount privileges:"
+echo "`n* Process Token has $PrivCount privileges:"
 	
 # Create LUID and attributes object
 $LUID_AND_ATTRIBUTES = New-Object LUID_AND_ATTRIBUTES
