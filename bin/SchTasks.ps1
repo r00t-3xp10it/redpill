@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: schtasks
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.2
+   PS cmdlet Dev version: v1.0.
 
 .DESCRIPTION
    Cmdlet of meterpeter C2 v2.10.13 release that
@@ -176,17 +176,22 @@ If($Action -iMatch 'Query')
       Uri         : \MeterpeterC2
       TaskPath    : \
       Description :
+      Execute     : cmd /c start mspaint.exe
    #>
 
    write-host "   - $TaskName " -ForegroundColor Green -NoNewline
    write-host "task verbose info.`n"
+
+   ## add execution cmdline to output table
+   $Dwit = (Get-ScheduledTask "$TaskName" -EA SilentlyContinue).Actions.Arguments
+   $Exec = (Get-ScheduledTask "$TaskName" -EA SilentlyContinue).Actions.Execute
 
    Get-ScheduledTask "$TaskName" -EA SilentlyContinue | Get-ScheduledTaskInfo |
       Select-Object TaskName,LastRunTime,NextRunTime,NumberOfMissedRuns |
    Format-Table -AutoSize | Out-File "$Env:TMP\schedule.txt"
 
    Get-ScheduledTask "$TaskName" -EA SilentlyContinue |
-      Select-Object State,TaskName,Author,Date,Uri,TaskPath,Description |
+      Select-Object State,TaskName,Author,Date,Uri,TaskPath,Description,@{Name='Execute';Expression={"${Exec} ${Dwit}"}} |
    Format-List >> "$Env:TMP\schedule.txt"
 
    $check_tasks = Get-Content -Path "$Env:TMP\schedule.txt"
