@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: netstat, Get-NetAdapter {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.2.13
+   PS cmdlet Dev version: v1.2.14
    
 .DESCRIPTION
    Enumerates ESTABLISHED TCP connections and retrieves the
@@ -254,9 +254,8 @@ If($Action -ieq "verbose" -or $Action -ieq "Enum")
       {
          #Adding values to output DataTable!
          $ResolveNames = (Resolve-DnsName $TokenItem).NameHost
-         $filterStream = $ResolveNames[0] + " " + $ResolveNames[1]
          $dnstable.Rows.Add("$TokenItem",    ## RemoteAddress
-                            "$filterStream"  ## DnsHostName
+                            "$ResolveNames"  ## DnsHostName
          )|Out-Null
       }
 
