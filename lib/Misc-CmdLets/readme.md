@@ -103,6 +103,26 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-C
 
 #Fake windows update prank {Opera GX browser}
 .\sendkeys.ps1 -Program "C:\Users\pedro\AppData\Local\Programs\Opera GX\launcher.exe" -SendKey "https://fakeupdate.net/win7/~{F11}"
+
+
+## Fake windows update prank {All browsers}
+
+# find default web browser name
+$DefaultSettingPath = 'HKCU:\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice'
+$DefaultBrowserName = (Get-Item $DefaultSettingPath | Get-ItemProperty).ProgId
+
+#Create PSDrive to HKEY_CLASSES_ROOT
+$null = New-PSDrive -PSProvider registry -Root 'HKEY_CLASSES_ROOT' -Name 'HKCR'
+
+#Get the default browser executable command/path
+$DefaultBrowserOpenCommand = (Get-Item "HKCR:\$DefaultBrowserName\shell\open\command" | Get-ItemProperty).'(default)'
+$DefaultBrowserPathSanitize = [regex]::Match($DefaultBrowserOpenCommand,'\".+?\"')
+
+#Sanitize command
+$DefaultBrowserPath = $DefaultBrowserPathSanitize.value -replace '"','
+
+#Execute sendkeys cmdlet to open default browser in fakeupdate.net in full windows mode 
+.\sendkeys.ps1 -Program "$DefaultBrowserPath" -SendKey "https://fakeupdate.net/win7/~{F11}"
 ```
 
 
