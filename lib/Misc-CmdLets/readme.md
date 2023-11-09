@@ -120,7 +120,7 @@ $DefaultBrowserPathSanitize = [regex]::Match($DefaultBrowserOpenCommand,'\".+?\"
 Remove-PSDrive -Name 'HKCR'
 
 #Sanitize command
-$DefaultBrowserPath = $DefaultBrowserPathSanitize.value -replace '"','
+$DefaultBrowserPath = $DefaultBrowserPathSanitize.value -replace '"',''
 
 #Execute sendkeys cmdlet to open default browser in fakeupdate.net in full windows mode 
 .\sendkeys.ps1 -Program "$DefaultBrowserPath" -SendKey "https://fakeupdate.net/win7/~{F11}"
