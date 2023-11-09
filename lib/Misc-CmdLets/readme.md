@@ -100,6 +100,9 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-C
    
 #Start 'notepad.exe' program and send 'hello world' keys to program after one second of delay
 .\sendkeys.ps1 -Program "$Env:WINDIR\System32\notepad.exe" -SendKey "hello world" -ExecDelay '1'
+
+#Fake windows update prank {Opera GX browser}
+.\sendkeys.ps1 -Program "C:\Users\pedro\AppData\Local\Programs\Opera GX\launcher.exe" -SendKey "https://fakeupdate.net/win7/~{F11}"
 ```
 
 
