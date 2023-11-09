@@ -117,6 +117,7 @@ $null = New-PSDrive -PSProvider registry -Root 'HKEY_CLASSES_ROOT' -Name 'HKCR'
 #Get the default browser executable command/path
 $DefaultBrowserOpenCommand = (Get-Item "HKCR:\$DefaultBrowserName\shell\open\command" | Get-ItemProperty).'(default)'
 $DefaultBrowserPathSanitize = [regex]::Match($DefaultBrowserOpenCommand,'\".+?\"')
+Remove-PSDrive -Name 'HKCR'
 
 #Sanitize command
 $DefaultBrowserPath = $DefaultBrowserPathSanitize.value -replace '"','
