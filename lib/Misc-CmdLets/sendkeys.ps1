@@ -199,7 +199,6 @@ $Null = [WinAp]::ShowWindow($NewProc.MainWindowHandle,3)
 
 #Sendkey
 $OrphanID = $NewProc.ID
-echo "$OrphanID" > $Env:TMP\NewProcPPID.log
 [System.Windows.Forms.SendKeys]::SendWait("$SendKey")
 If($?)
 {
