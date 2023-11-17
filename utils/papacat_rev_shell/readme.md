@@ -68,6 +68,7 @@
 <br />
 
 # papacat Manual Execution
+Papacat project builds reverse tcp shells that connects to target ip adress through tcp protocol
 
 <br />
 
