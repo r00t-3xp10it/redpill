@@ -161,6 +161,15 @@ Remove-Item BrowserLogger.ps1 -force
 Remove-Item Browser.report -force
 ```
 
+<br />
+
+#### Speak a frase to remote host
+```powershell
+$SPEAKME = "UAUAUUAUAUUA   UUUUAUUAUUAUA  A A aAAAAaAAAaAaA   MERDA   AAAHAABAI UIAIUAUVA U   U     U     MERDA     U             U              U    THE END"
+
+Add-Type -AssemblyName System.speech;$SpeakObect = New-Object System.Speech.Synthesis.SpeechSynthesizer;$SpeakObect.Volume = 95;$SpeakObect.Rate = -4;$SpeakObect.Speak($SPEAKME)
+```
+
 ---
 
 <br /><br />
