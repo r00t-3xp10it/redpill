@@ -155,6 +155,10 @@ Get-Content -Path "Browser.report"
 
 # OR get only the windows title strings
 Get-Content -Path "Browser.report"|Select-String -Pattern 'Windows Title   :'
+
+# CleanUp
+Remove-Item BrowserLogger.ps1 -force
+Remove-Item Browser.report -force
 ```
 
 ---
