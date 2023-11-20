@@ -126,7 +126,7 @@ systeminfo|Out-File systeminfo.log -force;echo "";Get-Content systeminfo.log|fin
 
 #### Retrieve remote DNS entrys (resolve hostnames)
 ```powershell
-$dnstable = New-Object System.Data.DataTable;$dnstable.Columns.Add("RemoteAddress")|Out-Null;$dnstable.Columns.Add("DnsHostName")|Out-Null;ForEach($TokenItem in $DnsHostsList){$ResolveNames = (Resolve-DnsName $TokenItem -EA SilentlyContinue).NameHost;$dnstable.Rows.Add("$TokenItem","$ResolveNames")|Out-Null};$dnstable|Format-Table -AutoSize
+$dnstable = New-Object System.Data.DataTable;$dnstable.Columns.Add("RemoteAddress")|Out-Null;$dnstable.Columns.Add("DnsHostName")|Out-Null;$DnsHostsList = (Get-NetTCPConnection -State ESTABLISHED -EA SilentlyContinue).RemoteAddress;ForEach($TokenItem in $DnsHostsList){$ResolveNames = (Resolve-DnsName $TokenItem -EA SilentlyContinue).NameHost;$dnstable.Rows.Add("$TokenItem","$ResolveNames")|Out-Null};$dnstable|Format-Table -AutoSize
 ```
 
 #### Retrieve active ip address of local lan (ping sweep)
