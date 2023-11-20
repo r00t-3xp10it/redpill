@@ -131,7 +131,7 @@ Remove-Item systeminfo.log -force
 #### Stop\Start remote processes
 ```powershell
 # Open porn websites
-Start https://youporn.com
+Start-Process https://youporn.com
 
 # Stop process name (notepad)
 Stop-Process -Name "notepad.exe" -Force
@@ -139,7 +139,7 @@ Stop-Process -Name "notepad.exe" -Force
 
 #### Send one message to target machine
 ```powershell
-echo "Carrega no [F11] no teclado para abortar o update." > ola.log;start ola.log;Start-Sleep -S 3;del ola.log
+powershell (New-Object -ComObject Wscript.Shell).PopUp("BLOCKED ACCESS TO $Env:COMPUTERNAME' RELATED TO PORNOGRAPHIC`n     SURVEYS PERFORMED DURING WORKING HOURS ..",20,"                              * Microsoft Corporation *",0+0)
 ```
 
 <br />
