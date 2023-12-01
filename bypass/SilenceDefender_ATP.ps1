@@ -8,7 +8,7 @@
    Tested Under: Windows 10 (19043) x64 bits
    Required Dependencies: Administrator privileges
    Optional Dependencies: none
-   PS cmdlet Dev version: v2.2.11
+   PS cmdlet Dev version: v2.2.12
 
 .DESCRIPTION
    This cmdlet allow users to Query\Create\Delete 'active' firewall rules OR to stop Microsoft Defender
@@ -42,6 +42,9 @@
 
 .Parameter Direction
    The TCP flow direction (default: Inbound)
+
+.Parameter Log
+   Switch that creates report logfile
 
 .EXAMPLE
    PS C:\> Get-Help .\SilenceDefender_ATP.ps1 -full
@@ -101,7 +104,8 @@
    [string]$DisplayName="false",
    [string]$RemotePort="Any",
    [string]$LocalPort="Any",
-   [string]$Action="Query"
+   [string]$Action="Query",
+   [switch]$Log
 )
 
 
@@ -396,20 +400,34 @@ If($QueryRules)
       Helper - Display Onscreen Output Table!
    #>
 
-   echo $QueryRules | Format-Table -AutoSize | Out-String -Stream | Select -Skip 1 | ForEach-Object {
-      $stringformat = If($_ -Match '^(Enabled)')
+
+   If($Log.IsPresent)
+   {
+      If(Test-Path -Path "$Env:TMP\SilenceDefender_ATP.log")
       {
-         @{ 'ForegroundColor' = 'Green' }
+         Remove-Item -Path "$Env:TMP\SilenceDefender_ATP.log" -Force
       }
-      ElseIf($_ -Match 'Block')
-      {
-         @{ 'ForegroundColor' = 'Red' }      
+
+      ## Create logfile in TMP directory
+      echo $QueryRules|Out-File -FilePath "$Env:TMP\SilenceDefender_ATP.log" -Force
+   }
+   Else
+   {
+      echo $QueryRules | Format-Table -AutoSize | Out-String -Stream | Select -Skip 1 | ForEach-Object {
+         $stringformat = If($_ -Match '^(Enabled)')
+         {
+            @{ 'ForegroundColor' = 'Green' }
+         }
+         ElseIf($_ -Match 'Block')
+         {
+            @{ 'ForegroundColor' = 'Red' }      
+         }
+         Else
+         {
+            @{ 'ForegroundColor' = 'White' }
+         }
+         Write-Host @stringformat $_
       }
-      Else
-      {
-         @{ 'ForegroundColor' = 'White' }
-      }
-      Write-Host @stringformat $_
    }
 }
 Else
