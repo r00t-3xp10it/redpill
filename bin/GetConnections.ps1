@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: netstat, Get-NetAdapter {native}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.2.14
+   PS cmdlet Dev version: v1.2.15
    
 .DESCRIPTION
    Enumerates ESTABLISHED TCP connections and retrieves the
@@ -265,7 +265,15 @@ If($Action -ieq "verbose" -or $Action -ieq "Enum")
             @{ 'ForegroundColor' = 'Green' } }Else{ @{ } }
          Write-Host @stringformat $_
       }
-   }
+
+      #Diplay ARP cache
+      $ArpCache = (Get-NetNeighbor -AddressFamily IPv4|Select-Object IPAddress,LinkLayerAddress,State)
+      $ArpCache | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {
+         $stringformat = If($_ -Match 'IPAddress'){
+           @{ 'ForegroundColor' = 'Green' } }Else{ @{ } }
+         Write-Host @stringformat $_
+      }
+    }
 }
 
 
