@@ -2,7 +2,7 @@
 
 |Function name|Description|Privileges|Notes|Author|
 |---|---|---|---|---|
-|Invoke-Dump|Dump credentials from registry hives.|Administrator|[Screenshot](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Dump-Sam/Invoke-HiveDump.png)|<b><i>@_tmenochet</i></b>|
+|[Invoke-Dump](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Dump-Sam/Invoke-Dump.ps1)|Dump credentials from registry hives.|Administrator|[Screenshot](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Dump-Sam/Invoke-HiveDump.png)|<b><i>@_tmenochet</i></b>|
 
 <br />
 
