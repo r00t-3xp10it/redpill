@@ -1,8 +1,8 @@
 ## Invoke-Dump.ps1
 
-|Function name|Description|Privileges|Notes|
-|---|---|---|---|
-|Invoke-Dump|Dump credentials from registry hives.|Administrator|[Screenshot](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Dump-Sam/Invoke-HiveDump.png)|
+|Function name|Description|Privileges|Notes|Author|
+|---|---|---|---|---|
+|Invoke-Dump|Dump credentials from registry hives.|Administrator|[Screenshot](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Dump-Sam/Invoke-HiveDump.png)|<b><i>@_tmenochet</i></b>|
 
 <br />
 
