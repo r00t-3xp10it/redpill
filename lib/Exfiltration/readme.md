@@ -345,7 +345,7 @@ Get-Content -Path "$pwd\Browser.report"|Select-String -Pattern 'Windows Title   
 
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|[PhishCreds](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Exfiltration/PhishCreds.ps1)|Prompt the current user for a valid credential|UserLand|[screenshot1](https://user-images.githubusercontent.com/23490060/211175252-6bc1556b-2168-477c-afaf-df6d394478ad.png)|
+|[PhishCreds](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Exfiltration/PhishCreds.ps1)|Prompt the current user for a valid credential|UserLand|[screenshot1](https://gist.github.com/assets/23490060/41706e63-beb7-4b94-803d-c346c27b3c57)<br />[screenshot2](https://gist.github.com/assets/23490060/a4be106b-f997-4790-95a4-3fb87ced1b4c)|
 
 <br />
 
