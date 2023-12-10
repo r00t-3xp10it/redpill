@@ -272,6 +272,9 @@ If($Action -iMatch '^(start)$')
                      write-host "void.log" -ForegroundColor Yellow -NoNewline
                      write-host " renamed to: " -NoNewline
                      write-host "${Rand}.${SocialSite}" -ForegroundColor Yellow
+
+                     ## CleanUP
+                     Remove-Item -Path "$Env:TMP\pid.log" -Force
                   }
                }
             }         
@@ -312,10 +315,8 @@ If($Action -iMatch '^(stop)$')
    {
       ForEach($Report in $GetLogNames)
       {
-         ## Extract social media names from extension
-         If($Report -imatch '(.Facebook)$'){$SocialSite = "Facebook"}
-         If($Report -imatch '(.Twitter)$'){$SocialSite = "Twitter"}
-
+         ## Extract social media names from extensions
+         $SocialSite = ($Report).split('.')[1]
          write-host "`nSocial Media: $SocialSite"      
          write-host "Logfile: $Report"
          write-host "----------------------------"
