@@ -338,6 +338,8 @@ Winget search games
 |---|---|---|---|
 |[SocialMedia](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Dump-Browser/SocialMedia.ps1)|Capture keyboard keystrokes from FB\Twitter|UserLand,Adminstrator|browser (active tab) keystrokes capture|
 
+<br />
+
 |Parameter|Description|value|Default value|
 |---|---|---|---|
 |Action|Start or Stop keylogger|Start, Stop|Start|
