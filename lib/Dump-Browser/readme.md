@@ -344,7 +344,7 @@ Winget search games
 |---|---|---|---|
 |Action|Start or Stop keylogger|Start, Stop|Start|
 |Delay|Milliseconds delay between loops|1300|1300|
-|Force|Switch to bypass Is_Browser_Active? checks|Switch|Switch|
+|Force|Switch to bypass check: Is_Browser_Active?|Switch|Switch|
 |AutoDel|Switch that deletes this cmdlet in the end|Switch|Switch|
 
 <br />
