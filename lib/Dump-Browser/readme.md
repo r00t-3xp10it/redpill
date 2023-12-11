@@ -336,7 +336,7 @@ Winget search games
    
 |Binary Name|Description|Privileges|Notes|
 |---|---|---|---|
-|[SocialMedia](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Dump-Browser/SocialMedia.ps1)|Capture keyboard keystrokes from FB\Twitter|UserLand,Adminstrator|browser (active tab) keystrokes capture|
+|[SocialMedia](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Dump-Browser/SocialMedia.ps1)|Capture keyboard keystrokes from FB\Twitter|UserLand|browser (active tab) keystrokes capture|
 
 <br />
 
