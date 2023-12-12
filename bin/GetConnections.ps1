@@ -265,15 +265,6 @@ If($Action -ieq "verbose" -or $Action -ieq "Enum")
             @{ 'ForegroundColor' = 'Green' } }Else{ @{ } }
          Write-Host @stringformat $_
       }
-
-      #Diplay ARP cache
-      $ArpCache = (Get-NetNeighbor -AddressFamily IPv4|Select-Object IPAddress,LinkLayerAddress,State)
-      $ArpCache | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {
-         $stringformat = If($_ -Match 'IPAddress'){
-           @{ 'ForegroundColor' = 'Green' } }Else{ @{ } }
-         Write-Host @stringformat $_
-      }
-    }
 }
 
 
