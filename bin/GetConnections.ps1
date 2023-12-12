@@ -265,6 +265,7 @@ If($Action -ieq "verbose" -or $Action -ieq "Enum")
             @{ 'ForegroundColor' = 'Green' } }Else{ @{ } }
          Write-Host @stringformat $_
       }
+   }
 }
 
 
