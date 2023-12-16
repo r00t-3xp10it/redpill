@@ -572,9 +572,8 @@ If($Mode -iMatch '^(stop)$')
          "https://elgoog.im/space-invaders"
       )
 
-      $UriToInvoke = (Get-Random -InputObject $UriList)
       ## ⛑️ Open new tab to invoke SendToPasteBin
-      cmd /R start /max "$UriToInvoke"
+      cmd /R start /max $(Get-Random -InputObject $UriList)
       Start-Sleep -Seconds 5
    }
 
