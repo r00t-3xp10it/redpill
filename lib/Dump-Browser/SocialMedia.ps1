@@ -142,6 +142,7 @@ $StartBanner = @"
 "@;
 
 write-host $StartBanner -ForegroundColor DarkRed
+write-host "Capture keystrokes {Facebook,Twitter,Whatsapp,Instagram}" -ForegroundColor DarkGray
 write-host "  ♟ GitHub: https://github.com/r00t-3xp10it/redpill ♟" -ForegroundColor DarkYellow
 $host.UI.RawUI.WindowTitle = "@SocialMedia $CmdletVersion {SSA@RedTeam}"
 write-host "  ╰➤ [" -ForegroundColor Green -NoNewline
