@@ -336,9 +336,8 @@ Winget search games
    
 |Binary Name|Description|Privileges|Notes|
 |---|---|---|---|
-|[SocialMedia](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Dump-Browser/SocialMedia.ps1)|Capture keyboard keystrokes from Facebook OR Twitter (browser)|UserLand|browser (active tab) keystrokes capture<br />[screenshot1](https://gist.github.com/assets/23490060/8e1c4443-cc51-478e-997a-39058af79cec)<br />[screenshot2](https://gist.github.com/assets/23490060/146bb938-abf8-4b74-b4f0-137cd93bdba9)|
-
-<br />
+|[SocialMedia](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Dump-Browser/SocialMedia.ps1)|Capture keyboard keystrokes from Facebook OR Twitter (browser)|UserLand|browser (active tab) keystrokes capture<br />[screenshot1](https://gist.github.com/assets/23490060/8e1c4443-cc51-478e-997a-39058af79cec)<br />[screenshot2](https://gist.github.com/assets/23490060/146bb938-abf8-4b74-b4f0-137cd93bdba9)
+<br />[screenshot3](https://github.com/r00t-3xp10it/redpill/assets/23490060/e7329697-a695-4ec0-9033-1c530d0c5cef)|
 
 |Parameter|Description|value|Default value|
 |---|---|---|---|
