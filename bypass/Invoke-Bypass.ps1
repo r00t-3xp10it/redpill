@@ -343,7 +343,7 @@ If($?)
    ## Check AM`SI state
    $DeObfuscateOne = (([regex]::Matches(")'sli'+'tUism'+'A.noitam'+'otuA.tnemega'+'naM.metsyS'(epyTteG",'.','RightToLeft') | foreach {$_.value}) -join '')
    $DeObfuscateTwo = (([regex]::Matches(")'citatS,cilbuPnoN','deliaFtinIism'+'a'(dleiFteG",'.','RightToLeft') | foreach {$_.value}) -join '')
-   If($([bool](([Ref].Assembly.$DeObfuscate.$DeObfuscateTwo.GetValue($null)))))
+   If($([bool](([Ref].Assembly.$DeObfuscateOne.$DeObfuscateTwo.GetValue($null)))))
    {
       echo "String detection DISABLE on console!"
    }
