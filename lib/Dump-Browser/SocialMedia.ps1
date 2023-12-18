@@ -365,6 +365,7 @@ function Invoke-CheckMediaForChange ()
    {
       If($StartKeys -imatch 'Facebook'){$SocialSite = "Facebook"}
       If($StartKeys -imatch '/ X |twitter.com'){$SocialSite = "Twitter"}
+      If($StartKeys -match 'web.whatsapp.com'){$SocialSite = "Whatsapp"}
       $LastAccessed = (Get-Content -Path "$Env:TMP\Smeagol.log" -EA SilentlyContinue)
 
       If(-not($LastAccessed -match "^($SocialSite)$"))
