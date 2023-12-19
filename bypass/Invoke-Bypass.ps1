@@ -346,32 +346,42 @@ If($?)
    
    If($([bool](([Ref].Assembly.GetType($WindowSize).GetField($Graphics,"$ComponentId,Static").GetValue($null)))))
    {
+      $BypassState = "Success"
       $AmsiState = "String detection DISABLE on console!"
    }
    Else
    {
+      $BypassState = "Fail?"   
       $AmsiState = "String detection ENABLE on console!"
    }
 
-   If($AmsiState -match 'String detection DISABLE on console')
+
+   write-host "`n`n  Technic     : $Technic"
+   write-host "  Bypass      : " -NoNewline
+   If($BypassState -Match '^(Success)$')
    {
-      $BypassState = "Success"
+      write-host "$BypassState" -ForegroundColor Green
    }
    Else
    {
-      $BypassState = "Fail?"   
+      write-host "$BypassState" -ForegroundColor Red   
    }
-
-   write-host "`n`n  Technic     : $Technic"
-   write-host "  Bypass      : $BypassState" -ForegroundColor Green
    write-host "  Disclosure  : $Disclosure"
    write-host "  Description : $TechnicName"
-   write-host "  POC         : $POC" -ForegroundColor DarkYellow
-   write-host "  Report      : $AmsiState"
+   write-host "  POC         : $POC"
+   write-host "  Report      : " -NoNewline
+   If($BypassState -Match '^(Success)$')
+   {
+      write-host "$AmsiState" -ForegroundColor Green
+   }
+   Else
+   {
+      write-host "$AmsiState" -ForegroundColor Red   
+   }
    If($Filepath -ne "false")
    {
-      write-host "  Executing   : " -ForegroundColor DarkGray -NoNewline;
-      write-host "$ttl`n" -ForegroundColor Green;
+      write-host "  Executing   : " -ForegroundColor DarkGray -NoNewline
+      write-host "$ttl`n" -ForegroundColor Green
    }
 
 }
