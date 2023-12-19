@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
    Disable AMS1 within current process.
 
