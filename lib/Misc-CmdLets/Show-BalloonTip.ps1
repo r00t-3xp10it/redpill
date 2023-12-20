@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: System.Windows.Forms
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.2
+   PS cmdlet Dev version: v1.0.3
 
 .NOTES
    More attractive pop-up messages (balloon tips) may be displayed in Windows 7, 8.1 & 10
@@ -20,7 +20,7 @@
    The ballontip text
 
 .Parameter Icon
-   The ballontip icon (error|warning)
+   The ballontip icon (info|error|warning)
 
 .Parameter AutoClose
    Close ballontip in (default: 20000)
@@ -67,6 +67,10 @@ Try{
    If($Icon -imatch '^(Error)$')
    {
       $balmsg.BalloonTipIcon = [System.Windows.Forms.ToolTipIcon]::Error   
+   }
+   ElseIf($Icon -imatch '^(Info)$')
+   {
+      $balmsg.BalloonTipIcon = [System.Windows.Forms.ToolTipIcon]::Info   
    }
    Else
    {
