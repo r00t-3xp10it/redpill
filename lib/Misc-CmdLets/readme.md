@@ -177,6 +177,15 @@ powershell -WindowStyle Hidden -File "Prank2.ps1" -StartDelay '800' -LoopRange '
 
 <br />
 
+|Parameter Name|Description|default value|
+|---|---|---|
+|Title|Ballontip title|Attention $Env:USERNAME|
+|Text|Ballontip text|A virus has detected in $Env:COMPUTERNAME|
+|IconType|Ballontip icon ( info \| error \| warning )|Warning|
+|AutoClose|Close ballontip in Milliseconds|20000|
+
+<br />
+
 **Download cmdLet:**
 ```powershell
 iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/Show-BalloonTip.ps1" -OutFile "Show-BalloonTip.ps1|Unblock-File
@@ -190,5 +199,5 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-C
 Get-Help .\Show-BalloonTip.ps1 -Full
 
 #Close ballontip after 10 seconds time ( -AutoClose '10000' )
-.\Show-BalloonTip.ps1 -Title "Attention $Env:USERNAME" -Text "A virus has detected in $Env:COMPUTERNAME" -autoClose '10000' -icon 'error'
+.\Show-BalloonTip.ps1 -title "Attention $Env:USERNAME" -text "A virus has detected in $Env:COMPUTERNAME" -autoclose '10000' -icontype 'error'
 ```
