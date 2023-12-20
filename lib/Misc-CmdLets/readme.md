@@ -166,3 +166,29 @@ powershell -WindowStyle Hidden -File "Prank2.ps1" -StartDelay "3" -LoopRange "10
 powershell -WindowStyle Hidden -File "Prank2.ps1" -StartDelay '800' -LoopRange '20' -LoopDelay '30'
 ```
 
+
+<br />
+
+## Show-BalloonTip.ps1
+
+|Cmdlet Name|Description|Privileges|Notes|
+|---|---|---|---|
+|[Show-BalloonTip](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Misc-CmdLets/Show-BalloonTip.ps1)|Show a ballon tip in the notification bar|User Land|Windows supported: 7, 8.1 & 10|
+
+<br />
+
+**Download cmdLet:**
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-CmdLets/Show-BalloonTip.ps1" -OutFile "Show-BalloonTip.ps1|Unblock-File
+```
+
+<br />
+
+**execute:**
+```powershell
+#Access cmdlet help menu
+Get-Help .\Show-BalloonTip.ps1 -Full
+
+#Close ballontip after 10 seconds time ( -BalloonClose '10000' )
+.\Show-BalloonTip.ps1 -BalloonTipTitle "Attention $Env:USERNAME" -BalloonTipText "A virus has detected in $Env:COMPUTERNAME" -BalloonClose '10000'
+```
