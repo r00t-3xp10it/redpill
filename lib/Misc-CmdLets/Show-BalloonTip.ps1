@@ -33,9 +33,9 @@
 
 .OUTPUTS
    * Executing ballontip in notification bar
-     Title : 'Attention pedro'
-     Text  : 'A virus has detected in SKYNET'
-   * Waiting '10000' milliseconds ..
+     Title   : 'Attention pedro'
+     Text    : 'A virus has detected in SKYNET'
+     Waiting : '5000' milliseconds to autoclose
    * BallonTip successfuly executed in SKYNET
 
 .LINK
@@ -65,22 +65,20 @@ Try{
    $global:BallonBox = New-Object System.Windows.Forms.NotifyIcon
    $MyPath = (Get-Process -id $pid).Path
 
-   ## Display info OnScreen
-   write-host "`n   * Executing ballontip in notification bar" -ForegroundColor Green
-   write-host "     Title : '$Title'"
-   write-host "     Text  : '$Text'"
-
    ## Build ballon box
+   write-host "`n   * Executing ballontip in notification bar" -ForegroundColor Green
    $BallonBox.Icon = [System.Drawing.Icon]::ExtractAssociatedIcon($MyPath)
    $BallonBox.BalloonTipIcon = $IconType
    $BallonBox.BalloonTipText = $Text
    $BallonBox.BalloonTipTitle = $Title
    $BallonBox.Visible = $true
 
-   write-host "   * " -ForegroundColor Green -NoNewline
-   write-host "Waiting '" -NoNewline
-   write-host "$AutoClose" -ForegroundColor Green -NoNewline
-   write-host "' milliseconds .."
+   ## Display info OnScreen
+   write-host "     Title   : '$Title'"
+   write-host "     Text    : '$Text'"
+   write-host "     Waiting : '" -NoNewline
+   write-host "$AutoClose" -ForegroundColor DarkYellow -NoNewline
+   write-host "' milliseconds to autoclose"
    $BallonBox.ShowBalloonTip($AutoClose)
 
    ## Get rid of the following two lines if you don't want the tray-icon to disappear
@@ -90,7 +88,7 @@ Try{
 }
 Catch
 {
-   write-host "`n   > Error: $_.Exception.Message `n" -foregroundcolor Red -BackgroundColor Black
+   write-host "`n   > Error: $_ `n" -foregroundcolor Red -BackgroundColor Black
    return
 }
 
