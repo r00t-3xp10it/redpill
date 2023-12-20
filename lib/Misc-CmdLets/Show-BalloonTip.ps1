@@ -19,14 +19,14 @@
 .Parameter Text
    The ballontip text
 
-.Parameter Icon
+.Parameter IconType
    The ballontip icon (info|error|warning)
 
 .Parameter AutoClose
    Close ballontip in (default: 20000)
 
 .EXAMPLE
-   PS C:\> .\Show-BallonTip.ps1 -title 'kernel error' -text 'a system error occour' -icon 'error' -autoclose '10000'
+   PS C:\> .\Show-BallonTip.ps1 -title 'kernel error' -text 'a system error occour' -icontype 'error' -autoclose '10000'
 
 .INPUTS
    None. You cannot pipe objects into Show-BallonTip.ps1
@@ -44,7 +44,7 @@
 [CmdletBinding(PositionalBinding=$false)] param(
    [string]$Text="A virus has detected in $Env:COMPUTERNAME",
    [string]$Title="Attention $Env:USERNAME",
-   [string]$Icon="Warning",
+   [string]$IconType="Warning",
    [int]$AutoClose='20000'
 )
 
@@ -58,37 +58,25 @@ If(([System.Environment]::OSVersion.Version.Major) -gt 10)
 
 Try{
    Add-Type -AssemblyName System.Windows.Forms
-   $global:balmsg = New-Object System.Windows.Forms.NotifyIcon
-   $path = (Get-Process -id $pid).Path
+   $global:BallonBox = New-Object System.Windows.Forms.NotifyIcon
+   $MyPath = (Get-Process -id $pid).Path
 
    ## Build ballon box
-   $balmsg.Icon = [System.Drawing.Icon]::ExtractAssociatedIcon($path)
+   $BallonBox.Icon = [System.Drawing.Icon]::ExtractAssociatedIcon($MyPath)
+   $BallonBox.BalloonTipIcon = $IconType
+   $BallonBox.BalloonTipText = $Text
+   $BallonBox.BalloonTipTitle = $Title
+   $BallonBox.Visible = $true
+   $BallonBox.ShowBalloonTip($AutoClose)
 
-   If($Icon -imatch '^(Error)$')
-   {
-      $balmsg.BalloonTipIcon = [System.Windows.Forms.ToolTipIcon]::Error   
-   }
-   ElseIf($Icon -imatch '^(Info)$')
-   {
-      $balmsg.BalloonTipIcon = [System.Windows.Forms.ToolTipIcon]::Info   
-   }
-   Else
-   {
-      $balmsg.BalloonTipIcon = [System.Windows.Forms.ToolTipIcon]::Warning
-   }
-
-   $balmsg.BalloonTipText = $Text
-   $balmsg.BalloonTipTitle = $Title
-   $balmsg.Visible = $true
-   $balmsg.ShowBalloonTip($AutoClose)
-
-   ## get rid of the following two lines if you don't want the tray-icon to disappear
-   # after xxxxx Milliseconds the icon will disappear however as soon as you mouseover it.
+   ## Get rid of the following two lines if you don't want the tray-icon to disappear
+   # after xxxxx Milliseconds (icon will disappear however as soon as you mouseover it)
    Start-Sleep -Milliseconds $AutoClose
-   $balmsg.dispose()
+   $BallonBox.dispose()
 }
 Catch
 {
-   write-host "`n   > Error: $_ `n" -foregroundcolor Red -BackgroundColor Black
+   write-host "`n   > Error: $_.Exception.Message `n" -foregroundcolor Red -BackgroundColor Black
 }
+
 exit
