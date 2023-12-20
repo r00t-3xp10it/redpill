@@ -189,6 +189,6 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Misc-C
 #Access cmdlet help menu
 Get-Help .\Show-BalloonTip.ps1 -Full
 
-#Close ballontip after 10 seconds time ( -BalloonClose '10000' )
-.\Show-BalloonTip.ps1 -BalloonTipTitle "Attention $Env:USERNAME" -BalloonTipText "A virus has detected in $Env:COMPUTERNAME" -BalloonClose '10000'
+#Close ballontip after 10 seconds time ( -AutoClose '10000' )
+.\Show-BalloonTip.ps1 -Title "Attention $Env:USERNAME" -Text "A virus has detected in $Env:COMPUTERNAME" -autoClose '10000' -icon 'error'
 ```
