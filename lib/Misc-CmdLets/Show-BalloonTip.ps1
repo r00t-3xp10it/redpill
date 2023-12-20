@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: System.Windows.Forms
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.3
+   PS cmdlet Dev version: v1.0.4
 
 .NOTES
    More attractive pop-up messages (balloon tips) may be displayed in Windows 7, 8.1 & 10
@@ -32,7 +32,11 @@
    None. You cannot pipe objects into Show-BallonTip.ps1
 
 .OUTPUTS
-   none outputs available
+   * Executing ballontip in notification bar
+     Title : 'Attention pedro'
+     Text  : 'A virus has detected in SKYNET'
+   * Waiting '10000' milliseconds ..
+   * BallonTip successfuly executed in SKYNET
 
 .LINK
    https://github.com/r00t-3xp10it/redpill
@@ -61,12 +65,22 @@ Try{
    $global:BallonBox = New-Object System.Windows.Forms.NotifyIcon
    $MyPath = (Get-Process -id $pid).Path
 
+   ## Display info OnScreen
+   write-host "`n   * Executing ballontip in notification bar" -ForegroundColor Green
+   write-host "     Title : '$Title'"
+   write-host "     Text  : '$Text'"
+
    ## Build ballon box
    $BallonBox.Icon = [System.Drawing.Icon]::ExtractAssociatedIcon($MyPath)
    $BallonBox.BalloonTipIcon = $IconType
    $BallonBox.BalloonTipText = $Text
    $BallonBox.BalloonTipTitle = $Title
    $BallonBox.Visible = $true
+
+   write-host "   * " -ForegroundColor Green -NoNewline
+   write-host "Waiting '" -NoNewline
+   write-host "$AutoClose" -ForegroundColor Green -NoNewline
+   write-host "' milliseconds .."
    $BallonBox.ShowBalloonTip($AutoClose)
 
    ## Get rid of the following two lines if you don't want the tray-icon to disappear
@@ -77,6 +91,8 @@ Try{
 Catch
 {
    write-host "`n   > Error: $_.Exception.Message `n" -foregroundcolor Red -BackgroundColor Black
+   return
 }
 
+write-host "   * BallonTip successfuly executed in $Env:COMPUTERNAME" -ForegroundColor Green
 exit
