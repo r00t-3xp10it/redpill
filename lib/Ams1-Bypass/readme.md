@@ -111,13 +111,13 @@ amsiutils
    
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|[amsibypass.exe](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Ams1-Bypass/amsibypass.exe)|Unchain AMSI by patching the provider’s unmonitored memory space|User Land|Available for x64 bytes only|
+|[amsibypass.exe](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Ams1-Bypass/amibypass.exe)|Unchain AMSI by patching the provider’s unmonitored memory space|User Land|Available for x64 bytes only|
 
 <br />
 
 **downloadcmdLet:**
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/amsibypass.exe" -OutFile "amsibypass.exe"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/blob/main/lib/Ams1-Bypass/amsibypass.exe" -OutFile "amsibypass.exe"
 ```
 
 <br />
@@ -129,4 +129,4 @@ powershell -ep bypass -nop
 
 #Test detection
 amsiutils
-```      
+```
