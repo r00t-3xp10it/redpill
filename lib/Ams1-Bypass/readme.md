@@ -117,7 +117,7 @@ amsiutils
 
 **downloadcmdLet:**
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/blob/main/lib/Ams1-Bypass/amsibypass.exe" -OutFile "amsibypass.exe"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/amibypass.exe" -OutFile "amsibypass.exe"
 ```
 
 <br />
