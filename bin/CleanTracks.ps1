@@ -395,8 +395,12 @@ If($CleanTracks -ieq "Clear" -or $CleanTracks -ieq "Paranoid")
             Write-Host "    Warning : Please wait while we clean Eventvwr." -ForegroundColor Yellow
          }
 
-         #Remove threats from defender vault
-         Try{Remove-MpThreat}Catch{}
+         #Remove threats\signatures from defender vault
+         Try{
+            Remove-MpThreat
+            $GetPlatformNumber = (Gci -Path "$Env:PROGRAMDATA\Microsoft\Windows Defender\Platform").Name|Where-Object{$_ -match '^(\d+\.+\d+\d)' }|Select -First 1
+            "$Env:PROGRAMDATA\Microsoft\Windows Defender\Platform\$GetPlatformNumber\MpCmdRun.exe -RemoveDefinitions -All"
+         }Catch{}
 
          $PSlist = wevtutil el | Where-Object {#Note: wevtutil cl => requires Administrator rigths to run
             $_ -iNotMatch '(Intel|Windows-Audio|Windows-Defrag|Windows-Kernel|Windows-Crypto|Windows-LiveId/Analytic|Windows-LiveId/Operational|Windows-USBVideo/Analytic|/Admin$)'
