@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.6
+   PS cmdlet Dev version: v1.0.7
 
 .DESCRIPTION
    This cmdlet was written to detect suspicious ams1 strings in .ps1 or .psm1
@@ -28,11 +28,17 @@
 .Parameter AMS1
    Switch that Scan script with AMS1 engine
 
+.Parameter RateHigh
+   Switch to only display 'rate High' results
+
 .EXAMPLE
    PS C:\> .\identify_offencive_tools.ps1 -filetoscan "$pwd\evil.ps1"
 
 .EXAMPLE
    PS C:\> .\identify_offencive_tools.ps1 -filetoscan "$pwd\evil.ps1" -logfile
+
+.EXAMPLE
+   PS C:\> .\identify_offencive_tools.ps1 -filetoscan "$pwd\evil.ps1" -ratehigh
 
 .INPUTS
    None. You cannot pipe objects into identify_offencive_tools.ps1
@@ -67,7 +73,7 @@
    MaliciousString : while($true)
    LineNumber      : 794 978 3103
 
-   [OK] Total of tokens found: [5] off [285] tokens.
+   [OK] Total of tokens found: [5] off [302] tokens.
    [OK] Of witch [4] results deserves urgent attention.
    [OK] Cmdlet_Total_Scan_Time: [00:00:08]
    
@@ -80,6 +86,7 @@
 
 [CmdletBinding(PositionalBinding=$false)] param(
    [string]$FileToScan="C:\Users\pedro\Coding\meterpeter\meterpeter.ps1",
+   [switch]$RateHigh,
    [switch]$LogFile,
    [switch]$Ams1
 )
@@ -381,6 +388,9 @@ $MaliciousKeywordsList = @(
    "@lsa's'@@'s.e'x'e",
    "we@vtu't@il @c'l'",
    "a'msi@co@@n'text",
+   "@/sav'ecr@e'd",
+   "n'c.e'x'e",
+   "Ex@cl'usi@onEx'ten@si@@on",
    "sy'st@em.@net'.w@ebc@li'e@nt",
    "'Sys@t'em.@Man'age@me'nt.'Au@tom'at@io'n.",
    "@-Di@sa@bleI@OA'V'Pr@ote@c'ti@on @`$tr@ue",
@@ -393,7 +403,7 @@ $MaliciousKeywordsList = @(
 )
 
 
-$HigthRate = "'-Dis@abl@eIntr@us'ionP@re've@nt'ionS'y'@ste'm `$tr@ue|M@pCm'dR'u@@n.e'x'e -@Rem'oveD@ef'in@iti'o@ns -'Al@l|-D@isa@bleRe@al'ti@meM'o'@nito@ri@n'g `$tr'ue|-D@isa@bleRe@al'ti@m'ePro'te@cti@o'n `$tru@e|@-Di@sa@bleI@OA'V'Pr@ote@c'ti@on @`$tr@ue|a'msi@co@@n'text|a@@ms'i_d'is@ab@l'e|S@hel'lE'xec@ut@e|'I@E'X@|-'e@n'c|-n'o@p|a'ms@i|c'md @/c'|pa@yl'o@ad|mim@ik'at@z|A'dd@-T'y@p'e|-@en'c@od'ed|Ex@clu'sio@nP'at@h|A@ms'iSc'an@Bu@f'fe@r|i'nv@o'ke-@mim'ik@a'tz|-'en@cod'edco@mm'and|Exc@lu'sionPr@oc@e'ss|In@vok'e-'Ex@pres'si@on|am'si@ut'il@s|ams'iI@ni'tFa@il@e'd|ls'a @se'cr@et@s|im'pac'@et|pr@ocd'u@mp|pw'd@um'p|by'pa@s@@s ua'@c|u'a@c by@p'a@ss|po@we'rsh@ell '-e@p by'pa@s's|Defi@neDy'namicAs@se'mbly|De'fi@neDyn'amic@Mo'du@le|De'fi@neT'yp@e|D@efi'neC@on'str@uc'tor|Cr@ea'teT@yp'e|De@fi@neLi'te@ra@l|D'ef@in'eEn@um|D@ef'in@eFi'el@d|I'LGe@ne'ra@tor|E@mi't|De'fi@nePIn@vok'eMet@ho'd|G@etT'yp@e's|Ge'tAs@se'mbli@es|Ge'tCo@nst'ru@c@tor|G@etC'onst'ru@ct'ors|Ge@tE'ven@t|GetEvents|@Ge'tFi@el'd|G'etF@ie'l@ds|GetI'nte@rfa'ceM@ap|G'etIn@ter@f'ace|GetM@et'h@od|'Ge@tMe@tho@ds|G@etN'est@e'dTy@pe|GetN'est@edT'y@pe's|Ma@keA'rr@ayTy'p@e|Ma'keB@yRe'fTy@p'e|@Mak'eG@en'er@ic@T'y@pe|M@ak'ePoin'te@rT@y@pe|Dec@lar'ingMe@t'ho@d|Decl@@ari'ngTy'p@e|T@yp'eHa'nd@le|Typ'eIn@it'ia@li@z'er|Int'er@opSer'vi@c'es|Al'locH@Glo@b'a@l|'Pt@rT'oStr'uc@t'ur@e|St@ruc'tur@eT'oP@t'r|Fre@eH'Gl'ob@al|'I@ntP't@r|Memo'rySt@re'am|De@fla'teSt'r@eam|@Fro'mBa@s'e6@4S't@ri'ng|En'cod@edC'om'm@a@nd|'T@oBa'se6'4@@Str'in@g|Ope'nPro'c@ess|'V@ir't@ualA@ll'oc|Vir't@ualF'r@ee|Wr'it@ePro@ce'ssM'em@o'ry|Cre@at'eUs'erT@hr@e'ad|Clo@seHa'nd@le|ke'rn@el@3'2|GetD@ele'gateF'or@Fu'nct@io'nPo'int@e'r|@C're'a@teTh@r'ead|me'mc@p'y|Ge@tPr'oc@A'dd@@r@es's|Vir@tu@alPr'ot@e'ct|Rea'dPr@oc@essM'em@or'y|Cr@ea'teRe'moteTh@re'ad|@Wr'iteBy@t'e|Adj@us'tTok'en@Pr@ivi'leg@e's|Wr'it@eIn@t3'2@|Ope'nTh@re'adT@ok'en|P@trT'oStr'in@g|Ze@roFr'eeGl@obalA@ll'ocUn@ic'od@e|Op'enPr@oc'essT@o'ke@n|Ge@tTok'enIn@fo'rm@at'i@on|S@etT'hr@ea'dTok'e@n|Im@pe'rs@ona'teLo@gg'edOn@U's@er|@Re've@rtT'oS@e'l@f|Cr@ea'tePro@ce@s'sWi'thT@ok'en@|D'up@lic'ateT'ok@enE'x'|Ope'nWi@ndo'wSta@ti@o'n|Mi'niD@um'pWr@i'teD'um@p@|@G'etPr@oce'ssH@an'dl@e|Ge'tAs'yncK@eyS'ta@t'e|Ge@tKe'ybo@ar@dS@ta'te|@No@nPu'b@li@'c@|Pro'tec@te'dE've@ntL@og@g'in@g«|@wh'ile(`$tr@u'e)|pow'ers@hell @-'ve@rs'ion @@2'|@r@u'n'a@s|Se@tVa'lue(`$n@ull,`$tr'u@e)|.W@ri'te(`$st,0,`$st.Le'ng@t'h)|@sch@ta'sks@ '/@cr@e'at@e|Se@t-@M'pPref'er@e'nc@e|A'lw@ay'sInst@allE'lev'at@ed|Ad@d'-Ex@fil'tra@ti@on|@Ad@d-Pe'rs@is@t'en@ce'|Ad'd-@R'egBa@@ckd'o@o@r|A'dd@-'Sc@rnS'av@eBa'c@kd@oo'r|En'a@bl'ed-Du'plic@a'teTo@ke'n|Ge't-@Ke'yst@ro'k@e's|@LS'ASe@c're@t@|G'et-Pa'ssH@as'h@|Ge't-R@egA'lwa'ysIn@st@allE'lev@a't@e'd|@Get@-Se'rvi@ceU'nq@u'ote@d'|@Ge't-Sy@@s'te@'m|Ge@t-'Vau'ltCr@ede'nt@i'al|I'@nv'ok@e-@By'pa@@s's'U'@A'C@|Inv@o'ke-Dl@lI'nj@ec't@i@@o'n|@In@v'o'ke@-M'im@ik'it@t'e@@n'z|I'nv@oke-@P'SIn@je'c@t'|@'I@n'vo'k@e-Ps@E'x@e@@c|@In@v'ok@'@e-@R'u@nA'@s'@|@In@v'ok@'@e-W'Scr@ip'tBy@@pa's'sU@A'@C'|O'ut-Min'@id'um@p'|@Am'siB@ypa's@s|nish@a'ng|@-du'mp@cr|S@eImp'er@son'a@te@|S@eDe'bugP'r'i@vi@'@leg@e'|cr'a@ckm'ape@x'ec@|l@sad'u@mp:@:s'am'|S'EK@URL'SA:@:Pt'h@|ke@rbe'ro@s:':@pt't@|@kerb'e@ro's:@:go'l@d@@e'n|@sek'url@'@s'a:':min'id@u'm@@p'|se'kur@ls'a:@:@lo'gonPa@'ss@w@o'rds'|@tok@en:':el'ev@a't@e@|in'v@o'ke-@com'm@a'nd@|c'ert@ut@il|m'sh@t'a|sy'st@em'.@net.we'bcl@i'en@t''@|@Sy@st'em.@Man'ag@@e'men@t'.Au@t'oma@t'io@n.'@'|Sy'st@em'.@Ru'n@'@ti@m'e.'Inte@r'opServ@i'ces@.Ma'rsh@a'l'|HK@L'M@:\SO'FT@@WA'R'E\Micr@oso'ft@\A'M@@S'I@\Pro'vi@de'rs@'"
+$HigthRate = "Ex@cl'usi@onEx'ten@si@@on|'-Dis@abl@eIntr@us'ionP@re've@nt'ionS'y'@ste'm `$tr@ue|M@pCm'dR'u@@n.e'x'e -@Rem'oveD@ef'in@iti'o@ns -'Al@l|-D@isa@bleRe@al'ti@meM'o'@nito@ri@n'g `$tr'ue|-D@isa@bleRe@al'ti@m'ePro'te@cti@o'n `$tru@e|@-Di@sa@bleI@OA'V'Pr@ote@c'ti@on @`$tr@ue|a'msi@co@@n'text|a@@ms'i_d'is@ab@l'e|S@hel'lE'xec@ut@e|'I@E'X@|-'e@n'c|-n'o@p|a'ms@i|c'md @/c'|pa@yl'o@ad|mim@ik'at@z|A'dd@-T'y@p'e|-@en'c@od'ed|Ex@clu'sio@nP'at@h|A@ms'iSc'an@Bu@f'fe@r|i'nv@o'ke-@mim'ik@a'tz|-'en@cod'edco@mm'and|Exc@lu'sionPr@oc@e'ss|In@vok'e-'Ex@pres'si@on|am'si@ut'il@s|ams'iI@ni'tFa@il@e'd|ls'a @se'cr@et@s|im'pac'@et|pr@ocd'u@mp|pw'd@um'p|by'pa@s@@s ua'@c|u'a@c by@p'a@ss|po@we'rsh@ell '-e@p by'pa@s's|Defi@neDy'namicAs@se'mbly|De'fi@neDyn'amic@Mo'du@le|De'fi@neT'yp@e|D@efi'neC@on'str@uc'tor|Cr@ea'teT@yp'e|De@fi@neLi'te@ra@l|D'ef@in'eEn@um|D@ef'in@eFi'el@d|I'LGe@ne'ra@tor|E@mi't|De'fi@nePIn@vok'eMet@ho'd|G@etT'yp@e's|Ge'tAs@se'mbli@es|Ge'tCo@nst'ru@c@tor|G@etC'onst'ru@ct'ors|Ge@tE'ven@t|GetEvents|@Ge'tFi@el'd|G'etF@ie'l@ds|GetI'nte@rfa'ceM@ap|G'etIn@ter@f'ace|GetM@et'h@od|'Ge@tMe@tho@ds|G@etN'est@e'dTy@pe|GetN'est@edT'y@pe's|Ma@keA'rr@ayTy'p@e|Ma'keB@yRe'fTy@p'e|@Mak'eG@en'er@ic@T'y@pe|M@ak'ePoin'te@rT@y@pe|Dec@lar'ingMe@t'ho@d|Decl@@ari'ngTy'p@e|T@yp'eHa'nd@le|Typ'eIn@it'ia@li@z'er|Int'er@opSer'vi@c'es|Al'locH@Glo@b'a@l|'Pt@rT'oStr'uc@t'ur@e|St@ruc'tur@eT'oP@t'r|Fre@eH'Gl'ob@al|'I@ntP't@r|Memo'rySt@re'am|De@fla'teSt'r@eam|@Fro'mBa@s'e6@4S't@ri'ng|En'cod@edC'om'm@a@nd|'T@oBa'se6'4@@Str'in@g|Ope'nPro'c@ess|'V@ir't@ualA@ll'oc|Vir't@ualF'r@ee|Wr'it@ePro@ce'ssM'em@o'ry|Cre@at'eUs'erT@hr@e'ad|Clo@seHa'nd@le|ke'rn@el@3'2|GetD@ele'gateF'or@Fu'nct@io'nPo'int@e'r|@C're'a@teTh@r'ead|me'mc@p'y|Ge@tPr'oc@A'dd@@r@es's|Vir@tu@alPr'ot@e'ct|Rea'dPr@oc@essM'em@or'y|Cr@ea'teRe'moteTh@re'ad|@Wr'iteBy@t'e|Adj@us'tTok'en@Pr@ivi'leg@e's|Wr'it@eIn@t3'2@|Ope'nTh@re'adT@ok'en|P@trT'oStr'in@g|Ze@roFr'eeGl@obalA@ll'ocUn@ic'od@e|Op'enPr@oc'essT@o'ke@n|Ge@tTok'enIn@fo'rm@at'i@on|S@etT'hr@ea'dTok'e@n|Im@pe'rs@ona'teLo@gg'edOn@U's@er|@Re've@rtT'oS@e'l@f|Cr@ea'tePro@ce@s'sWi'thT@ok'en@|D'up@lic'ateT'ok@enE'x'|Ope'nWi@ndo'wSta@ti@o'n|Mi'niD@um'pWr@i'teD'um@p@|@G'etPr@oce'ssH@an'dl@e|Ge'tAs'yncK@eyS'ta@t'e|Ge@tKe'ybo@ar@dS@ta'te|@No@nPu'b@li@'c@|Pro'tec@te'dE've@ntL@og@g'in@g«|@wh'ile(`$tr@u'e)|pow'ers@hell @-'ve@rs'ion @@2'|@r@u'n'a@s|Se@tVa'lue(`$n@ull,`$tr'u@e)|.W@ri'te(`$st,0,`$st.Le'ng@t'h)|@sch@ta'sks@ '/@cr@e'at@e|Se@t-@M'pPref'er@e'nc@e|A'lw@ay'sInst@allE'lev'at@ed|Ad@d'-Ex@fil'tra@ti@on|@Ad@d-Pe'rs@is@t'en@ce'|Ad'd-@R'egBa@@ckd'o@o@r|A'dd@-'Sc@rnS'av@eBa'c@kd@oo'r|En'a@bl'ed-Du'plic@a'teTo@ke'n|Ge't-@Ke'yst@ro'k@e's|@LS'ASe@c're@t@|G'et-Pa'ssH@as'h@|Ge't-R@egA'lwa'ysIn@st@allE'lev@a't@e'd|@Get@-Se'rvi@ceU'nq@u'ote@d'|@Ge't-Sy@@s'te@'m|Ge@t-'Vau'ltCr@ede'nt@i'al|I'@nv'ok@e-@By'pa@@s's'U'@A'C@|Inv@o'ke-Dl@lI'nj@ec't@i@@o'n|@In@v'o'ke@-M'im@ik'it@t'e@@n'z|I'nv@oke-@P'SIn@je'c@t'|@'I@n'vo'k@e-Ps@E'x@e@@c|@In@v'ok@'@e-@R'u@nA'@s'@|@In@v'ok@'@e-W'Scr@ip'tBy@@pa's'sU@A'@C'|O'ut-Min'@id'um@p'|@Am'siB@ypa's@s|nish@a'ng|@-du'mp@cr|S@eImp'er@son'a@te@|S@eDe'bugP'r'i@vi@'@leg@e'|cr'a@ckm'ape@x'ec@|l@sad'u@mp:@:s'am'|S'EK@URL'SA:@:Pt'h@|ke@rbe'ro@s:':@pt't@|@kerb'e@ro's:@:go'l@d@@e'n|@sek'url@'@s'a:':min'id@u'm@@p'|se'kur@ls'a:@:@lo'gonPa@'ss@w@o'rds'|@tok@en:':el'ev@a't@e@|in'v@o'ke-@com'm@a'nd@|c'ert@ut@il|m'sh@t'a|sy'st@em'.@net.we'bcl@i'en@t''@|@Sy@st'em.@Man'ag@@e'men@t'.Au@t'oma@t'io@n.'@'|Sy'st@em'.@Ru'n@'@ti@m'e.'Inte@r'opServ@i'ces@.Ma'rsh@a'l'|HK@L'M@:\SO'FT@@WA'R'E\Micr@oso'ft@\A'M@@S'I@\Pro'vi@de'rs@'"
 
 
 ## Internal 
@@ -470,6 +480,7 @@ ForEach($RawStringDetection in $MaliciousKeywordsList)
       {
          $ColorSet = "Red"
          $Hight = $Hight + 1
+
       }
 
       ## Get file description
@@ -478,19 +489,49 @@ ForEach($RawStringDetection in $MaliciousKeywordsList)
       $Line = $MatchedString.LineNumber
       $Counter = $Counter + 1
 
-      ## Output results OnScreen
-      write-host "`nToken           : $Counter"
-      write-host "MaliciousString : " -NoNewline
-      write-host "$RawStringDetection" -ForegroundColor $ColorSet
-      write-host "LineNumber      : $Line"
+      If($RateHigh.IsPresent)
+      {
+         ## Only display 'rate high'
+         If($ColorSet -match '^(Red)$')
+         {
+            ## Output results OnScreen
+            write-host "`nToken           : $Hight"
+            write-host "MaliciousString : " -NoNewline
+            write-host "$RawStringDetection" -ForegroundColor $ColorSet
+            write-host "LineNumber      : $Line"         
+         }
+      }
+      Else
+      {
+         ## Display 'rate low and high'
+         write-host "`nToken           : $Counter"
+         write-host "MaliciousString : " -NoNewline
+         write-host "$RawStringDetection" -ForegroundColor $ColorSet
+         write-host "LineNumber      : $Line"
+      }
 
       ## Logfile creation
       If($LogFile.IsPresent)
       {
-         echo "`nToken           : $Counter" >> "$pwd\identify_offencive_tools.log"
-         echo "MaliciousString : $RawStringDetection" >> "$pwd\identify_offencive_tools.log"
-         echo "LineNumber      : $Line" >> "$pwd\identify_offencive_tools.log"
-         echo "FileToScan      : $FileToScan" >> "$pwd\identify_offencive_tools.log"
+         If($RateHigh.IsPresent)
+         {
+            ## Only store 'rate High'
+            If($ColorSet -match '^(Red)$')
+            {
+               echo "`nToken           : $Hight" >> "$pwd\identify_offencive_tools.log"
+               echo "MaliciousString : $RawStringDetection" >> "$pwd\identify_offencive_tools.log"
+               echo "LineNumber      : $Line" >> "$pwd\identify_offencive_tools.log"
+               echo "FileToScan      : $FileToScan" >> "$pwd\identify_offencive_tools.log"
+            }
+         }
+         Else
+         {
+            ## Store 'rate low and high' results 
+            echo "`nToken           : $Counter" >> "$pwd\identify_offencive_tools.log"
+            echo "MaliciousString : $RawStringDetection" >> "$pwd\identify_offencive_tools.log"
+            echo "LineNumber      : $Line" >> "$pwd\identify_offencive_tools.log"
+            echo "FileToScan      : $FileToScan" >> "$pwd\identify_offencive_tools.log"
+         }
       }
 
    }
@@ -503,7 +544,7 @@ If($Counter -gt 0)
    write-host "Total of tokens found: [" -NoNewline
    write-host "$Counter" -ForegroundColor Yellow -NoNewline
    write-host "] off [" -NoNewline
-   write-host "299" -ForegroundColor Yellow -NoNewline
+   write-host "302" -ForegroundColor Yellow -NoNewline
    write-host "] tokens."
 
    write-host "[OK] " -ForegroundColor Green -NoNewline
