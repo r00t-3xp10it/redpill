@@ -31,7 +31,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-T
 
 **downloadcmdLet:**
 ```powershell
-iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Trigger/identify_offencive_tools.ps1" -OutFile "identify_offencive_tools.ps1"
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Trigger/identify_offensive_tools.ps1" -OutFile "identify_offencive_tools.ps1"
 ```
 <br />
 
