@@ -6,17 +6,18 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.5
+   PS cmdlet Dev version: v1.0.6
 
 .DESCRIPTION
-   Cmdlet has writen to detect ams1 suspicious strings on .ps1 or .psm1 scripts.
-   All the strings contained in this cmdlet list were found in diferent web sites
-   since microssoft oficial documentation until free sources. This script it will
-   not make any heuristic\memory scans but helps developers to review huge scripts
-   for suspicious strings [ams1] and act accordingly to avoid future detection.
+   This cmdlet was written to detect suspicious ams1 strings in .ps1 or .psm1
+   scripts, helping developers identify which line of the script the malicious
+   string is in and to take the necessary steps to prevent further detections.
 
 .NOTES
-   When scanning, its advice to disable windows defender RealTime Protection.
+   When scanning its advice to disable windows defender RealTime Protection.
+   All the strings contained in this script were found in diferent web forums
+   since microssoft oficial ams1 documentation until free open sources. This
+   script it will not make any heuristic\memory scans just a string search.
 
 .Parameter FileToScan
    Script to scan full path
