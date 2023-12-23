@@ -25,7 +25,7 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-T
 
 |Binary Name|Description|Privileges|Notes|
 |---|---|---|---|
-|[identify_offencive_tools]()|Hunting for Malicious Strings that triggers AMSI detection inside cmdlets|User Land|[Screenshot](https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Ams1-Trigger/Ams1-Trigger.png)|
+|[identify_offencive_tools](https://github.com/r00t-3xp10it/redpill/blob/main/lib/Ams1-Trigger/identify_offensive_tools.ps1)|Hunting for Malicious Strings that triggers AMSI detection inside cmdlets|User Land|[Screenshot1](https://user-images.githubusercontent.com/23490060/292560377-86b98f67-4f34-4903-9fdb-3e7f282524ea.png)<br />[screenshot2](https://user-images.githubusercontent.com/23490060/292560394-638ac708-e6b6-444b-b37a-710b60712b00.png)|
 
 <br />
 
