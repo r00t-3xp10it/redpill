@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19043) x64 bits
    Required Dependencies: cmd.exe {native}
    Optional Dependencies: wevtutil {native}
-   PS cmdlet Dev version: v2.3.16
+   PS cmdlet Dev version: v2.3.167
 
 .DESCRIPTION
    Module to clean artifacts that migth lead forensic investigatores to attacker steps.
@@ -184,6 +184,7 @@ If($CleanTracks -ieq "Clear" -or $CleanTracks -ieq "Paranoid")
         'REG DELETE "HKCU\Software\Microsoft\Windows\CurrentVersion\Search\RecentApps" /f',
         'REG DELETE "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs" /f',
         'REG DELETE "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\UserAssist" /f',
+        'REG DELETE "HKCU\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings" /f',
         'REG DELETE "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell\MuiCache" /f',
         'REG DELETE "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FeatureUsage\AppLaunch" /f',
         'REG DELETE "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FeatureUsage\ShowJumpView" /f',
@@ -194,10 +195,12 @@ If($CleanTracks -ieq "Clear" -or $CleanTracks -ieq "Paranoid")
         'REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Search\RecentApps" /ve /t REG_SZ /f',
         'REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs" /ve /t REG_SZ /f',
         'REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\UserAssist" /ve /t REG_SZ /f',
+        'REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings" /ve /t REG_SZ /f',
         'REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FeatureUsage\AppLaunch" /ve /t REG_SZ /f',
         'REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FeatureUsage\ShowJumpView" /ve /t REG_SZ /f',
         'REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FeatureUsage\AppBadgeUpdated" /ve /t REG_SZ /f',
         'REG ADD "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell\MuiCache" /ve /t REG_SZ /f'
+        'REG ADD "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Notifications\Settings" /v QuietHoursTelemetryLastRun /t REG_BINARY /d 3e64966500000000 /f'
      )
 
 
