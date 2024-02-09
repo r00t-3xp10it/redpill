@@ -60,7 +60,6 @@
 
 
 Write-Host ""
-## Check cmdlet mandatory dependencies
 $ErrorActionPreference = "SilentlyContinue"
 If($target -iNotMatch '(.exe|.ps1|.bat)$')
 {
@@ -102,7 +101,6 @@ If(Test-Path -Path "$FinalName")
 }
 
 try{
-
    $WScriptShell = New-Object -ComObject WScript.Shell
    $Sh = $WScriptShell.CreateShortcut("$FinalName")
    If($target -iMatch '(.ps1)$')
