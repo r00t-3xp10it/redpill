@@ -157,8 +157,9 @@ $FinalName = "$LNKPath"+"\${RawTargetName}.lnk" -Join '' # C:\Users\pedro\AppDat
 ## Make sure LNK to create does not exist already
 If(Test-Path -Path "$FinalName")
 {
-   write-host "   x abort" -ForegroundColor Red -NoNewline
-   write-host " LNK already exists in '" -NoNewline
+   write-host "   ["  -NoNewline
+   write-host "ABORT" -ForegroundColor Red -NoNewline
+   write-host "] LNK already exists in '"  -NoNewline
    write-host "$FinalName" -ForegroundColor Red -NoNewline
    write-host "'`n"
    return
@@ -167,8 +168,9 @@ If(Test-Path -Path "$FinalName")
 ## Make sure working directory exists
 If(-not(Test-Path -Path "$StartIn"))
 {
-   write-host "   x " -ForegroundColor Red -NoNewline
-   write-host " Notfound: '" -NoNewline
+   write-host "   [" -NoNewline
+   write-host "NOTFOUND" -ForegroundColor Red -NoNewline
+   write-host "] '"  -NoNewline
    write-host "$StartIn" -ForegroundColor Red -NoNewline
    write-host "'`n"
    return
@@ -311,8 +313,9 @@ If($Remote.IsPresent)
    ## -LNKPath limitations checks
    If(Test-Path -Path "$FinalName")
    {
-      write-host "   x abort" -ForegroundColor Red -NoNewline
-      write-host " LNK already exists in '" -NoNewline
+      write-host "   ["  -NoNewline
+      write-host "ABORT" -ForegroundColor Red -NoNewline
+      write-host "] LNK already exists in '"  -NoNewline
       write-host "$FinalName" -ForegroundColor Red -NoNewline
       write-host "'`n"
       return
@@ -321,12 +324,13 @@ If($Remote.IsPresent)
    ## -Uri Parameter input limitations checks
    If(($URI -iNotMatch '(.ps1)$') -or ($URI -iNotMatch '(//raw.)'))
    {
-      write-host "   x " -ForegroundColor Red -NoNewline;write-host " Error: " -NoNewline
-      write-host "this function only accepts [" -ForegroundColor Red -NoNewline
-      write-host ".ps1" -ForegroundColor DarkYellow -NoNewline
-      write-host "] or [" -ForegroundColor Red -NoNewline
-      write-host "//raw.github" -ForegroundColor DarkYellow -NoNewline
-      write-host "] formats`n" -ForegroundColor Red
+      write-host "   [" -NoNewline
+      write-host "ERROR" -ForegroundColor Red -NoNewline
+      write-host "] this function only accepts [" -NoNewline
+      write-host ".ps1" -ForegroundColor Red -NoNewline
+      write-host "] or [" -NoNewline
+      write-host "//raw.github" -ForegroundColor Red -NoNewline
+      write-host "] formats`n"
       return
    }
 
@@ -499,8 +503,9 @@ If($Remote.IsPresent)
 
 If($ApplicationToRun -iNotMatch '(.exe|.ps1|.bat)$')
 {
-   write-host "   x " -ForegroundColor Red -NoNewline
-   write-host " Error: -ApplicationToRun only accepts '" -NoNewline
+   write-host "   ["  -NoNewline
+   write-host "ERROR" -ForegroundColor Red -NoNewline
+   write-host "] ApplicationToRun only accepts '"  -NoNewline
    write-host ".exe,.ps1,.bat" -ForegroundColor Red -NoNewline
    write-host "' extensions.`n"
    return
@@ -508,8 +513,9 @@ If($ApplicationToRun -iNotMatch '(.exe|.ps1|.bat)$')
 
 If(-not(Test-Path -Path "$ApplicationToRun"))
 {
-   write-host "   x " -ForegroundColor Red -NoNewline
-   write-host " Notfound: '" -NoNewline
+   write-host "   ["  -NoNewline
+   write-host "NOTFOUND" -ForegroundColor Red -NoNewline
+   write-host "] '"  -NoNewline
    write-host "$ApplicationToRun" -ForegroundColor Red -NoNewline
    write-host "'`n"
    return
@@ -517,8 +523,9 @@ If(-not(Test-Path -Path "$ApplicationToRun"))
 
 If(-not(Test-Path -Path "$LNKPath"))
 {
-   write-host "   x " -ForegroundColor Red -NoNewline
-   write-host " Notfound: '" -NoNewline
+   write-host "   ["  -NoNewline
+   write-host "NOTFOUND" -ForegroundColor Red -NoNewline
+   write-host "] '"  -NoNewline
    write-host "$LNKPath" -ForegroundColor Red -NoNewline
    write-host "'`n"
    return
