@@ -89,6 +89,7 @@
    - ApplicationToRun      : 'C:\WINDOWS\System32\cmd.exe'
 
    - Shortcut WindowStyle  : 'normal'
+   - Shortcut FileName     : 'cmd.lnk'
    - Shortcut LNK SHA      : 'F8013FF7B6363593B3F495580354F4BE3D488B315195588DAB8A4F98D3096F1F'
    - Shortcut Location     : 'C:\Users\pedro\OneDrive\Ambiente de Trabalho\work\cmd.lnk'
    - Shortcut Icon File    : 'C:\Program Files (x86)\ASUS\ASUS Smart Gesture\DesktopManager\resource\WindowStoreApp.ico'
@@ -301,6 +302,7 @@ If($Remote.IsPresent)
 
       - Shortcut WindowStyle  : 'normal'
       - Shortcut Privileges   : 'UserLand'
+      - Shortcut FileName     : 'GetAVStatus.lnk'
       - Shortcut Icon File    : 'C:\Program Files\Microsoft Office 15\ClientX64\IntegratedOffice.exe'
       - Shortcut Location     : 'C:\Users\pedro\OneDrive\Ambiente de Trabalho\work\GetAVStatus.lnk'
    #>
@@ -471,6 +473,11 @@ If($Remote.IsPresent)
    Write-Host "'"
 
    Write-Host "   - " -ForegroundColor Green -NoNewline
+   Write-Host "Shortcut FileName     : '" -NoNewline
+   Write-Host "${RawTargetName}.lnk" -ForegroundColor Green -NoNewline
+   Write-Host "'"
+
+   Write-Host "   - " -ForegroundColor Green -NoNewline
    Write-Host "Shortcut Icon File    : '" -NoNewline
    Write-Host "$global:LNKIcon" -ForegroundColor Green -NoNewline   
    Write-Host "'"
@@ -496,6 +503,7 @@ If($Remote.IsPresent)
    - ApplicationToRun      : 'C:\WINDOWS\System32\cmd.exe'
 
    - Shortcut WindowStyle  : 'normal'
+   - Shortcut FileName     : 'cmd.lnk'
    - Shortcut LNK SHA      : 'F8013FF7B6363593B3F495580354F4BE3D488B315195588DAB8A4F98D3096F1F'
    - Shortcut Location     : 'C:\Users\pedro\OneDrive\Ambiente de Trabalho\work\cmd.lnk'
    - Shortcut Icon File    : 'C:\Program Files (x86)\ASUS\ASUS Smart Gesture\DesktopManager\resource\WindowStoreApp.ico'
@@ -818,6 +826,11 @@ Start-Sleep -Seconds 1
 Write-Host "   - " -ForegroundColor Green -NoNewline
 Write-Host "Shortcut WindowStyle  : '" -NoNewline
 Write-Host "$ShortcutWindowStyle" -ForegroundColor $HiddenColor -NoNewline
+Write-Host "'"
+
+Write-Host "   - " -ForegroundColor Green -NoNewline
+Write-Host "Shortcut FileName     : '" -NoNewline
+Write-Host "${RawTargetName}.lnk" -ForegroundColor Green -NoNewline
 Write-Host "'"
 
 Write-Host "   - " -ForegroundColor Green -NoNewline
