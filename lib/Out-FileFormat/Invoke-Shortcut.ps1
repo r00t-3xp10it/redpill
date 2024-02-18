@@ -474,7 +474,7 @@ If($Remote.IsPresent)
 
    Write-Host "   - " -ForegroundColor Green -NoNewline
    Write-Host "Shortcut FileName     : '" -NoNewline
-   Write-Host "${RawTargetName}.lnk" -ForegroundColor Green -NoNewline
+   Write-Host "${RawFileName}.lnk" -ForegroundColor Green -NoNewline
    Write-Host "'"
 
    Write-Host "   - " -ForegroundColor Green -NoNewline
@@ -783,7 +783,13 @@ If($LolBin.IsPresent)
    $global:LNKIcon = "$Env:WINDIR\system32\notepad.exe"
    $NewCharName = $FinalName -replace '.lnk','.txt.lnk'
    Move-Item -Path "$FinalName" -Destination "$NewCharName" -Force
+
    $FinalName = $NewCharName
+   $ExtenName = "${RawTargetName}.txt.lnk"
+}
+Else
+{
+   $ExtenName = "${RawTargetName}.lnk"
 }
 
 ## Banner
@@ -830,7 +836,7 @@ Write-Host "'"
 
 Write-Host "   - " -ForegroundColor Green -NoNewline
 Write-Host "Shortcut FileName     : '" -NoNewline
-Write-Host "${RawTargetName}.lnk" -ForegroundColor Green -NoNewline
+Write-Host "$ExtenName" -ForegroundColor Green -NoNewline
 Write-Host "'"
 
 Write-Host "   - " -ForegroundColor Green -NoNewline
