@@ -99,10 +99,13 @@ If([string]::IsNullOrEmpty($RecTime))
 ## Download ffmpeg.exe from GitHub?
 If(-not(Test-Path "$WorkingDir\ffmpeg.exe"))
 {
-   $ffmpegUrl = "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/ffmpeg_64.zip";
+
+   $ffmpegUrl = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip";
    iwr -Uri "$ffmpegUrl" -OutFile "$WorkingDir\ffmpeg_64.zip"|Unblock-File
 
    Expand-Archive "$WorkingDir\ffmpeg_64.zip" -DestinationPath "$WorkingDir" -Force
+   Move-Item -Path "$WorkingDir\ffmpeg-master-latest-win64-gpl\bin\ffmpeg.exe" -Destination "$WorkingDir\ffmpeg.exe" -Force
+   Remove-Item -Path "$WorkingDir\ffmpeg-master-latest-win64-gpl" -Force -Recurse
    Remove-Item -Path "$WorkingDir\ffmpeg_64.zip" -Force
 }
 
