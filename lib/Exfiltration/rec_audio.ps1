@@ -140,7 +140,7 @@ If($UnInstall.IsPresent)
    $IsAvailable = (Winget list|findstr /C:"FFmpeg")
    If([string]::IsNullOrEmpty($IsAvailable))
    {
-      write-host "[Ko] Error: program 'FFmpeg' not found in store!`n" -ForegroundColor Red
+      write-host "[Ko] program 'FFmpeg' not found in store [local]`n" -ForegroundColor Red
       cd "$IPath"
       return      
    }
@@ -205,7 +205,8 @@ If($Download -imatch '^(Store)$')
    $CheckLocal = (winget list|findstr /C:"FFmpeg")
    If(-not([string]::IsNullOrEmpty($CheckLocal)))
    {
-      write-host "[Ok] program 'FFmpeg' installed! [local]" -ForegroundColor Red   
+      write-host "[Ok] MStore program 'FFmpeg' installed! [local]" -ForegroundColor Green
+      Start-Sleep -Seconds 1   
    }
    Else
    {
@@ -285,6 +286,8 @@ Else
       If(-not(Test-Path "$WorkingDir\ffmpeg-6.1.1-essentials_build"))
       {
          write-host "[Ko] fail expanding ffmpeg_64.zip archive" -ForegroundColor Red
+         cd "$IPath"
+         return
       }
 
       ## Move ffmpeg.exe from ffmpeg-master-latest-win64-gpl directory to 'cmdlet working directory'
@@ -308,9 +311,9 @@ Else
 ## Add Assemblies
 Add-Type '[Guid("D666063F-1587-4E43-81F1-B948E807363F"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]interface IMMDevice {int a(); int o();int GetId([MarshalAs(UnmanagedType.LPWStr)] out string id);}[Guid("A95664D2-9614-4F35-A746-DE8DB63617E6"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]interface IMMDeviceEnumerator {int f();int GetDefaultAudioEndpoint(int dataFlow, int role, out IMMDevice endpoint);}[ComImport, Guid("BCDE0395-E52F-467C-8E3D-C4579291692E")] class MMDeviceEnumeratorComObject { }public static string GetDefault (int direction) {var enumerator = new MMDeviceEnumeratorComObject() as IMMDeviceEnumerator;IMMDevice dev = null;Marshal.ThrowExceptionForHR(enumerator.GetDefaultAudioEndpoint(direction, 1, out dev));string id = null;Marshal.ThrowExceptionForHR(dev.GetId(out id));return id;}' -name audio -Namespace system;
    
-function GetFriendlyName($id)
+function GetFriendlyName($Audioid)
 {
-   $MMDEVAPI = "HKLM:\SYSTEM\CurrentControlSet\Enum\SWD\MMDEVAPI\$id";
+   $MMDEVAPI = "HKLM:\SYSTEM\CurrentControlSet\Enum\SWD\MMDEVAPI\$Audioid";
    return (Get-ItemProperty $MMDEVAPI).FriendlyName
 }
 
