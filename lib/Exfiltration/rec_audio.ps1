@@ -99,12 +99,11 @@ If([string]::IsNullOrEmpty($RecTime))
 ## Download ffmpeg.exe from GitHub?
 If(-not(Test-Path "$WorkingDir\ffmpeg.exe"))
 {
-   $ffmpegUrl = "https://objects.githubusercontent.com/github-production-release-asset-2e65be/292087234/1580f897-7d95-4290-9a45-f4c2ce28e2eb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20240229%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240229T235134Z&X-Amz-Expires=300&X-Amz-Signature=d03bb56df38e453a955ca3c7fb35321d7bd615cecc94c1f6afd523b01c3b749b&X-Amz-SignedHeaders=host&actor_id=23490060&key_id=0&repo_id=292087234&response-content-disposition=attachment%3B%20filename%3Dffmpeg-master-latest-win64-gpl-shared.zip&response-content-type=application%2Foctet-stream";
-   iwr -Uri "$ffmpegUrl" -OutFile "$WorkingDir\ffmpeg.zip"|Unblock-File
+   $ffmpegUrl = "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/utils/ffmpeg_64.zip";
+   iwr -Uri "$ffmpegUrl" -OutFile "$WorkingDir\ffmpeg_64.zip"|Unblock-File
 
-   Expand-Archive "$WorkingDir\ffmpeg.zip" -DestinationPath "$WorkingDir" -Force
-   Move-Item -Path "$WorkingDir\ffmpeg-master-latest-win64-gpl\bin\ffmpeg.exe" -Destination "$WorkingDir\ffmpeg.exe" -Force
-   Remove-Item -Path "$WorkingDir\ffmpeg-master-latest-win64-gpl" -Force -Recurse
+   Expand-Archive "$WorkingDir\ffmpeg_64.zip" -DestinationPath "$WorkingDir" -Force
+   Remove-Item -Path "$WorkingDir\ffmpeg_64.zip" -Force
 }
 
 ## Make sure we have downloaded ffmpeg.exe
