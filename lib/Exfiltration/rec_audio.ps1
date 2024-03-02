@@ -90,6 +90,7 @@
 
 .LINK
    https://github.com/r00t-3xp10it/redpil
+   https://img.ly/blog/ultimate-guide-to-ffmpeg
    https://learn.microsoft.com/en-us/windows/package-manager/winget
 #>
 
@@ -140,7 +141,7 @@ If($UnInstall.IsPresent)
    $IsAvailable = (Winget list|findstr /C:"FFmpeg")
    If([string]::IsNullOrEmpty($IsAvailable))
    {
-      write-host "[Ko] program 'FFmpeg' not found in store [local]`n" -ForegroundColor Red
+      write-host "[..] program 'FFmpeg' not found in store [local]`n" -ForegroundColor Red
       cd "$IPath"
       return      
    }
@@ -149,7 +150,7 @@ If($UnInstall.IsPresent)
    winget uninstall --name "FFmpeg" --id "Gyan.FFmpeg" --silent --force --purge --disable-interactivity
    If($? -match 'false')
    {
-      write-host "[Ko] Fail: UnInstalling program 'FFmpeg' id 'Gyan.FFmpeg'" -ForegroundColor Red
+      write-host "[..] fail Uninstalling program 'FFmpeg' id 'Gyan.FFmpeg'" -ForegroundColor Red
    }
 
    write-host ""
@@ -205,7 +206,7 @@ If($Download -imatch '^(Store)$')
    $CheckLocal = (winget list|findstr /C:"FFmpeg")
    If(-not([string]::IsNullOrEmpty($CheckLocal)))
    {
-      write-host "[Ok] MStore program 'FFmpeg' installed! [local]" -ForegroundColor Green
+      write-host "[..] MStore program 'FFmpeg' installed! [local]" -ForegroundColor Green
       Start-Sleep -Seconds 1   
    }
    Else
@@ -214,7 +215,7 @@ If($Download -imatch '^(Store)$')
       $IsAvailable = (Winget search --name "FFmpeg" --exact|Select-String -Pattern "Gyan.FFmpeg 6.1.1")
       If([string]::IsNullOrEmpty($IsAvailable))
       {
-         write-host "[Ko] Error: program 'FFmpeg' not found in msstore!`n" -ForegroundColor Red
+         write-host "[..] Error program 'FFmpeg' not found in msstore!`n" -ForegroundColor Red
          cd "$IPath"
          return      
       }
@@ -223,7 +224,7 @@ If($Download -imatch '^(Store)$')
       winget install --name "FFmpeg" --id "Gyan.FFmpeg" --silent --force --accept-package-agreements --accept-source-agreements --disable-interactivity
       If($? -match 'false')
       {
-         write-host "[Ko] fail: installing program 'FFmpeg' id 'Gyan.FFmpeg' from msstore`n" -ForegroundColor Red
+         write-host "[..] fail installing program 'FFmpeg' id 'Gyan.FFmpeg' from msstore`n" -ForegroundColor Red
          cd "$IPath"
          return      
       }
@@ -276,7 +277,7 @@ Else
       curl.exe -L 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip' -o "$WorkingDir\ffmpeg_64.zip"
       If(-not(Test-Path "$WorkingDir\ffmpeg_64.zip"))
       {
-         write-host "[Ko] fail downloading $WorkingDir\ffmpeg_64.zip`n" -ForegroundColor Red
+         write-host "[..] fail downloading $WorkingDir\ffmpeg_64.zip`n" -ForegroundColor Red
          cd "$IPath"
          return
       }
@@ -285,7 +286,7 @@ Else
       Expand-Archive "$WorkingDir\ffmpeg_64.zip" -DestinationPath "$WorkingDir" -force
       If(-not(Test-Path "$WorkingDir\ffmpeg-6.1.1-essentials_build"))
       {
-         write-host "[Ko] fail expanding ffmpeg_64.zip archive" -ForegroundColor Red
+         write-host "[..] fail expanding ffmpeg_64.zip archive`n" -ForegroundColor Red
          cd "$IPath"
          return
       }
@@ -302,7 +303,7 @@ Else
    ## Make sure we have downloaded ffmpeg.exe!
    If(-not(Test-Path "$WorkingDir\ffmpeg.exe"))
    {
-      write-host "[Ko] fail downloading ffmpeg.exe to '$WorkingDir'`n" -ForegroundColor Red
+      write-host "[..] fail downloading ffmpeg.exe to '$WorkingDir'`n" -ForegroundColor Red
       cd "$IPath"
       return
    }
@@ -336,19 +337,19 @@ If($Download -imatch '^(Store)$')
 {
    write-host "[**] " -ForegroundColor Green -NoNewline
    write-host "executing   : " -NoNewline;write-host "ffmpeg program (WinGet Location)" -ForegroundColor Green
-   $SearchForFFmpeg = (GCI -Path "$Env:LOCALAPPDATA\Microsoft\winget\Packages" -Recurse|Select-Object *).FullName|Where-Object{$_ -match '(ffmpeg.exe)$'}
+   $SearchForFFmpeg = (GCI -Path "$Env:LOCALAPPDATA\Microsoft\winget\Packages" -Recurse|Select-Object *).FullName|Where-Object{$_ -match '(ffmpeg.exe)$'}|Select-Object -Last 1
    $FFmpegInstallPath = $SearchForFFmpeg -replace '\\ffmpeg.exe',''
 
    cd "$FFmpegInstallPath"
    ## cd "$Env:LOCALAPPDATA\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-6.1.1-full_build\bin"
-   .\ffmpeg.exe -y -hide_banner -f dshow -i audio="$MicName" -t $RecTime -c:a libmp3lame -ar 44100 -b:a 128k -ac 1 $MP3Path;
+   .\ffmpeg.exe -y -hide_banner -f dshow -i audio="$MicName" -filter_complex "volume=1.1" -t $RecTime -c:a libmp3lame -ar 44100 -b:a 128k -ac 1 $MP3Path;
 }
 Else
 {
    write-host "[**] " -ForegroundColor Green -NoNewline;write-host "executing   : " -NoNewline
    write-host "ffmpeg.exe" -ForegroundColor Green -NoNewline;write-host " from '" -NoNewline
    write-host "$WorkingDir" -ForegroundColor Green -NoNewline;write-host "'"
-   .\ffmpeg.exe -y -hide_banner -f dshow -i audio="$MicName" -t $RecTime -c:a libmp3lame -ar 44100 -b:a 128k -ac 1 $MP3Path;
+   .\ffmpeg.exe -y -hide_banner -f dshow -i audio="$MicName" -filter_complex "volume=1.1" -t $RecTime -c:a libmp3lame -ar 44100 -b:a 128k -ac 1 $MP3Path;
 }
 
 cd "$IPath" ## Return to start directory
