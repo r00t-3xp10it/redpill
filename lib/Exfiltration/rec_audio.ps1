@@ -455,6 +455,11 @@ If(Test-Path -Path "$MP3Path")
    write-host "] MP3file -> '" -NoNewline
    write-host "$MP3Path" -ForegroundColor Red -NoNewline
    write-host "'"
+
+   If($LogFile.IsPresent)
+   {
+      echo "[$global:CurrTime] MP3file     : '$MP3Path'`n" >> "$WorkingDir\ffmpeg.log"
+   }
 }
 
 cd "$IPath" ## Return to start directory
