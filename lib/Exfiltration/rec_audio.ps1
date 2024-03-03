@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-   records mic audio until -rectime <sec> its reached
+   records microphone audio [MP3] until -rectime <sec> its reached
 
    Author: @r00t-3xp10it
    Tested Under: Windows 10 (19044) x64 bits
@@ -26,6 +26,10 @@
    -loglevel 'quiet'   - supresses all stdout displays [ffmpeg]
    -loglevel 'verbose' - display stdout verbose report [ffmpeg]
 
+   [-forceenvpath] switch appends -workingdir 'directory' to USER
+   environement path if invoked together with -download 'GitHub'
+   This allows for ffmpeg alias to be invoked in current shell.
+
 .Parameter workingDir
    Cmdlet working directory (default: $Env:TMP)
 
@@ -41,11 +45,14 @@
 .Parameter Random
    Switch that random generates Mp3 filename
 
-.Parameter AutoDelete
-   Switch that auto-deletes this cmdlet in the end
-
 .Parameter LogLevel
    Set ffmpeg stdout reports level (default: info)
+
+.Parameter ForceEnvPath
+   Switch that imports ffmpeg to USER path [$Env:PATH]
+
+.Parameter AutoDelete
+   Switch that auto-deletes this cmdlet in the end
 
 .Parameter LogFile
    Switch that creates cmdlet execution logfile
@@ -65,6 +72,10 @@
 .EXAMPLE
    PS C:\> .\rec_audio.ps1 -random -download 'GitHub'
    Download ffmpeg from GitHub, random generate MP3 filename
+
+.EXAMPLE
+   PS C:\> .\rec_audio.ps1 -workingdir "$Env:TMP" -forceenvpath
+   Use %TMP% has working dir, Import ffmpeg to USER path [$Env:PATH]
 
 .EXAMPLE
    PS C:\> .\rec_audio.ps1 -uninstall
@@ -116,6 +127,7 @@
    [string]$WorkingDir="$Env:TMP",
    [string]$Download="GitHub",
    [string]$LogLevel="info",
+   [switch]$ForceEnvPath,
    [switch]$AutoDelete,
    [switch]$UnInstall,
    [int]$RecTime='10',
@@ -163,7 +175,7 @@ If($UnInstall.IsPresent)
    <#
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - UnInstall Pacakage ffmpeg from store [local]
+      Helper - UnInstall Pacakage ffmpeg from msstore [local]
 
    .OUTPUTS
       [20:42] 🔌 record native microphone audio 🔌
@@ -228,24 +240,6 @@ If($Download -imatch '^(Store|MStore|WinGet)$')
       O alias da linha de comando foi adicionado: "ffplay"
       O alias da linha de comando foi adicionado: "ffprobe"
       Instalado com êxito
-
-      [20:44] executing   : ffmpeg program (WinGet Location)
-      [aist#0:0/pcm_s16le @ 00000208c4d4a100] Guessed Channel Layout: stereo
-      Input #0, dshow, from 'audio=Microfone (Conexant SmartAudio HD)':
-        Duration: N/A, start: 127348.921000, bitrate: 1411 kb/s
-        Stream #0:0: Audio: pcm_s16le, 44100 Hz, 2 channels, s16, 1411 kb/s
-      Stream mapping:
-        Stream #0:0 -> #0:0 (pcm_s16le (native) -> mp3 (libmp3lame))
-      Press [q] to stop, [?] for help
-      Output #0, mp3, to 'C:\Users\pedro\AppData\Local\Temp\AudioClip.mp3':
-        Metadata:
-          TSSE            : Lavf60.16.100
-        Stream #0:0: Audio: mp3, 44100 Hz, mono, s16p, 128 kb/s
-          Metadata:
-            encoder         : Lavc60.31.102 libmp3lame
-      [out#0/mp3 @ 00000208c4d49300] video:0kB audio:235kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.192239%
-      size=     235kB time=00:00:14.98 bitrate= 128.5kbits/s speed=0.998x
-      [20:45] MP3file -> 'C:\Users\pedro\AppData\Local\Temp\AudioClip.mp3'
    #>
 
    write-host "[$global:CurrTime] searching program 'FFmpeg' [local|remote]" -ForegroundColor Green
@@ -308,24 +302,6 @@ Else
                                        Dload  Upload   Total   Spent    Left  Speed
       100   284  100   284    0     0    252      0  0:00:01  0:00:01 --:--:--   252
       100 83.4M  100 83.4M    0     0   318k      0  0:04:27  0:04:27 --:--:-- 1065k
-
-      [20:46] executing   : ffmpeg.exe from 'C:\Users\pedro\AppData\Local\Temp'
-      [aist#0:0/pcm_s16le @ 0000029872071d40] Guessed Channel Layout: stereo
-      Input #0, dshow, from 'audio=Microfone (Conexant SmartAudio HD)':
-        Duration: N/A, start: 128459.862000, bitrate: 1411 kb/s
-        Stream #0:0: Audio: pcm_s16le, 44100 Hz, 2 channels, s16, 1411 kb/s
-      Stream mapping:
-        Stream #0:0 -> #0:0 (pcm_s16le (native) -> mp3 (libmp3lame))
-      Press [q] to stop, [?] for help
-      Output #0, mp3, to 'C:\Users\pedro\AppData\Local\Temp\AudioClip.mp3':
-        Metadata:
-          TSSE            : Lavf60.16.100
-        Stream #0:0: Audio: mp3, 44100 Hz, mono, s16p, 128 kb/s
-          Metadata:
-            encoder         : Lavc60.31.102 libmp3lame
-      [out#0/mp3 @ 0000029872072d80] video:0kB audio:235kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.192239%
-      size=     235kB time=00:00:14.98 bitrate= 128.6kbits/s speed=0.999x
-      [20:45] MP3file -> 'C:\Users\pedro\AppData\Local\Temp\AudioClip.mp3'
    #>
 
    ## Download ffmpeg.exe from GitHub repository
@@ -415,8 +391,32 @@ Else
    $MP3Path = "$WorkingDir" + "\" + "$mp3Name" -join ''
 }
 
-If($Download -imatch '^(Store)$')
+If($Download -imatch '^(Store|MStore|WinGet)$')
 {
+   <#
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - Execute ffmpeg.exe from WinGet directory [MStore]
+
+   .OUTPUTS
+      [20:44] executing   : ffmpeg program (WinGet Location)
+      [aist#0:0/pcm_s16le @ 0000026dcda68a00] Guessed Channel Layout: stereo
+      Input #0, dshow, from 'audio=Microfone (Conexant SmartAudio HD)':
+        Duration: N/A, start: 39636.041000, bitrate: 1411 kb/s
+        Stream #0:0: Audio: pcm_s16le, 44100 Hz, stereo, s16, 1411 kb/s
+      Stream mapping:
+        Stream #0:0 -> #0:0 (pcm_s16le (native) -> mp3 (libmp3lame))
+      Press [q] to stop, [?] for help
+      Output #0, mp3, to 'C:\Users\pedro\AppData\Local\Temp\AudioClip.mp3':
+        Metadata:
+          TSSE            : Lavf60.22.101
+        Stream #0:0: Audio: mp3, 44100 Hz, mono, s16p, 128 kb/s
+            Metadata:
+              encoder         : Lavc60.40.100 libmp3lame
+      [out#0/mp3 @ 0000026dcdb066c0] video:0KiB audio:78KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: 0.575715%
+      size=      79KiB time=00:00:05.00 bitrate= 129.1kbits/s speed=0.909x 
+   #>
+
    Invoke-CurrentTime
    write-host "[$global:CurrTime] " -ForegroundColor Green -NoNewline
    write-host "executing   : " -NoNewline;write-host "ffmpeg program (WinGet Location)" -ForegroundColor Green
@@ -440,12 +440,76 @@ If($Download -imatch '^(Store)$')
 }
 Else
 {
+   <#
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - Execute ffmpeg.exe from working directory [$Env:TMP]
+
+   .OUTPUTS
+      [20:44] executing   : ffmpeg.exe from 'C:\Users\pedro\AppData\Local\Temp'
+      [aist#0:0/pcm_s16le @ 0000026dcda68a00] Guessed Channel Layout: stereo
+      Input #0, dshow, from 'audio=Microfone (Conexant SmartAudio HD)':
+        Duration: N/A, start: 39636.041000, bitrate: 1411 kb/s
+        Stream #0:0: Audio: pcm_s16le, 44100 Hz, stereo, s16, 1411 kb/s
+      Stream mapping:
+        Stream #0:0 -> #0:0 (pcm_s16le (native) -> mp3 (libmp3lame))
+      Press [q] to stop, [?] for help
+      Output #0, mp3, to 'C:\Users\pedro\AppData\Local\Temp\AudioClip.mp3':
+        Metadata:
+          TSSE            : Lavf60.22.101
+        Stream #0:0: Audio: mp3, 44100 Hz, mono, s16p, 128 kb/s
+            Metadata:
+              encoder         : Lavc60.40.100 libmp3lame
+      [out#0/mp3 @ 0000026dcdb066c0] video:0KiB audio:78KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: 0.575715%
+      size=      79KiB time=00:00:05.00 bitrate= 129.1kbits/s speed=0.909x 
+   #>
+
    Invoke-CurrentTime
    write-host "[$global:CurrTime] " -ForegroundColor Green -NoNewline;write-host "executing   : " -NoNewline
    write-host "ffmpeg.exe" -ForegroundColor Green -NoNewline;write-host " from '" -NoNewline
    write-host "$WorkingDir" -ForegroundColor Green -NoNewline;write-host "'"
    If($LogFile.IsPresent){echo "[$global:CurrTime] executing   : ffmpeg.exe from '$WorkingDir'" >> "$WorkingDir\ffmpeg.log"}
    .\ffmpeg.exe -y -hide_banner -loglevel "$LogLevel" -f dshow -i audio="$MicName" -filter_complex "volume=1.1" -t $RecTime -c:a libmp3lame -ar 44100 -b:a 128k -ac 1 $MP3Path;
+}
+
+If(($ForceEnvPath.IsPresent) -and ($Download -imatch '^(GitHub)$'))
+{
+   <#
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - Import ffmpeg to USER path [$Env:PATH]
+
+   .LINK
+      https://adamtheautomator.com/install-ffmpeg
+      https://www.sharepointdiary.com/2021/05/powershell-set-environment-variable.html
+
+   .OUTPUTS
+      [20:45] ENVPATH -> Prepend FFmpeg folder path to the path variable
+      [20:45] ENVPATH -> Import user PATH variable into current session.
+      [DELETE VARIABLES] Windows+R: 'rundll32.exe sysdm.cpl,EditEnvironmentVariables'
+
+      [20:45] MP3file -> 'C:\Users\pedro\AppData\Local\Temp\AudioClip.mp3'
+   #>
+
+   Invoke-CurrentTime
+   $Filter = "$WorkingDir" -replace '\\','\\'
+   If(-not(([Environment]::GetEnvironmentVariables()).Path -match "$Filter"))
+   {
+      ## Prepend the FFmpeg folder path to the path variable
+      write-host "`n[$global:CurrTime] " -ForegroundColor Green -NoNewline
+      write-host "ENVPATH -> Prepend FFmpeg folder path to the path variable"
+      [Environment]::SetEnvironmentVariable(
+         "PATH","${WorkingDir}\;$([Environment]::GetEnvironmentVariable('PATH','USER'))","USER"
+      )
+
+      ## import the machine's PATH variable into the current session
+      write-host "[$global:CurrTime] " -ForegroundColor Green -NoNewline
+      write-host "ENVPATH -> Import user PATH variable into current session."
+      $Env:PATH = [Environment]::GetEnvironmentVariable("Path","USER")
+
+      ## MANUAL DELETE EnvironmentVariables instructions
+      write-host "[DELETE VARIABLES] Windows+R: 'rundll32.exe sysdm.cpl,EditEnvironmentVariables'" -ForegroundColor DarkYellow
+   }
 }
 
 Invoke-CurrentTime
