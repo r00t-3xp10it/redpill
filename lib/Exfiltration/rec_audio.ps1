@@ -341,30 +341,30 @@ Else
 
       If($LogLevel -imatch '^(quiet)$')
       {
-         curl.exe -L 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip' -o "$WorkingDir\ffmpeg_64.zip" --silent
+         curl.exe -L 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip' -o "$WorkingDir\ffmpeg-release-essentials.zip" --silent
       }
       Else
       {
-         curl.exe -L 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip' -o "$WorkingDir\ffmpeg_64.zip"
+         curl.exe -L 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip' -o "$WorkingDir\ffmpeg-release-essentials.zip"
       }
 
-      If(-not(Test-Path "$WorkingDir\ffmpeg_64.zip"))
+      If(-not(Test-Path "$WorkingDir\ffmpeg-release-essentials.zip"))
       {
          Invoke-CurrentTime
-         write-host "[$global:CurrTime] Error: fail downloading $WorkingDir\ffmpeg_64.zip`n" -ForegroundColor Red
-         If($LogFile.IsPresent){echo "[$global:CurrTime] Error: fail downloading $WorkingDir\ffmpeg_64.zip`n" >> "$WorkingDir\ffmpeg.log"}
+         write-host "[$global:CurrTime] Error: fail downloading $WorkingDir\ffmpeg-release-essentials.zip`n" -ForegroundColor Red
+         If($LogFile.IsPresent){echo "[$global:CurrTime] Error: fail downloading $WorkingDir\ffmpeg-release-essentials.zip`n" >> "$WorkingDir\ffmpeg.log"}
          If($AutoDelete.IsPresent){Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force}
          cd "$IPath"
          return
       }
 
       ## Expand archive in working directory
-      Expand-Archive "$WorkingDir\ffmpeg_64.zip" -DestinationPath "$WorkingDir" -force
+      Expand-Archive "$WorkingDir\ffmpeg-release-essentials.zip" -DestinationPath "$WorkingDir" -force
       If(-not(Test-Path "$WorkingDir\ffmpeg-6.1.1-essentials_build"))
       {
          Invoke-CurrentTime
-         write-host "[$global:CurrTime] Error: fail expanding ffmpeg_64.zip archive`n" -ForegroundColor Red
-         If($LogFile.IsPresent){echo "[$global:CurrTime] Error: fail expanding ffmpeg_64.zip archive`n" >> "$WorkingDir\ffmpeg.log"}
+         write-host "[$global:CurrTime] Error: fail expanding ffmpeg-release-essentials.zip archive`n" -ForegroundColor Red
+         If($LogFile.IsPresent){echo "[$global:CurrTime] Error: fail expanding ffmpeg-release-essentials.zip archive`n" >> "$WorkingDir\ffmpeg.log"}
          If($AutoDelete.IsPresent){Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force}
          cd "$IPath"
          return
@@ -375,7 +375,7 @@ Else
 
       ## CleanUp of files left behind
       Remove-Item -Path "$WorkingDir\ffmpeg-6.1.1-essentials_build" -Force -Recurse
-      Remove-Item -Path "$WorkingDir\ffmpeg_64.zip" -Force
+      Remove-Item -Path "$WorkingDir\ffmpeg-release-essentials.zip" -Force
       write-host ""
    }
 
