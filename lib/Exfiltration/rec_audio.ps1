@@ -311,8 +311,8 @@ Else
       ## Download ffmpeg using curl {faster}
       write-host "[$global:CurrTime] " -ForegroundColor Green -NoNewline
       write-host "downloading : " -NoNewline;write-host "ffmpeg-release-essentials.zip" -ForegroundColor Green
-      If($LogLevel -imatch '^(info|verbose|error|warning|panic)$'){write-host ""}
       If($LogFile.IsPresent){echo "[$global:CurrTime] downloading : ffmpeg-release-essentials.zip" >> "$WorkingDir\ffmpeg.log"}
+      If($LogLevel -imatch '^(info|verbose|error|warning|panic)$'){write-host ""}
 
       If($LogLevel -imatch '^(quiet)$')
       {
@@ -436,7 +436,7 @@ If($Download -imatch '^(Store|MStore|WinGet)$')
 
    cd "$FFmpegInstallPath"
    ## cd "$Env:LOCALAPPDATA\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-6.1.1-full_build\bin"
-   .\ffmpeg.exe -y -hide_banner -loglevel "$LogLevel" -f dshow -i audio="$MicName" -filter_complex "volume=1.1" -t $RecTime -c:a libmp3lame -ar 44100 -b:a 128k -ac 1 $MP3Path;
+   .\ffmpeg.exe -y -hide_banner -loglevel "$LogLevel" -f dshow -i audio="$MicName" -filter_complex "volume=1.5" -t $RecTime -c:a libmp3lame -ar 44100 -b:a 128k -ac 1 $MP3Path;
 }
 Else
 {
@@ -469,7 +469,7 @@ Else
    write-host "ffmpeg.exe" -ForegroundColor Green -NoNewline;write-host " from '" -NoNewline
    write-host "$WorkingDir" -ForegroundColor Green -NoNewline;write-host "'"
    If($LogFile.IsPresent){echo "[$global:CurrTime] executing   : ffmpeg.exe from '$WorkingDir'" >> "$WorkingDir\ffmpeg.log"}
-   .\ffmpeg.exe -y -hide_banner -loglevel "$LogLevel" -f dshow -i audio="$MicName" -filter_complex "volume=1.1" -t $RecTime -c:a libmp3lame -ar 44100 -b:a 128k -ac 1 $MP3Path;
+   .\ffmpeg.exe -y -hide_banner -loglevel "$LogLevel" -f dshow -i audio="$MicName" -filter_complex "volume=1.5" -t $RecTime -c:a libmp3lame -ar 44100 -b:a 128k -ac 1 $MP3Path;
 }
 
 If(($ForceEnvPath.IsPresent) -and ($Download -imatch '^(GitHub)$'))
@@ -507,8 +507,20 @@ If(($ForceEnvPath.IsPresent) -and ($Download -imatch '^(GitHub)$'))
       write-host "ENVPATH -> Import user PATH variable into current session."
       $Env:PATH = [Environment]::GetEnvironmentVariable("Path","USER")
 
+      Invoke-CurrentTime
+      ## MANUAL DELETE Environment Variables instructions
+      write-host "[DELETE VARIABLES] Windows+R: 'rundll32.exe sysdm.cpl,EditEnvironmentVariables'`n" -ForegroundColor DarkYellow
+      If($LogFile.IsPresent){echo "[$global:CurrTime] ENVPATH -> FFmpeg alias added to USER environement path" >> "$WorkingDir\ffmpeg.log"}
+   }
+   Else
+   {
+      ## FFmpeg already present in USER environement path
+      write-host "[" -NoNewline;write-host "$global:CurrTime" -ForegroundColor Red -NoNewline
+      write-host "] ENVPATH -> " -NoNewline;write-host "FFmpeg already present in USER environement path" -ForegroundColor Red
+
       ## MANUAL DELETE EnvironmentVariables instructions
       write-host "[DELETE VARIABLES] Windows+R: 'rundll32.exe sysdm.cpl,EditEnvironmentVariables'" -ForegroundColor DarkYellow
+     If($LogFile.IsPresent){echo "[$global:CurrTime] ENVPATH -> FFmpeg already present in USER environement path" >> "$WorkingDir\ffmpeg.log"}
    }
 }
 
