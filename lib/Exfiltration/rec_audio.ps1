@@ -204,7 +204,7 @@ If($UnInstall.IsPresent)
    return
 }
 
-If($Download -imatch '^(Store)$')
+If($Download -imatch '^(Store|MStore|WinGet)$')
 {
    <#
    .SYNOPSIS
@@ -248,14 +248,10 @@ If($Download -imatch '^(Store)$')
       [20:45] MP3file -> 'C:\Users\pedro\AppData\Local\Temp\AudioClip.mp3'
    #>
 
-   Invoke-CurrentTime
-   ## Make sure Pacakage its not already intalled
    write-host "[$global:CurrTime] searching program 'FFmpeg' [local|remote]" -ForegroundColor Green
-   If($LogFile.IsPresent)
-   {
-      echo "[$global:CurrTime] searching program 'FFmpeg' [local|remote]" >> "$WorkingDir\ffmpeg.log"
-   }
+   If($LogFile.IsPresent){echo "[$global:CurrTime] searching program 'FFmpeg' [local|remote]" >> "$WorkingDir\ffmpeg.log"}
 
+   ## Make sure Pacakage its not already intalled
    $CheckLocal = (winget list|findstr /C:"FFmpeg")
    If(-not([string]::IsNullOrEmpty($CheckLocal)))
    {
@@ -290,6 +286,7 @@ If($Download -imatch '^(Store)$')
          cd "$IPath"
          return      
       }
+
       If($LogLevel -imatch '^(info|verbose|error|warning|panic)$'){write-host ""}
    }
 }
@@ -360,8 +357,10 @@ Else
          return
       }
 
+      Invoke-CurrentTime
       ## Expand archive in working directory
       Expand-Archive "$WorkingDir\ffmpeg-release-essentials.zip" -DestinationPath "$WorkingDir" -force
+      If($LogFile.IsPresent){echo "[$global:CurrTime] Expand-Zip  : '$WorkingDir\ffmpeg-release-essentials.zip'" >> "$WorkingDir\ffmpeg.log"}
       If(-not(Test-Path "$WorkingDir\ffmpeg-6.1.1-essentials_build"))
       {
          Invoke-CurrentTime
@@ -449,9 +448,10 @@ Else
    .\ffmpeg.exe -y -hide_banner -loglevel "$LogLevel" -f dshow -i audio="$MicName" -filter_complex "volume=1.1" -t $RecTime -c:a libmp3lame -ar 44100 -b:a 128k -ac 1 $MP3Path;
 }
 
+Invoke-CurrentTime
+## Make sure we have .MP3 file
 If(Test-Path -Path "$MP3Path")
 {
-   Invoke-CurrentTime
    write-host "[" -NoNewline
    write-host "$global:CurrTime" -ForegroundColor Red -NoNewline
    write-host "] MP3file --> '" -NoNewline
@@ -461,6 +461,13 @@ If(Test-Path -Path "$MP3Path")
    If($LogFile.IsPresent)
    {
       echo "[$global:CurrTime] MP3file     : '$MP3Path'`n" >> "$WorkingDir\ffmpeg.log"
+   }
+}
+Else
+{
+   If($LogFile.IsPresent)
+   {
+      echo "[$global:CurrTime] Error: fail to create '$MP3Path'`n" >> "$WorkingDir\ffmpeg.log"
    }
 }
 
