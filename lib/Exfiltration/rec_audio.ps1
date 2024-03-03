@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: ffmpeg.exe {auto-download}
    Optional Dependencies: Curl, WinGet {native}
-   PS cmdlet Dev version: v1.1.8
+   PS cmdlet Dev version: v1.2.8
 
 .DESCRIPTION
    Auxiliary Module of meterpeter v2.10.14.1 that records native
@@ -124,7 +124,7 @@
 )
 
 
-$cmdletver = "v1.1.8"
+$cmdletver = "v1.2.8"
 $IPath = (Get-Location).Path.ToString()
 $ErrorActionPreference = "SilentlyContinue"
 ## Disable Powershell Command Logging for current session.
@@ -260,7 +260,8 @@ If($Download -imatch '^(Store)$')
    If(-not([string]::IsNullOrEmpty($CheckLocal)))
    {
       Invoke-CurrentTime
-      write-host "[$global:CurrTime] MStore program 'FFmpeg' installed! [local]" -ForegroundColor Green
+      write-host "[" -NoNewline;write-host "$global:CurrTime" -ForegroundColor Red -NoNewline;
+      write-host "] " -NoNewline;write-host "MStore program 'FFmpeg' installed [local]" -ForegroundColor Red
       If($LogFile.IsPresent){echo "[$global:CurrTime] MStore program 'FFmpeg' installed! [local]" >> "$WorkingDir\ffmpeg.log"}
       Start-Sleep -Seconds 1   
    }
@@ -289,7 +290,7 @@ If($Download -imatch '^(Store)$')
          cd "$IPath"
          return      
       }
-      write-host ""
+      If($LogLevel -imatch '^(info|verbose|error|warning|panic)$'){write-host ""}
    }
 }
 Else
@@ -336,7 +337,8 @@ Else
       Invoke-CurrentTime
       ## Download ffmpeg using curl {faster}
       write-host "[$global:CurrTime] " -ForegroundColor Green -NoNewline
-      write-host "downloading : " -NoNewline;write-host "ffmpeg-release-essentials.zip`n" -ForegroundColor Green
+      write-host "downloading : " -NoNewline;write-host "ffmpeg-release-essentials.zip" -ForegroundColor Green
+      If($LogLevel -imatch '^(info|verbose|error|warning|panic)$'){write-host ""}
       If($LogFile.IsPresent){echo "[$global:CurrTime] downloading : ffmpeg-release-essentials.zip" >> "$WorkingDir\ffmpeg.log"}
 
       If($LogLevel -imatch '^(quiet)$')
@@ -376,7 +378,7 @@ Else
       ## CleanUp of files left behind
       Remove-Item -Path "$WorkingDir\ffmpeg-6.1.1-essentials_build" -Force -Recurse
       Remove-Item -Path "$WorkingDir\ffmpeg-release-essentials.zip" -Force
-      write-host ""
+      If($LogLevel -imatch '^(info|verbose|error|warning|panic)$'){write-host ""}
    }
 
    ## Make sure we have downloaded ffmpeg.exe!
@@ -452,7 +454,7 @@ If(Test-Path -Path "$MP3Path")
    Invoke-CurrentTime
    write-host "[" -NoNewline
    write-host "$global:CurrTime" -ForegroundColor Red -NoNewline
-   write-host "] MP3file -> '" -NoNewline
+   write-host "] MP3file --> '" -NoNewline
    write-host "$MP3Path" -ForegroundColor Red -NoNewline
    write-host "'"
 
