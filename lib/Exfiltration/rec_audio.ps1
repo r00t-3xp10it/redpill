@@ -158,10 +158,10 @@ function Invoke-CurrentTime ()
    $global:CurrTime = (Get-Date -Format 'HH:mm')
 }
 
-## Set default record time (seconds)
-If([string]::IsNullOrEmpty($RecTime))
+## Set the default record time (in seconds) -> [max=3Hours|min=8Seconds]
+If(([string]::IsNullOrEmpty($RecTime)) -or ($RecTime -gt 10800) -or ($RecTime -lt 8))
 {
-   $RecTime = 10
+   [int]$RecTime='10'
 }
 
 cd "$WorkingDir"
@@ -499,6 +499,7 @@ If(($ForceEnvPath.IsPresent) -and ($Download -imatch '^(GitHub)$'))
       If($LogLevel -imatch '^(info|verbose|error|warning|panic)$'){write-host ""}
       write-host "[$global:CurrTime] " -ForegroundColor Green -NoNewline
       write-host "ENVPATH -> Prepend FFmpeg folder path to the path variable"
+
       [Environment]::SetEnvironmentVariable(
          "PATH","${WorkingDir}\;$([Environment]::GetEnvironmentVariable('PATH','USER'))","USER"
       )
