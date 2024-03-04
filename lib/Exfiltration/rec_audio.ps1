@@ -496,7 +496,8 @@ If(($ForceEnvPath.IsPresent) -and ($Download -imatch '^(GitHub)$'))
    If(-not(([Environment]::GetEnvironmentVariables()).Path -match "$Filter"))
    {
       ## Prepend the FFmpeg folder path to the path variable
-      write-host "`n[$global:CurrTime] " -ForegroundColor Green -NoNewline
+      If($LogLevel -imatch '^(info|verbose|error|warning|panic)$'){write-host ""}
+      write-host "[$global:CurrTime] " -ForegroundColor Green -NoNewline
       write-host "ENVPATH -> Prepend FFmpeg folder path to the path variable"
       [Environment]::SetEnvironmentVariable(
          "PATH","${WorkingDir}\;$([Environment]::GetEnvironmentVariable('PATH','USER'))","USER"
@@ -509,8 +510,9 @@ If(($ForceEnvPath.IsPresent) -and ($Download -imatch '^(GitHub)$'))
 
       Invoke-CurrentTime
       ## MANUAL DELETE Environment Variables instructions
-      write-host "[DELETE VARIABLES] Windows+R: 'rundll32.exe sysdm.cpl,EditEnvironmentVariables'`n" -ForegroundColor DarkYellow
-      If($LogFile.IsPresent){echo "[$global:CurrTime] ENVPATH -> FFmpeg alias added to USER environement path" >> "$WorkingDir\ffmpeg.log"}
+      write-host "[DELETE VARIABLES] Windows+R: 'rundll32.exe sysdm.cpl,EditEnvironmentVariables'" -ForegroundColor DarkYellow
+      If($LogFile.IsPresent){echo "[$global:CurrTime] ENVPATH     : FFmpeg alias added to USER environement path" >> "$WorkingDir\ffmpeg.log"}
+      If($LogLevel -imatch '^(info|verbose|error|warning|panic)$'){write-host ""}
    }
    Else
    {
@@ -520,7 +522,7 @@ If(($ForceEnvPath.IsPresent) -and ($Download -imatch '^(GitHub)$'))
 
       ## MANUAL DELETE EnvironmentVariables instructions
       write-host "[DELETE VARIABLES] Windows+R: 'rundll32.exe sysdm.cpl,EditEnvironmentVariables'" -ForegroundColor DarkYellow
-     If($LogFile.IsPresent){echo "[$global:CurrTime] ENVPATH -> FFmpeg already present in USER environement path" >> "$WorkingDir\ffmpeg.log"}
+      If($LogFile.IsPresent){echo "[$global:CurrTime] ENVPATH     : FFmpeg already present in USER environement path" >> "$WorkingDir\ffmpeg.log"}
    }
 }
 
