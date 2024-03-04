@@ -342,9 +342,12 @@ If(($UnInstall.IsPresent) -and ($Installer -match '^(Store|Mtore|WinGet)$'))
    If([string]::IsNullOrEmpty($IsAvailable))
    {
       Invoke-CurrentTime
-      write-host "[ABORT] 'FFmpeg' not found in msstore [LOCAL]`n" -ForegroundColor Red
+      write-host "[ABORT] 'FFmpeg' not found in msstore [LOCAL]`n`n" -ForegroundColor Red
+      winget list
+
       If($LogFile.IsPresent){echo "[$global:CurrTime] Abort: FFmpeg not found in msstore [local]" >> "$WorkingDir\ffmpeg.log"}
       If($AutoDelete.IsPresent){Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force}
+      write-host ""
       cd "$IPath"
       return      
    }
