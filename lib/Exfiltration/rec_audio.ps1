@@ -215,8 +215,7 @@ If($Schedule -match '^(\d{2}:\d{2})$')
    write-host "Schedule rec_audio exec to '$Schedule' [daily]"
 
    ## Make sure TaskName to create does not exist already
-   $RetrieveTask = (Get-ScheduledTask -TaskName "RecordMicrophoneAudio" -EA SilentlyContinue).State
-   If($RetrieveTask -match '^(Ready)$')
+   If((Get-ScheduledTask -TaskName "RecordMicrophoneAudio" -EA SilentlyContinue).State -match '^(Ready)$')
    {
       write-host "[ABORT] " -ForegroundColor Red -NoNewline;write-host "TaskName: '" -NoNewline
       write-host "RecordMicrophoneAudio" -ForegroundColor Red -NoNewline;write-host "' already exists"
@@ -261,17 +260,15 @@ If($Schedule -match '^(\d{2}:\d{2})$')
 
    Invoke-CurrentTime
    ## Make sure task was successfuly created
-   $RetrieveTask = (Get-ScheduledTask -TaskName "RecordMicrophoneAudio" -EA SilentlyContinue).State
-   If(-not($RetrieveTask -match '^(Ready)$'))
+   If(-not((Get-ScheduledTask -TaskName "RecordMicrophoneAudio" -EA SilentlyContinue).State -match '^(Ready)$'))
    {
       write-host "[$global:CurrTime] Error: fail to create schedule task!"
       If($LogFile.IsPresent){echo "[$global:CurrTime] Error: fail to create schedule task!" >> "$WorkingDir\ffmpeg.log"}         
    }
    Else
    {
-      $DisplayTask = (schtasks /Query /tn "RecordMicrophoneAudio") -replace 'Folder: \\',''
       If($LogFile.IsPresent){echo "[$global:CurrTime] Task Schedule to '$Schedule'" >> "$WorkingDir\ffmpeg.log"}
-      echo $DisplayTask
+      (schtasks /Query /tn "RecordMicrophoneAudio") -replace 'Folder: \\',''
    }
 
    write-host ""
@@ -293,8 +290,7 @@ If(($UnInstall.IsPresent) -and ($Schedule -match '^(UnInstall)$'))
    #>
 
    ## Make sure taskname to delete exists
-   $RetrieveTask = (Get-ScheduledTask -TaskName "RecordMicrophoneAudio" -EA SilentlyContinue).State
-   If(-not($RetrieveTask -match '^(Ready)$'))
+   If(-not((Get-ScheduledTask -TaskName "RecordMicrophoneAudio" -EA SilentlyContinue).State -match '^(Ready)$'))
    {
       write-host "[ABORT] " -ForegroundColor Red -NoNewline;write-host "Taskname '" -NoNewline
       write-host "RecordMicrophoneAudio" -ForegroundColor Red -NoNewline;write-host "' does not exist`n"
