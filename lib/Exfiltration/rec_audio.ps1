@@ -290,7 +290,7 @@ If(($UnInstall.IsPresent) -and ($Schedule -match '^(UnInstall)$'))
    #>
 
    ## Make sure taskname to delete exists
-   If(-not((Get-ScheduledTask -TaskName "RecordMicrophoneAudio" -EA SilentlyContinue).State -match '^(Ready)$'))
+   If((Get-ScheduledTask "RecordMicrophoneAudio" -EA SilentlyContinue).TaskName -ieq $null)
    {
       write-host "[ABORT] " -ForegroundColor Red -NoNewline;write-host "Taskname '" -NoNewline
       write-host "RecordMicrophoneAudio" -ForegroundColor Red -NoNewline;write-host "' does not exist`n"
