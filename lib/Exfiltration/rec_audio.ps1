@@ -215,7 +215,7 @@ If($Schedule -match '^(\d{2}:\d{2})$')
    write-host "Schedule rec_audio exec to '$Schedule' [daily]"
 
    ## Make sure TaskName to create does not exist already
-   If((Get-ScheduledTask -TaskName "RecordMicrophoneAudio" -EA SilentlyContinue).State -match '^(Ready)$')
+   If(-not((Get-ScheduledTask -TaskName "RecordMicrophoneAudio").TaskName -ieq $null))
    {
       write-host "[ABORT] " -ForegroundColor Red -NoNewline;write-host "TaskName: '" -NoNewline
       write-host "RecordMicrophoneAudio" -ForegroundColor Red -NoNewline;write-host "' already exists"
@@ -260,7 +260,7 @@ If($Schedule -match '^(\d{2}:\d{2})$')
 
    Invoke-CurrentTime
    ## Make sure task was successfuly created
-   If(-not((Get-ScheduledTask -TaskName "RecordMicrophoneAudio" -EA SilentlyContinue).State -match '^(Ready)$'))
+   If(-not((Get-ScheduledTask -TaskName "RecordMicrophoneAudio").State -match '^(Ready)$'))
    {
       write-host "[$global:CurrTime] Error: fail to create schedule task!"
       If($LogFile.IsPresent){echo "[$global:CurrTime] Error: fail to create schedule task!" >> "$WorkingDir\ffmpeg.log"}         
