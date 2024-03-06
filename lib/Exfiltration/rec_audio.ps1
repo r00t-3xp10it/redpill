@@ -215,14 +215,14 @@ If($Schedule -match '^(\d{2}:\d{2})$')
    write-host "Schedule rec_audio exec to '$Schedule' [daily]"
 
    ## Make sure TaskName to create does not exist already
-   Start-Process -WindowStyle Hidden powershell -ArgumentList "schtasks /query /Tn `"RecordMicrophoneAudio`" > MakeSure.log" -Wait
-   $RetrieveTask = (Get-Content -Path "MakeSure.log" -Raw)
-   Remove-Item -Path "MakeSure.log" -Force
-
-   If(-not([string]::IsNullOrEmpty($RetrieveTask)))
+   $RetrieveTask = (Get-ScheduledTask -TaskName "RecordMicrophoneAudio" -EA SilentlyContinue).State
+   If($RetrieveTask -match '^(Ready)$')
    {
       write-host "[ABORT] " -ForegroundColor Red -NoNewline;write-host "TaskName: '" -NoNewline
       write-host "RecordMicrophoneAudio" -ForegroundColor Red -NoNewline;write-host "' already exists"
+
+      ## Display existing taskname settings
+      (schtasks /query /tn "RecordMicrophoneAudio") -replace 'Folder: \\',''
 
       If($LogFile.IsPresent)
       {
@@ -236,9 +236,9 @@ If($Schedule -match '^(\d{2}:\d{2})$')
       return
    }
 
+   Invoke-CurrentTime
    If($LogFile.IsPresent)
    {
-      Invoke-CurrentTime
       echo "[$global:CurrTime] Schedule rec_audio exec to '$Schedule' [daily]" >> "$WorkingDir\ffmpeg.log"
    }
 
@@ -260,12 +260,9 @@ If($Schedule -match '^(\d{2}:\d{2})$')
    SCHTASKS /CREATE /SC DAILY /TN "RecordMicrophoneAudio" /TR "powershell -windowstyle hidden -file $WorkingDir\rec_audio.ps1 -workingdir $WorkingDir -rectime $rectime -logfile" /ST "$Schedule"|Out-Null
 
    Invoke-CurrentTime
-   Start-Process -WindowStyle Hidden powershell -ArgumentList "schtasks /query /Tn `"RecordMicrophoneAudio`" > MakeSure.log" -Wait
-   $RetrieveTask = (Get-Content -Path "MakeSure.log" -Raw)
-   Remove-Item -Path "MakeSure.log" -Force
-
    ## Make sure task was successfuly created
-   If([string]::IsNullOrEmpty($RetrieveTask))
+   $RetrieveTask = (Get-ScheduledTask -TaskName "RecordMicrophoneAudio" -EA SilentlyContinue).State
+   If(-not($RetrieveTask -match '^(Ready)$'))
    {
       write-host "[$global:CurrTime] Error: fail to create schedule task!"
       If($LogFile.IsPresent){echo "[$global:CurrTime] Error: fail to create schedule task!" >> "$WorkingDir\ffmpeg.log"}         
@@ -295,7 +292,22 @@ If(($UnInstall.IsPresent) -and ($Schedule -match '^(UnInstall)$'))
       SUCCESS: The scheduled task "RecordMicrophoneAudio" was successfully deleted.
    #>
 
-   SCHTASKS /DELETE /TN "RecordMicrophoneAudio"
+   ## Make sure taskname to delete exists
+   $RetrieveTask = (Get-ScheduledTask -TaskName "RecordMicrophoneAudio" -EA SilentlyContinue).State
+   If(-not($RetrieveTask -match '^(Ready)$'))
+   {
+      write-host "[ABORT] " -ForegroundColor Red -NoNewline;write-host "Taskname '" -NoNewline
+      write-host "RecordMicrophoneAudio" -ForegroundColor Red -NoNewline;write-host "' does not exist`n"
+
+      Start-Sleep -Milliseconds 1400
+      Get-ScheduledTask|Where-Object{$_.State -notmatch 'Disabled' -and $_.TaskPath -notmatch '^(\\)$'}
+   }
+   Else
+   {
+      ## Delete existing taskname
+      SCHTASKS /DELETE /TN "RecordMicrophoneAudio"
+   }
+
    write-host ""
    cd "$IPath"
    return
