@@ -301,7 +301,7 @@ If(($UnInstall.IsPresent) -and ($Schedule -match '^(UnInstall)$'))
    Else
    {
       ## Delete existing taskname
-      SCHTASKS /DELETE /TN "RecordMicrophoneAudio"
+      SCHTASKS /DELETE /TN "RecordMicrophoneAudio" /f
    }
 
    write-host ""
