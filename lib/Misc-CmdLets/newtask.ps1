@@ -1,0 +1,1 @@
+﻿Get-ScheduledTask|% {$r=($_.Actions|Select-Object Execute,Arguments|FT -HideTableHeaders|Out-String -Width 4096).Trim();If($r.length -gt 0){write-host "TaskName: " -NoNewline;write-host "$($_.TaskName)" -ForegroundColor Green;write-host "TaskPath: $($_.TaskPath)";write-host "Command : " -NoNewline;write-host "$($r)" -ForegroundColor Red;echo ''}}
