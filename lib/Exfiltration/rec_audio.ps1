@@ -142,10 +142,10 @@
    [string]$Installer="GitHub",
    [string]$LogLevel="info",
    [string]$Schedule="off",
+   [string]$Volume="1.4",
    [switch]$ForceEnvPath,
    [switch]$AutoDelete,
    [switch]$UnInstall,
-   [int]$Volume='1.4',
    [int]$RecTime='10',
    [switch]$LogFile,
    [switch]$Random
