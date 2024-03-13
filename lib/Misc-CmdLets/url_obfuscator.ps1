@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: [Convert]::ToString()
    Optional Dependencies: Invoke-WebRequest
-   PS cmdlet Dev version: v1.0.6
+   PS cmdlet Dev version: v1.0.7
 
 .DESCRIPTION
    Ip address URL obfuscator converts any decimal ip address
@@ -126,7 +126,7 @@
 )
 
 
-$cmdletver = "v1.0.6"
+$cmdletver = "v1.0.7"
 $ErrorActionPreference = "SilentlyContinue"
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
@@ -408,12 +408,14 @@ If($specialchars.IsPresent)
       http:/\/\gmail%2Elegit%2Ecom@0300%2E0250%2E0001%2E0102:8080/
    #>
 
-   ## Append extra obfucation to URL
+
    If($Domain -match '(www\.)')
    {
+      ## Append extra obfucation to Domain name
       $FinalUrl = $FinalUrl -replace 'www\.','%77%77%77%2E'
    }
 
+   ## Append extra obfucation to URL
    $FinalUrl = $FinalUrl -replace '/','/\'
    $FinalUrl = $FinalUrl -replace '\.','%2E'
     
@@ -425,6 +427,15 @@ If($specialchars.IsPresent)
       $Path = $Path -replace '\?','%3F'  ## ?
       $Path = $Path -replace '=','%3D'   ## =
       $Path = $Path -replace '&','%26'   ## &
+
+      $Path = $Path -replace 'a','%61'   ## a   Original: index.html?q=public_html&shit#Page 1
+      $Path = $Path -replace 'i','%69'   ## i   Obfuscat: %69ndex%2Eh%74ml%3Fq%3Dpubl%69c%5fh%74ml%26sh%69%74%23P%61%67e%201
+      $Path = $Path -replace 'o','%6f'   ## o
+      $Path = $Path -replace 'u','%75'   ## u
+      $Path = $Path -replace 't','%74'   ## t
+      $Path = $Path -replace 'g','%67'   ## g
+      $Path = $Path -replace '_','%5f'   ## _
+
       $Path = $Path -replace '#','%23'   ## cardinal
       $Path = $Path -replace ' ','%20'   ## empty pace
    }
