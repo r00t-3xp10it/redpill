@@ -380,6 +380,7 @@ If($specialchars.IsPresent)
       %3a = : | %2f = / | %3D = = | %3F = ?
       %20 = empty space | %3E = > | %3C = <
       %26 = & | %25 = % | %23 = # | %40 = @
+      %77 = w
 
       DOUBLE OBFUSCATION?
       % = %25 (replace % by %25+hex without %)
@@ -408,6 +409,11 @@ If($specialchars.IsPresent)
    #>
 
    ## Append extra obfucation to URL
+   If($Domain -match '(www\.)')
+   {
+      $FinalUrl = $FinalUrl -replace 'www\.','%77%77%77%2E'
+   }
+
    $FinalUrl = $FinalUrl -replace '/','/\'
    $FinalUrl = $FinalUrl -replace '\.','%2E'
     
