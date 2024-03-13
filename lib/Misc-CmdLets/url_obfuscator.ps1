@@ -337,11 +337,24 @@ If($Port -imatch '^(off)$')
    }
    Else
    {
+      If($scheme -imatch '^(off)$')
+      {
+         write-host "`n Error: -domain requires -scheme parameter`n" -ForegroundColor Red
+         return
+      }
+
       $FinalUrl = "${scheme}${Domain}@${1}.${2}.${3}.${4}"
    }
 }
 Else
 {
+
+   If($scheme -imatch '^(off)$')
+   {
+      write-host "`n Error: -port requires -scheme parameter`n" -ForegroundColor Red
+      return
+   }
+
    If($Domain -imatch '^(off)$')
    {
       $FinalUrl = "${scheme}${1}.${2}.${3}.${4}:${Port}"   
