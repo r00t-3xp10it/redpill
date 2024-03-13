@@ -3,32 +3,33 @@
    Ip address URL obfuscator [MITRE T1566.002]
 
    Author: r00t-3xp10it
+   Credits: Nick Simonian [@ schema abuse]
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: [Convert]::ToString()
    Optional Dependencies: Invoke-WebRequest
-   PS cmdlet Dev version: v1.0.4
+   PS cmdlet Dev version: v1.0.5
 
 .DESCRIPTION
-   Ip address URL obfuscater converts any decimal ip address
-   to [octal|hexadecimal] format and appends an extra layer of
-   obfucation to python http.server URL link (-specialchars)
+   Ip address URL obfuscator converts any decimal ip address
+   to [octal|hexadecimal] format and appends an extra layer
+   of obfucation to python http.server URI [-specialchars]
 
 .NOTES
-   Parameter -exec requires python http.server server port
-   and python http.server install to be abble to execute URL
+   Parameter -exec requires python http.server installed
+   and http.server port number to be abble to execute URL
 
-   Parameter -specialchars converts special chars representation
+   Parameter -specialchars converts special chars representations
    in URL to an '%hexadecimal' format to append extra obfuscation.
    example: http:/\/\0300%2E0250%2E0001%2E0102:8080/
 
-   Parameter -domain invokes 'URL Schema Obfuscation'. Anything before
-   the "@" sign its discarded [sends request to the server after @ sign]
+   Parameter -domain invokes 'URL schema abuse technic' anything before
+   the "@" sign its discarded. [everything after "@" sign its executed]
    
 .Parameter scheme
    The URL link scheme (example: http://)
 
 .Parameter Domain
-   The legit domain name (example: Gmail.com)
+   The missdirection domain (example: Gmail.com)
 
 .Parameter ip
    The python http.server ip (example: 192.168.1.66)
@@ -37,30 +38,30 @@
    The python http.server server port (default: 8080)
 
 .Parameter Convertion
-   Convert decimal to Octal|Hexadecimal (default: Octal)
-
-.Parameter Logfile
-   Switch that writes obfuscated url to logfile
-
-.Parameter Exec
-   Switch that executes obfuscted url string
+   Convert decimal chars to octal|hexadecimal (default: octal)
 
 .Parameter specialchars
-   Switch that appends extra level of obfuscation
+   Switch that appends extra level of obfuscation to URL link
 
 .Parameter Path
-   Accepts URL path with parameters (example: index.html?q=public&) 
+   Accepts URL path with parameters (eg: index.html?q=public&shit#)
+
+.Parameter Exec
+   Switch that executes the obfuscted url string [http.server]
+
+.Parameter Logfile
+   Switch that writes the obfuscated url into URL_obfuscated.log
 
 .EXAMPLE
-   PS C:\> .\url_obfuscator.ps1 -convertion 'octal'
+   PS C:\> .\url_obfuscator.ps1 -convertion 'octal' -port 'off'
    URL: http://0300.0250.0001.0102/
 
 .EXAMPLE
-   PS C:\> .\url_obfuscator.ps1 -convertion 'hexadecimal'
+   PS C:\> .\url_obfuscator.ps1 -convertion 'hexadecimal' -port 'off'
    URL: http://0xc0.0xa8.0x1.0x42/
 
 .EXAMPLE
-   PS C:\> .\url_obfuscator.ps1 -scheme 'https://' -ip '192.168.13.1'
+   PS C:\> .\url_obfuscator.ps1 -scheme 'https://' -ip '192.168.13.1' -port 'off'
    URL: https://0300.0250.0015.0001/
 
 .EXAMPLE
@@ -68,12 +69,16 @@
    URL: https://Gmail.com@0300.0250.0001.0102:8089/
 
 .EXAMPLE
-   PS C:\> .\url_obfuscator.ps1 -domain 'Gmail.Legit.com' -port '8089' -specialchars
-   URL: http:\/\/Gmail%2ELegit%2Ecom@0300%2E0250%2E0001%2E0102:8089/
+   PS C:\> .\url_obfuscator.ps1 -domain 'gmail.Legit.com' -port '8089' -specialchars
+   URL: http:\/\/gmail%2ELegit%2Ecom@0300%2E0250%2E0001%2E0102:8089/
+
+.EXAMPLE
+   PS C:\> .\url_obfuscator.ps1 -port '8089' -path 'index.html?q=public_html&shit#Page 1' -specialchars
+   URL: http:\/\/0300%2E0250%2E0001%2E0102:8089/index%2Ehtml%3Fq%3Dpublic_html%26shit%23Page%201
 
 .EXAMPLE
    PS C:\> .\url_obfuscator.ps1 -logfile
-   Writes the obfuscated url into logfile
+   Output the obfuscated url into logfile
 
 .INPUTS
    None. You cannot pipe objects into url_obfuscator.ps1
@@ -121,7 +126,7 @@
 )
 
 
-$cmdletver = "v1.0.4"
+$cmdletver = "v1.0.5"
 $ErrorActionPreference = "SilentlyContinue"
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
@@ -354,7 +359,7 @@ If($specialchars.IsPresent)
 
       %3a = : | %2f = / | %3D = = | %3F = ?
       %20 = empty space | %3E = > | %3C = <
-      %26 = & | %25 = %
+      %26 = & | %25 = % | %23 = # | %40 = @
 
       DOUBLE OBFUSCATION?
       % = %25 (replace % by %25+hex without %)
@@ -389,12 +394,13 @@ If($specialchars.IsPresent)
    If(-not([string]::IsNullOrEmpty($Path)) -and ($Path -notmatch '^(off)$'))
    {
       ## Append extra obfucation to PATH
-      $Path = $Path -replace '/','/\'
-      $Path = $Path -replace '\.','%2E'
-      $Path = $Path -replace '\?','%3F'
-      $Path = $Path -replace '=','%3D'
-      $Path = $Path -replace '&','%26'
-      $Path = $Path -replace ' ','%20'
+      $Path = $Path -replace '/','/\'    ## /
+      $Path = $Path -replace '\.','%2E'  ## .
+      $Path = $Path -replace '\?','%3F'  ## ?
+      $Path = $Path -replace '=','%3D'   ## =
+      $Path = $Path -replace '&','%26'   ## &
+      $Path = $Path -replace '#','%23'   ## cardinal
+      $Path = $Path -replace ' ','%20'   ## empty pace
    }
 }
 
