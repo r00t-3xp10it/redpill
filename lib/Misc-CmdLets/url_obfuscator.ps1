@@ -326,7 +326,14 @@ If($Port -imatch '^(off)$')
 {
    If($Domain -imatch '^(off)$')
    {
-      $FinalUrl = "${scheme}${1}.${2}.${3}.${4}"   
+      If($scheme -imatch '^(off)$')
+      {
+         $FinalUrl = "${1}.${2}.${3}.${4}"      
+      }
+      Else
+      {
+         $FinalUrl = "${scheme}${1}.${2}.${3}.${4}"
+      }
    }
    Else
    {
@@ -405,7 +412,11 @@ If($specialchars.IsPresent)
 }
 
 ## Create final URL link
-$FinalUrl = "$FinalUrl" + "/" -join ''
+If(-not($scheme -imatch '^(off)$'))
+{
+   $FinalUrl = "$FinalUrl" + "/" -join ''
+}
+
 If(-not([string]::IsNullOrEmpty($Path)) -and ($Path -notmatch '^(off)$'))
 {
    $FinalUrl = "$FinalUrl" + "$Path" -join ''
