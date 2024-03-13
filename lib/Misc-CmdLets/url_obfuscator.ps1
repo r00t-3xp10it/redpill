@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: [Convert]::ToString()
    Optional Dependencies: Invoke-WebRequest
-   PS cmdlet Dev version: v1.0.5
+   PS cmdlet Dev version: v1.0.6
 
 .DESCRIPTION
    Ip address URL obfuscator converts any decimal ip address
@@ -126,7 +126,7 @@
 )
 
 
-$cmdletver = "v1.0.5"
+$cmdletver = "v1.0.6"
 $ErrorActionPreference = "SilentlyContinue"
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
@@ -139,7 +139,7 @@ If($IP -imatch '^(off)$')
 
 If(-not($Convertion -imatch '^(octal|hexadecimal)$'))
 {
-   write-host "`nError: cmdlet only accepts 'octal' or 'hexadecimal' formats.`n" -ForegroundColor Red
+   write-host "`n[ERROR] cmdlet only accepts 'octal' or 'hexadecimal' formats.`n" -ForegroundColor Red
    return
 }
 
@@ -339,7 +339,7 @@ If($Port -imatch '^(off)$')
    {
       If($scheme -imatch '^(off)$')
       {
-         write-host "`n Error: -domain requires -scheme parameter`n" -ForegroundColor Red
+         write-host "`n[ERROR] -domain requires -scheme parameter`n" -ForegroundColor Red
          return
       }
 
@@ -351,7 +351,7 @@ Else
 
    If($scheme -imatch '^(off)$')
    {
-      write-host "`n Error: -port requires -scheme parameter`n" -ForegroundColor Red
+      write-host "`n[ERROR] -port requires -scheme parameter`n" -ForegroundColor Red
       return
    }
 
@@ -495,16 +495,22 @@ If($Exec.IsPresent)
    #>
 
    $CheckMe = (python --version)
-   If(-not($CheckMe -match '^(Python \d\.\d\.\d{1,2})$'))
+   If(-not($CheckMe -imatch '^(Python \d\.\d\.\d{1,2})$'))
    {
-      write-host "ERROR: cant execute: python http.server not found`n" -ForegroundColor Red -BackgroundColor Black
+      write-host "`n[ERROR] cant execute: python http.server not found`n" -ForegroundColor Red -BackgroundColor Black
       return
    }
 
-   If($Port -match '^(off)$')
+   If($Port -imatch '^(off)$')
    {
-      write-host "ERROR: cant execute: missing port parameter`n" -ForegroundColor Red -BackgroundColor Black
+      write-host "`n[ERROR] cant execute: missing -port parameter`n" -ForegroundColor Red -BackgroundColor Black
       return
+   }
+
+   If($scheme -imatch '^(off)$')
+   {
+      write-host "`n[ERROR] cant execute: missing -scheme parameter`n" -ForegroundColor Red -BackgroundColor Black
+      return   
    }
 
    $ToExecut = "start $FinalUrl"
@@ -555,9 +561,9 @@ If($Exec.IsPresent)
 
 If($Logfile.IsPresent)
 {
-   echo "$FinalUrl" > URL_obfuscated.log
    write-host "logfile    : " -NoNewline
    write-host "$pwd\URL_obfuscated.log`n" -ForegroundColor Red
+   echo $FinalUrl|Out-File -FilePath "$pwd\URL_obfuscated.log" -Encoding string -Force
 }
 
 exit
