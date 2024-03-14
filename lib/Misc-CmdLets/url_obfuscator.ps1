@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: [Convert]::ToString()
    Optional Dependencies: Invoke-WebRequest
-   PS cmdlet Dev version: v1.0.7
+   PS cmdlet Dev version: v1.0.8
 
 .DESCRIPTION
    Ip address URL obfuscator converts any decimal ip address
@@ -126,7 +126,7 @@
 )
 
 
-$cmdletver = "v1.0.7"
+$cmdletver = "v1.0.8"
 $ErrorActionPreference = "SilentlyContinue"
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
@@ -164,9 +164,13 @@ $mytable | Format-Table -AutoSize | Out-String -Stream | Select-Object -SkipLast
    {
       @{ 'ForegroundColor' = 'Green' }
    }
+   ElseIf($_ -Match '---')
+   {
+      @{ 'ForegroundColor' = 'White' }   
+   }
    Else
    {
-      @{ 'ForegroundColor' = 'White' }
+      @{ 'ForegroundColor' = 'DarkYellow' }
    }
    Write-Host @stringformat $_
 }
@@ -530,12 +534,12 @@ If($Exec.IsPresent)
       return   
    }
 
-   $ToExecut = "start $FinalUrl"
    ## Create Data Table for output
    $mytable = New-Object System.Data.DataTable
    $mytable.Columns.Add("Execute http.server")|Out-Null
 
    ## Add values to table
+   $ToExecut = "&('s0xar0x' -replace '0x','t') $FinalUrl"
    $mytable.Rows.Add("$ToExecut")|Out-Null
 
    ## Display Data Table
