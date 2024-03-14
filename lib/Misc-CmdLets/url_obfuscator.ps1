@@ -7,7 +7,7 @@
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: [Convert]::ToString()
    Optional Dependencies: Invoke-WebRequest
-   PS cmdlet Dev version: v1.0.8
+   PS cmdlet Dev version: v1.1.8
 
 .DESCRIPTION
    Ip address URL obfuscator converts any decimal ip address
@@ -22,14 +22,17 @@
    in URL to an '%hexadecimal' format to append extra obfuscation.
    example: http:/\/\0300%2E0250%2E0001%2E0102:8080/
 
-   Parameter -domain invokes 'URL schema abuse technic' anything before
+   Parameter -domain invokes 'URL scheme abuse technic' anything before
    the "@" sign its discarded. [everything after "@" sign its executed]
+
+   Invoke -ip 'USEPATH' together with -path 'www.google.com/search?q=linux'
+   to be abble to obfuscate normal URL's without using http.server ip+port
    
 .Parameter scheme
    The URL link scheme (example: http://)
 
 .Parameter Domain
-   The missdirection domain (example: Gmail.com)
+   The missdirection domain (example: www.gmail.com)
 
 .Parameter ip
    The python http.server ip (example: 192.168.1.66)
@@ -75,6 +78,14 @@
 .EXAMPLE
    PS C:\> .\url_obfuscator.ps1 -port '8089' -path 'index.html?q=public_html&shit#Page 1' -specialchars
    URL: http:\/\/0300%2E0250%2E0001%2E0102:8089/index%2Ehtml%3Fq%3Dpublic_html%26shit%23Page%201
+
+.EXAMPLE
+   PS C:\> .\url_obfuscator.ps1 -ip 'usepath' -path 'www.google.com/search?q=hazbin hotel' -exec
+   URL: http://www.google.com/search?q=hazbin hotel
+
+.EXAMPLE
+   PS C:\> .\url_obfuscator.ps1 -ip 'usepath' -path 'www.google.com/search?q=hazbin hotel' -specialchars -exec
+   URL: http:\/\/%77%77%77%2E%67%6f%6f%67le%2E%63%6f%6d/\se%61%72%63h?q=h%61zb%69n%20h%6f%74el
 
 .EXAMPLE
    PS C:\> .\url_obfuscator.ps1 -logfile
@@ -127,21 +138,21 @@
 
 
 $Cbites = $null
-$cmdletver = "v1.0.8"
+$cmdletver = "v1.1.8"
 $ErrorActionPreference = "SilentlyContinue"
 ## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $host.UI.RawUI.WindowTitle = "URL_obuscator $cmdletver"
 
-If($IP -imatch '^(off)$')
-{
-   $IP = ((ipconfig|findstr [0-9].\.)[0]).Split()[-1]
-}
-
 If(-not($Convertion -imatch '^(octal|hexadecimal)$'))
 {
    write-host "`n[ERROR] cmdlet only accepts 'octal' or 'hexadecimal' formats.`n" -ForegroundColor Red
    return
+}
+
+If(($IP -imatch '^(off)$') -or ($IP -imatch '^(usepath)$'))
+{
+   $IpAddr = ((ipconfig|findstr [0-9].\.)[0]).Split()[-1]
 }
 
 ## Cmdlet banner
@@ -167,7 +178,7 @@ $mytable.Columns.Add("IPadrress")|Out-Null
 $mytable.Columns.Add("Port")|Out-Null
 
 ## Add values to table
-$mytable.Rows.Add("$scheme","$Domain","$IP","$Port")|Out-Null
+$mytable.Rows.Add("$scheme","$Domain","$IpAddr","$Port")|Out-Null
 
 ## Display Data Table
 $mytable | Format-Table -AutoSize | Out-String -Stream | Select-Object -SkipLast 1 | ForEach-Object {
@@ -188,10 +199,10 @@ $mytable | Format-Table -AutoSize | Out-String -Stream | Select-Object -SkipLast
 
 
 ## Split IP in decimal values
-$one = $IP.Split('.')[0]  # 192
-$doi = $IP.Split('.')[1]  # 168
-$tre = $IP.Split('.')[2]  # 1
-$qua = $IP.Split('.')[3]  # 66
+$one = $IpAddr.Split('.')[0]  # 192
+$doi = $IpAddr.Split('.')[1]  # 168
+$tre = $IpAddr.Split('.')[2]  # 1
+$qua = $IpAddr.Split('.')[3]  # 66
 
 ## Create Data Table for output
 $mytable = New-Object System.Data.DataTable
@@ -435,19 +446,21 @@ If($specialchars.IsPresent)
     
    If(-not([string]::IsNullOrEmpty($Path)) -and ($Path -notmatch '^(off)$'))
    {
+      $Path = $Path -replace 'www\.','%77%77%77%2E'
       ## Append extra obfucation to URI\PATH
       $Path = $Path -replace '/','/\'    ## /
       $Path = $Path -replace '\.','%2E'  ## .
-      $Path = $Path -replace '\?','%3F'  ## ?
-      $Path = $Path -replace '=','%3D'   ## =
       $Path = $Path -replace '&','%26'   ## &
 
       $Path = $Path -replace 'a','%61'   ## a   Original: index.html?q=public_html&shit#Page 1
-      $Path = $Path -replace 'i','%69'   ## i   Obfuscat: %69ndex%2Eh%74ml%3Fq%3Dpubl%69c%5fh%74ml%26sh%69%74%23P%61%67e%201
+      $Path = $Path -replace 'i','%69'   ## i   Obfuscat: %69ndex%2Eh%74%6dl?q=publ%69%63%5fh%74%6dl%26sh%69%74%23P%61%67e%201
       $Path = $Path -replace 'o','%6f'   ## o
       $Path = $Path -replace 'u','%75'   ## u
       $Path = $Path -replace 't','%74'   ## t
       $Path = $Path -replace 'g','%67'   ## g
+      $Path = $Path -replace 'm','%6d'   ## m
+      $Path = $Path -replace 'r','%72'   ## r
+      $Path = $Path -replace 'c','%63'   ## c
       $Path = $Path -replace '_','%5f'   ## _
 
       $Path = $Path -replace '#','%23'   ## cardinal
@@ -459,6 +472,11 @@ If($specialchars.IsPresent)
 If(-not($scheme -imatch '^(off)$'))
 {
    $FinalUrl = "$FinalUrl" + "/" -join ''
+}
+
+If(($IP -imatch '^(usepath)$') -and ($Path -notmatch '^(off)$'))
+{
+   $FinalUrl = "${scheme}" -replace '/','/\'
 }
 
 If(-not([string]::IsNullOrEmpty($Path)) -and ($Path -notmatch '^(off)$'))
@@ -532,7 +550,7 @@ If($Exec.IsPresent)
       return
    }
 
-   If($Port -imatch '^(off)$')
+   If(($Port -imatch '^(off)$') -and ($IP -notmatch '^(usepath)$'))
    {
       write-host "`n[ERROR] cant execute: missing -port parameter`n" -ForegroundColor Red -BackgroundColor Black
       return
@@ -586,11 +604,17 @@ If($Exec.IsPresent)
    }
 
    ## Start http.server [local]
-   Start-Process powershell.exe -argumentlist "Get-content banner.mp;write-host '[ Press CTRL+C to exit python http.server ]' -foregroundcolor red;$interpreter -m http.server $Port --bind $IP"
-   Start-Sleep -Milliseconds 2300;Remove-Item -Path "$pwd\banner.mp" -Force
+   If(($IP -imatch '^(usepath)$') -or ($scheme -imatch '^(https:)'))
+   {}
+   Else
+   {
+      Start-Process powershell.exe -argumentlist "Get-content banner.mp;write-host '[ Press CTRL+C to exit python http.server ]' -foregroundcolor red;$interpreter -m http.server $Port --bind $IpAddr"
+      Start-Sleep -Milliseconds 2300
+   }
 
    ## Execute phishing webpage [local]
    &($Env:DRIVERDATA[9,14,35,21,14]-join'') $FinalUrl
+   Remove-Item -Path "$pwd\banner.mp" -Force
 }
 
 If($Logfile.IsPresent)
