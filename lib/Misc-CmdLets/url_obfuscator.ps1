@@ -489,29 +489,9 @@ If(-not([string]::IsNullOrEmpty($Path)) -and ($Path -notmatch '^(off)$'))
 }
 
 
-## Create Data Table for output
-$mytable = New-Object System.Data.DataTable
-$mytable.Columns.Add("Obfuscated URI")|Out-Null
-
-## Add values to table
-$mytable.Rows.Add("$FinalUrl")|Out-Null
-
-## Display Data Table
-$mytable | Format-Table -AutoSize | Out-String -Stream | Select-Object -SkipLast 1 | ForEach-Object {
-   $stringformat = If($_ -Match '^(Obfuscated)')
-   {
-      @{ 'ForegroundColor' = 'Green' }
-   }
-   ElseIf($_ -Match '---')
-   {
-      @{ 'ForegroundColor' = 'White' }   
-   }
-   Else
-   {
-      @{ 'ForegroundColor' = 'Red'; 'BackGroundColor' = 'Black' }
-   }
-   Write-Host @stringformat $_
-}
+write-host "`nObfuscated URI" -ForegroundColor Green
+write-host "--------------"
+write-host "$FinalUrl" -ForegroundColor Red -BackgroundColor Black
 
 
 If($Exec.IsPresent)
@@ -566,30 +546,10 @@ If($Exec.IsPresent)
       return   
    }
 
-   ## Create Data Table for output
-   $mytable = New-Object System.Data.DataTable
-   $mytable.Columns.Add("Execute http.server")|Out-Null
+   write-host "`nExecute URI" -ForegroundColor Green
+   write-host "-----------"
    $ToExecutE = "&(`$Env:DRIVERDATA[9,14,35,21,14]-join'') $FinalUrl"
-
-   ## Add values to table
-   $mytable.Rows.Add("$ToExecutE")|Out-Null
-
-   ## Display Data Table
-   $mytable | Format-Table -AutoSize | Out-String -Stream | Select-Object -Skip 1 | Select-Object -SkipLast 1 | ForEach-Object {
-      $stringformat = If($_ -Match '^(Execute)')
-      {
-         @{ 'ForegroundColor' = 'Green' }
-      }
-      ElseIf($_ -Match '---')
-      {
-         @{ 'ForegroundColor' = 'White' }   
-      }
-      Else
-      {
-         @{ 'ForegroundColor' = 'Red'; 'BackGroundColor' = 'Black' }
-      }
-      Write-Host @stringformat $_
-   }
+   write-host "$ToExecutE" -ForegroundColor Red -BackgroundColor Black
 
    ## http.server terminal console banner
    If(-not(Test-Path -Path "banner.mp"))
@@ -623,7 +583,7 @@ If($Exec.IsPresent)
 
 If($Logfile.IsPresent)
 {
-   write-host "[" -NoNewline
+   write-host "`n[" -NoNewline
    write-host "logfile" -ForegroundColor Red -NoNewline;write-host "] " -NoNewline
    write-host "$pwd\URL_obfuscated.log`n" -ForegroundColor Red
 
