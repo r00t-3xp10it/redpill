@@ -353,22 +353,6 @@ If($Action -ieq "Enum" -or $Action -ieq "PortScan")
 
    }#End of Single|Range scan function
 
-   <#
-   Start-Sleep -Seconds 2;Write-Host "";
-   #Parse DataTable data onscreen (TCP test successed)
-   $tcptable | Format-Table -AutoSize | Out-String -Stream | ForEach-Object {
-      $stringformat = If($_ -Match '^(Id)')
-      {
-         @{ 'ForegroundColor' = 'Green' }
-      }
-      Else
-      {
-         @{ 'ForegroundColor' = 'White' }
-      }
-      Write-Host @stringformat $_
-   }
-   #>
-
 
    If($logfile -ieq "True")
    {
@@ -512,7 +496,7 @@ If($Action -ieq "Enum" -or $Action -ieq "PortScan")
          If($DnsRawName)
          {
             #Ip Addr Dns-NameHost found => display NameHost
-            Write-Host "`nHostName: $DnsRawName" -ForeGroundColor Yellow
+            Write-Host "`nHostName: $DnsRawName"
          }
          Else
          {
@@ -525,7 +509,7 @@ If($Action -ieq "Enum" -or $Action -ieq "PortScan")
          If($FirstBannerDisplay -ieq "True")
          {
             $FirstBannerDisplay = "False"
-            Write-Host "Scantype: ${ScanType}[$TotalNumberOfPortsToScan] extraport:$AddPort" -ForeGroundColor Yellow
+            Write-Host "Scantype: ${ScanType}[$TotalNumberOfPortsToScan] extraport:$AddPort"
          }
 
          #Get some info about ip address from WMI Win32_PingStatus API
@@ -545,7 +529,7 @@ If($Action -ieq "Enum" -or $Action -ieq "PortScan")
             $StatusCodeInf = "Unreachable"         
          }
         
-         Write-Host "Response: $StatusCodeInf replysize:$ReplySizeInfo ttl:$TimeToLiveInf" -ForeGroundColor Yellow    
+         Write-Host "Response: $StatusCodeInf replysize:$ReplySizeInfo ttl:$TimeToLiveInf"  
          Write-Host "Scanning: $Item for open ports!" -ForegroundColor Blue
          $PortRangerdse -split(',') | Foreach-Object -Process {
              If((Test-NetConnection $Item -Port $_ -WarningAction SilentlyContinue).tcpTestSucceeded -ieq $true)
@@ -783,10 +767,10 @@ If($Action -ieq "Enum" -or $Action -ieq "PortScan")
       }## End of ForEach()
 
 
-      Clear-Host;
+      Clear-Host
+      echo "`n"
       Start-Sleep -Milliseconds 1458
       #Parse DataTable data onscreen (console)
-      Write-Host "`n* Scanning Lan for active devices!" -ForegroundColor DarkMagenta -BackgroundColor DarkCyan;
       $CheckTableRows = $Finaltable | Format-Table #Check if Table contains any data!
       If(-not($CheckTableRows))
       {
@@ -815,9 +799,9 @@ If($Action -ieq "Enum" -or $Action -ieq "PortScan")
 
          #Found Open ports
          $Finaltable | Format-Table -AutoSize | Out-String -Stream | Select-Object -Skip 1 | Select-Object -SkipLast 1 | ForEach-Object {
-            $stringformat = If($_ -Match '^(RemoteHost)')
+            $stringformat = If($_ -Match '^(-------)')
             {
-               @{ 'ForegroundColor' = 'Green' }
+               @{ 'ForegroundColor' = 'Blue' }
             }
             ElseIf($_ -iMatch 'Open')
             {
@@ -830,10 +814,6 @@ If($Action -ieq "Enum" -or $Action -ieq "PortScan")
             Write-Host @stringformat $_
          }
       }
-
-      #Display OnScreen the total number of open ports found!
-      Write-Host "`n* Total of open ports:" -ForegroundColor Blue -BackgroundColor Black -NoNewline;
-      Write-Host "$MhsfsCounter" -ForegroundColor Green -BackgroundColor Black;
 
 
       If($logfile -ieq "True")
@@ -853,15 +833,15 @@ If($Action -ieq "Enum" -or $Action -ieq "PortScan")
    }
 }
 
-
 #Internal clock Timmer
 $ElapsTime = $(Get-Date) - $ScanStartTimer
 If($Action -ieq "Enum"){$ScanType = "discovery"}
 $TotalTime = "{0:HH:mm:ss}" -f ([datetime]$ElapsTime.Ticks) #Count the diferense between 'start|end' scan duration!
-Write-Host "* ElapsedTime:" -ForegroundColor Blue -BackgroundColor Black -NoNewline;
-Write-Host "$TotalTime" -ForegroundColor Green -BackgroundColor Black -NoNewline;
-Write-Host " - scantype:" -ForegroundColor Blue -BackgroundColor Black -NoNewline;
-Write-Host "$ScanType" -ForegroundColor Green -BackgroundColor Black -NoNewline;
+Write-Host "`n[*] Total open ports: " -ForegroundColor Blue -NoNewline
+Write-Host "$MhsfsCounter" -ForegroundColor Green -NoNewline
+Write-Host " ElapsedTime: " -ForegroundColor Blue -NoNewline
+Write-Host "$TotalTime" -ForegroundColor Green
+
 
 If($logfile -ieq "True")
 {
