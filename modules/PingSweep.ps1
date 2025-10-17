@@ -531,6 +531,10 @@ If($Action -ieq "Enum" -or $Action -ieq "PortScan")
         
          Write-Host "Response: $StatusCodeInf replysize:$ReplySizeInfo ttl:$TimeToLiveInf"  
          Write-Host "Scanning: $Item for open ports!" -ForegroundColor Blue
+
+         Write-Host "`nIp Address   State    Proto  Port"
+         Write-Host "----------   -----    -----  ----"
+
          $PortRangerdse -split(',') | Foreach-Object -Process {
              If((Test-NetConnection $Item -Port $_ -WarningAction SilentlyContinue).tcpTestSucceeded -ieq $true)
              {
